@@ -1,6 +1,7 @@
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Problem } from "@/components/Problem";
+import { DashboardPreview } from "@/components/DashboardPreview";
 import { HowItWorks } from "@/components/HowItWorks";
 import { LeakTypes } from "@/components/LeakTypes";
 import { Pricing } from "@/components/Pricing";
@@ -14,6 +15,7 @@ export default function Home() {
       <Header />
       <Hero />
       <Problem />
+      <DashboardPreview />
       <LeakTypes />
       <HowItWorks />
       <Pricing />

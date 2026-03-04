@@ -8,7 +8,7 @@ export function Hero() {
         {/* Badge */}
         <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#2A2A2A] bg-[#111] px-4 py-2 text-sm text-[#999]">
           <span className="inline-block h-2 w-2 rounded-full bg-[#10B981] animate-pulse" />
-          For B2B SaaS companies on Stripe
+          For SaaS founders doing $10K-$500K MRR on Stripe
         </div>
 
         {/* Headline */}
@@ -41,6 +41,15 @@ export function Hero() {
             </svg>
           </a>
           <span className="text-sm text-[#666]">Free audit. No credit card required</span>
+        </div>
+
+        {/* Guarantee badge */}
+        <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-[#10B981]/20 bg-[#10B981]/5 px-5 py-2.5">
+          <svg className="h-5 w-5 text-[#10B981]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+          <span className="text-sm font-semibold text-[#10B981]">$1,000/mo guarantee</span>
+          <span className="text-sm text-[#999]">or you pay nothing</span>
         </div>
 
         {/* Proof bar */}
