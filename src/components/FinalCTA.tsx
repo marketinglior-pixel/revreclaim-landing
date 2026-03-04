@@ -51,7 +51,16 @@ export function FinalCTA() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
               <p className="text-sm font-semibold text-[#10B981]">You&apos;re in!</p>
-              <p className="mt-1 text-xs text-[#999]">We&apos;ll reach out within 24 hours to set up your free audit.</p>
+              <p className="mt-1 text-xs text-[#999]">Ready for your free audit? Connect your Stripe account now.</p>
+              <a
+                href="/connect"
+                className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[#635BFF] px-5 py-2.5 text-xs font-bold text-white transition-all hover:bg-[#7A73FF]"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z" />
+                </svg>
+                Connect Stripe
+              </a>
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
