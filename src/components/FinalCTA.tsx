@@ -1,4 +1,33 @@
+"use client";
+
+import { useState } from "react";
+
 export function FinalCTA() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email || !email.includes("@")) return;
+
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        setStatus("success");
+        setEmail("");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  }
+
   return (
     <section id="cta" className="border-t border-[#1A1A1A] py-20 md:py-28">
       <div className="mx-auto max-w-3xl px-6 text-center">
@@ -16,19 +45,41 @@ export function FinalCTA() {
 
         {/* Email capture form */}
         <div className="relative mx-auto max-w-md">
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <input
-              type="email"
-              placeholder="founder@yoursaas.com"
-              className="flex-1 rounded-xl border border-[#2A2A2A] bg-[#111] px-5 py-4 text-sm text-white placeholder-[#666] outline-none transition-colors focus:border-[#10B981]/50"
-            />
-            <button className="rounded-xl bg-[#10B981] px-8 py-4 text-sm font-bold text-black transition-all hover:bg-[#34D399] hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]">
-              Get Free Audit
-            </button>
-          </div>
-          <p className="mt-3 text-xs text-[#666]">
-            No credit card required. Read-only Stripe access. Cancel anytime.
-          </p>
+          {status === "success" ? (
+            <div className="rounded-xl border border-[#10B981]/30 bg-[#10B981]/5 p-6">
+              <svg className="mx-auto mb-3 h-8 w-8 text-[#10B981]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <p className="text-sm font-semibold text-[#10B981]">You&apos;re in!</p>
+              <p className="mt-1 text-xs text-[#999]">We&apos;ll reach out within 24 hours to set up your free audit.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="founder@yoursaas.com"
+                  required
+                  className="flex-1 rounded-xl border border-[#2A2A2A] bg-[#111] px-5 py-4 text-sm text-white placeholder-[#666] outline-none transition-colors focus:border-[#10B981]/50"
+                />
+                <button
+                  type="submit"
+                  disabled={status === "loading"}
+                  className="rounded-xl bg-[#10B981] px-8 py-4 text-sm font-bold text-black transition-all hover:bg-[#34D399] hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] disabled:opacity-50"
+                >
+                  {status === "loading" ? "Sending..." : "Get Free Audit"}
+                </button>
+              </div>
+              {status === "error" && (
+                <p className="mt-2 text-xs text-[#EF4444]">Something went wrong. Please try again.</p>
+              )}
+              <p className="mt-3 text-xs text-[#666]">
+                No credit card required. Read-only Stripe access. Cancel anytime.
+              </p>
+            </form>
+          )}
         </div>
 
         {/* Guarantee badge */}
