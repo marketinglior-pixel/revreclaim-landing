@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   title: "RevReclaim | Find the Revenue Leaking from Your SaaS",
   description:
     "We scan your Stripe account and show you exactly how much revenue you're losing to forgotten discounts, unbilled overages, and outdated pricing. In under 2 minutes.",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
