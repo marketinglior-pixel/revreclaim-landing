@@ -21,7 +21,11 @@ const faqs = [
   },
   {
     q: "What if you don't find any leaks?",
-    a: "If we don't find at least $1,000/month in leaked revenue, you pay nothing. We're that confident in what we find.",
+    a: "The free audit is always free. If you upgrade to a paid plan and we don't find at least $1,000/month in recoverable revenue, you pay nothing. The guarantee applies to accounts with $30K+ MRR.",
+  },
+  {
+    q: "Is this the same as chargeback recovery?",
+    a: "No. Chargeback tools handle disputed payments. We find revenue you earned but aren't collecting: expired discounts still running, customers exceeding plan limits without being billed, and outdated pricing that was never updated. Different problem, different fix.",
   },
   {
     q: "Can I cancel the monthly plan anytime?",

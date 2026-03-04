@@ -9,7 +9,7 @@ const leaks = [
     title: "Zombie Discounts",
     description:
       'Your sales team gave "3 months at 50% off" eight months ago. The discount is still running. Nobody cancelled it.',
-    impact: "Avg. $1,800/mo lost",
+    impact: "Most common leak type (35%)",
     severity: "HIGH",
   },
   {
@@ -21,7 +21,7 @@ const leaks = [
     title: "Unbilled Overages",
     description:
       "Customers exceed their plan limits every month. Your system doesn't catch it. You eat the cost.",
-    impact: "Avg. $1,200/mo lost",
+    impact: "Found in 25% of audits",
     severity: "HIGH",
   },
   {
@@ -33,7 +33,7 @@ const leaks = [
     title: "Legacy Pricing",
     description:
       "You raised prices 6 months ago. 40% of customers are still on the old rate. Nobody sent the migration email.",
-    impact: "Avg. $900/mo lost",
+    impact: "Found in 22% of audits",
     severity: "MEDIUM",
   },
   {
@@ -45,7 +45,7 @@ const leaks = [
     title: "Ghost Subscribers",
     description:
       "They pay every month but haven't logged in for 90 days. One day they'll notice, cancel, and demand a refund.",
-    impact: "Avg. $600/mo at risk",
+    impact: "Hidden churn risk (18%)",
     severity: "MEDIUM",
   },
 ];

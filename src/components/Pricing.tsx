@@ -1,16 +1,16 @@
 const plans = [
   {
-    name: "One-Time Audit",
-    price: "$199",
-    period: "one-time",
-    description: "Find out what you're losing right now",
+    name: "Free Audit",
+    price: "$0",
+    period: "",
+    description: "See exactly what you're losing right now",
     features: [
       "Full Revenue Leak Report",
       "All 4 leak types scanned",
       "Actionable fix list per leak",
-      "Export to CSV",
+      "One-time scan",
     ],
-    cta: "Run My Audit",
+    cta: "Get Free Audit",
     highlighted: false,
   },
   {
@@ -19,7 +19,7 @@ const plans = [
     period: "/month",
     description: "Continuous protection against revenue leaks",
     features: [
-      "Everything in One-Time Audit",
+      "Everything in Free Audit",
       "Weekly automated scans",
       "Real-time leak alerts",
       "Leak trend tracking",
@@ -36,7 +36,6 @@ const plans = [
     description: "Full revenue intelligence for scaling SaaS",
     features: [
       "Everything in Monthly Monitor",
-      "AI Cost Tracking (coming soon)",
       "Per-customer margin analysis",
       "Revenue optimization suggestions",
       "Dedicated account manager",
@@ -55,7 +54,7 @@ export function Pricing() {
           Pricing
         </div>
         <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
-          It pays for itself in the first scan
+          Start with a free audit. Upgrade when it pays for itself.
         </h2>
         <p className="mb-16 text-center text-lg text-[#999]">
           If we don&apos;t find at least $1,000/month in leaked revenue, you pay nothing.
@@ -73,7 +72,7 @@ export function Pricing() {
             >
               {plan.highlighted && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#10B981] px-4 py-1 text-xs font-bold text-black">
-                  MOST POPULAR
+                  RECOMMENDED
                 </div>
               )}
               <h3 className="mb-1 text-lg font-bold text-white">{plan.name}</h3>

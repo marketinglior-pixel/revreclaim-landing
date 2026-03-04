@@ -9,9 +9,9 @@ export function Problem() {
           The money you&apos;re not collecting
         </h2>
         <p className="mb-12 max-w-2xl text-lg leading-relaxed text-[#999]">
-          Every SaaS with 50+ customers has revenue leaking through the cracks.
-          Not because of churn. Not because of failed payments. Because of things
-          nobody is watching.
+          Every growing SaaS has revenue leaking through the cracks.
+          Not because of churn. Not because of failed payments. Because of
+          billing blind spots nobody is watching.
         </p>
 
         {/* Revenue leak visualization */}
@@ -24,40 +24,40 @@ export function Problem() {
           <div className="grid gap-4 md:grid-cols-2">
             <LeakRow
               label="Zombie Discounts"
-              amount="$1,800"
-              percentage="3.6%"
+              amount="$900"
+              percentage="1.8%"
               color="bg-[#EF4444]"
               width="72%"
             />
             <LeakRow
               label="Unbilled Overages"
-              amount="$1,200"
-              percentage="2.4%"
+              amount="$650"
+              percentage="1.3%"
               color="bg-[#F59E0B]"
-              width="48%"
+              width="52%"
             />
             <LeakRow
               label="Legacy Pricing"
-              amount="$900"
-              percentage="1.8%"
+              amount="$550"
+              percentage="1.1%"
               color="bg-[#F97316]"
-              width="36%"
+              width="44%"
             />
             <LeakRow
               label="Ghost Subscribers"
-              amount="$600"
-              percentage="1.2%"
+              amount="$400"
+              percentage="0.8%"
               color="bg-[#A855F7]"
-              width="24%"
+              width="32%"
             />
           </div>
 
           <div className="mt-8 flex items-center justify-between rounded-xl border border-[#EF4444]/20 bg-[#EF4444]/5 p-4">
             <span className="text-sm text-[#999]">Total monthly revenue leaking</span>
-            <span className="text-2xl font-bold text-[#EF4444]">-$4,500/mo</span>
+            <span className="text-2xl font-bold text-[#EF4444]">-$2,500/mo</span>
           </div>
           <div className="mt-2 text-center text-sm text-[#666]">
-            That&apos;s <span className="font-semibold text-[#EF4444]">$54,000/year</span> walking out the door
+            That&apos;s <span className="font-semibold text-[#EF4444]">$30,000/year</span> walking out the door
           </div>
         </div>
       </div>

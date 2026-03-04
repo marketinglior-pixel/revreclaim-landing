@@ -38,7 +38,7 @@ export function FinalCTA() {
           </svg>
           <div className="text-left">
             <div className="text-sm font-semibold text-white">$1,000/mo Guarantee</div>
-            <div className="text-xs text-[#666]">If we don&apos;t find at least $1,000/mo in leaks, you pay nothing</div>
+            <div className="text-xs text-[#666]">For accounts with $30K+ MRR. If we don&apos;t find $1,000/mo in leaks, you pay nothing</div>
           </div>
         </div>
       </div>

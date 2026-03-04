@@ -32,18 +32,18 @@ export function DashboardPreview() {
             <div className="mb-6 grid gap-4 md:grid-cols-3">
               <StatCard
                 label="Total Revenue Leaking"
-                value="$4,847"
+                value="$2,340"
                 sub="/month"
                 highlight
               />
               <StatCard
                 label="Leaks Found"
-                value="23"
+                value="14"
                 sub="across 4 categories"
               />
               <StatCard
                 label="Potential Annual Recovery"
-                value="$58,164"
+                value="$28,080"
                 sub="/year"
               />
             </div>
@@ -58,7 +58,7 @@ export function DashboardPreview() {
                 severity="HIGH"
                 type="Zombie Discount"
                 customer="Acme Corp"
-                impact="$420/mo"
+                impact="$320/mo"
                 detail="50% discount active since 2023. Promo expired 14 months ago."
                 fix="Remove discount"
               />
@@ -66,7 +66,7 @@ export function DashboardPreview() {
                 severity="HIGH"
                 type="Unbilled Overage"
                 customer="StartupXYZ"
-                impact="$380/mo"
+                impact="$280/mo"
                 detail="Using 12,000 API calls/mo. Plan limit: 5,000. No overage billing."
                 fix="Enable overage billing"
               />
@@ -88,7 +88,7 @@ export function DashboardPreview() {
               />
 
               <div className="px-5 py-3 text-center text-xs text-[#666]">
-                + 19 more leaks found
+                + 10 more leaks found
               </div>
             </div>
           </div>
