@@ -3,7 +3,7 @@ const steps = [
     number: "01",
     title: "Connect Stripe",
     description:
-      "One click OAuth. Read-only access — we never touch your billing, never see card numbers, never modify anything.",
+      "One click OAuth. Read-only access. We never touch your billing, never see card numbers, never modify anything.",
     detail: "Takes 30 seconds",
   },
   {

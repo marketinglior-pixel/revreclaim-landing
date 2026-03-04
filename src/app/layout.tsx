@@ -8,9 +8,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "RevReclaim — Find the Revenue Leaking from Your SaaS",
+  title: "RevReclaim | Find the Revenue Leaking from Your SaaS",
   description:
-    "We scan your Stripe account and show you exactly how much revenue you're losing to forgotten discounts, unbilled overages, and outdated pricing — in under 2 minutes.",
+    "We scan your Stripe account and show you exactly how much revenue you're losing to forgotten discounts, unbilled overages, and outdated pricing. In under 2 minutes.",
 };
 
 export default function RootLayout({

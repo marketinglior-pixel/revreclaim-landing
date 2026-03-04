@@ -25,7 +25,7 @@ export function Hero() {
         {/* Subheadline */}
         <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-[#999] md:text-xl">
           Connect your Stripe account (read-only). We scan every subscription,
-          discount, and usage pattern — and show you exactly where money is
+          discount, and usage pattern, and show you exactly where money is
           leaking.
         </p>
 
@@ -40,7 +40,7 @@ export function Hero() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </a>
-          <span className="text-sm text-[#666]">Free audit — no credit card required</span>
+          <span className="text-sm text-[#666]">Free audit. No credit card required</span>
         </div>
 
         {/* Proof bar */}
