@@ -40,7 +40,7 @@ export function FinalCTA() {
         <p className="relative mb-10 text-lg text-[#999]">
           Every month you wait is another month of leaked revenue.
           <br />
-          Connect Stripe in 2 minutes and see what you&apos;re missing.
+          Get your free audit report and see what you&apos;re missing.
         </p>
 
         {/* Email capture form */}
@@ -51,16 +51,17 @@ export function FinalCTA() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
               <p className="text-sm font-semibold text-[#10B981]">You&apos;re in!</p>
-              <p className="mt-1 text-xs text-[#999]">Ready for your free audit? Connect your Stripe account now.</p>
-              <a
-                href="/connect"
-                className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[#635BFF] px-5 py-2.5 text-xs font-bold text-white transition-all hover:bg-[#7A73FF]"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z" />
-                </svg>
-                Connect Stripe
-              </a>
+              <p className="mt-1 text-xs text-[#999]">We&apos;ll email you within 24 hours with simple instructions to start your free audit.</p>
+              <div className="mt-4 flex items-center justify-center gap-4 text-xs text-[#666]">
+                <span className="flex items-center gap-1">
+                  <svg className="h-3.5 w-3.5 text-[#10B981]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                  Read-only access
+                </span>
+                <span className="flex items-center gap-1">
+                  <svg className="h-3.5 w-3.5 text-[#10B981]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  Report in 24hrs
+                </span>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
