@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -14,6 +15,8 @@ export default function SettingsPage() {
   const [isActive, setIsActive] = useState(false);
   const [hasExistingConfig, setHasExistingConfig] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [userPlan, setUserPlan] = useState<string>("free");
+  const [billingLoading, setBillingLoading] = useState(false);
 
   // Change Password state
   const [newPassword, setNewPassword] = useState("");
@@ -42,6 +45,17 @@ export default function SettingsPage() {
 
     setCurrentEmail(user.email || "");
 
+    // Fetch plan
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("plan")
+      .eq("id", user.id)
+      .single();
+
+    if (profile) {
+      setUserPlan((profile as Record<string, unknown>).plan as string || "free");
+    }
+
     const { data } = await supabase
       .from("scan_configs")
       .select("scan_frequency, is_active")
@@ -57,6 +71,20 @@ export default function SettingsPage() {
     }
 
     setLoading(false);
+  }
+
+  async function handleManageBilling() {
+    setBillingLoading(true);
+    try {
+      const res = await fetch("/api/billing-portal", { method: "POST" });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch {
+      // Silently fail
+    }
+    setBillingLoading(false);
   }
 
   async function handleSave(e: React.FormEvent) {
@@ -231,6 +259,28 @@ export default function SettingsPage() {
         </p>
       </div>
 
+      {/* Billing section — only show for paid users */}
+      {userPlan !== "free" && (
+        <div className="rounded-2xl border border-[#10B981]/20 bg-[#10B981]/5 p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-white mb-1">Subscription</h2>
+              <p className="text-sm text-[#999]">
+                You&apos;re on the <span className="text-[#10B981] font-semibold uppercase">{userPlan}</span> plan.
+                Manage your subscription, update payment method, or change plans.
+              </p>
+            </div>
+            <button
+              onClick={handleManageBilling}
+              disabled={billingLoading}
+              className="px-5 py-2.5 bg-[#10B981] hover:bg-[#059669] text-black font-bold rounded-lg transition disabled:opacity-50 cursor-pointer text-sm shrink-0"
+            >
+              {billingLoading ? "Loading..." : "Manage Billing"}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Auto-scan config */}
       <div className="rounded-2xl border border-[#2A2A2A] bg-[#111] p-6">
         <h2 className="text-lg font-bold text-white mb-1">Automated Scans</h2>
@@ -239,6 +289,28 @@ export default function SettingsPage() {
           Your API key is encrypted and stored securely.
         </p>
 
+        {/* Plan gate for free users */}
+        {userPlan === "free" && (
+          <div className="rounded-xl border border-[#2A2A2A] bg-[#0A0A0A] p-6 text-center mb-6">
+            <div className="w-12 h-12 bg-[#10B981]/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <svg className="w-6 h-6 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h3 className="text-base font-bold text-white mb-1">Pro Feature</h3>
+            <p className="text-sm text-[#999] mb-4 max-w-sm mx-auto">
+              Automated scans require a Pro or Team plan. Upgrade to get weekly scanning, email alerts, and more.
+            </p>
+            <Link
+              href="/#pricing"
+              className="inline-flex px-5 py-2.5 bg-[#10B981] hover:bg-[#059669] text-black font-bold rounded-lg transition text-sm"
+            >
+              Upgrade to Pro — $299/mo
+            </Link>
+          </div>
+        )}
+
+        {userPlan !== "free" && (
         <form onSubmit={handleSave} className="space-y-5">
           {/* API Key */}
           <div>
@@ -358,6 +430,7 @@ export default function SettingsPage() {
             )}
           </div>
         </form>
+        )}
       </div>
 
       {/* Security note */}

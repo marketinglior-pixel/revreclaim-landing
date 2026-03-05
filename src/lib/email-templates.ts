@@ -1,0 +1,242 @@
+/**
+ * Email template functions for RevReclaim.
+ * All templates use inline CSS for maximum email client compatibility.
+ * Dark theme matching the app with green (#10B981) accent.
+ */
+
+const BRAND_COLOR = "#10B981";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://revreclaim.com";
+
+function baseLayout(title: string, content: string): string {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+</head>
+<body style="margin:0;padding:0;background-color:#0A0A0A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <div style="max-width:600px;margin:0 auto;padding:40px 20px;">
+    <!-- Logo -->
+    <div style="text-align:center;margin-bottom:32px;">
+      <a href="${BASE_URL}" style="text-decoration:none;color:white;font-size:20px;font-weight:bold;">
+        <span style="display:inline-block;width:32px;height:32px;background:${BRAND_COLOR};border-radius:8px;vertical-align:middle;margin-right:8px;text-align:center;line-height:32px;color:#000;font-size:16px;">$</span>
+        RevReclaim
+      </a>
+    </div>
+
+    <!-- Content -->
+    <div style="background:#111111;border:1px solid #2A2A2A;border-radius:16px;padding:32px;">
+      ${content}
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center;margin-top:32px;color:#666;font-size:12px;">
+      <p style="margin:0 0 8px;">RevReclaim — Stop Losing Revenue to Billing Leaks</p>
+      <p style="margin:0;">
+        <a href="${BASE_URL}" style="color:#666;text-decoration:underline;">Website</a>
+        &nbsp;&middot;&nbsp;
+        <a href="${BASE_URL}/dashboard" style="color:#666;text-decoration:underline;">Dashboard</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>`.trim();
+}
+
+function formatCentsAsDollars(cents: number): string {
+  return `$${(cents / 100).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+}
+
+export function welcomeEmailHtml(): string {
+  return baseLayout("Welcome to RevReclaim", `
+    <h1 style="color:white;font-size:24px;margin:0 0 16px;">Welcome to RevReclaim!</h1>
+    <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
+      You're all set up. RevReclaim scans your Stripe account for revenue leaks — expired coupons,
+      failed payments, ghost subscriptions, and more.
+    </p>
+
+    <h2 style="color:white;font-size:16px;margin:0 0 12px;">Get started in 3 steps:</h2>
+    <div style="margin-bottom:24px;">
+      <div style="padding:12px 0;border-bottom:1px solid #2A2A2A;">
+        <span style="color:${BRAND_COLOR};font-weight:bold;">1.</span>
+        <span style="color:#CCC;margin-left:8px;">Run your first free scan</span>
+      </div>
+      <div style="padding:12px 0;border-bottom:1px solid #2A2A2A;">
+        <span style="color:${BRAND_COLOR};font-weight:bold;">2.</span>
+        <span style="color:#CCC;margin-left:8px;">Review your Revenue Leak Report</span>
+      </div>
+      <div style="padding:12px 0;">
+        <span style="color:${BRAND_COLOR};font-weight:bold;">3.</span>
+        <span style="color:#CCC;margin-left:8px;">Fix leaks directly in Stripe</span>
+      </div>
+    </div>
+
+    <a href="${BASE_URL}/scan" style="display:inline-block;background:${BRAND_COLOR};color:#000;font-weight:bold;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;">
+      Run Your Free Scan
+    </a>
+  `);
+}
+
+export function scanCompleteEmailHtml(summary: {
+  leaksFound: number;
+  mrrAtRisk: number;
+  recoveryPotential: number;
+  healthScore: number;
+  reportId: string;
+}): string {
+  const scoreColor = summary.healthScore >= 80 ? BRAND_COLOR : summary.healthScore >= 60 ? "#F59E0B" : "#EF4444";
+
+  return baseLayout("Your Revenue Leak Report is Ready", `
+    <h1 style="color:white;font-size:24px;margin:0 0 8px;">Your scan is complete!</h1>
+    <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
+      We found <strong style="color:#EF4444;">${summary.leaksFound} revenue leaks</strong> in your Stripe account.
+    </p>
+
+    <!-- Stats Grid -->
+    <div style="display:flex;gap:12px;margin-bottom:24px;">
+      <div style="flex:1;background:#0A0A0A;border:1px solid #2A2A2A;border-radius:12px;padding:16px;text-align:center;">
+        <div style="color:#EF4444;font-size:24px;font-weight:bold;">${formatCentsAsDollars(summary.mrrAtRisk)}</div>
+        <div style="color:#999;font-size:12px;margin-top:4px;">MRR at Risk</div>
+      </div>
+      <div style="flex:1;background:#0A0A0A;border:1px solid #2A2A2A;border-radius:12px;padding:16px;text-align:center;">
+        <div style="color:${BRAND_COLOR};font-size:24px;font-weight:bold;">${formatCentsAsDollars(summary.recoveryPotential)}</div>
+        <div style="color:#999;font-size:12px;margin-top:4px;">Annual Recovery</div>
+      </div>
+      <div style="flex:1;background:#0A0A0A;border:1px solid #2A2A2A;border-radius:12px;padding:16px;text-align:center;">
+        <div style="color:${scoreColor};font-size:24px;font-weight:bold;">${summary.healthScore}/100</div>
+        <div style="color:#999;font-size:12px;margin-top:4px;">Health Score</div>
+      </div>
+    </div>
+
+    <a href="${BASE_URL}/report/${summary.reportId}" style="display:inline-block;background:${BRAND_COLOR};color:#000;font-weight:bold;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;">
+      View Full Report
+    </a>
+
+    <p style="color:#666;font-size:13px;margin-top:16px;">
+      Each leak includes a direct fix link to your Stripe Dashboard.
+    </p>
+  `);
+}
+
+export function upgradeConfirmationEmailHtml(plan: string): string {
+  const planName = plan === "pro" ? "Pro" : "Team";
+  const price = plan === "pro" ? "$299" : "$499";
+
+  return baseLayout(`Welcome to RevReclaim ${planName}!`, `
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="display:inline-block;width:48px;height:48px;background:${BRAND_COLOR}20;border-radius:50%;line-height:48px;text-align:center;font-size:24px;">
+        🎉
+      </div>
+    </div>
+
+    <h1 style="color:white;font-size:24px;margin:0 0 8px;text-align:center;">You're on ${planName}!</h1>
+    <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;text-align:center;">
+      Your subscription (${price}/month) is now active. Here's what you unlocked:
+    </p>
+
+    <div style="margin-bottom:24px;">
+      <div style="padding:10px 0;border-bottom:1px solid #2A2A2A;color:#CCC;font-size:14px;">
+        <span style="color:${BRAND_COLOR};margin-right:8px;">✓</span> Unlimited revenue leak scans
+      </div>
+      <div style="padding:10px 0;border-bottom:1px solid #2A2A2A;color:#CCC;font-size:14px;">
+        <span style="color:${BRAND_COLOR};margin-right:8px;">✓</span> Weekly automated scanning
+      </div>
+      <div style="padding:10px 0;border-bottom:1px solid #2A2A2A;color:#CCC;font-size:14px;">
+        <span style="color:${BRAND_COLOR};margin-right:8px;">✓</span> Email leak alerts & reports
+      </div>
+      ${plan === "team" ? `
+      <div style="padding:10px 0;border-bottom:1px solid #2A2A2A;color:#CCC;font-size:14px;">
+        <span style="color:${BRAND_COLOR};margin-right:8px;">✓</span> Up to 10 team members
+      </div>` : ""}
+    </div>
+
+    <div style="text-align:center;">
+      <a href="${BASE_URL}/dashboard/settings" style="display:inline-block;background:${BRAND_COLOR};color:#000;font-weight:bold;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;">
+        Set Up Auto-Scans
+      </a>
+    </div>
+  `);
+}
+
+export function scanLimitReachedEmailHtml(): string {
+  return baseLayout("You've reached your scan limit", `
+    <h1 style="color:white;font-size:24px;margin:0 0 16px;">Scan limit reached</h1>
+    <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
+      You've used your 1 free scan this month. Upgrade to Pro for unlimited scans,
+      weekly automated monitoring, and email alerts.
+    </p>
+
+    <div style="background:#0A0A0A;border:1px solid ${BRAND_COLOR}30;border-radius:12px;padding:20px;margin-bottom:24px;">
+      <div style="color:white;font-weight:bold;font-size:16px;margin-bottom:4px;">Pro Plan — $299/month</div>
+      <div style="color:#999;font-size:14px;">Unlimited scans + weekly automated monitoring + email alerts</div>
+    </div>
+
+    <a href="${BASE_URL}/#pricing" style="display:inline-block;background:${BRAND_COLOR};color:#000;font-weight:bold;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;">
+      View Plans
+    </a>
+  `);
+}
+
+export function paymentFailedEmailHtml(): string {
+  return baseLayout("Payment failed", `
+    <h1 style="color:#EF4444;font-size:24px;margin:0 0 16px;">Payment failed</h1>
+    <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
+      We couldn't process your latest payment. Please update your payment method to keep your subscription active.
+    </p>
+
+    <a href="${BASE_URL}/dashboard/settings" style="display:inline-block;background:#EF4444;color:white;font-weight:bold;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;">
+      Update Payment Method
+    </a>
+
+    <p style="color:#666;font-size:13px;margin-top:16px;">
+      If you don't update your payment method, your subscription will be cancelled and you'll be moved to the free plan.
+    </p>
+  `);
+}
+
+export function reminderEmailHtml(): string {
+  return baseLayout("Don't forget your free scan", `
+    <h1 style="color:white;font-size:24px;margin:0 0 16px;">You haven't run your first scan yet!</h1>
+    <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
+      Most SaaS companies are losing 3-8% of MRR to billing leaks they don't know about.
+      Your free scan takes under 2 minutes and finds them all.
+    </p>
+
+    <a href="${BASE_URL}/scan" style="display:inline-block;background:${BRAND_COLOR};color:#000;font-weight:bold;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;">
+      Start Your Free Scan
+    </a>
+  `);
+}
+
+export function upgradeNudgeEmailHtml(mrrAtRisk: number): string {
+  return baseLayout("Your revenue leaks are still open", `
+    <h1 style="color:white;font-size:24px;margin:0 0 16px;">Your leaks are still leaking</h1>
+    <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 16px;">
+      Last week you found <strong style="color:#EF4444;">${formatCentsAsDollars(mrrAtRisk)}/month</strong> in revenue leaks.
+      Without monitoring, new leaks appear every week.
+    </p>
+    <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
+      Upgrade to Pro for weekly automated scanning that catches new leaks as they appear.
+    </p>
+
+    <a href="${BASE_URL}/#pricing" style="display:inline-block;background:${BRAND_COLOR};color:#000;font-weight:bold;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;">
+      Upgrade to Pro — $299/mo
+    </a>
+  `);
+}
+
+export function teamInviteEmailHtml(inviterEmail: string): string {
+  return baseLayout("You've been invited to RevReclaim", `
+    <h1 style="color:white;font-size:24px;margin:0 0 16px;">Team invite</h1>
+    <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
+      <strong style="color:white;">${inviterEmail}</strong> has invited you to join their RevReclaim team.
+      Accept the invite to view shared revenue leak reports.
+    </p>
+
+    <a href="${BASE_URL}/auth/signup" style="display:inline-block;background:${BRAND_COLOR};color:#000;font-weight:bold;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;">
+      Accept Invite
+    </a>
+  `);
+}

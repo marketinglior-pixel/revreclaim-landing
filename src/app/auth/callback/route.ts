@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { sendWelcomeEmail } from "@/lib/email";
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
@@ -10,6 +11,46 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      // Check if this is a new user (no reports = new user)
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        // Auto-accept any pending team invites (fire-and-forget)
+        if (user.email) {
+          void supabase
+            .from("team_members")
+            .update({
+              member_id: user.id,
+              invite_status: "accepted" as const,
+              accepted_at: new Date().toISOString(),
+            })
+            .eq("member_email", user.email.toLowerCase())
+            .eq("invite_status", "pending")
+            .then(() => {});
+        }
+
+        const { count } = await supabase
+          .from("reports")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id);
+
+        const isNewUser = !count || count === 0;
+
+        if (isNewUser) {
+          // Send welcome email (fire-and-forget)
+          if (user.email) {
+            sendWelcomeEmail(user.email).catch(() => {});
+          }
+
+          // Redirect new users to scan instead of empty dashboard
+          if (redirect === "/dashboard") {
+            return NextResponse.redirect(`${origin}/scan`);
+          }
+        }
+      }
+
       return NextResponse.redirect(`${origin}${redirect}`);
     }
   }

@@ -86,25 +86,85 @@ export default async function DashboardPage() {
         />
       )}
 
-      {/* Empty state */}
+      {/* Empty state — guided onboarding */}
       {reports.length === 0 && (
-        <div className="rounded-2xl border border-[#2A2A2A] border-dashed bg-[#111] p-12 text-center">
-          <div className="w-16 h-16 bg-[#10B981]/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-            </svg>
+        <div className="rounded-2xl border border-[#2A2A2A] bg-[#111] p-8 md:p-12">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-[#10B981]/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Welcome! Let&apos;s find your hidden revenue.</h3>
+            <p className="text-sm text-[#999] max-w-md mx-auto">
+              Most SaaS companies lose 3-8% of MRR to billing leaks. Follow these steps to find and fix yours.
+            </p>
           </div>
-          <h3 className="text-lg font-bold text-white mb-2">No scans yet</h3>
-          <p className="text-sm text-[#999] mb-6 max-w-sm mx-auto">
-            Run your first scan to find revenue leaks hiding in your Stripe account.
-            It takes under 2 minutes.
-          </p>
-          <Link
-            href="/scan"
-            className="inline-flex px-6 py-3 bg-[#10B981] hover:bg-[#059669] text-black font-bold rounded-lg transition"
-          >
-            Start Free Scan
-          </Link>
+
+          {/* Onboarding steps */}
+          <div className="max-w-lg mx-auto space-y-4">
+            {/* Step 1 — Active */}
+            <Link
+              href="/scan"
+              className="flex items-center gap-4 p-4 rounded-xl border border-[#10B981]/30 bg-[#10B981]/5 hover:bg-[#10B981]/10 transition group"
+            >
+              <div className="w-10 h-10 rounded-full bg-[#10B981] flex items-center justify-center flex-shrink-0">
+                <span className="text-black font-bold text-sm">1</span>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-white group-hover:text-[#10B981] transition">
+                  Run your first free scan
+                </p>
+                <p className="text-xs text-[#999]">
+                  Connect your Stripe API key and scan for revenue leaks. Takes under 2 minutes.
+                </p>
+              </div>
+              <svg className="w-5 h-5 text-[#10B981] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+
+            {/* Step 2 — Locked */}
+            <div className="flex items-center gap-4 p-4 rounded-xl border border-[#2A2A2A] opacity-50">
+              <div className="w-10 h-10 rounded-full bg-[#2A2A2A] flex items-center justify-center flex-shrink-0">
+                <span className="text-[#666] font-bold text-sm">2</span>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-[#666]">
+                  Review your Revenue Leak Report
+                </p>
+                <p className="text-xs text-[#555]">
+                  See exactly which leaks are costing you and get direct Stripe fix links.
+                </p>
+              </div>
+              <svg className="w-5 h-5 text-[#333] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+
+            {/* Step 3 — Locked */}
+            <div className="flex items-center gap-4 p-4 rounded-xl border border-[#2A2A2A] opacity-50">
+              <div className="w-10 h-10 rounded-full bg-[#2A2A2A] flex items-center justify-center flex-shrink-0">
+                <span className="text-[#666] font-bold text-sm">3</span>
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-semibold text-[#666]">
+                    Enable weekly auto-scans
+                  </p>
+                  <span className="px-1.5 py-0.5 bg-[#10B981]/10 text-[#10B981] text-[10px] font-bold rounded">
+                    PRO
+                  </span>
+                </div>
+                <p className="text-xs text-[#555]">
+                  Catch new leaks automatically every week before they add up.
+                </p>
+              </div>
+              <svg className="w-5 h-5 text-[#333] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+          </div>
         </div>
       )}
 

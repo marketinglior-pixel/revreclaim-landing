@@ -3,6 +3,10 @@ import { runFullScan } from "@/lib/stripe-scanner";
 import { validateApiKey, validateEmail } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
+import { canRunScan } from "@/lib/plan-limits";
+import type { PlanType } from "@/lib/plan-limits";
+import { sendScanCompleteEmail } from "@/lib/email";
+import { trackEvent } from "@/lib/analytics";
 
 export const maxDuration = 60; // Allow up to 60s for large accounts
 
@@ -37,6 +41,38 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Plan enforcement: check if authenticated user can run a scan
+    let authenticatedUserId: string | null = null;
+    try {
+      const supabaseCheck = await createClient();
+      const { data: { user: authUser } } = await supabaseCheck.auth.getUser();
+      if (authUser) {
+        authenticatedUserId = authUser.id;
+        const { data: profile } = await supabaseCheck
+          .from("profiles")
+          .select("plan, scan_count_this_period")
+          .eq("id", authUser.id)
+          .single();
+
+        if (profile) {
+          const plan = (profile.plan || "free") as PlanType;
+          const scanCount = profile.scan_count_this_period ?? 0;
+          const scanCheck = canRunScan(plan, scanCount);
+          if (!scanCheck.allowed) {
+            return NextResponse.json(
+              { error: scanCheck.reason, errorType: "plan_limit" },
+              { status: 403 }
+            );
+          }
+        }
+      }
+    } catch {
+      // Plan check is non-blocking for unauthenticated users
+    }
+
+    // Track scan started event
+    trackEvent("scan_started", authenticatedUserId, { email }).catch(() => {});
 
     // Log the scan attempt (NOT the API key)
     console.log(
@@ -82,18 +118,16 @@ export async function POST(req: NextRequest) {
       }).catch(() => {});
     }
 
-    // If user is authenticated, save report to database
+    // If user is authenticated, save report to database and increment scan count
     try {
       const supabase = await createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const userId = authenticatedUserId;
 
-      if (user) {
+      if (userId) {
         const isTestMode = apiKey.startsWith("rk_test_");
         const { error: dbError } = await supabase.from("reports").insert({
           id: report.id,
-          user_id: user.id,
+          user_id: userId,
           summary: JSON.parse(JSON.stringify(report.summary)),
           categories: JSON.parse(JSON.stringify(report.categories)),
           leaks: JSON.parse(JSON.stringify(report.leaks)),
@@ -103,7 +137,32 @@ export async function POST(req: NextRequest) {
         if (dbError) {
           console.error("[SCAN] Failed to save report to DB:", dbError.message);
         } else {
-          console.log(`[SCAN] Report ${report.id} saved to DB for user ${user.id}`);
+          console.log(`[SCAN] Report ${report.id} saved to DB for user ${userId}`);
+
+          // Track scan completed + send email (fire-and-forget)
+          trackEvent("scan_completed", userId, {
+            reportId: report.id,
+            leaksFound: report.summary.leaksFound,
+            mrrAtRisk: report.summary.mrrAtRisk,
+            healthScore: report.summary.healthScore,
+          }).catch(() => {});
+          sendScanCompleteEmail(email, report.summary, report.id).catch(() => {});
+
+          // Increment scan count for this billing period
+          const { data: currentProfile } = await supabase
+            .from("profiles")
+            .select("scan_count_this_period")
+            .eq("id", userId)
+            .single();
+
+          if (currentProfile) {
+            await supabase
+              .from("profiles")
+              .update({
+                scan_count_this_period: (currentProfile.scan_count_this_period ?? 0) + 1,
+              })
+              .eq("id", userId);
+          }
         }
       }
     } catch (dbErr) {

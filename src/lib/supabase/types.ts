@@ -15,6 +15,11 @@ export interface Database {
           email: string;
           full_name: string | null;
           plan: "free" | "pro" | "team";
+          stripe_customer_id: string | null;
+          stripe_subscription_id: string | null;
+          plan_period_start: string | null;
+          plan_period_end: string | null;
+          scan_count_this_period: number;
           created_at: string;
           updated_at: string;
         };
@@ -23,6 +28,11 @@ export interface Database {
           email: string;
           full_name?: string | null;
           plan?: "free" | "pro" | "team";
+          stripe_customer_id?: string | null;
+          stripe_subscription_id?: string | null;
+          plan_period_start?: string | null;
+          plan_period_end?: string | null;
+          scan_count_this_period?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -31,6 +41,11 @@ export interface Database {
           email?: string;
           full_name?: string | null;
           plan?: "free" | "pro" | "team";
+          stripe_customer_id?: string | null;
+          stripe_subscription_id?: string | null;
+          plan_period_start?: string | null;
+          plan_period_end?: string | null;
+          scan_count_this_period?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -124,6 +139,86 @@ export interface Database {
             foreignKeyName: "scan_configs_user_id_fkey";
             columns: ["user_id"];
             isOneToOne: true;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      team_members: {
+        Row: {
+          id: string;
+          team_owner_id: string;
+          member_id: string | null;
+          member_email: string;
+          role: "admin" | "member";
+          invite_status: "pending" | "accepted";
+          invited_at: string;
+          accepted_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          team_owner_id: string;
+          member_id?: string | null;
+          member_email: string;
+          role?: "admin" | "member";
+          invite_status?: "pending" | "accepted";
+          invited_at?: string;
+          accepted_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          team_owner_id?: string;
+          member_id?: string | null;
+          member_email?: string;
+          role?: "admin" | "member";
+          invite_status?: "pending" | "accepted";
+          invited_at?: string;
+          accepted_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "team_members_team_owner_id_fkey";
+            columns: ["team_owner_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "team_members_member_id_fkey";
+            columns: ["member_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      analytics_events: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          event_name: string;
+          event_data: Json | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          event_name: string;
+          event_data?: Json | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string | null;
+          event_name?: string;
+          event_data?: Json | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "analytics_events_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
             referencedRelation: "profiles";
             referencedColumns: ["id"];
           },

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { runFullScan } from "@/lib/stripe-scanner";
 import { decrypt } from "@/lib/encryption";
+import { sendScanCompleteEmail } from "@/lib/email";
 
 export const maxDuration = 300; // 5 minutes for batch processing
 
@@ -102,6 +103,12 @@ export async function GET(req: NextRequest) {
       console.log(
         `[CRON] Scan complete for ${config.user_id}: ${report.summary.leaksFound} leaks, $${(report.summary.mrrAtRisk / 100).toFixed(0)}/mo at risk`
       );
+
+      // Send scan completion email (fire-and-forget)
+      const profileData = config.profiles as unknown as { email: string };
+      if (profileData?.email) {
+        sendScanCompleteEmail(profileData.email, report.summary, report.id).catch(() => {});
+      }
 
       successCount++;
     } catch (error) {

@@ -3,6 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { encrypt } from "@/lib/encryption";
 import { validateApiKey } from "@/lib/utils";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
+import { canEnableAutoScan } from "@/lib/plan-limits";
+import type { PlanType } from "@/lib/plan-limits";
+import { trackEvent } from "@/lib/analytics";
 import type { Database } from "@/lib/supabase/types";
 
 type ScanConfigUpdate = Database["public"]["Tables"]["scan_configs"]["Update"];
@@ -26,6 +29,22 @@ export async function POST(req: NextRequest) {
 
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Plan enforcement: check if user can enable auto-scans
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("plan")
+      .eq("id", user.id)
+      .single();
+
+    const userPlan = ((profile?.plan as string) || "free") as PlanType;
+    const autoScanCheck = canEnableAutoScan(userPlan);
+    if (!autoScanCheck.allowed) {
+      return NextResponse.json(
+        { error: autoScanCheck.reason },
+        { status: 403 }
+      );
     }
 
     const body = await req.json();
@@ -88,6 +107,9 @@ export async function POST(req: NextRequest) {
       });
 
       if (error) throw error;
+
+      // Track auto-scan enabled event
+      trackEvent("auto_scan_enabled", user.id, { frequency: frequency || "weekly" }).catch(() => {});
 
       return NextResponse.json({
         message: "Auto-scans enabled! Your first automated scan will run soon.",

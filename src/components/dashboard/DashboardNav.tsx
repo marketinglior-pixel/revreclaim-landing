@@ -48,6 +48,14 @@ export default function DashboardNav({
             >
               Settings
             </Link>
+            {plan === "team" && (
+              <Link
+                href="/dashboard/team"
+                className="px-3 py-1.5 text-sm text-[#999] hover:text-white hover:bg-[#1A1A1A] rounded-md transition"
+              >
+                Team
+              </Link>
+            )}
             <Link
               href="/scan"
               className="px-3 py-1.5 text-sm text-[#10B981] hover:text-[#34D399] hover:bg-[#10B981]/10 rounded-md transition font-medium"
@@ -94,6 +102,31 @@ export default function DashboardNav({
                 >
                   Settings
                 </Link>
+                {plan === "team" && (
+                  <Link
+                    href="/dashboard/team"
+                    className="block px-4 py-2.5 text-sm text-[#999] hover:text-white hover:bg-[#1A1A1A] transition"
+                  >
+                    Team
+                  </Link>
+                )}
+                {plan !== "free" && (
+                  <button
+                    onClick={async () => {
+                      setMenuOpen(false);
+                      try {
+                        const res = await fetch("/api/billing-portal", { method: "POST" });
+                        const data = await res.json();
+                        if (data.url) window.location.href = data.url;
+                      } catch {
+                        // Silently fail — user can try from settings
+                      }
+                    }}
+                    className="w-full text-left block px-4 py-2.5 text-sm text-[#999] hover:text-white hover:bg-[#1A1A1A] transition cursor-pointer"
+                  >
+                    Billing
+                  </button>
+                )}
                 <Link
                   href="/scan"
                   className="block px-4 py-2.5 text-sm text-[#999] hover:text-white hover:bg-[#1A1A1A] transition md:hidden"
