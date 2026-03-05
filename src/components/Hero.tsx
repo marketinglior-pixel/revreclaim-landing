@@ -1,3 +1,5 @@
+import { ScanCounter } from "./ScanCounter";
+
 export function Hero() {
   return (
     <section className="relative overflow-hidden pt-32 pb-20 md:pt-44 md:pb-32">
@@ -44,7 +46,7 @@ export function Hero() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </a>
-          <span className="text-sm text-[#666]">Free. No credit card. Results in 2 minutes.</span>
+          <span className="text-sm text-[#999]">Free. No credit card. Results in 2 minutes.</span>
         </div>
 
         {/* Guarantee badge */}
@@ -59,18 +61,18 @@ export function Hero() {
         {/* Proof bar */}
         <div className="mt-16 flex flex-wrap items-center justify-center gap-8 border-t border-[#1A1A1A] pt-8">
           <div className="text-center">
-            <div className="text-2xl font-bold text-white">7</div>
-            <div className="text-xs text-[#666]">Automated leak checks</div>
+            <div className="text-2xl font-bold"><ScanCounter /></div>
+            <div className="text-xs text-[#999]">Leak checks per scan</div>
           </div>
           <div className="hidden h-8 w-px bg-[#222] sm:block" />
           <div className="text-center">
             <div className="text-2xl font-bold text-white">&lt; 2 min</div>
-            <div className="text-xs text-[#666]">Scan time</div>
+            <div className="text-xs text-[#999]">Scan time</div>
           </div>
           <div className="hidden h-8 w-px bg-[#222] sm:block" />
           <div className="text-center">
             <div className="text-2xl font-bold text-white">Read-only</div>
-            <div className="text-xs text-[#666]">Key never stored</div>
+            <div className="text-xs text-[#999]">Key never stored</div>
           </div>
         </div>
       </div>

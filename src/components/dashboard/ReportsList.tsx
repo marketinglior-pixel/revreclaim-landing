@@ -9,11 +9,11 @@ export default function ReportsList({ reports }: { reports: ScanReport[] }) {
     <div className="rounded-2xl border border-[#2A2A2A] bg-[#111] overflow-hidden">
       <div className="px-6 py-4 border-b border-[#2A2A2A] flex items-center justify-between">
         <h2 className="text-sm font-semibold text-white">Scan History</h2>
-        <span className="text-xs text-[#666]">{reports.length} report{reports.length === 1 ? "" : "s"}</span>
+        <span className="text-xs text-[#999]">{reports.length} report{reports.length === 1 ? "" : "s"}</span>
       </div>
 
       {/* Header */}
-      <div className="grid grid-cols-12 gap-4 px-6 py-3 text-xs font-medium text-[#666] border-b border-[#1A1A1A]">
+      <div className="grid grid-cols-12 gap-4 px-6 py-3 text-xs font-medium text-[#999] border-b border-[#1A1A1A]">
         <div className="col-span-3">Date</div>
         <div className="col-span-2">Health</div>
         <div className="col-span-2">Leaks</div>
@@ -47,7 +47,7 @@ export default function ReportsList({ reports }: { reports: ScanReport[] }) {
                   year: "numeric",
                 })}
               </p>
-              <p className="text-xs text-[#666]">
+              <p className="text-xs text-[#999]">
                 {date.toLocaleTimeString("en-US", {
                   hour: "numeric",
                   minute: "2-digit",
@@ -59,7 +59,7 @@ export default function ReportsList({ reports }: { reports: ScanReport[] }) {
               <span className={`text-lg font-bold ${scoreColor}`}>
                 {report.summary.healthScore}
               </span>
-              <span className="text-xs text-[#666]">/100</span>
+              <span className="text-xs text-[#999]">/100</span>
             </div>
 
             <div className="col-span-2">
@@ -67,7 +67,7 @@ export default function ReportsList({ reports }: { reports: ScanReport[] }) {
                 {report.summary.leaksFound}
               </span>
               {report.summary.leaksFound > 0 && (
-                <span className="text-xs text-[#666] ml-1">found</span>
+                <span className="text-xs text-[#999] ml-1">found</span>
               )}
             </div>
 
@@ -75,7 +75,7 @@ export default function ReportsList({ reports }: { reports: ScanReport[] }) {
               <span className="text-sm font-bold text-[#EF4444]">
                 {formatCurrency(report.summary.mrrAtRisk)}
               </span>
-              <span className="text-xs text-[#666]">/mo</span>
+              <span className="text-xs text-[#999]">/mo</span>
             </div>
 
             <div className="col-span-2 text-right">

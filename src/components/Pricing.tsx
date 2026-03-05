@@ -179,7 +179,7 @@ export function Pricing() {
                       <button
                         type="button"
                         onClick={() => setActiveWaitlist(null)}
-                        className="w-full text-xs text-[#666] hover:text-[#999] transition cursor-pointer"
+                        className="w-full text-xs text-[#999] hover:text-[#999] transition cursor-pointer"
                       >
                         Cancel
                       </button>

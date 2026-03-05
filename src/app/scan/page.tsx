@@ -108,7 +108,7 @@ export default function ScanPage() {
                   <p className="text-sm font-medium text-white">
                     {check.title}
                   </p>
-                  <p className="text-xs text-[#666]">{check.desc}</p>
+                  <p className="text-xs text-[#999]">{check.desc}</p>
                 </div>
               </div>
             ))}

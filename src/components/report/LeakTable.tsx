@@ -49,7 +49,7 @@ export default function LeakTable({ leaks }: LeakTableProps) {
                 className={`px-2.5 py-1 text-xs rounded-md transition cursor-pointer ${
                   severityFilter === filter.value
                     ? "bg-[#222222] text-white font-medium"
-                    : "text-[#666] hover:text-[#999]"
+                    : "text-[#999] hover:text-[#999]"
                 }`}
               >
                 {filter.label}
@@ -85,7 +85,7 @@ export default function LeakTable({ leaks }: LeakTableProps) {
           ))
         ) : (
           <div className="text-center py-12 bg-[#111111] border border-[#2A2A2A] rounded-xl">
-            <p className="text-[#666]">
+            <p className="text-[#999]">
               {leaks.length === 0
                 ? "No revenue leaks found! Your billing is clean. 🎉"
                 : "No leaks match the current filters."}

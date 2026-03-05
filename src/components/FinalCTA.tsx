@@ -70,13 +70,13 @@ export function FinalCTA() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </a>
-              <p className="text-xs text-[#666]">
+              <p className="text-xs text-[#999]">
                 Free. No credit card. Results in 2 minutes.
               </p>
 
               {/* Secondary: email capture */}
               <div className="pt-4 border-t border-[#1A1A1A]">
-                <p className="mb-3 text-xs text-[#666]">
+                <p className="mb-3 text-xs text-[#999]">
                   Not ready to scan yet? Leave your email:
                 </p>
                 <form onSubmit={handleSubmit}>
@@ -113,7 +113,7 @@ export function FinalCTA() {
           </svg>
           <div className="text-left">
             <div className="text-sm font-semibold text-white">$1,000/mo Guarantee</div>
-            <div className="text-xs text-[#666]">For accounts with $30K+ MRR. If we don&apos;t find $1,000/mo in leaks, you pay nothing</div>
+            <div className="text-xs text-[#999]">For accounts with $30K+ MRR. If we don&apos;t find $1,000/mo in leaks, you pay nothing</div>
           </div>
         </div>
       </div>

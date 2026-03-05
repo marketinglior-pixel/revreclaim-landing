@@ -12,12 +12,12 @@ export function Footer() {
           </div>
           <span className="text-sm font-semibold text-white">RevReclaim</span>
         </div>
-        <div className="flex gap-6 text-xs text-[#666]">
+        <div className="flex gap-6 text-xs text-[#999]">
           <Link href="/privacy" className="transition-colors hover:text-white">Privacy</Link>
           <Link href="/terms" className="transition-colors hover:text-white">Terms</Link>
           <Link href="/contact" className="transition-colors hover:text-white">Contact</Link>
         </div>
-        <div className="text-xs text-[#666]">
+        <div className="text-xs text-[#999]">
           &copy; {new Date().getFullYear()} RevReclaim. All rights reserved.
         </div>
       </div>

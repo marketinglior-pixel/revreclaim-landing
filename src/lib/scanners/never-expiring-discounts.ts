@@ -55,6 +55,7 @@ export function scanNeverExpiringDiscounts(
           annualImpact: discountAmount * 12,
           fixSuggestion:
             "Consider replacing this forever coupon with a time-limited discount. Go to Stripe Dashboard → Subscriptions → Remove current discount → Apply a new coupon with an end date.",
+          stripeUrl: `https://dashboard.stripe.com/subscriptions/${sub.id}`,
           detectedAt: new Date().toISOString(),
           metadata: {
             couponId: coupon.id,

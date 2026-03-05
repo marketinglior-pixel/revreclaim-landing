@@ -49,6 +49,7 @@ export function scanExpiredCoupons(
           annualImpact: discountAmount * 12,
           fixSuggestion:
             "Remove this expired coupon from the subscription in Stripe Dashboard → Subscriptions → Select subscription → Remove discount.",
+          stripeUrl: `https://dashboard.stripe.com/subscriptions/${sub.id}`,
           detectedAt: new Date().toISOString(),
           metadata: {
             couponId: coupon.id,

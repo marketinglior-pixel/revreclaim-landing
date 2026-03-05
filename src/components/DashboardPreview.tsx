@@ -21,7 +21,7 @@ export function DashboardPreview() {
               <div className="h-3 w-3 rounded-full bg-[#333]" />
               <div className="h-3 w-3 rounded-full bg-[#333]" />
             </div>
-            <div className="ml-4 flex-1 rounded-md bg-[#1A1A1A] px-4 py-1.5 text-xs text-[#666]">
+            <div className="ml-4 flex-1 rounded-md bg-[#1A1A1A] px-4 py-1.5 text-xs text-[#999]">
               revreclaim.com/report/a1b2c3d4
             </div>
           </div>
@@ -41,7 +41,7 @@ export function DashboardPreview() {
                     <span className="text-lg font-bold text-[#F59E0B]">70</span>
                   </div>
                 </div>
-                <div className="text-xs text-[#666]">Health Score</div>
+                <div className="text-xs text-[#999]">Health Score</div>
               </div>
 
               <StatCard
@@ -109,7 +109,7 @@ export function DashboardPreview() {
                 fix="Migrate to current plan"
               />
 
-              <div className="px-5 py-3 text-center text-xs text-[#666]">
+              <div className="px-5 py-3 text-center text-xs text-[#999]">
                 + 13 more leaks found across all 7 categories
               </div>
             </div>
@@ -128,10 +128,10 @@ function StatCard({ label, value, sub, highlight }: {
 }) {
   return (
     <div className={`rounded-xl border p-5 ${highlight ? "border-[#EF4444]/30 bg-[#EF4444]/5" : "border-[#2A2A2A] bg-[#0A0A0A]"}`}>
-      <div className="mb-1 text-xs text-[#666]">{label}</div>
+      <div className="mb-1 text-xs text-[#999]">{label}</div>
       <div className="flex items-baseline gap-1">
         <span className={`text-2xl font-bold ${highlight ? "text-[#EF4444]" : "text-white"}`}>{value}</span>
-        <span className="text-sm text-[#666]">{sub}</span>
+        <span className="text-sm text-[#999]">{sub}</span>
       </div>
     </div>
   );
@@ -157,7 +157,7 @@ function LeakTableRow({ severity, type, customer, impact, detail, fix }: {
       <div className="mb-2 flex flex-wrap items-center gap-2">
         <span className={`rounded px-2 py-0.5 text-[10px] font-bold ${sevColor}`}>{severity}</span>
         <span className="text-sm font-semibold text-white">{type}</span>
-        <span className="text-sm text-[#666] font-mono">{customer}</span>
+        <span className="text-sm text-[#999] font-mono">{customer}</span>
         <span className="ml-auto text-sm font-bold text-[#EF4444]">{impact}</span>
       </div>
       <p className="mb-2 text-xs text-[#999]">{detail}</p>

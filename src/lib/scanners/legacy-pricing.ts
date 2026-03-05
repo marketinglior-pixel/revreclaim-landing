@@ -72,6 +72,7 @@ export function scanLegacyPricing(
           annualImpact: 0,
           fixSuggestion:
             "Migrate this customer to your current pricing plan. Go to Stripe Dashboard → Subscriptions → Select subscription → Update subscription → Choose new price.",
+          stripeUrl: `https://dashboard.stripe.com/subscriptions/${sub.id}`,
           detectedAt: new Date().toISOString(),
           metadata: {
             productId,
@@ -124,6 +125,7 @@ export function scanLegacyPricing(
         monthlyImpact: priceDifference,
         annualImpact: priceDifference * 12,
         fixSuggestion: `Consider migrating this customer to the current price (${formatCents(newestMonthly)}/mo). You can grandfather them or offer a gradual increase. Go to Stripe Dashboard → Subscriptions → Update subscription.`,
+        stripeUrl: `https://dashboard.stripe.com/subscriptions/${sub.id}`,
         detectedAt: new Date().toISOString(),
         metadata: {
           currentPriceId: price.id,

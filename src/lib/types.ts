@@ -38,6 +38,7 @@ export interface Leak {
   monthlyImpact: number; // in cents
   annualImpact: number; // in cents
   fixSuggestion: string;
+  stripeUrl?: string; // Direct link to Stripe Dashboard
   detectedAt: string; // ISO 8601
   metadata: Record<string, unknown>;
 }

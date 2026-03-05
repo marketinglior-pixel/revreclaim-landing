@@ -87,6 +87,7 @@ export function scanGhostSubscriptions(
       monthlyImpact: monthlyAmount,
       annualImpact: monthlyAmount * 12,
       fixSuggestion,
+      stripeUrl: `https://dashboard.stripe.com/subscriptions/${sub.id}`,
       detectedAt: new Date().toISOString(),
       metadata: {
         subscriptionStatus: sub.status,

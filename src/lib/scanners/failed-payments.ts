@@ -60,6 +60,7 @@ export function scanFailedPayments(
         invoice.attempted
           ? "The payment failed. Contact the customer to update their payment method, or retry the payment from Stripe Dashboard → Invoices → Select invoice → Retry payment."
           : "This invoice hasn't been charged yet. Go to Stripe Dashboard → Invoices → Select invoice → Charge customer.",
+      stripeUrl: `https://dashboard.stripe.com/invoices/${invoice.id}`,
       detectedAt: new Date().toISOString(),
       metadata: {
         invoiceId: invoice.id,

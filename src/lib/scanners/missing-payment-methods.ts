@@ -48,6 +48,7 @@ export function scanMissingPaymentMethods(
       annualImpact: monthlyAmount * 12,
       fixSuggestion:
         "This is urgent. Contact the customer immediately to add a payment method. Go to Stripe Dashboard → Customers → Select customer → Send 'Update payment method' email.",
+      stripeUrl: `https://dashboard.stripe.com/customers/${customerId}`,
       detectedAt: new Date().toISOString(),
       metadata: {
         hasSubDefault,

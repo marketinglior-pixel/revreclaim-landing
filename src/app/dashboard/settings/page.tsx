@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [apiKey, setApiKey] = useState("");
@@ -13,6 +15,22 @@ export default function SettingsPage() {
   const [hasExistingConfig, setHasExistingConfig] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
+  // Change Password state
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordMessage, setPasswordMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Update Email state
+  const [newEmail, setNewEmail] = useState("");
+  const [emailSaving, setEmailSaving] = useState(false);
+  const [emailMessage, setEmailMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [currentEmail, setCurrentEmail] = useState("");
+
+  // Delete Account state
+  const [deleting, setDeleting] = useState(false);
+  const [deleteMessage, setDeleteMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
   useEffect(() => {
     loadConfig();
   }, []);
@@ -21,6 +39,8 @@ export default function SettingsPage() {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
+
+    setCurrentEmail(user.email || "");
 
     const { data } = await supabase
       .from("scan_configs")
@@ -33,8 +53,7 @@ export default function SettingsPage() {
       setHasExistingConfig(true);
       setFrequency((config.scan_frequency as "weekly" | "daily" | "monthly") || "weekly");
       setIsActive(config.is_active as boolean);
-      // Don't show the actual key, just indicate one exists
-      setApiKey(""); // User must re-enter to update
+      setApiKey("");
     }
 
     setLoading(false);
@@ -50,7 +69,7 @@ export default function SettingsPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          apiKey: apiKey || undefined, // Only send if user entered a new key
+          apiKey: apiKey || undefined,
           frequency,
           isActive,
         }),
@@ -66,7 +85,7 @@ export default function SettingsPage() {
 
       setMessage({ type: "success", text: data.message });
       setHasExistingConfig(true);
-      setApiKey(""); // Clear key from form after saving
+      setApiKey("");
     } catch {
       setMessage({ type: "error", text: "Failed to save. Please try again." });
     }
@@ -74,7 +93,7 @@ export default function SettingsPage() {
     setSaving(false);
   }
 
-  async function handleDelete() {
+  async function handleDeleteConfig() {
     if (!confirm("Are you sure? This will stop all automated scans and delete your stored API key.")) {
       return;
     }
@@ -95,6 +114,104 @@ export default function SettingsPage() {
       setMessage({ type: "error", text: "Failed to delete. Please try again." });
     }
     setSaving(false);
+  }
+
+  async function handleChangePassword(e: React.FormEvent) {
+    e.preventDefault();
+    setPasswordMessage(null);
+
+    if (newPassword.length < 8) {
+      setPasswordMessage({ type: "error", text: "Password must be at least 8 characters." });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordMessage({ type: "error", text: "Passwords do not match." });
+      return;
+    }
+
+    setPasswordSaving(true);
+
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+
+      if (error) {
+        setPasswordMessage({ type: "error", text: error.message });
+      } else {
+        setPasswordMessage({ type: "success", text: "Password updated successfully." });
+        setNewPassword("");
+        setConfirmPassword("");
+      }
+    } catch {
+      setPasswordMessage({ type: "error", text: "Failed to update password. Please try again." });
+    }
+
+    setPasswordSaving(false);
+  }
+
+  async function handleUpdateEmail(e: React.FormEvent) {
+    e.preventDefault();
+    setEmailMessage(null);
+
+    if (!newEmail || !newEmail.includes("@")) {
+      setEmailMessage({ type: "error", text: "Please enter a valid email address." });
+      return;
+    }
+
+    if (newEmail === currentEmail) {
+      setEmailMessage({ type: "error", text: "That's already your current email." });
+      return;
+    }
+
+    setEmailSaving(true);
+
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.updateUser({ email: newEmail });
+
+      if (error) {
+        setEmailMessage({ type: "error", text: error.message });
+      } else {
+        setEmailMessage({ type: "success", text: "Confirmation link sent to your new email. Please check your inbox." });
+        setNewEmail("");
+      }
+    } catch {
+      setEmailMessage({ type: "error", text: "Failed to update email. Please try again." });
+    }
+
+    setEmailSaving(false);
+  }
+
+  async function handleDeleteAccount() {
+    if (!confirm("Are you sure you want to delete your account? This action is permanent and cannot be undone. All your data, reports, and settings will be permanently deleted.")) {
+      return;
+    }
+
+    setDeleting(true);
+    setDeleteMessage(null);
+
+    try {
+      const response = await fetch("/api/account", {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setDeleteMessage({ type: "error", text: data.error });
+        setDeleting(false);
+        return;
+      }
+
+      // Account deleted — sign out and redirect
+      const supabase = createClient();
+      await supabase.auth.signOut();
+      router.push("/?deleted=1");
+    } catch {
+      setDeleteMessage({ type: "error", text: "Failed to delete account. Please try again." });
+      setDeleting(false);
+    }
   }
 
   if (loading) {
@@ -137,12 +254,13 @@ export default function SettingsPage() {
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder={hasExistingConfig ? "Enter new key to update..." : "rk_live_..."}
-                className="w-full px-4 py-3 pr-12 bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg text-white placeholder-[#666] focus:border-[#10B981] focus:outline-none focus:ring-1 focus:ring-[#10B981] transition font-mono text-sm"
+                className="w-full px-4 py-3 pr-12 bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg text-white placeholder-[#999] focus:border-[#10B981] focus:outline-none focus:ring-1 focus:ring-[#10B981] transition font-mono text-sm"
               />
               <button
                 type="button"
                 onClick={() => setShowKey(!showKey)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#999] transition"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#999] hover:text-white transition"
+                aria-label={showKey ? "Hide API key" : "Show API key"}
               >
                 {showKey ? (
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -185,11 +303,14 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-white">Enable auto-scans</p>
-              <p className="text-xs text-[#666]">Automatically scan on schedule</p>
+              <p className="text-xs text-[#999]">Automatically scan on schedule</p>
             </div>
             <button
               type="button"
               onClick={() => setIsActive(!isActive)}
+              role="switch"
+              aria-checked={isActive}
+              aria-label="Enable auto-scans"
               className={`w-11 h-6 rounded-full transition-colors cursor-pointer ${
                 isActive ? "bg-[#10B981]" : "bg-[#333]"
               }`}
@@ -228,7 +349,7 @@ export default function SettingsPage() {
             {hasExistingConfig && (
               <button
                 type="button"
-                onClick={handleDelete}
+                onClick={handleDeleteConfig}
                 disabled={saving}
                 className="px-4 py-2.5 text-sm text-[#EF4444] hover:bg-[#EF4444]/10 rounded-lg transition disabled:opacity-50 cursor-pointer"
               >
@@ -254,6 +375,154 @@ export default function SettingsPage() {
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Change Password */}
+      <div className="rounded-2xl border border-[#2A2A2A] bg-[#111] p-6">
+        <h2 className="text-lg font-bold text-white mb-1">Change Password</h2>
+        <p className="text-sm text-[#999] mb-6">
+          Update your account password. Must be at least 8 characters.
+        </p>
+
+        <form onSubmit={handleChangePassword} className="space-y-4">
+          <div>
+            <label htmlFor="newPassword" className="block text-sm font-medium text-[#ccc] mb-1.5">
+              New password
+            </label>
+            <input
+              id="newPassword"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="At least 8 characters"
+              required
+              minLength={8}
+              className="w-full px-4 py-3 bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg text-white placeholder-[#999] focus:border-[#10B981] focus:outline-none focus:ring-1 focus:ring-[#10B981] transition text-sm"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#ccc] mb-1.5">
+              Confirm new password
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Re-enter your password"
+              required
+              minLength={8}
+              className="w-full px-4 py-3 bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg text-white placeholder-[#999] focus:border-[#10B981] focus:outline-none focus:ring-1 focus:ring-[#10B981] transition text-sm"
+            />
+          </div>
+
+          {passwordMessage && (
+            <div
+              className={`rounded-lg px-4 py-3 text-sm ${
+                passwordMessage.type === "success"
+                  ? "bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981]"
+                  : "bg-[#EF4444]/10 border border-[#EF4444]/20 text-[#EF4444]"
+              }`}
+            >
+              {passwordMessage.text}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={passwordSaving || !newPassword || !confirmPassword}
+            className="px-6 py-2.5 bg-[#10B981] hover:bg-[#059669] text-black font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm"
+          >
+            {passwordSaving ? "Updating..." : "Update Password"}
+          </button>
+        </form>
+      </div>
+
+      {/* Update Email */}
+      <div className="rounded-2xl border border-[#2A2A2A] bg-[#111] p-6">
+        <h2 className="text-lg font-bold text-white mb-1">Update Email</h2>
+        <p className="text-sm text-[#999] mb-6">
+          Change the email address associated with your account.
+          {currentEmail && (
+            <span className="block mt-1">
+              Current email: <span className="text-white font-mono">{currentEmail}</span>
+            </span>
+          )}
+        </p>
+
+        <form onSubmit={handleUpdateEmail} className="space-y-4">
+          <div>
+            <label htmlFor="newEmail" className="block text-sm font-medium text-[#ccc] mb-1.5">
+              New email address
+            </label>
+            <input
+              id="newEmail"
+              type="email"
+              value={newEmail}
+              onChange={(e) => setNewEmail(e.target.value)}
+              placeholder="you@company.com"
+              required
+              className="w-full px-4 py-3 bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg text-white placeholder-[#999] focus:border-[#10B981] focus:outline-none focus:ring-1 focus:ring-[#10B981] transition text-sm"
+            />
+          </div>
+
+          <div className="flex items-start gap-2 text-xs text-[#999]">
+            <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>A confirmation link will be sent to your new email address. Click it to complete the change.</span>
+          </div>
+
+          {emailMessage && (
+            <div
+              className={`rounded-lg px-4 py-3 text-sm ${
+                emailMessage.type === "success"
+                  ? "bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981]"
+                  : "bg-[#EF4444]/10 border border-[#EF4444]/20 text-[#EF4444]"
+              }`}
+            >
+              {emailMessage.text}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={emailSaving || !newEmail}
+            className="px-6 py-2.5 bg-[#10B981] hover:bg-[#059669] text-black font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm"
+          >
+            {emailSaving ? "Sending..." : "Update Email"}
+          </button>
+        </form>
+      </div>
+
+      {/* Danger Zone — Delete Account */}
+      <div className="rounded-2xl border border-[#EF4444]/20 bg-[#EF4444]/5 p-6">
+        <h2 className="text-lg font-bold text-[#EF4444] mb-1">Danger Zone</h2>
+        <p className="text-sm text-[#999] mb-6">
+          Permanently delete your account and all associated data. This action cannot be undone.
+          Your scan configurations, saved reports, and encrypted API keys will all be removed.
+        </p>
+
+        {deleteMessage && (
+          <div
+            className={`rounded-lg px-4 py-3 text-sm mb-4 ${
+              deleteMessage.type === "success"
+                ? "bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981]"
+                : "bg-[#EF4444]/10 border border-[#EF4444]/20 text-[#EF4444]"
+            }`}
+          >
+            {deleteMessage.text}
+          </div>
+        )}
+
+        <button
+          onClick={handleDeleteAccount}
+          disabled={deleting}
+          className="px-6 py-2.5 bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm"
+        >
+          {deleting ? "Deleting..." : "Delete My Account"}
+        </button>
       </div>
     </div>
   );

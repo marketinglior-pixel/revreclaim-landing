@@ -152,11 +152,11 @@ export default function SignupPage() {
             </button>
           </form>
 
-          <p className="text-xs text-[#666] text-center mt-4">
+          <p className="text-xs text-[#999] text-center mt-4">
             By signing up, you agree to our Terms of Service and Privacy Policy.
           </p>
 
-          <p className="text-sm text-[#666] text-center mt-6">
+          <p className="text-sm text-[#999] text-center mt-6">
             Already have an account?{" "}
             <Link href="/auth/login" className="text-[#10B981] hover:text-[#34D399] transition">
               Sign in

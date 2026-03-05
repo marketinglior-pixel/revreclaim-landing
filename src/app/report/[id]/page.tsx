@@ -18,6 +18,7 @@ export default function ReportPage() {
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showSaveBanner, setShowSaveBanner] = useState(true);
 
   useEffect(() => {
     async function loadReport() {
@@ -117,7 +118,34 @@ export default function ReportPage() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0A]">
-      <ReportHeader scannedAt={report.scannedAt} isLoggedIn={isLoggedIn} />
+      <ReportHeader scannedAt={report.scannedAt} isLoggedIn={isLoggedIn} report={report} />
+
+      {/* Guest save banner */}
+      {!isLoggedIn && showSaveBanner && (
+        <div className="max-w-6xl mx-auto px-4 pt-4">
+          <div className="flex items-center gap-3 rounded-xl border border-[#F59E0B]/20 bg-[#F59E0B]/5 px-4 py-3">
+            <svg className="w-5 h-5 text-[#F59E0B] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            <p className="flex-1 text-sm text-[#F59E0B]">
+              This report is stored temporarily. <span className="hidden sm:inline">Close this tab and it&apos;s gone.</span>{" "}
+              <Link href="/auth/signup" className="font-semibold underline underline-offset-2 hover:text-[#FBBF24] transition">
+                Create a free account
+              </Link>{" "}
+              to save it permanently.
+            </p>
+            <button
+              onClick={() => setShowSaveBanner(false)}
+              className="text-[#F59E0B]/60 hover:text-[#F59E0B] transition cursor-pointer"
+              aria-label="Dismiss save banner"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
 
       <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
         {/* Summary Cards + Health Score */}

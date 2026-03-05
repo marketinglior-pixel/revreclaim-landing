@@ -91,14 +91,14 @@ export default function HealthScore({ score }: HealthScoreProps) {
           >
             {animatedScore}
           </span>
-          <span className="text-xs text-[#666]">/ 100</span>
+          <span className="text-xs text-[#999]">/ 100</span>
         </div>
       </div>
       <div className="text-center">
         <p className="text-sm font-semibold" style={{ color }}>
           {label}
         </p>
-        <p className="text-xs text-[#666]">Billing Health Score</p>
+        <p className="text-xs text-[#999]">Billing Health Score</p>
       </div>
     </div>
   );

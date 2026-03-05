@@ -19,6 +19,8 @@ export default function LeakCard({ leak }: LeakCardProps) {
       <button
         onClick={() => setExpanded(!expanded)}
         className="w-full p-4 text-left cursor-pointer"
+        aria-expanded={expanded}
+        aria-label={`${leak.title} — ${formatCurrency(leak.monthlyImpact)}/mo. Click to ${expanded ? "collapse" : "expand"} details`}
       >
         <div className="flex items-start gap-3">
           {/* Severity badge */}
@@ -44,13 +46,13 @@ export default function LeakCard({ leak }: LeakCardProps) {
             </div>
 
             <div className="flex items-center gap-3 mt-1">
-              <span className="text-xs text-[#666]">
+              <span className="text-xs text-[#999]">
                 {LEAK_TYPE_LABELS[leak.type]}
               </span>
               {leak.customerEmail && (
                 <>
-                  <span className="text-xs text-[#333]">·</span>
-                  <span className="text-xs text-[#666] font-mono">
+                  <span className="text-xs text-[#666]">·</span>
+                  <span className="text-xs text-[#999] font-mono">
                     {leak.customerEmail}
                   </span>
                 </>
@@ -60,7 +62,7 @@ export default function LeakCard({ leak }: LeakCardProps) {
 
           {/* Expand icon */}
           <svg
-            className={`w-4 h-4 text-[#666] flex-shrink-0 transition-transform mt-1 ${
+            className={`w-4 h-4 text-[#999] flex-shrink-0 transition-transform mt-1 ${
               expanded ? "rotate-180" : ""
             }`}
             fill="none"
@@ -128,6 +130,19 @@ export default function LeakCard({ leak }: LeakCardProps) {
                   <p className="text-xs text-[#999] leading-relaxed">
                     {leak.fixSuggestion}
                   </p>
+                  {leak.stripeUrl && (
+                    <a
+                      href={leak.stripeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 mt-2 text-xs font-medium text-[#10B981] hover:text-[#34D399] transition"
+                    >
+                      View in Stripe
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  )}
                 </div>
               </div>
             </div>

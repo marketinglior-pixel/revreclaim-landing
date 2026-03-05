@@ -65,16 +65,16 @@ function StatCard({
 }) {
   return (
     <div className="bg-[#111111] border border-[#2A2A2A] rounded-xl p-5">
-      <p className="text-xs text-[#666] uppercase tracking-wider mb-1">
+      <p className="text-xs text-[#999] uppercase tracking-wider mb-1">
         {label}
       </p>
       <p className="text-2xl font-bold" style={{ color }}>
         {value}
         {suffix && (
-          <span className="text-sm font-normal text-[#666]">{suffix}</span>
+          <span className="text-sm font-normal text-[#999]">{suffix}</span>
         )}
       </p>
-      <p className="text-xs text-[#666] mt-1">{description}</p>
+      <p className="text-xs text-[#999] mt-1">{description}</p>
     </div>
   );
 }

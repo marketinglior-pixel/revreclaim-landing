@@ -42,39 +42,39 @@ export default function DashboardStats({ report }: { report: ScanReport }) {
             </span>
           </div>
         </div>
-        <div className="text-xs text-[#666]">Health Score</div>
+        <div className="text-xs text-[#999]">Health Score</div>
       </div>
 
       {/* MRR at Risk */}
       <div className="rounded-xl border border-[#EF4444]/30 bg-[#EF4444]/5 p-5">
-        <div className="mb-1 text-xs text-[#666]">MRR at Risk</div>
+        <div className="mb-1 text-xs text-[#999]">MRR at Risk</div>
         <div className="flex items-baseline gap-1">
           <span className="text-2xl font-bold text-[#EF4444]">
             {formatCurrency(summary.mrrAtRisk)}
           </span>
-          <span className="text-sm text-[#666]">/mo</span>
+          <span className="text-sm text-[#999]">/mo</span>
         </div>
       </div>
 
       {/* Leaks Found */}
       <div className="rounded-xl border border-[#2A2A2A] bg-[#111] p-5">
-        <div className="mb-1 text-xs text-[#666]">Leaks Found</div>
+        <div className="mb-1 text-xs text-[#999]">Leaks Found</div>
         <div className="flex items-baseline gap-1">
           <span className="text-2xl font-bold text-white">
             {summary.leaksFound}
           </span>
-          <span className="text-sm text-[#666]">issues</span>
+          <span className="text-sm text-[#999]">issues</span>
         </div>
       </div>
 
       {/* Annual Recovery */}
       <div className="rounded-xl border border-[#2A2A2A] bg-[#111] p-5">
-        <div className="mb-1 text-xs text-[#666]">Annual Recovery</div>
+        <div className="mb-1 text-xs text-[#999]">Annual Recovery</div>
         <div className="flex items-baseline gap-1">
           <span className="text-2xl font-bold text-[#10B981]">
             {formatCurrency(summary.recoveryPotential)}
           </span>
-          <span className="text-sm text-[#666]">/yr</span>
+          <span className="text-sm text-[#999]">/yr</span>
         </div>
       </div>
     </div>

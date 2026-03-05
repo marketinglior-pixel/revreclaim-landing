@@ -185,7 +185,7 @@ export default function ContactPage() {
 
         {/* Direct email fallback */}
         <div className="mt-8 text-center">
-          <p className="text-sm text-[#666]">
+          <p className="text-sm text-[#999]">
             Or email us directly at{" "}
             <a href="mailto:revreclaim@gmail.com" className="text-[#10B981] hover:text-[#34D399] transition">
               revreclaim@gmail.com

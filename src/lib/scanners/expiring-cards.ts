@@ -77,6 +77,7 @@ export function scanExpiringCards(
       annualImpact: monthlyAmount * 12,
       fixSuggestion:
         "Contact the customer to update their payment method before it expires. Stripe Dashboard → Customers → Select customer → Send update payment method email.",
+      stripeUrl: `https://dashboard.stripe.com/customers/${customerId}`,
       detectedAt: new Date().toISOString(),
       metadata: {
         cardLast4: cardToCheck.card.last4,

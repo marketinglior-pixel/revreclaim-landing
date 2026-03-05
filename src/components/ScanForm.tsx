@@ -203,7 +203,7 @@ export default function ScanForm() {
             <button
               type="button"
               onClick={() => setShowKey(!showKey)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#999] transition"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#999] transition"
             >
               {showKey ? (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -232,7 +232,7 @@ export default function ScanForm() {
         </button>
 
         {/* Security badge */}
-        <div className="flex items-center justify-center gap-4 text-xs text-[#666]">
+        <div className="flex items-center justify-center gap-4 text-xs text-[#999]">
           <span className="flex items-center gap-1">
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -273,7 +273,7 @@ export default function ScanForm() {
               }}
             />
           </div>
-          <p className="text-xs text-[#666] mt-2">
+          <p className="text-xs text-[#999] mt-2">
             This usually takes 30-90 seconds depending on your account size.
           </p>
         </div>

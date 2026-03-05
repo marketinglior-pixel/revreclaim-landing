@@ -51,7 +51,7 @@ export default function LeakCategoryChart({
                   <span className="text-sm text-[#ccc]">
                     {category.label}
                   </span>
-                  <span className="text-xs text-[#666] bg-[#1A1A1A] px-1.5 py-0.5 rounded">
+                  <span className="text-xs text-[#999] bg-[#1A1A1A] px-1.5 py-0.5 rounded">
                     {category.count}
                   </span>
                 </div>

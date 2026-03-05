@@ -17,8 +17,8 @@ export function Problem() {
         {/* Revenue leak visualization */}
         <div className="relative rounded-2xl border border-[#2A2A2A] bg-[#111] p-8 md:p-12">
           <div className="mb-8 text-center">
-            <div className="mb-2 text-sm text-[#666]">Average SaaS with 200 customers</div>
-            <div className="text-4xl font-bold text-white">$50,000 <span className="text-[#666] text-lg font-normal">/mo MRR</span></div>
+            <div className="mb-2 text-sm text-[#999]">Average SaaS with 200 customers</div>
+            <div className="text-4xl font-bold text-white">$50,000 <span className="text-[#999] text-lg font-normal">/mo MRR</span></div>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -56,7 +56,7 @@ export function Problem() {
             <span className="text-sm text-[#999]">Total monthly revenue leaking</span>
             <span className="text-2xl font-bold text-[#EF4444]">-$2,500/mo</span>
           </div>
-          <div className="mt-2 text-center text-sm text-[#666]">
+          <div className="mt-2 text-center text-sm text-[#999]">
             That&apos;s <span className="font-semibold text-[#EF4444]">$30,000/year</span> walking out the door
           </div>
         </div>
@@ -76,12 +76,12 @@ function LeakRow({ label, amount, percentage, color, width }: {
     <div className="rounded-lg border border-[#2A2A2A] bg-[#0A0A0A] p-4">
       <div className="mb-2 flex items-center justify-between">
         <span className="text-sm text-[#CCC]">{label}</span>
-        <span className="text-sm font-semibold text-white">{amount}<span className="text-[#666] font-normal">/mo</span></span>
+        <span className="text-sm font-semibold text-white">{amount}<span className="text-[#999] font-normal">/mo</span></span>
       </div>
       <div className="h-2 rounded-full bg-[#1A1A1A]">
         <div className={`h-2 rounded-full ${color}`} style={{ width }} />
       </div>
-      <div className="mt-1 text-right text-xs text-[#666]">{percentage} of MRR</div>
+      <div className="mt-1 text-right text-xs text-[#999]">{percentage} of MRR</div>
     </div>
   );
 }

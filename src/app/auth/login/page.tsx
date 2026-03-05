@@ -123,7 +123,7 @@ function LoginForm() {
               className={`flex-1 py-2 text-sm font-medium rounded-md transition cursor-pointer ${
                 mode === "password"
                   ? "bg-[#1A1A1A] text-white"
-                  : "text-[#666] hover:text-[#999]"
+                  : "text-[#999] hover:text-[#999]"
               }`}
             >
               Password
@@ -133,7 +133,7 @@ function LoginForm() {
               className={`flex-1 py-2 text-sm font-medium rounded-md transition cursor-pointer ${
                 mode === "magic"
                   ? "bg-[#1A1A1A] text-white"
-                  : "text-[#666] hover:text-[#999]"
+                  : "text-[#999] hover:text-[#999]"
               }`}
             >
               Magic Link
@@ -200,7 +200,7 @@ function LoginForm() {
             </button>
           </form>
 
-          <p className="text-sm text-[#666] text-center mt-6">
+          <p className="text-sm text-[#999] text-center mt-6">
             Don&apos;t have an account?{" "}
             <Link href="/auth/signup" className="text-[#10B981] hover:text-[#34D399] transition">
               Sign up free
