@@ -69,11 +69,11 @@ export async function POST(_req: NextRequest) {
       }
     }
 
-    // Last fallback: store billing page
-    const storeId = process.env.LEMONSQUEEZY_STORE_ID;
-    if (storeId) {
+    // Last fallback: store billing page (uses slug, not numeric ID)
+    const storeSlug = process.env.LEMONSQUEEZY_STORE_SLUG;
+    if (storeSlug) {
       return NextResponse.json({
-        url: `https://${storeId}.lemonsqueezy.com/billing`,
+        url: `https://${storeSlug}.lemonsqueezy.com/billing`,
       });
     }
 
