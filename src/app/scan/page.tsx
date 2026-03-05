@@ -16,9 +16,14 @@ export default function ScanPage() {
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link
             href="/"
-            className="text-xl font-bold text-white flex items-center gap-2"
+            className="text-lg font-bold text-white flex items-center gap-2"
           >
-            <span className="text-[#10B981]">Rev</span>Reclaim
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#10B981]">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              </svg>
+            </div>
+            RevReclaim
           </Link>
           <Link
             href="/"
