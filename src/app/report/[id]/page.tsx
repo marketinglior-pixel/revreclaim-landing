@@ -9,6 +9,7 @@ import ReportSummary from "@/components/report/ReportSummary";
 import LeakCategoryChart from "@/components/report/LeakCategoryChart";
 import LeakTable from "@/components/report/LeakTable";
 import ReportCTA from "@/components/report/ReportCTA";
+import RecoveryBanner from "@/components/report/RecoveryBanner";
 import Link from "next/link";
 
 export default function ReportPage() {
@@ -148,6 +149,9 @@ export default function ReportPage() {
       )}
 
       <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+        {/* Recovery Banner */}
+        <RecoveryBanner recoveryPotential={report.summary.recoveryPotential} />
+
         {/* Summary Cards + Health Score */}
         <ReportSummary summary={report.summary} />
 
@@ -157,7 +161,9 @@ export default function ReportPage() {
         )}
 
         {/* All Leaks Table */}
-        <LeakTable leaks={report.leaks} />
+        <div id="leak-table">
+          <LeakTable leaks={report.leaks} />
+        </div>
 
         {/* CTA */}
         <ReportCTA mrrAtRisk={report.summary.mrrAtRisk} />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useAnimatedNumber } from "@/lib/useAnimatedNumber";
 
 interface HealthScoreProps {
   score: number;
@@ -22,28 +22,9 @@ function getScoreLabel(score: number): string {
 }
 
 export default function HealthScore({ score }: HealthScoreProps) {
-  const [animatedScore, setAnimatedScore] = useState(0);
+  const animatedScore = useAnimatedNumber(score, 1200, 100);
   const color = getScoreColor(score);
   const label = getScoreLabel(score);
-
-  useEffect(() => {
-    const duration = 1200;
-    const steps = 60;
-    const increment = score / steps;
-    let current = 0;
-
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= score) {
-        setAnimatedScore(score);
-        clearInterval(timer);
-      } else {
-        setAnimatedScore(Math.round(current));
-      }
-    }, duration / steps);
-
-    return () => clearInterval(timer);
-  }, [score]);
 
   // SVG circle parameters
   const size = 140;
@@ -56,11 +37,16 @@ export default function HealthScore({ score }: HealthScoreProps) {
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="relative" style={{ width: size, height: size }}>
+        {/* Glow behind circle */}
+        <div
+          className="absolute inset-2 rounded-full blur-xl opacity-30"
+          style={{ backgroundColor: color }}
+        />
         {/* Background circle */}
         <svg
           width={size}
           height={size}
-          className="transform -rotate-90"
+          className="relative transform -rotate-90"
         >
           <circle
             cx={size / 2}

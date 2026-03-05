@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import ReportsList from "@/components/dashboard/ReportsList";
 import DashboardStats from "@/components/dashboard/DashboardStats";
+import HeroRecoveryCard from "@/components/dashboard/HeroRecoveryCard";
+import MiniCategoryChart from "@/components/dashboard/MiniCategoryChart";
 import AutoScanBanner from "@/components/dashboard/AutoScanBanner";
 import { ScanReport } from "@/lib/types";
 
@@ -70,8 +72,19 @@ export default async function DashboardPage() {
         frequency={(scanConfig as Record<string, unknown>)?.scan_frequency as string || "weekly"}
       />
 
+      {/* Hero recovery card */}
+      {latestReport && <HeroRecoveryCard report={latestReport} />}
+
       {/* Stats from latest report */}
       {latestReport && <DashboardStats report={latestReport} />}
+
+      {/* Category breakdown */}
+      {latestReport && latestReport.categories.length > 0 && (
+        <MiniCategoryChart
+          categories={latestReport.categories}
+          reportId={latestReport.id}
+        />
+      )}
 
       {/* Empty state */}
       {reports.length === 0 && (

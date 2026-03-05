@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { LeakCategorySummary } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 
@@ -20,17 +21,25 @@ const CATEGORY_COLORS: Record<string, string> = {
 export default function LeakCategoryChart({
   categories,
 }: LeakCategoryChartProps) {
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    // Small delay to trigger entry animation
+    const timer = setTimeout(() => setAnimate(true), 200);
+    return () => clearTimeout(timer);
+  }, []);
+
   if (categories.length === 0) return null;
 
   const maxImpact = Math.max(...categories.map((c) => c.totalMonthlyImpact));
 
   return (
-    <div className="bg-[#111111] border border-[#2A2A2A] rounded-xl p-6">
+    <div className="bg-[#111111] border border-[#2A2A2A] rounded-xl p-6 animate-fade-in-up animate-delay-200">
       <h3 className="text-sm font-semibold text-white mb-4">
         Revenue Leak Breakdown
       </h3>
       <div className="space-y-3">
-        {categories.map((category) => {
+        {categories.map((category, i) => {
           const color = CATEGORY_COLORS[category.type] || "#6B7280";
           const barWidth =
             maxImpact > 0
@@ -59,12 +68,14 @@ export default function LeakCategoryChart({
                   {formatCurrency(category.totalMonthlyImpact)}/mo
                 </span>
               </div>
-              <div className="w-full h-2 bg-[#1A1A1A] rounded-full overflow-hidden">
+              <div className="w-full h-2.5 bg-[#1A1A1A] rounded-full overflow-hidden group">
                 <div
-                  className="h-full rounded-full transition-all duration-700 ease-out"
+                  className="h-full rounded-full transition-all duration-700 ease-out hover:brightness-125"
                   style={{
-                    width: `${barWidth}%`,
+                    width: animate ? `${barWidth}%` : "0%",
                     backgroundColor: color,
+                    transitionDelay: `${i * 120}ms`,
+                    boxShadow: animate ? `0 0 8px ${color}40` : "none",
                   }}
                 />
               </div>

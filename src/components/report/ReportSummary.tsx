@@ -1,7 +1,7 @@
 "use client";
 
 import { ScanSummary } from "@/lib/types";
-import { formatCurrency } from "@/lib/utils";
+import { useAnimatedNumber } from "@/lib/useAnimatedNumber";
 import HealthScore from "./HealthScore";
 
 interface ReportSummaryProps {
@@ -12,64 +12,91 @@ export default function ReportSummary({ summary }: ReportSummaryProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
       {/* Health Score - spans 1 col */}
-      <div className="bg-[#111111] border border-[#2A2A2A] rounded-xl p-6 flex items-center justify-center lg:col-span-1">
+      <div className="bg-[#111111] border border-[#2A2A2A] rounded-xl p-6 flex items-center justify-center lg:col-span-1 animate-fade-in-up">
         <HealthScore score={summary.healthScore} />
       </div>
 
       {/* Stats grid - spans 4 cols */}
       <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
+        <AnimatedStatCard
           label="MRR at Risk"
-          value={formatCurrency(summary.mrrAtRisk)}
+          cents={summary.mrrAtRisk}
           suffix="/mo"
           color="#EF4444"
           description={`${((summary.mrrAtRisk / Math.max(summary.totalMRR, 1)) * 100).toFixed(1)}% of your MRR`}
+          delay={100}
+          glow={summary.mrrAtRisk > 0}
         />
-        <StatCard
+        <AnimatedStatCard
           label="Leaks Found"
-          value={String(summary.leaksFound)}
+          rawValue={summary.leaksFound}
           color={summary.leaksFound > 0 ? "#F59E0B" : "#10B981"}
           description={`Across ${summary.totalSubscriptions} subscriptions`}
+          delay={200}
         />
-        <StatCard
+        <AnimatedStatCard
           label="Annual Recovery"
-          value={formatCurrency(summary.recoveryPotential)}
+          cents={summary.recoveryPotential}
           suffix="/yr"
           color="#10B981"
           description="Potential revenue to recover"
+          delay={300}
         />
-        <StatCard
+        <AnimatedStatCard
           label="Total MRR"
-          value={formatCurrency(summary.totalMRR)}
+          cents={summary.totalMRR}
           suffix="/mo"
           color="#3B82F6"
           description={`${summary.totalCustomers} customers`}
+          delay={400}
         />
       </div>
     </div>
   );
 }
 
-function StatCard({
+function AnimatedStatCard({
   label,
-  value,
+  cents,
+  rawValue,
   suffix,
   color,
   description,
+  delay,
+  glow,
 }: {
   label: string;
-  value: string;
+  cents?: number;
+  rawValue?: number;
   suffix?: string;
   color: string;
   description: string;
+  delay: number;
+  glow?: boolean;
 }) {
+  // Animate dollars (from cents) or raw number
+  const target = cents !== undefined ? Math.round(cents / 100) : (rawValue ?? 0);
+  const animated = useAnimatedNumber(target, 1200, delay);
+  const isCurrency = cents !== undefined;
+
+  const glowClass =
+    glow && color === "#EF4444"
+      ? "glow-red"
+      : glow && color === "#10B981"
+        ? "glow-green"
+        : "";
+
   return (
-    <div className="bg-[#111111] border border-[#2A2A2A] rounded-xl p-5">
+    <div
+      className={`bg-[#111111] border-l-2 border border-[#2A2A2A] rounded-xl p-5 animate-fade-in-up ${glowClass}`}
+      style={{ borderLeftColor: color }}
+    >
       <p className="text-xs text-[#999] uppercase tracking-wider mb-1">
         {label}
       </p>
-      <p className="text-2xl font-bold" style={{ color }}>
-        {value}
+      <p className="text-3xl font-bold" style={{ color }}>
+        {isCurrency ? "$" : ""}
+        {animated.toLocaleString()}
         {suffix && (
           <span className="text-sm font-normal text-[#999]">{suffix}</span>
         )}

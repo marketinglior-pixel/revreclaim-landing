@@ -53,3 +53,40 @@ body {
 .animate-delay-200 { animation-delay: 200ms; }
 .animate-delay-300 { animation-delay: 300ms; }
 .animate-delay-400 { animation-delay: 400ms; }
+.animate-delay-500 { animation-delay: 500ms; }
+.animate-delay-600 { animation-delay: 600ms; }
+.animate-delay-700 { animation-delay: 700ms; }
+.animate-delay-800 { animation-delay: 800ms; }
+
+/* Pulse glow animation */
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Bar growth animation */
+@keyframes growBar {
+  from { width: 0%; }
+  to { width: var(--bar-width); }
+}
+
+/* Glow utility classes */
+.glow-green {
+  box-shadow: 0 0 40px rgba(16, 185, 129, 0.15), 0 0 80px rgba(16, 185, 129, 0.05);
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+.glow-red {
+  box-shadow: 0 0 40px rgba(239, 68, 68, 0.15), 0 0 80px rgba(239, 68, 68, 0.05);
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+.glow-orange {
+  box-shadow: 0 0 40px rgba(249, 115, 22, 0.15), 0 0 80px rgba(249, 115, 22, 0.05);
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+.glow-blue {
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.15), 0 0 80px rgba(59, 130, 246, 0.05);
+  animation: pulseGlow 3s ease-in-out infinite;
+}

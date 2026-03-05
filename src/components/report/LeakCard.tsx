@@ -14,7 +14,8 @@ export default function LeakCard({ leak }: LeakCardProps) {
 
   return (
     <div
-      className="bg-[#111111] border border-[#2A2A2A] rounded-xl overflow-hidden hover:border-[#3A3A3A] transition"
+      className="bg-[#111111] border border-[#2A2A2A] border-l-2 rounded-xl overflow-hidden hover:border-[#3A3A3A] transition"
+      style={{ borderLeftColor: severityColor }}
     >
       <button
         onClick={() => setExpanded(!expanded)}
@@ -40,7 +41,7 @@ export default function LeakCard({ leak }: LeakCardProps) {
               <h4 className="text-sm font-semibold text-white leading-tight">
                 {leak.title}
               </h4>
-              <span className="flex-shrink-0 text-sm font-bold text-[#EF4444]">
+              <span className="flex-shrink-0 text-base font-bold text-[#EF4444]">
                 {formatCurrency(leak.monthlyImpact)}/mo
               </span>
             </div>
@@ -51,7 +52,7 @@ export default function LeakCard({ leak }: LeakCardProps) {
               </span>
               {leak.customerEmail && (
                 <>
-                  <span className="text-xs text-[#666]">·</span>
+                  <span className="text-xs text-[#999]">·</span>
                   <span className="text-xs text-[#999] font-mono">
                     {leak.customerEmail}
                   </span>
@@ -89,19 +90,19 @@ export default function LeakCard({ leak }: LeakCardProps) {
 
             {/* Impact */}
             <div className="flex gap-4">
-              <div className="bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-lg px-3 py-2">
+              <div className="bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-lg px-4 py-3" style={{ boxShadow: "0 0 20px rgba(239, 68, 68, 0.08)" }}>
                 <p className="text-[10px] text-[#EF4444] uppercase tracking-wider">
                   Monthly Impact
                 </p>
-                <p className="text-sm font-bold text-[#EF4444]">
+                <p className="text-base font-bold text-[#EF4444]">
                   {formatCurrency(leak.monthlyImpact)}
                 </p>
               </div>
-              <div className="bg-[#F59E0B]/10 border border-[#F59E0B]/20 rounded-lg px-3 py-2">
+              <div className="bg-[#F59E0B]/10 border border-[#F59E0B]/20 rounded-lg px-4 py-3" style={{ boxShadow: "0 0 20px rgba(245, 158, 11, 0.08)" }}>
                 <p className="text-[10px] text-[#F59E0B] uppercase tracking-wider">
                   Annual Impact
                 </p>
-                <p className="text-sm font-bold text-[#F59E0B]">
+                <p className="text-base font-bold text-[#F59E0B]">
                   {formatCurrency(leak.annualImpact)}
                 </p>
               </div>
