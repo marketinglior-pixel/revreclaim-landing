@@ -4,6 +4,7 @@ import { Problem } from "@/components/Problem";
 import { DashboardPreview } from "@/components/DashboardPreview";
 import { HowItWorks } from "@/components/HowItWorks";
 import { LeakTypes } from "@/components/LeakTypes";
+import { SocialProof } from "@/components/SocialProof";
 import { Pricing } from "@/components/Pricing";
 import { FAQ } from "@/components/FAQ";
 import { FinalCTA } from "@/components/FinalCTA";
@@ -18,6 +19,7 @@ export default function Home() {
       <DashboardPreview />
       <LeakTypes />
       <HowItWorks />
+      <SocialProof />
       <Pricing />
       <FAQ />
       <FinalCTA />

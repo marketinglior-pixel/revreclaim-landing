@@ -8,17 +8,17 @@ export function Hero() {
 
       <div className="relative mx-auto max-w-4xl px-6 text-center">
         {/* Live badge */}
-        <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#10B981]/30 bg-[#10B981]/10 px-4 py-2 text-sm font-medium text-[#10B981]">
+        <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#10B981]/30 bg-[#10B981]/10 px-4 py-2 text-sm font-medium text-[#10B981] animate-fade-in-up">
           <span className="inline-block h-2 w-2 rounded-full bg-[#10B981] animate-pulse" />
           We&apos;re LIVE — Not a waitlist
         </div>
         <br />
-        <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#2A2A2A] bg-[#111] px-4 py-2 text-sm text-[#999]">
+        <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#2A2A2A] bg-[#111] px-4 py-2 text-sm text-[#999] animate-fade-in-up animate-delay-100">
           For SaaS founders doing $30K-$500K MRR on Stripe
         </div>
 
         {/* Headline */}
-        <h1 className="mb-6 text-4xl font-extrabold leading-tight tracking-tight text-white md:text-6xl md:leading-[1.1]">
+        <h1 className="mb-6 text-4xl font-extrabold leading-tight tracking-tight text-white md:text-6xl md:leading-[1.1] animate-fade-in-up animate-delay-200">
           You&apos;re losing{" "}
           <span className="bg-gradient-to-r from-[#10B981] to-[#34D399] bg-clip-text text-transparent">
             3-5% of your revenue
@@ -29,14 +29,14 @@ export function Hero() {
         </h1>
 
         {/* Subheadline */}
-        <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-[#999] md:text-xl">
+        <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-[#999] md:text-xl animate-fade-in-up animate-delay-300">
           Paste a read-only Stripe API key. We scan every subscription,
           discount, invoice, and payment method — and show you exactly where money is
           leaking. 7 automated checks. Results in under 2 minutes.
         </p>
 
         {/* CTA */}
-        <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center animate-fade-in-up animate-delay-400">
           <a
             href="/scan"
             className="group flex items-center gap-2 rounded-xl bg-[#10B981] px-8 py-4 text-lg font-bold text-black transition-all hover:bg-[#34D399] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"

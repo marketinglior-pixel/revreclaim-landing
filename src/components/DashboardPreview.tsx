@@ -13,16 +13,16 @@ export function DashboardPreview() {
         </p>
 
         {/* Dashboard mockup */}
-        <div className="rounded-2xl border border-[#2A2A2A] bg-[#111] p-1">
+        <div className="relative rounded-2xl border border-[#2A2A2A] bg-[#111] p-1 shadow-[0_0_60px_rgba(16,185,129,0.06)]">
           {/* Browser chrome */}
           <div className="flex items-center gap-2 rounded-t-xl bg-[#0A0A0A] px-4 py-3">
             <div className="flex gap-1.5">
-              <div className="h-3 w-3 rounded-full bg-[#333]" />
-              <div className="h-3 w-3 rounded-full bg-[#333]" />
-              <div className="h-3 w-3 rounded-full bg-[#333]" />
+              <div className="h-3 w-3 rounded-full bg-[#EF4444]/60" />
+              <div className="h-3 w-3 rounded-full bg-[#F59E0B]/60" />
+              <div className="h-3 w-3 rounded-full bg-[#10B981]/60" />
             </div>
             <div className="ml-4 flex-1 rounded-md bg-[#1A1A1A] px-4 py-1.5 text-xs text-[#999]">
-              revreclaim.com/report/a1b2c3d4
+              <span className="text-[#999]">🔒</span> revreclaim.com/report/a1b2c3d4
             </div>
           </div>
 
@@ -114,6 +114,25 @@ export function DashboardPreview() {
               </div>
             </div>
           </div>
+
+          {/* Fade overlay at bottom */}
+          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-24 rounded-b-2xl bg-gradient-to-t from-[#0A0A0A] to-transparent" />
+        </div>
+
+        {/* CTA below preview */}
+        <div className="mt-8 text-center">
+          <a
+            href="/scan"
+            className="group inline-flex items-center gap-2 rounded-xl bg-[#10B981] px-8 py-4 text-lg font-bold text-black transition-all hover:bg-[#34D399] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
+          >
+            See your real numbers
+            <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
+          <p className="mt-3 text-sm text-[#999]">
+            Takes 2 minutes. Read-only access. Your data stays yours.
+          </p>
         </div>
       </div>
     </section>

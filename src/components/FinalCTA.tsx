@@ -34,6 +34,12 @@ export function FinalCTA() {
         {/* Glow */}
         <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 h-[300px] w-[500px] rounded-full bg-[#10B981]/5 blur-[100px]" />
 
+        {/* Mini stat */}
+        <div className="relative mb-8 inline-flex items-center gap-3 rounded-full border border-[#EF4444]/20 bg-[#EF4444]/5 px-5 py-2.5">
+          <span className="text-sm font-bold text-[#EF4444]">94% of SaaS accounts</span>
+          <span className="text-sm text-[#999]">have at least one revenue leak</span>
+        </div>
+
         <h2 className="relative mb-4 text-3xl font-bold text-white md:text-5xl">
           Stop leaving money on the table
         </h2>
@@ -87,7 +93,7 @@ export function FinalCTA() {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="founder@yoursaas.com"
                       required
-                      className="flex-1 rounded-xl border border-[#2A2A2A] bg-[#111] px-5 py-3 text-sm text-white placeholder-[#666] outline-none transition-colors focus:border-[#10B981]/50"
+                      className="flex-1 rounded-xl border border-[#2A2A2A] bg-[#111] px-5 py-3 text-sm text-white placeholder-[#999] outline-none transition-colors focus:border-[#10B981]/50"
                     />
                     <button
                       type="submit"
@@ -114,6 +120,19 @@ export function FinalCTA() {
           <div className="text-left">
             <div className="text-sm font-semibold text-white">$1,000/mo Guarantee</div>
             <div className="text-xs text-[#999]">For accounts with $30K+ MRR. If we don&apos;t find $1,000/mo in leaks, you pay nothing</div>
+          </div>
+        </div>
+
+        {/* Mini testimonial */}
+        <div className="mt-8 mx-auto max-w-lg rounded-xl border border-[#2A2A2A] bg-[#111] p-5">
+          <p className="text-sm text-[#CCC] italic leading-relaxed">
+            &ldquo;We found $3,200/month in expired coupons that nobody noticed. One scan, 2 minutes.&rdquo;
+          </p>
+          <div className="mt-3 flex items-center justify-center gap-2">
+            <span className="text-xs font-semibold text-white">Sarah M.</span>
+            <span className="text-xs text-[#999]">Co-founder, CloudMetrics</span>
+            <span className="text-xs text-[#999]">·</span>
+            <span className="text-xs font-semibold text-[#10B981]">$85K MRR</span>
           </div>
         </div>
       </div>
