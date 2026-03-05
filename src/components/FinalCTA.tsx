@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useSectionView } from "@/hooks/useSectionView";
+import { trackEvent } from "@/lib/analytics";
 
 export function FinalCTA() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const sectionRef = useSectionView("final_cta");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -29,7 +32,7 @@ export function FinalCTA() {
   }
 
   return (
-    <section id="cta" className="border-t border-[#1A1A1A] py-20 md:py-28">
+    <section ref={sectionRef} id="cta" className="border-t border-[#1A1A1A] py-20 md:py-28">
       <div className="mx-auto max-w-3xl px-6 text-center">
         {/* Glow */}
         <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 h-[300px] w-[500px] rounded-full bg-[#10B981]/5 blur-[100px]" />
@@ -48,11 +51,11 @@ export function FinalCTA() {
         </h2>
 
         {/* Time-decay urgency — real financial cost of waiting (Hormozi Hack #8) */}
-        <p className="relative mb-10 text-lg text-[#999] leading-relaxed">
+        <p className="relative mb-10 text-base md:text-lg text-[#999] leading-relaxed">
           A $2,340/month leak doesn&apos;t start when you find it.
           It started months ago. Every month you wait is another $2,340 gone.
           <br />
-          <span className="text-white font-semibold">
+          <span className="text-white font-semibold break-words">
             The scan takes 90 seconds. The cost of waiting is $78/day.
           </span>
         </p>
@@ -77,6 +80,7 @@ export function FinalCTA() {
             <div className="space-y-4">
               <a
                 href="/scan"
+                onClick={() => trackEvent("cta_clicked", null, { location: "final_cta", action: "scan" }).catch(() => {})}
                 className="group inline-flex items-center gap-2 rounded-xl bg-[#10B981] px-8 py-4 text-lg font-bold text-black transition-all hover:bg-[#34D399] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
               >
                 Paste Your Key &rarr; See Your Leaks (Free)
@@ -94,7 +98,7 @@ export function FinalCTA() {
                   Not ready to scan yet? Leave your email:
                 </p>
                 <form onSubmit={handleSubmit}>
-                  <div className="flex flex-col gap-3 sm:flex-row">
+                  <div className="flex flex-col gap-3 md:flex-row">
                     <input
                       type="email"
                       value={email}
@@ -145,8 +149,8 @@ export function FinalCTA() {
         </div>
 
         {/* P.S. section — second most-read element (Hormozi Hack #10) */}
-        <div className="mt-16 mx-auto max-w-lg text-left">
-          <p className="text-sm text-[#999] leading-relaxed">
+        <div className="mt-16 mx-auto max-w-lg px-4 md:px-0 text-left">
+          <p className="text-sm md:text-base text-[#999] leading-relaxed">
             <span className="font-semibold text-white">P.S.</span> — If you&apos;re still
             reading, you&apos;re probably the kind of founder who&apos;s careful about new tools.
             Good. Here&apos;s what I&apos;d do: run the free scan. It takes 90 seconds
@@ -155,7 +159,7 @@ export function FinalCTA() {
             probably will — you&apos;ll know exactly where to go in Stripe to fix it.
             No commitment. No credit card. No catch.
           </p>
-          <p className="mt-4 text-sm text-[#999] leading-relaxed">
+          <p className="mt-4 text-sm md:text-base text-[#999] leading-relaxed">
             <span className="font-semibold text-white">P.P.S.</span> — We only scan
             Stripe. If you&apos;re on Chargebee or Paddle, this isn&apos;t for you yet. But if
             your SaaS runs on Stripe and you&apos;re doing $30K–$500K MRR, I&apos;d bet money

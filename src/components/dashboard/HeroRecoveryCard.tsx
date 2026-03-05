@@ -49,7 +49,7 @@ export default function HeroRecoveryCard({ report }: { report: ScanReport }) {
       </div>
 
       {/* Secondary stats row */}
-      <div className="grid grid-cols-3 gap-3 md:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
         {/* MRR at Risk */}
         <div className="rounded-xl border border-[#EF4444]/20 bg-[#EF4444]/5 p-3 md:p-4">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-[#EF4444] md:text-xs">

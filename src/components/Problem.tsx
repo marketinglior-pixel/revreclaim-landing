@@ -1,6 +1,12 @@
+"use client";
+
+import { useSectionView } from "@/hooks/useSectionView";
+
 export function Problem() {
+  const sectionRef = useSectionView("problem");
+
   return (
-    <section id="problem" className="border-t border-[#1A1A1A] py-20 md:py-28">
+    <section ref={sectionRef} id="problem" className="border-t border-[#1A1A1A] py-20 md:py-28">
       <div className="mx-auto max-w-4xl px-6">
         <div className="mb-4 text-sm font-semibold uppercase tracking-wider text-[#10B981]">
           The problem

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { trackEvent } from "@/lib/analytics";
+import { useSectionView } from "@/hooks/useSectionView";
 
 /* Grand Slam Offer naming ($100M Offers) + value stacking */
 const plans = [
@@ -71,6 +73,7 @@ const plans = [
 export function Pricing() {
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const sectionRef = useSectionView("pricing");
 
   async function handleCheckout(planId: string) {
     setLoadingPlan(planId);
@@ -97,6 +100,9 @@ export function Pricing() {
         return;
       }
 
+      // Track checkout event (fire-and-forget)
+      trackEvent("checkout_started", null, { plan: planId }).catch(() => {});
+
       // Redirect to Lemon Squeezy Checkout
       window.location.href = data.url;
     } catch {
@@ -106,7 +112,7 @@ export function Pricing() {
   }
 
   return (
-    <section id="pricing" className="border-t border-[#1A1A1A] py-20 md:py-28">
+    <section ref={sectionRef} id="pricing" className="border-t border-[#1A1A1A] py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-[#10B981]">
           Pricing
@@ -134,7 +140,7 @@ export function Pricing() {
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative rounded-2xl border p-8 ${
+              className={`relative rounded-2xl border p-5 sm:p-8 ${
                 plan.highlighted
                   ? "border-[#10B981]/50 bg-[#10B981]/5 shadow-[0_0_40px_rgba(16,185,129,0.1)]"
                   : "border-[#2A2A2A] bg-[#111]"
@@ -166,27 +172,27 @@ export function Pricing() {
 
               {/* Value stacking ($100M Offers) */}
               {plan.valueStack && (
-                <div className="mb-6 rounded-lg border border-[#2A2A2A] bg-[#0A0A0A] p-4 text-xs">
-                  <div className="mb-2 font-semibold text-[#999] uppercase tracking-wider">Value you get</div>
+                <div className="mb-6 rounded-lg border border-[#2A2A2A] bg-[#0A0A0A] p-3 sm:p-4 text-xs md:text-sm">
+                  <div className="mb-2 font-semibold text-[#999] uppercase tracking-wider text-[10px] md:text-xs">Value you get</div>
                   <div className="space-y-1.5">
-                    <div className="flex justify-between text-[#CCC]">
-                      <span>Avg. monthly recovery</span>
-                      <span className="font-semibold">{plan.valueStack.recovery}/mo</span>
+                    <div className="flex justify-between gap-2 text-[#CCC]">
+                      <span className="truncate">Avg. monthly recovery</span>
+                      <span className="font-semibold shrink-0">{plan.valueStack.recovery}/mo</span>
                     </div>
-                    <div className="flex justify-between text-[#CCC]">
-                      <span>Priority support</span>
-                      <span className="font-semibold">{plan.valueStack.support}/mo</span>
+                    <div className="flex justify-between gap-2 text-[#CCC]">
+                      <span className="truncate">Priority support</span>
+                      <span className="font-semibold shrink-0">{plan.valueStack.support}/mo</span>
                     </div>
                     <div className="border-t border-[#2A2A2A] my-2" />
-                    <div className="flex justify-between text-white font-semibold">
+                    <div className="flex justify-between gap-2 text-white font-semibold">
                       <span>Total value</span>
-                      <span>{plan.valueStack.total}/mo</span>
+                      <span className="shrink-0">{plan.valueStack.total}/mo</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between gap-2">
                       <span className="text-[#999]">You pay</span>
-                      <span className="font-semibold text-[#10B981]">{plan.price}/mo</span>
+                      <span className="font-semibold text-[#10B981] shrink-0">{plan.price}/mo</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between gap-2">
                       <span className="text-[#999]">Your ROI</span>
                       <span className="font-bold text-[#10B981]">{plan.valueStack.roi}</span>
                     </div>
@@ -197,7 +203,7 @@ export function Pricing() {
               {/* CTA Button */}
               {plan.isPaid ? (
                 <button
-                  onClick={() => handleCheckout(plan.planId)}
+                  onClick={() => { trackEvent("cta_clicked", null, { location: "pricing", action: "upgrade" }).catch(() => {}); handleCheckout(plan.planId); }}
                   disabled={loadingPlan !== null}
                   className={`block w-full rounded-lg py-3 text-center text-sm font-semibold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
                     plan.highlighted

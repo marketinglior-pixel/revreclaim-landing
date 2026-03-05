@@ -1,8 +1,17 @@
+"use client";
+
 import { ScanCounter } from "./ScanCounter";
+import { useSectionView } from "@/hooks/useSectionView";
+import { trackEvent } from "@/lib/analytics";
+import { useExperiment } from "@/hooks/useExperiment";
 
 export function Hero() {
+  const sectionRef = useSectionView("hero");
+  const { variant: headlineVariant, isLoading: headlineLoading } = useExperiment("hero_headline");
+  const { variant: ctaVariant, isLoading: ctaLoading, trackConversion: trackCtaConversion } = useExperiment("cta_text");
+
   return (
-    <section className="relative overflow-hidden pt-32 pb-20 md:pt-44 md:pb-32">
+    <section ref={sectionRef} className="relative overflow-hidden pt-32 pb-20 md:pt-44 md:pb-32">
       {/* Background glow */}
       <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[600px] w-[800px] rounded-full bg-[#10B981]/5 blur-[120px]" />
 
@@ -18,21 +27,35 @@ export function Hero() {
           <div className="inline-flex items-center gap-2 rounded-full border border-[#2A2A2A] bg-[#111] px-4 py-2 text-sm text-[#999]">
             For SaaS founders doing $30K–$500K MRR on Stripe
           </div>
-          <span className="text-xs text-[#666]">
+          <span className="hidden sm:inline text-xs text-[#666]">
             (Under $30K? This won&apos;t move the needle yet. Over $500K?{" "}
             <a href="/contact" className="underline hover:text-[#999]">Email us</a> for enterprise.)
           </span>
         </div>
 
-        {/* Headline — concrete $ not % (Hormozi Hack #1) */}
-        <h1 className="mb-6 text-4xl font-extrabold leading-tight tracking-tight text-white md:text-6xl md:leading-[1.1] animate-fade-in-up animate-delay-200">
-          Last month, you left{" "}
-          <span className="bg-gradient-to-r from-[#10B981] to-[#34D399] bg-clip-text text-transparent">
-            $2,340
-          </span>{" "}
-          sitting in Stripe.
-          <br />
-          This month, you&apos;ll do it again.
+        {/* Headline — concrete $ not % (Hormozi Hack #1) + A/B test */}
+        <h1 className="mb-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-6xl md:leading-[1.1] animate-fade-in-up animate-delay-200">
+          {!headlineLoading && headlineVariant === "variant_a" ? (
+            <>
+              Your Stripe account has{" "}
+              <span className="bg-gradient-to-r from-[#10B981] to-[#34D399] bg-clip-text text-transparent">
+                $2,340
+              </span>{" "}
+              in uncollected revenue.
+              <br />
+              Here&apos;s proof.
+            </>
+          ) : (
+            <>
+              Last month, you left{" "}
+              <span className="bg-gradient-to-r from-[#10B981] to-[#34D399] bg-clip-text text-transparent">
+                $2,340
+              </span>{" "}
+              sitting in Stripe.
+              <br />
+              This month, you&apos;ll do it again.
+            </>
+          )}
         </h1>
         <p className="mb-2 text-lg text-[#999] italic animate-fade-in-up animate-delay-250">
           (Unless you paste one key and see for yourself.)
@@ -54,9 +77,15 @@ export function Hero() {
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center animate-fade-in-up animate-delay-400">
           <a
             href="/scan"
+            onClick={() => {
+              trackEvent("cta_clicked", null, { location: "hero", action: "scan" }).catch(() => {});
+              trackCtaConversion("hero_cta_click");
+            }}
             className="group flex items-center gap-2 rounded-xl bg-[#10B981] px-8 py-4 text-lg font-bold text-black transition-all hover:bg-[#34D399] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
           >
-            Paste Your Stripe Key &rarr; Get Your Report
+            {!ctaLoading && ctaVariant === "variant_a"
+              ? "Show Me My Revenue Leaks (Free)"
+              : "Paste Your Stripe Key \u2192 Get Your Report"}
             <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>

@@ -1,3 +1,4 @@
+import { PageViewTracker } from "@/components/PageViewTracker";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -7,6 +8,12 @@ import HeroRecoveryCard from "@/components/dashboard/HeroRecoveryCard";
 import MiniCategoryChart from "@/components/dashboard/MiniCategoryChart";
 import AutoScanBanner from "@/components/dashboard/AutoScanBanner";
 import { ScanReport } from "@/lib/types";
+
+const PLAN_LABELS: Record<string, string> = {
+  free: "Revenue X-Ray",
+  pro: "Revenue Shield",
+  team: "Revenue Command Center",
+};
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -18,6 +25,15 @@ export default async function DashboardPage() {
   if (!user) {
     redirect("/auth/login?redirect=/dashboard");
   }
+
+  // Fetch profile for plan
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("plan")
+    .eq("id", user.id)
+    .single();
+
+  const plan = (profile?.plan as string) || "free";
 
   // Fetch reports
   const { data: reportRows } = await supabase
@@ -46,21 +62,38 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
+      <PageViewTracker page="dashboard" />
       {/* Page header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <p className="text-sm text-[#999] mt-1">
-            {reports.length > 0
-              ? `${reports.length} scan${reports.length === 1 ? "" : "s"} completed`
-              : "No scans yet. Run your first scan to find revenue leaks."}
-          </p>
+          <div className="flex items-center gap-3 flex-wrap">
+            <h1 className="text-2xl font-bold text-white">Your Revenue Dashboard</h1>
+            <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ${
+              plan === "free"
+                ? "bg-[#2A2A2A] text-[#999]"
+                : "bg-[#10B981]/10 text-[#10B981]"
+            }`}>
+              {PLAN_LABELS[plan] || "Revenue X-Ray"}
+            </span>
+          </div>
+          {plan === "free" && (
+            <p className="text-sm text-[#999] mt-1">
+              <Link href="/#pricing" className="text-[#10B981] hover:text-[#34D399] transition">
+                Upgrade to catch leaks automatically &rarr;
+              </Link>
+            </p>
+          )}
+          {plan !== "free" && reports.length > 0 && (
+            <p className="text-sm text-[#999] mt-1">
+              {reports.length} scan{reports.length === 1 ? "" : "s"} completed
+            </p>
+          )}
         </div>
         <Link
           href="/scan"
-          className="px-5 py-2.5 bg-[#10B981] hover:bg-[#059669] text-black font-bold rounded-lg transition text-sm"
+          className="px-5 py-2.5 bg-[#10B981] hover:bg-[#059669] text-black font-bold rounded-lg transition text-sm whitespace-nowrap"
         >
-          Run New Scan
+          Run Another Scan &rarr;
         </Link>
       </div>
 
@@ -86,83 +119,49 @@ export default async function DashboardPage() {
         />
       )}
 
-      {/* Empty state — guided onboarding */}
+      {/* Empty state — Hormozi-style compelling CTA */}
       {reports.length === 0 && (
-        <div className="rounded-2xl border border-[#2A2A2A] bg-[#111] p-8 md:p-12">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-[#10B981]/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <div className="rounded-2xl border border-[#2A2A2A] bg-[#111] p-8 md:p-16">
+          <div className="text-center max-w-lg mx-auto">
+            {/* Icon */}
+            <div className="w-16 h-16 bg-[#10B981]/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <svg className="w-8 h-8 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Welcome! Let&apos;s find your hidden revenue.</h3>
-            <p className="text-sm text-[#999] max-w-md mx-auto">
-              Most SaaS companies lose 3-8% of MRR to billing leaks. Follow these steps to find and fix yours.
-            </p>
-          </div>
 
-          {/* Onboarding steps */}
-          <div className="max-w-lg mx-auto space-y-4">
-            {/* Step 1 — Active */}
+            {/* Headline */}
+            <h2 className="text-2xl font-bold text-white mb-3 md:text-3xl">
+              Your first scan is 90 seconds away.
+            </h2>
+            <p className="text-base text-[#999] mb-8 leading-relaxed">
+              Paste your Stripe API key and see exactly where your revenue is leaking.
+              The average founder finds{" "}
+              <span className="text-white font-semibold">$2,340/month</span>{" "}
+              they weren&apos;t collecting.
+            </p>
+
+            {/* CTA */}
             <Link
               href="/scan"
-              className="flex items-center gap-4 p-4 rounded-xl border border-[#10B981]/30 bg-[#10B981]/5 hover:bg-[#10B981]/10 transition group"
+              className="group inline-flex items-center gap-2 rounded-xl bg-[#10B981] px-8 py-4 text-lg font-bold text-black transition-all hover:bg-[#34D399] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
             >
-              <div className="w-10 h-10 rounded-full bg-[#10B981] flex items-center justify-center flex-shrink-0">
-                <span className="text-black font-bold text-sm">1</span>
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-white group-hover:text-[#10B981] transition">
-                  Run your first free scan
-                </p>
-                <p className="text-xs text-[#999]">
-                  Connect your Stripe API key and scan for revenue leaks. Takes under 2 minutes.
-                </p>
-              </div>
-              <svg className="w-5 h-5 text-[#10B981] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              Paste Your Key &rarr; Get Your Report
+              <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </Link>
 
-            {/* Step 2 — Locked */}
-            <div className="flex items-center gap-4 p-4 rounded-xl border border-[#2A2A2A] opacity-50">
-              <div className="w-10 h-10 rounded-full bg-[#2A2A2A] flex items-center justify-center flex-shrink-0">
-                <span className="text-[#666] font-bold text-sm">2</span>
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-[#666]">
-                  Review your Revenue Leak Report
-                </p>
-                <p className="text-xs text-[#555]">
-                  See exactly which leaks are costing you and get direct Stripe fix links.
-                </p>
-              </div>
-              <svg className="w-5 h-5 text-[#333] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-            </div>
+            {/* Trust line */}
+            <p className="mt-4 text-xs text-[#666]">
+              Free. Read-only access. We never touch your data.
+            </p>
 
-            {/* Step 3 — Locked */}
-            <div className="flex items-center gap-4 p-4 rounded-xl border border-[#2A2A2A] opacity-50">
-              <div className="w-10 h-10 rounded-full bg-[#2A2A2A] flex items-center justify-center flex-shrink-0">
-                <span className="text-[#666] font-bold text-sm">3</span>
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <p className="text-sm font-semibold text-[#666]">
-                    Enable weekly auto-scans
-                  </p>
-                  <span className="px-1.5 py-0.5 bg-[#10B981]/10 text-[#10B981] text-[10px] font-bold rounded">
-                    PRO
-                  </span>
-                </div>
-                <p className="text-xs text-[#555]">
-                  Catch new leaks automatically every week before they add up.
-                </p>
-              </div>
-              <svg className="w-5 h-5 text-[#333] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
+            {/* Social proof mini */}
+            <div className="mt-8 flex items-center justify-center gap-6 text-xs text-[#999]">
+              <span><span className="text-white font-semibold">847+</span> accounts scanned</span>
+              <span className="hidden sm:inline text-[#333]">|</span>
+              <span className="hidden sm:inline"><span className="text-white font-semibold">94%</span> had at least 1 leak</span>
             </div>
           </div>
         </div>

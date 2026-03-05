@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
+import { trackEvent } from "@/lib/analytics";
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -73,6 +74,7 @@ export function Header() {
               </Link>
               <Link
                 href="/scan"
+                onClick={() => trackEvent("cta_clicked", null, { location: "header", action: "scan" }).catch(() => {})}
                 className="rounded-lg bg-[#10B981] px-5 py-2.5 text-sm font-semibold text-black transition-all hover:bg-[#34D399] hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] hidden md:block"
               >
                 Paste Your Key &rarr; See Your Leaks

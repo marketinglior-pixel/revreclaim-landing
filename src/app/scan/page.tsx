@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import ScanForm from "@/components/ScanForm";
 import Link from "next/link";
+import { PageViewTracker } from "@/components/PageViewTracker";
 
 export const metadata: Metadata = {
   title: "Paste Your Stripe Key → See Your Leaks | RevReclaim",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 export default function ScanPage() {
   return (
     <div className="min-h-screen bg-[#0A0A0A]">
+      <PageViewTracker page="scan" />
       {/* Header */}
       <header className="border-b border-[#2A2A2A]">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">

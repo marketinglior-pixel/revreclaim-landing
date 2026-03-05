@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSectionView } from "@/hooks/useSectionView";
 
 const faqs = [
   {
@@ -54,9 +55,10 @@ const faqs = [
 
 export function FAQ() {
   const [open, setOpen] = useState<number | null>(null);
+  const sectionRef = useSectionView("faq");
 
   return (
-    <section id="faq" className="border-t border-[#1A1A1A] py-20 md:py-28">
+    <section ref={sectionRef} id="faq" className="border-t border-[#1A1A1A] py-20 md:py-28">
       <div className="mx-auto max-w-3xl px-6">
         <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-[#10B981]">
           FAQ

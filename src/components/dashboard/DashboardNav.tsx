@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { trackEvent } from "@/lib/analytics";
 
 export default function DashboardNav({
   email,
@@ -60,7 +61,7 @@ export default function DashboardNav({
               href="/scan"
               className="px-3 py-1.5 text-sm text-[#10B981] hover:text-[#34D399] hover:bg-[#10B981]/10 rounded-md transition font-medium"
             >
-              + New Scan
+              Paste Your Key &rarr;
             </Link>
           </nav>
         </div>
@@ -77,8 +78,8 @@ export default function DashboardNav({
             </div>
             <span className="text-sm text-[#999] hidden md:block">{email}</span>
             {plan !== "free" && (
-              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-[#10B981]/10 text-[#10B981] rounded uppercase">
-                {plan}
+              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-[#10B981]/10 text-[#10B981] rounded">
+                {plan === "team" ? "TEAM" : "PRO"}
               </span>
             )}
             <svg className="w-4 h-4 text-[#999]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -114,6 +115,7 @@ export default function DashboardNav({
                   <button
                     onClick={async () => {
                       setMenuOpen(false);
+                      trackEvent("billing_portal_opened", null, {}).catch(() => {});
                       try {
                         const res = await fetch("/api/billing-portal", { method: "POST" });
                         const data = await res.json();
@@ -131,7 +133,7 @@ export default function DashboardNav({
                   href="/scan"
                   className="block px-4 py-2.5 text-sm text-[#999] hover:text-white hover:bg-[#1A1A1A] transition md:hidden"
                 >
-                  New Scan
+                  Run Another Scan &rarr;
                 </Link>
                 <div className="border-t border-[#2A2A2A]" />
                 <button

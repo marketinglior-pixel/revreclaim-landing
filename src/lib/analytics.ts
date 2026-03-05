@@ -21,7 +21,12 @@ export type AnalyticsEvent =
   | "auto_scan_enabled"
   | "team_member_invited"
   | "checkout_started"
-  | "billing_portal_opened";
+  | "billing_portal_opened"
+  | "page_view"
+  | "section_viewed"
+  | "cta_clicked"
+  | "ab_view"
+  | "ab_conversion";
 
 /**
  * Track an analytics event. Fire-and-forget — errors are logged but never thrown.

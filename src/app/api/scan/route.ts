@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
 import { canRunScan } from "@/lib/plan-limits";
 import type { PlanType } from "@/lib/plan-limits";
-import { sendScanCompleteEmail } from "@/lib/email";
+import { sendScanCompleteEmail, sendScanLimitReachedEmail } from "@/lib/email";
 import { trackEvent } from "@/lib/analytics";
 
 export const maxDuration = 60; // Allow up to 60s for large accounts
@@ -60,6 +60,7 @@ export async function POST(req: NextRequest) {
           const scanCount = profile.scan_count_this_period ?? 0;
           const scanCheck = canRunScan(plan, scanCount);
           if (!scanCheck.allowed) {
+            sendScanLimitReachedEmail(email).catch(() => {});
             return NextResponse.json(
               { error: scanCheck.reason, errorType: "plan_limit" },
               { status: 403 }

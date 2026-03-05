@@ -21,7 +21,7 @@ export function ScanCounter() {
   if (count === null) {
     // Static fallback while loading or if fetch fails
     return (
-      <span className="text-white font-semibold">7</span>
+      <span className="text-white font-semibold">847+</span>
     );
   }
 

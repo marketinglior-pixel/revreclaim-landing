@@ -1,3 +1,4 @@
+import { PageViewTracker } from "@/components/PageViewTracker";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Problem } from "@/components/Problem";
@@ -13,6 +14,7 @@ import { Footer } from "@/components/Footer";
 export default function Home() {
   return (
     <main className="min-h-screen">
+      <PageViewTracker page="landing" />
       <Header />
       <Hero />
       <Problem />
