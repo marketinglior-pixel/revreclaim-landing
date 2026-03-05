@@ -75,7 +75,7 @@ export function Header() {
                 href="/scan"
                 className="rounded-lg bg-[#10B981] px-5 py-2.5 text-sm font-semibold text-black transition-all hover:bg-[#34D399] hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] hidden md:block"
               >
-                Scan Now — Free
+                Paste Your Key &rarr; See Your Leaks
               </Link>
             </>
           )}
@@ -166,7 +166,7 @@ export function Header() {
                     onClick={() => setMenuOpen(false)}
                     className="block rounded-lg bg-[#10B981] px-4 py-3 text-sm font-semibold text-black text-center hover:bg-[#34D399] transition mt-2"
                   >
-                    Scan Now — Free
+                    Paste Your Key &rarr; See Your Leaks
                   </Link>
                 </>
               )}

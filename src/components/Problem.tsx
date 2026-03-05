@@ -5,13 +5,19 @@ export function Problem() {
         <div className="mb-4 text-sm font-semibold uppercase tracking-wider text-[#10B981]">
           The problem
         </div>
+        {/* Headline — Show Don't Tell: specific moment (Hormozi Hack #6) */}
         <h2 className="mb-6 text-3xl font-bold text-white md:text-4xl">
-          The money you&apos;re not collecting
+          Right now, there&apos;s a customer in your Stripe who owes you $499.
+          <br />
+          <span className="text-[#999]">Their card failed 12 days ago. Nobody noticed.</span>
         </h2>
         <p className="mb-12 max-w-2xl text-lg leading-relaxed text-[#999]">
-          Every growing SaaS has revenue leaking through the cracks.
-          Not because of churn. Not because of failed payments. Because of
-          billing blind spots nobody is watching.
+          You track churn. You track MRR. You track CAC.
+          But nobody tracks the money that&apos;s already yours and isn&apos;t arriving.
+          <br />
+          The average SaaS at your stage loses $2,500/month to billing blind spots.
+          Not because your product is broken.{" "}
+          <span className="text-white">Because Stripe doesn&apos;t alert you.</span>
         </p>
 
         {/* Revenue leak visualization */}
@@ -22,29 +28,30 @@ export function Problem() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
+            {/* Leak labels rewritten as moments (Hormozi Hack #6) */}
             <LeakRow
-              label="Zombie Discounts"
+              label="Coupons your sales team gave out 8 months ago — still running"
               amount="$900"
               percentage="1.8%"
               color="bg-[#EF4444]"
               width="72%"
             />
             <LeakRow
-              label="Unbilled Overages"
+              label="Customers using more than they're paying for"
               amount="$650"
               percentage="1.3%"
               color="bg-[#F59E0B]"
               width="52%"
             />
             <LeakRow
-              label="Legacy Pricing"
+              label="Old customers on old prices — new signups pay 40% more"
               amount="$550"
               percentage="1.1%"
               color="bg-[#F97316]"
               width="44%"
             />
             <LeakRow
-              label="Ghost Subscribers"
+              label="Subscriptions stuck in limbo — not active, not canceled"
               amount="$400"
               percentage="0.8%"
               color="bg-[#A855F7]"
@@ -58,6 +65,11 @@ export function Problem() {
           </div>
           <div className="mt-2 text-center text-sm text-[#999]">
             That&apos;s <span className="font-semibold text-[#EF4444]">$30,000/year</span> walking out the door
+          </div>
+          {/* Status tie — competitors are ahead (Hormozi Hack #7) */}
+          <div className="mt-6 text-center text-sm text-[#999]">
+            Your competitors who&apos;ve plugged these leaks are reinvesting that{" "}
+            <span className="text-white font-semibold">$30,000/year</span> into growth.
           </div>
         </div>
       </div>

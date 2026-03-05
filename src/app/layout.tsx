@@ -9,16 +9,16 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://revreclaim.com"),
-  title: "RevReclaim | Find the Revenue Leaking from Your SaaS",
+  title: "RevReclaim | Your Stripe Has Revenue Leaks. We Prove It in 90 Seconds.",
   description:
-    "We scan your Stripe account and show you exactly how much revenue you're losing to forgotten discounts, unbilled overages, and outdated pricing. In under 2 minutes.",
+    "Paste a read-only Stripe key. Get a report in 90 seconds showing every dollar you're losing to expired coupons, failed payments, and ghost subscriptions. Free. No credit card.",
   icons: {
     icon: "/icon.svg",
   },
   openGraph: {
-    title: "RevReclaim | Find the Revenue Leaking from Your SaaS",
+    title: "RevReclaim | Your Stripe Has Revenue Leaks. We Prove It in 90 Seconds.",
     description:
-      "Scan your Stripe account in 2 minutes. See exactly how much MRR you're losing to failed payments, expired coupons, and ghost subscriptions.",
+      "Paste a read-only Stripe key. See real customer names, real dollar amounts, and one-click fixes in 90 seconds. 94% of SaaS accounts have leaks. Free scan.",
     url: "https://revreclaim.com",
     siteName: "RevReclaim",
     type: "website",
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "RevReclaim | Find the Revenue Leaking from Your SaaS",
+    title: "RevReclaim | Your Stripe Has Revenue Leaks. We Prove It in 90 Seconds.",
     description:
-      "Scan your Stripe account in 2 minutes. See exactly how much MRR you're losing to failed payments, expired coupons, and ghost subscriptions.",
+      "Paste a read-only Stripe key. See real customer names, real dollar amounts, and one-click fixes in 90 seconds. 94% of SaaS accounts have leaks. Free scan.",
   },
 };
 

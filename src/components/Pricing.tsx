@@ -3,60 +3,68 @@
 import { useState } from "react";
 import Link from "next/link";
 
+/* Grand Slam Offer naming ($100M Offers) + value stacking */
 const plans = [
   {
-    name: "Free Audit",
+    name: "Revenue X-Ray",
+    badge: "FREE FOREVER",
     price: "$0",
     period: "",
-    description: "See exactly what you're losing right now",
+    description: "See exactly what you're losing. No strings.",
     features: [
-      "Full Revenue Leak Report",
-      "All 7 leak types scanned",
-      "Actionable fix list per leak",
-      "One-time scan per month",
+      "Full 7-category leak scan",
+      "Real customer names & dollar amounts",
+      "One-click fix instructions per leak",
+      "Billing Health Score (0–100)",
+      "One scan per month",
     ],
-    cta: "Scan Now — Free",
+    cta: "Paste Your Key → Free Report",
     href: "/scan",
     highlighted: false,
     isPaid: false,
     planId: "free",
+    valueStack: null,
   },
   {
-    name: "Monthly Monitor",
+    name: "Revenue Shield",
+    badge: "MOST POPULAR",
     price: "$299",
     period: "/month",
-    description: "Continuous protection against revenue leaks",
+    description: "Continuous protection. Never leak revenue again.",
     features: [
-      "Everything in Free Audit",
-      "Unlimited scans",
+      "Everything in Revenue X-Ray",
+      "Unlimited on-demand scans",
       "Weekly automated scans",
-      "Email leak alerts",
-      "Leak trend tracking",
-      "Priority support",
+      "Instant email alerts for new leaks",
+      "Leak trend tracking over time",
+      "Priority support (< 4hr response)",
     ],
-    cta: "Start Monitoring",
+    cta: "Start Recovering Revenue →",
     href: "#",
     highlighted: true,
     isPaid: true,
     planId: "pro",
+    valueStack: { recovery: "$2,340", support: "$500", total: "$2,840", roi: "9x" },
   },
   {
-    name: "Growth",
+    name: "Revenue Command Center",
+    badge: "FOR TEAMS",
     price: "$499",
     period: "/month",
-    description: "Full revenue intelligence for scaling SaaS",
+    description: "Full revenue intelligence for scaling SaaS teams.",
     features: [
-      "Everything in Monthly Monitor",
+      "Everything in Revenue Shield",
       "Up to 10 team members",
-      "Shared reports & dashboards",
+      "Shared dashboards & reports",
       "Dedicated account manager",
-      "Custom leak rules",
+      "Custom leak detection rules",
     ],
-    cta: "Start Growing",
+    cta: "Get Full Revenue Control →",
     href: "#",
     highlighted: false,
     isPaid: true,
     planId: "team",
+    valueStack: { recovery: "$2,340", support: "$1,200", total: "$3,540", roi: "7x" },
   },
 ];
 
@@ -103,11 +111,17 @@ export function Pricing() {
         <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-[#10B981]">
           Pricing
         </div>
+        {/* Headline — ROI math upfront (Hormozi Hack #4: Reason Why) */}
         <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
-          Start with a free audit. Upgrade when it pays for itself.
+          The math is simple.{" "}
+          <span className="text-[#999] italic">(That&apos;s the point.)</span>
         </h2>
-        <p className="mb-16 text-center text-lg text-[#999]">
-          If we don&apos;t find at least $1,000/month in leaked revenue, you pay nothing.
+        <p className="mx-auto mb-16 max-w-2xl text-center text-lg text-[#999]">
+          Average recovery: <span className="text-white font-semibold">$2,340/mo</span>.
+          Pro plan: <span className="text-white font-semibold">$299/mo</span>.
+          That&apos;s an <span className="text-[#10B981] font-semibold">8x return</span>.
+          <br />
+          If we don&apos;t find at least $1,000/mo in recoverable revenue, you pay nothing.
         </p>
 
         {error && (
@@ -126,9 +140,11 @@ export function Pricing() {
                   : "border-[#2A2A2A] bg-[#111]"
               }`}
             >
-              {plan.highlighted && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#10B981] px-4 py-1 text-xs font-bold text-black">
-                  RECOMMENDED
+              {plan.badge && (
+                <div className={`absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-xs font-bold ${
+                  plan.highlighted ? "bg-[#10B981] text-black" : "bg-[#2A2A2A] text-[#999]"
+                }`}>
+                  {plan.badge}
                 </div>
               )}
               <h3 className="mb-1 text-lg font-bold text-white">{plan.name}</h3>
@@ -147,6 +163,36 @@ export function Pricing() {
                   </li>
                 ))}
               </ul>
+
+              {/* Value stacking ($100M Offers) */}
+              {plan.valueStack && (
+                <div className="mb-6 rounded-lg border border-[#2A2A2A] bg-[#0A0A0A] p-4 text-xs">
+                  <div className="mb-2 font-semibold text-[#999] uppercase tracking-wider">Value you get</div>
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-[#CCC]">
+                      <span>Avg. monthly recovery</span>
+                      <span className="font-semibold">{plan.valueStack.recovery}/mo</span>
+                    </div>
+                    <div className="flex justify-between text-[#CCC]">
+                      <span>Priority support</span>
+                      <span className="font-semibold">{plan.valueStack.support}/mo</span>
+                    </div>
+                    <div className="border-t border-[#2A2A2A] my-2" />
+                    <div className="flex justify-between text-white font-semibold">
+                      <span>Total value</span>
+                      <span>{plan.valueStack.total}/mo</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[#999]">You pay</span>
+                      <span className="font-semibold text-[#10B981]">{plan.price}/mo</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[#999]">Your ROI</span>
+                      <span className="font-bold text-[#10B981]">{plan.valueStack.roi}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* CTA Button */}
               {plan.isPaid ? (

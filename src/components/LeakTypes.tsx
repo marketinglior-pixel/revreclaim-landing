@@ -1,41 +1,42 @@
+/* Each description is a mini-story with an emotional punch (Hormozi Hack #6: Show Don't Tell) */
 const leaks = [
   {
     emoji: "💳",
     title: "Failed Payments",
     description:
-      "Open invoices where payment was attempted but failed. Revenue you earned but aren't collecting because a card declined or expired.",
-    impact: "Most urgent leak type",
+      "A customer's card was declined 12 days ago. The invoice is sitting there, open. You earned that money. It's just… not arriving. Nobody on your team got an alert.",
+    impact: "$499/mo sitting uncollected",
     severity: "CRITICAL",
   },
   {
     emoji: "👻",
     title: "Ghost Subscriptions",
     description:
-      "Subscriptions stuck in past_due, unpaid, or incomplete status. They're not active, not canceled — just quietly losing you money.",
-    impact: "Found in 30% of accounts",
+      "14 subscriptions sitting in 'past_due' since November. They're not active. They're not canceled. They're in billing purgatory. Stripe won't fix this for you.",
+    impact: "Found in 30% of accounts we scan",
     severity: "HIGH",
   },
   {
     emoji: "⏰",
     title: "Expiring Cards",
     description:
-      "Active subscriptions where the customer's card expires within 30, 60, or 90 days. The next billing attempt will fail unless they update.",
-    impact: "Prevents involuntary churn",
+      "23 of your customers have cards expiring in the next 60 days. On that date, their next payment will fail. Then you'll call it 'involuntary churn.' But it was preventable.",
+    impact: "$4,200/mo at risk right now",
     severity: "HIGH",
   },
   {
     emoji: "🏷️",
     title: "Expired Coupons",
     description:
-      'Your sales team gave "3 months at 50% off" eight months ago. The coupon expired but the discount is still running. Nobody cancelled it.',
-    impact: "Most common leak (35%)",
+      "Your sales rep promised '3 months at 50% off.' That was 8 months ago. The coupon expired. The discount is still running. Nobody canceled it. Nobody noticed.",
+    impact: "Most common leak — 35% of all scans",
     severity: "HIGH",
   },
   {
     emoji: "♾️",
     title: "Forever Discounts",
     description:
-      "Coupons set to 'forever' duration with no expiry date. These customers will never pay full price unless you manually intervene.",
+      "Someone on your team set a coupon to 'forever.' That customer will pay 30% less than everyone else for the rest of their lifetime. Unless you find it.",
     impact: "Silent margin killer",
     severity: "MEDIUM",
   },
@@ -43,16 +44,16 @@ const leaks = [
     emoji: "📉",
     title: "Legacy Pricing",
     description:
-      "You raised prices 6 months ago. 40% of customers are still on the old rate. They're paying less than new customers for the same product.",
-    impact: "Found in 22% of audits",
+      "You raised prices 6 months ago. 40% of your customers are still on the old rate. They're getting the same product for less money than your newest signup. Stripe won't migrate them.",
+    impact: "Found in 22% of scans",
     severity: "MEDIUM",
   },
   {
     emoji: "🚫",
     title: "Missing Payment Methods",
     description:
-      "Active subscriptions with no valid payment method attached. The very next billing attempt will fail, causing involuntary churn.",
-    impact: "Imminent payment failure",
+      "An active subscription with no credit card attached. The next billing attempt will fail. That customer will silently disappear. You'll count it as churn. It wasn't.",
+    impact: "Next payment = guaranteed failure",
     severity: "CRITICAL",
   },
 ];
@@ -64,9 +65,13 @@ export function LeakTypes() {
         <div className="mb-4 text-sm font-semibold uppercase tracking-wider text-[#10B981]">
           What we find
         </div>
-        <h2 className="mb-12 text-3xl font-bold text-white md:text-4xl">
-          Seven types of leaks hiding in your Stripe
+        {/* Headline with reason why (Hormozi Hack #4) */}
+        <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
+          Seven places your money goes to die.
         </h2>
+        <p className="mb-12 text-lg text-[#999] italic">
+          (And why Stripe will never tell you about them.)
+        </p>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {leaks.map((leak) => (

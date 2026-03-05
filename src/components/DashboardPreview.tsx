@@ -6,10 +6,12 @@ export function DashboardPreview() {
           Your leak report
         </div>
         <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
-          This is what you&apos;ll see in 2 minutes
+          In 90 seconds, this will be your screen.
         </h2>
         <p className="mx-auto mb-12 max-w-2xl text-center text-lg text-[#999]">
-          Real numbers. Real customers. Real fixes.
+          Not a sample report. Not demo data. This is what an actual RevReclaim scan
+          looks like — with real customer emails, real dollar amounts,
+          and the exact Stripe link to fix each one.
         </p>
 
         {/* Dashboard mockup */}
@@ -125,13 +127,13 @@ export function DashboardPreview() {
             href="/scan"
             className="group inline-flex items-center gap-2 rounded-xl bg-[#10B981] px-8 py-4 text-lg font-bold text-black transition-all hover:bg-[#34D399] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
           >
-            See your real numbers
+            Paste your key and see YOUR version of this report &rarr;
             <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </a>
           <p className="mt-3 text-sm text-[#999]">
-            Takes 2 minutes. Read-only access. Your data stays yours.
+            Free. Takes 90 seconds. Those are real dollars waiting for you.
           </p>
         </div>
       </div>

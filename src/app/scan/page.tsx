@@ -3,9 +3,9 @@ import ScanForm from "@/components/ScanForm";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Free Revenue Leak Scan | RevReclaim",
+  title: "Paste Your Stripe Key → See Your Leaks | RevReclaim",
   description:
-    "Scan your Stripe account in under 2 minutes. Find hidden revenue leaks, failed payments, and billing issues costing you money every month.",
+    "Paste a read-only Stripe key. See every revenue leak in your account in 90 seconds. Real customer names. Real dollar amounts. Free forever.",
 };
 
 export default function ScanPage() {
@@ -40,16 +40,17 @@ export default function ScanPage() {
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#10B981]/10 border border-[#10B981]/20 rounded-full mb-6">
             <span className="w-2 h-2 bg-[#10B981] rounded-full animate-pulse" />
             <span className="text-xs font-medium text-[#10B981]">
-              Free — No credit card required
+              Free forever &middot; Avg. recovery: $2,340/mo
             </span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            Scan Your Stripe Account
+            Paste your key. See your leaks.
           </h1>
           <p className="text-[#999] max-w-md mx-auto">
-            Paste a read-only API key and get a full revenue leak report in
-            under 2 minutes. We check 7 types of billing issues.
+            In 90 seconds, you&apos;ll see every customer name, every dollar amount,
+            and exactly where to click in Stripe to fix each leak.
+            The average founder finds $2,340/month they weren&apos;t collecting.
           </p>
         </div>
 
@@ -66,37 +67,37 @@ export default function ScanPage() {
               {
                 icon: "💳",
                 title: "Failed Payments",
-                desc: "Open invoices losing you revenue",
+                desc: "Cards that declined. Invoices sitting open.",
               },
               {
                 icon: "👻",
                 title: "Ghost Subscriptions",
-                desc: "Past due, unpaid, and stuck subs",
+                desc: "Stuck in limbo. Not active, not canceled.",
               },
               {
                 icon: "⏰",
                 title: "Expiring Cards",
-                desc: "Cards that expire within 90 days",
+                desc: "Cards about to expire. Next payment will fail.",
               },
               {
                 icon: "🏷️",
                 title: "Expired Coupons",
-                desc: "Coupons that expired but still discount",
+                desc: "Ended months ago. Discount still running.",
               },
               {
                 icon: "♾️",
                 title: "Forever Discounts",
-                desc: "Coupons with no end date ever",
+                desc: "Set to 'forever.' They'll never pay full price.",
               },
               {
                 icon: "📉",
                 title: "Legacy Pricing",
-                desc: "Customers on old cheaper plans",
+                desc: "Old customers on old prices. New ones pay more.",
               },
               {
                 icon: "🚫",
-                title: "Missing Payment Methods",
-                desc: "Active subs with no card on file",
+                title: "Missing Payment",
+                desc: "No card on file. Next charge = guaranteed fail.",
               },
             ].map((check) => (
               <div

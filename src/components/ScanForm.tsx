@@ -228,7 +228,7 @@ export default function ScanForm() {
           disabled={isScanning}
           className="w-full py-3.5 bg-[#10B981] hover:bg-[#059669] text-black font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-base"
         >
-          {isScanning ? "Scanning..." : "Start Free Scan"}
+          {isScanning ? "Scanning..." : "Scan My Stripe → Get My Report"}
         </button>
 
         {/* Security badge */}
@@ -249,7 +249,7 @@ export default function ScanForm() {
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
-            Under 2 min
+            Under 90 sec
           </span>
         </div>
       </form>

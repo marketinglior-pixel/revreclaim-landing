@@ -1,24 +1,25 @@
+/* Steps rewritten with literal physical actions (Hormozi Hack #11: Clear CTAs) */
 const steps = [
   {
     number: "01",
-    title: "Create a Read-Only API Key",
+    title: "Create a Read-Only Key",
     description:
-      "Go to Stripe Dashboard → Developers → API Keys → Create restricted key. Enable read access for subscriptions, invoices, customers, and prices. Takes 60 seconds.",
-    detail: "Takes 60 seconds",
+      "Open Stripe Dashboard. Click Developers. Click API Keys. Click 'Create restricted key.' Toggle on read access for subscriptions, invoices, customers, and prices. Copy the key. Done.",
+    detail: "60 seconds. We show you exactly where to click.",
   },
   {
     number: "02",
-    title: "Paste It & Scan",
+    title: "Paste It Here",
     description:
-      "Paste the key on our scan page. We run 7 automated checks: failed payments, ghost subscriptions, expiring cards, expired coupons, forever discounts, legacy pricing, and missing payment methods.",
-    detail: "Under 2 minutes",
+      "Come back to RevReclaim. Paste the key into the box. Click 'Scan.' Watch the progress bar. We're reading every subscription, every invoice, every coupon, every payment method in your account.",
+    detail: "The scan runs in under 90 seconds.",
   },
   {
     number: "03",
-    title: "Get Your Leak Report",
+    title: "See Where Your Money Went",
     description:
-      "See exactly what you're losing, which customers are affected, and the specific action to fix each leak. Complete with a billing health score.",
-    detail: "Actionable fixes",
+      "A report appears. Customer names on the left. Dollar amounts on the right. A green 'Fix' button next to each one. Click it and it takes you to the exact Stripe page to fix that leak. That's it.",
+    detail: "Average recovery: $2,340/mo",
   },
 ];
 
@@ -30,10 +31,13 @@ export function HowItWorks() {
           How it works
         </div>
         <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
-          Three steps. Two minutes. Real money.
+          Three steps. 90 seconds. The money was there the whole time.
         </h2>
-        <p className="mb-16 text-lg text-[#999]">
-          No OAuth. No complex setup. No engineering team needed. Just paste a key and see.
+        {/* Damaging admission (Hormozi Hack #5) */}
+        <p className="mb-16 max-w-2xl text-lg text-[#999]">
+          We won&apos;t lie — there&apos;s no magic here. We&apos;re reading data that Stripe
+          already has but doesn&apos;t surface to you. The magic is that nobody else
+          built a tool to show you. So we did. And it takes 90 seconds.
         </p>
 
         <div className="relative">

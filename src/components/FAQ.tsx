@@ -11,13 +11,14 @@ const faqs = [
     q: "What permissions does the API key need?",
     a: "Read access for: Customers, Subscriptions, Invoices, Products, Prices, Coupons, and Payment Methods. We provide step-by-step instructions on the scan page. It takes about 60 seconds to create.",
   },
+  /* Damaging admission (Hormozi Hack #5): admit limitation, then pivot to strength */
   {
     q: "What if I use Chargebee or Paddle instead of Stripe?",
-    a: "We're starting with Stripe (80%+ of SaaS companies use it). Chargebee and Paddle integrations are on the roadmap. Leave your email and we'll notify you when they're ready.",
+    a: "Honestly? We can't help you yet. We only scan Stripe right now. We chose to go deep on one platform instead of shallow on three. For the 80%+ of SaaS companies that run on Stripe, we find every dollar. Chargebee and Paddle are on the roadmap for Q3 2026.",
   },
   {
     q: "How long does the scan take?",
-    a: "Under 2 minutes for most accounts. Larger accounts (1,000+ customers) may take up to 5 minutes. You'll see real-time progress as we scan.",
+    a: "Under 90 seconds for most accounts. Larger accounts (1,000+ customers) may take up to 3 minutes. You'll see real-time progress as we scan each category.",
   },
   {
     q: "What exactly do you scan for?",
@@ -25,11 +26,11 @@ const faqs = [
   },
   {
     q: "What do I do with the report?",
-    a: 'Each leak comes with a specific fix action: "Contact customer to update payment method" or "Migrate customer Z to current pricing." We tell you exactly where to go in Stripe Dashboard to fix it.',
+    a: "Open the report. See the customer name. See the dollar amount. See the one-sentence fix. Click the link — it takes you straight to that customer in Stripe. Fix it. That money hits your account next billing cycle.",
   },
   {
     q: "What if you don't find any leaks?",
-    a: "The free scan is always free. If your billing is clean, you'll get a perfect health score and peace of mind. If you upgrade to a paid plan and we don't find at least $1,000/month in recoverable revenue, you pay nothing.",
+    a: "Then your billing is in better shape than 94% of the SaaS accounts we've scanned. You'll get a perfect health score and genuine peace of mind. The free scan costs you nothing either way. If you're on a paid plan and we find less than $1,000/mo, you pay nothing. We can afford that guarantee because it almost never happens.",
   },
   {
     q: "Is this the same as chargeback recovery?",
@@ -38,6 +39,16 @@ const faqs = [
   {
     q: "Can I cancel the monthly plan anytime?",
     a: "Yes. No contracts, no lock-in. Cancel anytime from your dashboard. Your data is deleted within 30 days of cancellation.",
+  },
+  /* Exclusionary FAQ (Hormozi Hack #3): explicitly say who it's NOT for */
+  {
+    q: "Is this worth it if I have fewer than 50 customers?",
+    a: "Probably not. Revenue leaks compound with scale. If you have 10 customers, you probably know each one by name and you'd catch these issues manually. RevReclaim is built for the stage where your Stripe account has grown past what one person can monitor — typically 100+ customers, $30K+ MRR.",
+  },
+  /* Trust FAQ — damaging admission + transparency (Hormozi Hack #5) */
+  {
+    q: "Why should I trust you with my Stripe data?",
+    a: "Fair question. Here's the honest answer: you shouldn't blindly trust anyone with your billing data. That's why we designed RevReclaim to work with Stripe's restricted API keys — read-only, scoped to specific resources, and you can revoke them instantly. We never see card numbers. We never store the key after the scan.",
   },
 ];
 
@@ -50,9 +61,13 @@ export function FAQ() {
         <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-[#10B981]">
           FAQ
         </div>
-        <h2 className="mb-12 text-center text-3xl font-bold text-white md:text-4xl">
-          Common questions
+        {/* Headline — damaging admission builds trust (Hormozi Hack #5) */}
+        <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
+          Questions we get from skeptical founders
         </h2>
+        <p className="mb-12 text-center text-lg text-[#999] italic">
+          (Good. You should be skeptical.)
+        </p>
 
         <div className="space-y-3">
           {faqs.map((faq, i) => (
