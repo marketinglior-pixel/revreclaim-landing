@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function Footer() {
   return (
     <footer className="border-t border-[#1A1A1A] py-10">
@@ -11,9 +13,9 @@ export function Footer() {
           <span className="text-sm font-semibold text-white">RevReclaim</span>
         </div>
         <div className="flex gap-6 text-xs text-[#666]">
-          <a href="#" className="transition-colors hover:text-white">Privacy</a>
-          <a href="#" className="transition-colors hover:text-white">Terms</a>
-          <a href="#" className="transition-colors hover:text-white">Contact</a>
+          <Link href="/privacy" className="transition-colors hover:text-white">Privacy</Link>
+          <Link href="/terms" className="transition-colors hover:text-white">Terms</Link>
+          <Link href="/contact" className="transition-colors hover:text-white">Contact</Link>
         </div>
         <div className="text-xs text-[#666]">
           &copy; {new Date().getFullYear()} RevReclaim. All rights reserved.
