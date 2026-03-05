@@ -1,23 +1,23 @@
 const steps = [
   {
     number: "01",
-    title: "Connect Stripe",
+    title: "Create a Read-Only API Key",
     description:
-      "One click OAuth. Read-only access. We never touch your billing, never see card numbers, never modify anything.",
-    detail: "Takes 30 seconds",
+      "Go to Stripe Dashboard → Developers → API Keys → Create restricted key. Enable read access for subscriptions, invoices, customers, and prices. Takes 60 seconds.",
+    detail: "Takes 60 seconds",
   },
   {
     number: "02",
-    title: "We scan everything",
+    title: "Paste It & Scan",
     description:
-      "Every subscription, coupon, discount, invoice, and usage event. Our algorithms check for all known leak patterns.",
+      "Paste the key on our scan page. We run 7 automated checks: failed payments, ghost subscriptions, expiring cards, expired coupons, forever discounts, legacy pricing, and missing payment methods.",
     detail: "Under 2 minutes",
   },
   {
     number: "03",
-    title: "Get your Leak Report",
+    title: "Get Your Leak Report",
     description:
-      "See exactly what you're losing, which customers are affected, and the specific action to fix each leak.",
+      "See exactly what you're losing, which customers are affected, and the specific action to fix each leak. Complete with a billing health score.",
     detail: "Actionable fixes",
   },
 ];
@@ -33,7 +33,7 @@ export function HowItWorks() {
           Three steps. Two minutes. Real money.
         </h2>
         <p className="mb-16 text-lg text-[#999]">
-          No complex setup. No engineering team needed. Just connect and see.
+          No OAuth. No complex setup. No engineering team needed. Just paste a key and see.
         </p>
 
         <div className="relative">

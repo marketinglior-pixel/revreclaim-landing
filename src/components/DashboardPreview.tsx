@@ -22,27 +22,41 @@ export function DashboardPreview() {
               <div className="h-3 w-3 rounded-full bg-[#333]" />
             </div>
             <div className="ml-4 flex-1 rounded-md bg-[#1A1A1A] px-4 py-1.5 text-xs text-[#666]">
-              app.revreclaim.com/audit/acme-saas
+              revreclaim.com/report/a1b2c3d4
             </div>
           </div>
 
           {/* Dashboard content */}
           <div className="p-6 md:p-8">
             {/* Top stats */}
-            <div className="mb-6 grid gap-4 md:grid-cols-3">
+            <div className="mb-6 grid gap-4 md:grid-cols-4">
+              {/* Health Score */}
+              <div className="rounded-xl border border-[#2A2A2A] bg-[#0A0A0A] p-5 flex flex-col items-center justify-center">
+                <div className="relative w-16 h-16 mb-2">
+                  <svg width="64" height="64" className="transform -rotate-90">
+                    <circle cx="32" cy="32" r="28" fill="none" stroke="#1A1A1A" strokeWidth="6" />
+                    <circle cx="32" cy="32" r="28" fill="none" stroke="#F59E0B" strokeWidth="6" strokeLinecap="round" strokeDasharray="175.9" strokeDashoffset="52.8" />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-lg font-bold text-[#F59E0B]">70</span>
+                  </div>
+                </div>
+                <div className="text-xs text-[#666]">Health Score</div>
+              </div>
+
               <StatCard
-                label="Total Revenue Leaking"
+                label="MRR at Risk"
                 value="$2,340"
                 sub="/month"
                 highlight
               />
               <StatCard
                 label="Leaks Found"
-                value="14"
-                sub="across 4 categories"
+                value="18"
+                sub="across 7 checks"
               />
               <StatCard
-                label="Potential Annual Recovery"
+                label="Annual Recovery"
                 value="$28,080"
                 sub="/year"
               />
@@ -55,40 +69,48 @@ export function DashboardPreview() {
               </div>
 
               <LeakTableRow
-                severity="HIGH"
-                type="Zombie Discount"
-                customer="Acme Corp"
-                impact="$320/mo"
-                detail="50% discount active since 2023. Promo expired 14 months ago."
-                fix="Remove discount"
+                severity="CRITICAL"
+                type="Failed Payment"
+                customer="a***@acmecorp.com"
+                impact="$499/mo"
+                detail="Invoice #INV-2847 unpaid for 12 days. Payment attempted but failed."
+                fix="Retry payment or contact customer"
+              />
+              <LeakTableRow
+                severity="CRITICAL"
+                type="Missing Payment"
+                customer="j***@startupxyz.io"
+                impact="$299/mo"
+                detail="Active subscription has no valid payment method. Next billing will fail."
+                fix="Contact customer to add card"
               />
               <LeakTableRow
                 severity="HIGH"
-                type="Unbilled Overage"
-                customer="StartupXYZ"
-                impact="$280/mo"
-                detail="Using 12,000 API calls/mo. Plan limit: 5,000. No overage billing."
-                fix="Enable overage billing"
+                type="Expiring Card"
+                customer="m***@dataflow.com"
+                impact="$199/mo"
+                detail="Card ending in 4242 (Visa) expires 04/2026. Subscription at risk."
+                fix="Send card update reminder"
+              />
+              <LeakTableRow
+                severity="HIGH"
+                type="Expired Coupon"
+                customer="s***@cloudapp.io"
+                impact="$150/mo"
+                detail="50% discount coupon expired 3 months ago but still active on subscription."
+                fix="Remove expired discount"
               />
               <LeakTableRow
                 severity="MED"
                 type="Legacy Pricing"
-                customer="DataFlow Inc"
-                impact="$150/mo"
-                detail="On $99/mo plan (2022 pricing). Current price: $249/mo."
+                customer="r***@bigco.com"
+                impact="$100/mo"
+                detail="Paying $149/mo (2023 pricing). Current price: $249/mo. 40% below rate."
                 fix="Migrate to current plan"
-              />
-              <LeakTableRow
-                severity="MED"
-                type="Ghost Subscriber"
-                customer="OldClient LLC"
-                impact="$0/mo"
-                detail="Active subscription. Last login: 11 months ago. 0 API calls."
-                fix="Review and reach out"
               />
 
               <div className="px-5 py-3 text-center text-xs text-[#666]">
-                + 10 more leaks found
+                + 13 more leaks found across all 7 categories
               </div>
             </div>
           </div>
@@ -123,14 +145,19 @@ function LeakTableRow({ severity, type, customer, impact, detail, fix }: {
   detail: string;
   fix: string;
 }) {
-  const sevColor = severity === "HIGH" ? "bg-[#EF4444]/10 text-[#EF4444]" : "bg-[#F59E0B]/10 text-[#F59E0B]";
+  const sevColor =
+    severity === "CRITICAL"
+      ? "bg-[#EF4444]/10 text-[#EF4444]"
+      : severity === "HIGH"
+        ? "bg-[#F59E0B]/10 text-[#F59E0B]"
+        : "bg-[#3B82F6]/10 text-[#3B82F6]";
 
   return (
     <div className="border-b border-[#1A1A1A] px-5 py-4">
       <div className="mb-2 flex flex-wrap items-center gap-2">
         <span className={`rounded px-2 py-0.5 text-[10px] font-bold ${sevColor}`}>{severity}</span>
         <span className="text-sm font-semibold text-white">{type}</span>
-        <span className="text-sm text-[#666]">{customer}</span>
+        <span className="text-sm text-[#666] font-mono">{customer}</span>
         <span className="ml-auto text-sm font-bold text-[#EF4444]">{impact}</span>
       </div>
       <p className="mb-2 text-xs text-[#999]">{detail}</p>

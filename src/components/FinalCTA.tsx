@@ -40,10 +40,10 @@ export function FinalCTA() {
         <p className="relative mb-10 text-lg text-[#999]">
           Every month you wait is another month of leaked revenue.
           <br />
-          Get your free audit report and see what you&apos;re missing.
+          Scan your Stripe account now and see what you&apos;re missing.
         </p>
 
-        {/* Email capture form */}
+        {/* Primary CTA - scan now */}
         <div className="relative mx-auto max-w-md">
           {status === "success" ? (
             <div className="rounded-xl border border-[#10B981]/30 bg-[#10B981]/5 p-6">
@@ -52,43 +52,57 @@ export function FinalCTA() {
               </svg>
               <p className="text-sm font-semibold text-[#10B981]">You&apos;re in!</p>
               <p className="mt-1 text-xs text-[#999]">We&apos;ll email you within 24 hours with simple instructions to start your free audit.</p>
-              <div className="mt-4 flex items-center justify-center gap-4 text-xs text-[#666]">
-                <span className="flex items-center gap-1">
-                  <svg className="h-3.5 w-3.5 text-[#10B981]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                  Read-only access
-                </span>
-                <span className="flex items-center gap-1">
-                  <svg className="h-3.5 w-3.5 text-[#10B981]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                  Report in 24hrs
-                </span>
-              </div>
+              <a
+                href="/scan"
+                className="mt-4 inline-block rounded-lg bg-[#10B981] px-6 py-3 text-sm font-bold text-black transition-all hover:bg-[#34D399]"
+              >
+                Or scan now →
+              </a>
             </div>
           ) : (
-            <form onSubmit={handleSubmit}>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="founder@yoursaas.com"
-                  required
-                  className="flex-1 rounded-xl border border-[#2A2A2A] bg-[#111] px-5 py-4 text-sm text-white placeholder-[#666] outline-none transition-colors focus:border-[#10B981]/50"
-                />
-                <button
-                  type="submit"
-                  disabled={status === "loading"}
-                  className="rounded-xl bg-[#10B981] px-8 py-4 text-sm font-bold text-black transition-all hover:bg-[#34D399] hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] disabled:opacity-50"
-                >
-                  {status === "loading" ? "Sending..." : "Get Free Audit"}
-                </button>
-              </div>
-              {status === "error" && (
-                <p className="mt-2 text-xs text-[#EF4444]">Something went wrong. Please try again.</p>
-              )}
-              <p className="mt-3 text-xs text-[#666]">
-                No credit card required. Read-only Stripe access. Cancel anytime.
+            <div className="space-y-4">
+              <a
+                href="/scan"
+                className="group inline-flex items-center gap-2 rounded-xl bg-[#10B981] px-8 py-4 text-lg font-bold text-black transition-all hover:bg-[#34D399] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
+              >
+                Scan My Stripe — Free
+                <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </a>
+              <p className="text-xs text-[#666]">
+                Free. No credit card. Results in 2 minutes.
               </p>
-            </form>
+
+              {/* Secondary: email capture */}
+              <div className="pt-4 border-t border-[#1A1A1A]">
+                <p className="mb-3 text-xs text-[#666]">
+                  Not ready to scan yet? Leave your email:
+                </p>
+                <form onSubmit={handleSubmit}>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="founder@yoursaas.com"
+                      required
+                      className="flex-1 rounded-xl border border-[#2A2A2A] bg-[#111] px-5 py-3 text-sm text-white placeholder-[#666] outline-none transition-colors focus:border-[#10B981]/50"
+                    />
+                    <button
+                      type="submit"
+                      disabled={status === "loading"}
+                      className="cursor-pointer rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] px-6 py-3 text-sm font-semibold text-white transition-all hover:border-[#10B981]/30 hover:bg-[#222] disabled:opacity-50"
+                    >
+                      {status === "loading" ? "..." : "Notify Me"}
+                    </button>
+                  </div>
+                  {status === "error" && (
+                    <p className="mt-2 text-xs text-[#EF4444]">Something went wrong. Please try again.</p>
+                  )}
+                </form>
+              </div>
+            </div>
           )}
         </div>
 

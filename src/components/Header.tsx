@@ -11,16 +11,15 @@ export function Header() {
           <span className="text-lg font-bold text-white">RevReclaim</span>
         </div>
         <nav className="hidden items-center gap-8 md:flex">
-          <a href="#problem" className="text-sm text-[#999] transition-colors hover:text-white">Problem</a>
           <a href="#how-it-works" className="text-sm text-[#999] transition-colors hover:text-white">How it works</a>
           <a href="#pricing" className="text-sm text-[#999] transition-colors hover:text-white">Pricing</a>
           <a href="#faq" className="text-sm text-[#999] transition-colors hover:text-white">FAQ</a>
         </nav>
         <a
-          href="#cta"
+          href="/scan"
           className="rounded-lg bg-[#10B981] px-5 py-2.5 text-sm font-semibold text-black transition-all hover:bg-[#34D399] hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
         >
-          Free Audit
+          Scan Now — Free
         </a>
       </div>
     </header>

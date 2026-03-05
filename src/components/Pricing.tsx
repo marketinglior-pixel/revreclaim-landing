@@ -6,11 +6,12 @@ const plans = [
     description: "See exactly what you're losing right now",
     features: [
       "Full Revenue Leak Report",
-      "All 4 leak types scanned",
+      "All 7 leak types scanned",
       "Actionable fix list per leak",
       "One-time scan",
     ],
-    cta: "Get Free Audit",
+    cta: "Scan Now — Free",
+    href: "/scan",
     highlighted: false,
   },
   {
@@ -27,6 +28,7 @@ const plans = [
       "Priority support",
     ],
     cta: "Start Monitoring",
+    href: "#cta",
     highlighted: true,
   },
   {
@@ -42,6 +44,7 @@ const plans = [
       "Custom leak rules",
     ],
     cta: "Go Growth",
+    href: "#cta",
     highlighted: false,
   },
 ];
@@ -92,7 +95,7 @@ export function Pricing() {
                 ))}
               </ul>
               <a
-                href="#cta"
+                href={plan.href}
                 className={`block w-full rounded-lg py-3 text-center text-sm font-semibold transition-all ${
                   plan.highlighted
                     ? "bg-[#10B981] text-black hover:bg-[#34D399] hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
