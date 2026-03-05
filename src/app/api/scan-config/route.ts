@@ -2,12 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { encrypt } from "@/lib/encryption";
 import { validateApiKey } from "@/lib/utils";
+import { rateLimit, getClientIP } from "@/lib/rate-limit";
 import type { Database } from "@/lib/supabase/types";
 
 type ScanConfigUpdate = Database["public"]["Tables"]["scan_configs"]["Update"];
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limit: 10 config updates per IP per hour
+    const ip = getClientIP(req);
+    const rl = rateLimit({ name: "scan-config", maxRequests: 10, windowSeconds: 3600 }, ip);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(rl.retryAfterSeconds) } }
+      );
+    }
+
     const supabase = await createClient();
     const {
       data: { user },

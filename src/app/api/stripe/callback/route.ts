@@ -62,7 +62,7 @@ export async function GET(req: NextRequest) {
           type: "stripe_connected",
           email: state,
           stripe_user_id,
-          access_token,
+          // NOTE: access_token intentionally excluded — never send credentials to external services
           livemode,
           scope,
           timestamp: new Date().toISOString(),

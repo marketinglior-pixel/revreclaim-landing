@@ -2,11 +2,22 @@ import { NextRequest, NextResponse } from "next/server";
 import { runFullScan } from "@/lib/stripe-scanner";
 import { validateApiKey, validateEmail } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit, getClientIP } from "@/lib/rate-limit";
 
 export const maxDuration = 60; // Allow up to 60s for large accounts
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limit: 5 scans per IP per hour
+    const ip = getClientIP(req);
+    const rl = rateLimit({ name: "scan", maxRequests: 5, windowSeconds: 3600 }, ip);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: `Too many scans. Please try again in ${rl.retryAfterSeconds} seconds.` },
+        { status: 429, headers: { "Retry-After": String(rl.retryAfterSeconds) } }
+      );
+    }
+
     const body = await req.json();
     const { email, apiKey } = body;
 

@@ -1,7 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, getClientIP } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limit: 3 subscriptions per IP per hour
+    const ip = getClientIP(req);
+    const rl = rateLimit({ name: "subscribe", maxRequests: 3, windowSeconds: 3600 }, ip);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(rl.retryAfterSeconds) } }
+      );
+    }
+
     const { email } = await req.json();
 
     if (!email || !email.includes("@")) {
