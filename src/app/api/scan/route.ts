@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runFullScan } from "@/lib/stripe-scanner";
 import { validateApiKey, validateEmail } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/server";
 
 export const maxDuration = 60; // Allow up to 60s for large accounts
 
@@ -68,6 +69,35 @@ export async function POST(req: NextRequest) {
           timestamp: new Date().toISOString(),
         }),
       }).catch(() => {});
+    }
+
+    // If user is authenticated, save report to database
+    try {
+      const supabase = await createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        const isTestMode = apiKey.startsWith("rk_test_");
+        const { error: dbError } = await supabase.from("reports").insert({
+          id: report.id,
+          user_id: user.id,
+          summary: JSON.parse(JSON.stringify(report.summary)),
+          categories: JSON.parse(JSON.stringify(report.categories)),
+          leaks: JSON.parse(JSON.stringify(report.leaks)),
+          is_test_mode: isTestMode,
+        });
+
+        if (dbError) {
+          console.error("[SCAN] Failed to save report to DB:", dbError.message);
+        } else {
+          console.log(`[SCAN] Report ${report.id} saved to DB for user ${user.id}`);
+        }
+      }
+    } catch (dbErr) {
+      // DB save is non-critical — log and continue
+      console.error("[SCAN] DB save error:", dbErr);
     }
 
     return NextResponse.json({ report });

@@ -1,4 +1,19 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
+
 export function Header() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setIsLoggedIn(!!user);
+    });
+  }, []);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-[#2A2A2A] bg-[#0A0A0A]/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
@@ -15,12 +30,39 @@ export function Header() {
           <a href="#pricing" className="text-sm text-[#999] transition-colors hover:text-white">Pricing</a>
           <a href="#faq" className="text-sm text-[#999] transition-colors hover:text-white">FAQ</a>
         </nav>
-        <a
-          href="/scan"
-          className="rounded-lg bg-[#10B981] px-5 py-2.5 text-sm font-semibold text-black transition-all hover:bg-[#34D399] hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
-        >
-          Scan Now — Free
-        </a>
+        <div className="flex items-center gap-3">
+          {isLoggedIn ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="text-sm text-[#999] hover:text-white transition hidden md:block"
+              >
+                Dashboard
+              </Link>
+              <Link
+                href="/scan"
+                className="rounded-lg bg-[#10B981] px-5 py-2.5 text-sm font-semibold text-black transition-all hover:bg-[#34D399] hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+              >
+                New Scan
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/auth/login"
+                className="text-sm text-[#999] hover:text-white transition hidden md:block"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/scan"
+                className="rounded-lg bg-[#10B981] px-5 py-2.5 text-sm font-semibold text-black transition-all hover:bg-[#34D399] hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+              >
+                Scan Now — Free
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

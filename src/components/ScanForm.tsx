@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ScanReport, ScanStatus } from "@/lib/types";
+import { createClient } from "@/lib/supabase/client";
 import ApiKeyInstructions from "./ApiKeyInstructions";
+import Link from "next/link";
 
 const SCAN_STEPS = [
   "Validating API key...",
@@ -22,6 +24,19 @@ export default function ScanForm() {
   const [showKey, setShowKey] = useState(false);
   const [scanStatus, setScanStatus] = useState<ScanStatus>({ status: "idle" });
   const abortRef = useRef<AbortController | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user?.email) {
+        setIsLoggedIn(true);
+        setUserEmail(user.email);
+        setEmail(user.email);
+      }
+    });
+  }, []);
 
   const handleScan = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,6 +133,35 @@ export default function ScanForm() {
 
   return (
     <div className="w-full max-w-lg mx-auto">
+      {/* Logged-in banner */}
+      {isLoggedIn && userEmail && (
+        <div className="mb-4 rounded-lg bg-[#10B981]/10 border border-[#10B981]/20 px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <svg className="w-4 h-4 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <span className="text-sm text-[#10B981]">
+              Signed in as <span className="font-medium">{userEmail}</span>
+            </span>
+          </div>
+          <Link href="/dashboard" className="text-xs text-[#10B981] hover:text-[#34D399] transition">
+            Dashboard →
+          </Link>
+        </div>
+      )}
+
+      {/* Not logged in — encourage signup */}
+      {!isLoggedIn && (
+        <div className="mb-4 rounded-lg bg-[#111] border border-[#2A2A2A] px-4 py-3 flex items-center justify-between">
+          <span className="text-xs text-[#999]">
+            <Link href="/auth/signup" className="text-[#10B981] hover:text-[#34D399] transition font-medium">
+              Create a free account
+            </Link>
+            {" "}to save your reports permanently.
+          </span>
+        </div>
+      )}
+
       <form onSubmit={handleScan} className="space-y-4">
         {/* Email input */}
         <div>
