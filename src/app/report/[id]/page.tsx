@@ -17,6 +17,7 @@ export default function ReportPage() {
   const [report, setReport] = useState<ScanReport | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     async function loadReport() {
@@ -35,6 +36,8 @@ export default function ReportPage() {
       // 2. Try loading from database (for logged-in users)
       try {
         const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) setIsLoggedIn(true);
         const { data: row, error } = await supabase
           .from("reports")
           .select("id, created_at, summary, categories, leaks")
@@ -114,7 +117,7 @@ export default function ReportPage() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0A]">
-      <ReportHeader scannedAt={report.scannedAt} />
+      <ReportHeader scannedAt={report.scannedAt} isLoggedIn={isLoggedIn} />
 
       <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
         {/* Summary Cards + Health Score */}

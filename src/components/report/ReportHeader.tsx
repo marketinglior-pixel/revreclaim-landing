@@ -4,9 +4,10 @@ import Link from "next/link";
 
 interface ReportHeaderProps {
   scannedAt: string;
+  isLoggedIn?: boolean;
 }
 
-export default function ReportHeader({ scannedAt }: ReportHeaderProps) {
+export default function ReportHeader({ scannedAt, isLoggedIn = false }: ReportHeaderProps) {
   const date = new Date(scannedAt);
   const formattedDate = date.toLocaleDateString("en-US", {
     month: "long",
@@ -23,7 +24,7 @@ export default function ReportHeader({ scannedAt }: ReportHeaderProps) {
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link
-            href="/"
+            href={isLoggedIn ? "/dashboard" : "/"}
             className="text-lg font-bold text-white flex items-center gap-2"
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#10B981]">
@@ -34,15 +35,23 @@ export default function ReportHeader({ scannedAt }: ReportHeaderProps) {
             RevReclaim
           </Link>
           <div className="hidden sm:block h-5 w-px bg-[#2A2A2A]" />
-          <span className="hidden sm:block text-sm text-[#666]">
+          <span className="hidden sm:block text-sm text-[#999]">
             Revenue Leak Report
           </span>
         </div>
 
-        <div className="flex items-center gap-4">
-          <span className="text-xs text-[#666]">
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-[#999] hidden sm:block">
             {formattedDate} at {formattedTime}
           </span>
+          {isLoggedIn && (
+            <Link
+              href="/dashboard"
+              className="px-3 py-1.5 text-xs font-medium text-[#999] border border-[#2A2A2A] rounded-lg hover:text-white hover:border-[#10B981]/30 transition hidden sm:block"
+            >
+              Dashboard
+            </Link>
+          )}
           <Link
             href="/scan"
             className="px-3 py-1.5 text-xs font-medium bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20 rounded-lg hover:bg-[#10B981]/20 transition"

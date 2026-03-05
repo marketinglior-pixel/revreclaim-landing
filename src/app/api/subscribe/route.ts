@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { email } = await req.json();
+    const { email, plan } = await req.json();
 
     if (!email || !email.includes("@")) {
       return NextResponse.json({ error: "Invalid email" }, { status: 400 });
@@ -28,13 +28,14 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify({
           email,
           source: "revreclaim-landing",
+          plan: plan || "general",
           timestamp: new Date().toISOString(),
         }),
       });
     }
 
     // Always log to Vercel logs as backup
-    console.log(`[SIGNUP] ${email} at ${new Date().toISOString()}`);
+    console.log(`[SIGNUP] ${email} (plan: ${plan || "general"}) at ${new Date().toISOString()}`);
 
     return NextResponse.json({ success: true });
   } catch {

@@ -158,9 +158,17 @@ function LoginForm() {
 
             {mode === "password" && (
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-[#ccc] mb-1.5">
-                  Password
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label htmlFor="password" className="block text-sm font-medium text-[#ccc]">
+                    Password
+                  </label>
+                  <Link
+                    href="/auth/forgot-password"
+                    className="text-xs text-[#10B981] hover:text-[#34D399] transition"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
                 <input
                   id="password"
                   type="password"
