@@ -35,12 +35,12 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com", // Next.js needs inline scripts
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.lemonsqueezy.com", // Next.js needs inline scripts
               "style-src 'self' 'unsafe-inline'", // Tailwind uses inline styles
-              "img-src 'self' data: blob: https://*.stripe.com",
+              "img-src 'self' data: blob: https://*.lemonsqueezy.com",
               "font-src 'self'",
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://checkout.stripe.com",
-              "frame-src 'self' https://js.stripe.com https://checkout.stripe.com",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.lemonsqueezy.com https://*.lemonsqueezy.com",
+              "frame-src 'self' https://*.lemonsqueezy.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",

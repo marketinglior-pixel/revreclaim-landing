@@ -15,8 +15,9 @@ export interface Database {
           email: string;
           full_name: string | null;
           plan: "free" | "pro" | "team";
-          stripe_customer_id: string | null;
-          stripe_subscription_id: string | null;
+          payment_customer_id: string | null;
+          payment_subscription_id: string | null;
+          payment_portal_url: string | null;
           plan_period_start: string | null;
           plan_period_end: string | null;
           scan_count_this_period: number;
@@ -28,8 +29,9 @@ export interface Database {
           email: string;
           full_name?: string | null;
           plan?: "free" | "pro" | "team";
-          stripe_customer_id?: string | null;
-          stripe_subscription_id?: string | null;
+          payment_customer_id?: string | null;
+          payment_subscription_id?: string | null;
+          payment_portal_url?: string | null;
           plan_period_start?: string | null;
           plan_period_end?: string | null;
           scan_count_this_period?: number;
@@ -41,8 +43,9 @@ export interface Database {
           email?: string;
           full_name?: string | null;
           plan?: "free" | "pro" | "team";
-          stripe_customer_id?: string | null;
-          stripe_subscription_id?: string | null;
+          payment_customer_id?: string | null;
+          payment_subscription_id?: string | null;
+          payment_portal_url?: string | null;
           plan_period_start?: string | null;
           plan_period_end?: string | null;
           scan_count_this_period?: number;

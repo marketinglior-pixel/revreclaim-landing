@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createCheckoutSession } from "@/lib/stripe-billing";
+import { buildCheckoutUrl } from "@/lib/lemonsqueezy";
 
 export async function POST(req: NextRequest) {
   try {
@@ -40,9 +40,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `https://${req.headers.get("host")}`;
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      `https://${req.headers.get("host")}`;
 
-    const url = await createCheckoutSession({
+    // Build Lemon Squeezy checkout URL (no server-side session needed)
+    const url = buildCheckoutUrl({
       userId: user.id,
       email: user.email!,
       plan: plan as "pro" | "team",
@@ -52,7 +55,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ url });
   } catch (error) {
     console.error("[CHECKOUT ERROR]", error);
-    const message = error instanceof Error ? error.message : "Failed to create checkout session";
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Failed to create checkout session";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -89,7 +89,7 @@ export function Pricing() {
         return;
       }
 
-      // Redirect to Stripe Checkout
+      // Redirect to Lemon Squeezy Checkout
       window.location.href = data.url;
     } catch {
       setError("Failed to start checkout. Please try again.");
