@@ -124,8 +124,8 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-semibold text-white mb-3">10. Contact</h2>
             <p className="text-[#999]">
               For privacy-related questions or data deletion requests, contact us at{" "}
-              <a href="mailto:privacy@revreclaim.com" className="text-[#10B981] hover:text-[#34D399] transition">
-                privacy@revreclaim.com
+              <a href="mailto:revreclaim@gmail.com" className="text-[#10B981] hover:text-[#34D399] transition">
+                revreclaim@gmail.com
               </a>
             </p>
           </section>

@@ -187,8 +187,8 @@ export default function ContactPage() {
         <div className="mt-8 text-center">
           <p className="text-sm text-[#666]">
             Or email us directly at{" "}
-            <a href="mailto:support@revreclaim.com" className="text-[#10B981] hover:text-[#34D399] transition">
-              support@revreclaim.com
+            <a href="mailto:revreclaim@gmail.com" className="text-[#10B981] hover:text-[#34D399] transition">
+              revreclaim@gmail.com
             </a>
           </p>
         </div>

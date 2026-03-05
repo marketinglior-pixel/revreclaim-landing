@@ -125,8 +125,8 @@ export default function TermsPage() {
             <h2 className="text-xl font-semibold text-white mb-3">11. Contact</h2>
             <p className="text-[#999]">
               For questions about these terms, contact us at{" "}
-              <a href="mailto:legal@revreclaim.com" className="text-[#10B981] hover:text-[#34D399] transition">
-                legal@revreclaim.com
+              <a href="mailto:revreclaim@gmail.com" className="text-[#10B981] hover:text-[#34D399] transition">
+                revreclaim@gmail.com
               </a>
             </p>
           </section>
