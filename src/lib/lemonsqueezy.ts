@@ -33,21 +33,18 @@ export function getPlanFromVariantId(variantId: string): "pro" | "team" | null {
 }
 
 // ---------------------------------------------------------------------------
-// Checkout URL
+// Checkout (via LS API)
 // ---------------------------------------------------------------------------
 
 /**
- * Build a Lemon Squeezy checkout URL.
+ * Create a Lemon Squeezy checkout session via the API.
  *
- * LS uses URL-based checkout — no server-side session creation needed.
- * We pass the userId as custom data so the webhook can identify the user.
- *
- * Format: https://<store>.lemonsqueezy.com/checkout/buy/<variant-uuid>
- *   ?checkout[custom][user_id]=xxx
- *   &checkout[email]=xxx
- *   &checkout[success_url]=xxx
+ * We use the API (not URL-based) because:
+ * - URL checkout requires variant UUIDs, but the dashboard shows numeric IDs
+ * - The API properly supports custom_data for webhook user identification
+ * - We get a signed checkout URL back
  */
-export function buildCheckoutUrl({
+export async function createCheckout({
   userId,
   email,
   plan,
@@ -57,10 +54,15 @@ export function buildCheckoutUrl({
   email: string;
   plan: "pro" | "team";
   baseUrl: string;
-}): string {
+}): Promise<string> {
   const variantId = PLAN_VARIANT_MAP[plan];
   if (!variantId) {
     throw new Error(`No Lemon Squeezy variant configured for plan: ${plan}`);
+  }
+
+  const apiKey = process.env.LEMONSQUEEZY_API_KEY;
+  if (!apiKey) {
+    throw new Error("LEMONSQUEEZY_API_KEY is not configured");
   }
 
   const storeId = process.env.LEMONSQUEEZY_STORE_ID;
@@ -68,20 +70,60 @@ export function buildCheckoutUrl({
     throw new Error("LEMONSQUEEZY_STORE_ID is not configured");
   }
 
-  const url = new URL(
-    `https://${storeId}.lemonsqueezy.com/checkout/buy/${variantId}`
-  );
+  const res = await fetch("https://api.lemonsqueezy.com/v1/checkouts", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      Accept: "application/vnd.api+json",
+      "Content-Type": "application/vnd.api+json",
+    },
+    body: JSON.stringify({
+      data: {
+        type: "checkouts",
+        attributes: {
+          checkout_data: {
+            email,
+            custom: {
+              user_id: userId,
+              plan,
+            },
+          },
+          product_options: {
+            redirect_url: `${baseUrl}/dashboard?upgraded=true`,
+          },
+        },
+        relationships: {
+          store: {
+            data: {
+              type: "stores",
+              id: storeId,
+            },
+          },
+          variant: {
+            data: {
+              type: "variants",
+              id: variantId,
+            },
+          },
+        },
+      },
+    }),
+  });
 
-  // Pass custom data to identify user in webhook
-  url.searchParams.set("checkout[custom][user_id]", userId);
-  url.searchParams.set("checkout[custom][plan]", plan);
-  url.searchParams.set("checkout[email]", email);
-  url.searchParams.set(
-    "checkout[success_url]",
-    `${baseUrl}/dashboard?upgraded=true`
-  );
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error("[LS CHECKOUT] API error:", errorText);
+    throw new Error(`Failed to create checkout: ${res.status}`);
+  }
 
-  return url.toString();
+  const data = await res.json();
+  const checkoutUrl = data?.data?.attributes?.url;
+
+  if (!checkoutUrl) {
+    throw new Error("No checkout URL returned from Lemon Squeezy");
+  }
+
+  return checkoutUrl;
 }
 
 // ---------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { buildCheckoutUrl } from "@/lib/lemonsqueezy";
+import { createCheckout } from "@/lib/lemonsqueezy";
 
 export async function POST(req: NextRequest) {
   try {
@@ -44,8 +44,8 @@ export async function POST(req: NextRequest) {
       process.env.NEXT_PUBLIC_BASE_URL ||
       `https://${req.headers.get("host")}`;
 
-    // Build Lemon Squeezy checkout URL (no server-side session needed)
-    const url = buildCheckoutUrl({
+    // Create Lemon Squeezy checkout session via API
+    const url = await createCheckout({
       userId: user.id,
       email: user.email!,
       plan: plan as "pro" | "team",
