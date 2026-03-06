@@ -140,9 +140,17 @@ export function verifyWebhookSignature(
     .split(" ")
     .map((sig) => sig.split(",")[1]);
 
-  return expectedSignatures.some(
-    (expected) => expected === computedSignature
-  );
+  return expectedSignatures.some((expected) => {
+    if (!expected) return false;
+    try {
+      return crypto.timingSafeEqual(
+        Buffer.from(expected, "base64"),
+        Buffer.from(computedSignature, "base64")
+      );
+    } catch {
+      return false;
+    }
+  });
 }
 
 // ---------------------------------------------------------------------------

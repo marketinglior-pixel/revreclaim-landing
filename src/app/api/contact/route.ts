@@ -70,6 +70,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Length validation to prevent abuse
+    if (typeof name !== "string" || name.length > 200) {
+      return NextResponse.json({ error: "Name is too long (max 200 chars)." }, { status: 400 });
+    }
+    if (typeof email !== "string" || email.length > 320) {
+      return NextResponse.json({ error: "Email is too long." }, { status: 400 });
+    }
+    if (typeof message !== "string" || message.length > 5000) {
+      return NextResponse.json({ error: "Message is too long (max 5,000 chars)." }, { status: 400 });
+    }
+
+    // Basic email format check
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
+    }
+
     const subjectLabels: Record<string, string> = {
       general: "General Question",
       bug: "Bug Report",

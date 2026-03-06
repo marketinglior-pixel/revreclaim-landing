@@ -16,10 +16,10 @@ export function exportReportCSV(report: ScanReport): void {
   ];
 
   const rows = report.leaks.map((leak) => [
-    LEAK_TYPE_LABELS[leak.type],
+    escapeCsvField(LEAK_TYPE_LABELS[leak.type]),
     leak.severity.toUpperCase(),
     escapeCsvField(leak.title),
-    leak.customerEmail || leak.customerId,
+    escapeCsvField(leak.customerEmail || leak.customerId),
     formatCurrency(leak.monthlyImpact),
     formatCurrency(leak.annualImpact),
     escapeCsvField(leak.fixSuggestion),

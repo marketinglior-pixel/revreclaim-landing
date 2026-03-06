@@ -75,7 +75,7 @@ describe("validateApiKey", () => {
   });
 
   it("rejects short key", () => {
-    const result = validateApiKey("rk_live_short");
+    const result = validateApiKey("rk_l_ab");
     expect(result.valid).toBe(false);
     expect(result.error).toContain("too short");
   });

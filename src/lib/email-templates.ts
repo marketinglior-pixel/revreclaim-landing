@@ -7,6 +7,15 @@
 const BRAND_COLOR = "#10B981";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://revreclaim.com";
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 function baseLayout(title: string, content: string): string {
   return `
 <!DOCTYPE html>
@@ -231,7 +240,7 @@ export function teamInviteEmailHtml(inviterEmail: string): string {
   return baseLayout("You've been invited to RevReclaim", `
     <h1 style="color:white;font-size:24px;margin:0 0 16px;">Team invite</h1>
     <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
-      <strong style="color:white;">${inviterEmail}</strong> has invited you to join their RevReclaim team.
+      <strong style="color:white;">${escapeHtml(inviterEmail)}</strong> has invited you to join their RevReclaim team.
       Accept the invite to view shared revenue leak reports.
     </p>
 

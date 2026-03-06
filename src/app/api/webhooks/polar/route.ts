@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import {
   verifyWebhookSignature,
   getServiceClient,
@@ -358,6 +359,9 @@ export async function POST(req: NextRequest) {
       `[POLAR WEBHOOK] Error handling ${eventType}:`,
       error
     );
+    Sentry.captureException(error, {
+      tags: { webhook: "polar", eventType },
+    });
     // Still return 200 to prevent Polar from retrying
   }
 

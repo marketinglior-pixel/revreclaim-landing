@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import * as Sentry from "@sentry/nextjs";
 
 export default function ScanError({
   error,
@@ -11,7 +12,7 @@ export default function ScanError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("Scan page error:", error);
+    Sentry.captureException(error);
   }, [error]);
 
   return (

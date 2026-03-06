@@ -36,7 +36,7 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://polar.sh", // Next.js needs inline scripts
+              "script-src 'self' 'unsafe-inline' https://polar.sh", // Next.js needs inline scripts
               "style-src 'self' 'unsafe-inline'", // Tailwind uses inline styles
               "img-src 'self' data: blob: https://*.polar.sh",
               "font-src 'self'",

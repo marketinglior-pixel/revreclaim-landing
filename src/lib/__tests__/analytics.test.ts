@@ -50,6 +50,7 @@ describe("analytics", () => {
       "scan_completed",
       "plan_upgraded",
       "plan_cancelled",
+      "plan_reactivated",
       "auto_scan_enabled",
       "team_member_invited",
       "checkout_started",
@@ -57,10 +58,8 @@ describe("analytics", () => {
       "page_view",
       "section_viewed",
       "cta_clicked",
-      "ab_view",
-      "ab_conversion",
       "newsletter_signup",
     ];
-    expect(events).toHaveLength(14);
+    expect(events).toHaveLength(13);
   });
 });

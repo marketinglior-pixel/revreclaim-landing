@@ -90,7 +90,7 @@ export function Pricing() {
 
       if (res.status === 401) {
         // Not logged in — redirect to signup with plan redirect
-        window.location.href = `/auth/signup?redirect=/${encodeURIComponent(`#pricing`)}`;
+        window.location.href = `/auth/signup?redirect=${encodeURIComponent("/#pricing")}`;
         return;
       }
 
