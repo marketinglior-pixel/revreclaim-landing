@@ -25,67 +25,71 @@ export default function DashboardStats({ report }: { report: ScanReport }) {
   );
 
   return (
-    <div className="grid gap-4 grid-cols-2 md:grid-cols-4 animate-fade-in-up animate-delay-200">
+    <div className="grid gap-4 grid-cols-2 md:grid-cols-4 lg:gap-6 animate-fade-in-up animate-delay-200">
       {/* MRR at Risk */}
-      <div className="rounded-xl border-t-2 border-t-[#EF4444] border border-[#EF4444]/20 bg-[#EF4444]/5 p-5 glow-red">
-        <div className="mb-1 text-xs font-medium uppercase tracking-wider text-[#999]">
+      <div className="rounded-xl border-t-2 border-t-danger border border-danger/20 bg-danger/5 backdrop-blur-sm p-5 glow-red">
+        <div className="mb-1 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-text-muted">
+          <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
           MRR at Risk
         </div>
         <div className="flex items-baseline gap-1">
-          <span className="text-3xl font-bold text-[#EF4444]">
+          <span className="text-3xl font-bold text-danger">
             ${animatedMrr.toLocaleString()}
           </span>
-          <span className="text-sm text-[#999]">/mo</span>
+          <span className="text-sm text-text-muted">/mo</span>
         </div>
-        <p className="mt-1 text-xs text-[#999]">
+        <p className="mt-1 text-xs text-text-muted">
           {((summary.mrrAtRisk / Math.max(summary.totalMRR, 1)) * 100).toFixed(1)}% of MRR
         </p>
       </div>
 
       {/* Leaks Found */}
-      <div className="rounded-xl border-t-2 border-t-[#F59E0B] border border-[#2A2A2A] bg-[#111] p-5">
-        <div className="mb-1 text-xs font-medium uppercase tracking-wider text-[#999]">
+      <div className="rounded-xl border-t-2 border-t-warning border border-border bg-surface/80 backdrop-blur-sm p-5">
+        <div className="mb-1 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-text-muted">
+          <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
           Leaks Found
         </div>
         <div className="flex items-baseline gap-1">
           <span className="text-3xl font-bold text-white">
             {animatedLeaks}
           </span>
-          <span className="text-sm text-[#999]">issues</span>
+          <span className="text-sm text-text-muted">issues</span>
         </div>
-        <p className="mt-1 text-xs text-[#999]">
+        <p className="mt-1 text-xs text-text-muted">
           Across {summary.totalSubscriptions} subs
         </p>
       </div>
 
       {/* Annual Recovery */}
-      <div className="rounded-xl border-t-2 border-t-[#10B981] border border-[#2A2A2A] bg-[#111] p-5">
-        <div className="mb-1 text-xs font-medium uppercase tracking-wider text-[#999]">
+      <div className="rounded-xl border-t-2 border-t-brand border border-border bg-surface/80 backdrop-blur-sm p-5">
+        <div className="mb-1 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-text-muted">
+          <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" /></svg>
           Annual Recovery
         </div>
         <div className="flex items-baseline gap-1">
-          <span className="text-3xl font-bold text-[#10B981]">
+          <span className="text-3xl font-bold text-brand">
             ${animatedRecovery.toLocaleString()}
           </span>
-          <span className="text-sm text-[#999]">/yr</span>
+          <span className="text-sm text-text-muted">/yr</span>
         </div>
-        <p className="mt-1 text-xs text-[#999]">
+        <p className="mt-1 text-xs text-text-muted">
           Potential to recover
         </p>
       </div>
 
       {/* Total MRR */}
-      <div className="rounded-xl border-t-2 border-t-[#3B82F6] border border-[#2A2A2A] bg-[#111] p-5">
-        <div className="mb-1 text-xs font-medium uppercase tracking-wider text-[#999]">
+      <div className="rounded-xl border-t-2 border-t-info border border-border bg-surface/80 backdrop-blur-sm p-5">
+        <div className="mb-1 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-text-muted">
+          <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" /></svg>
           Total MRR
         </div>
         <div className="flex items-baseline gap-1">
-          <span className="text-3xl font-bold text-[#3B82F6]">
+          <span className="text-3xl font-bold text-info">
             ${animatedTotalMRR.toLocaleString()}
           </span>
-          <span className="text-sm text-[#999]">/mo</span>
+          <span className="text-sm text-text-muted">/mo</span>
         </div>
-        <p className="mt-1 text-xs text-[#999]">
+        <p className="mt-1 text-xs text-text-muted">
           {summary.totalCustomers} customers
         </p>
       </div>

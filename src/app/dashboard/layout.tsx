@@ -29,12 +29,12 @@ export default async function DashboardLayout({
     .single();
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A]">
+    <div className="min-h-screen bg-surface-dim">
       <DashboardNav
         email={user.email || ""}
         plan={(profile?.plan as string) || "free"}
       />
-      <main className="max-w-6xl mx-auto px-4 py-8">{children}</main>
+      <main className="max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 py-8">{children}</main>
     </div>
   );
 }

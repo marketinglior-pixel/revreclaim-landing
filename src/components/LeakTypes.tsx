@@ -1,7 +1,8 @@
+import { LeakIcon } from "@/components/LeakIcons";
+
 /* Each description is a mini-story with an emotional punch (Hormozi Hack #6: Show Don't Tell) */
 const leaks = [
   {
-    emoji: "💳",
     title: "Failed Payments",
     description:
       "A customer's card was declined 12 days ago. The invoice is sitting there, open. You earned that money. It's just… not arriving. Nobody on your team got an alert.",
@@ -9,7 +10,6 @@ const leaks = [
     severity: "CRITICAL",
   },
   {
-    emoji: "👻",
     title: "Ghost Subscriptions",
     description:
       "14 subscriptions sitting in 'past_due' since November. They're not active. They're not canceled. They're in billing purgatory. Stripe won't fix this for you.",
@@ -17,7 +17,6 @@ const leaks = [
     severity: "HIGH",
   },
   {
-    emoji: "⏰",
     title: "Expiring Cards",
     description:
       "23 of your customers have cards expiring in the next 60 days. On that date, their next payment will fail. Then you'll call it 'involuntary churn.' But it was preventable.",
@@ -25,7 +24,6 @@ const leaks = [
     severity: "HIGH",
   },
   {
-    emoji: "🏷️",
     title: "Expired Coupons",
     description:
       "Your sales rep promised '3 months at 50% off.' That was 8 months ago. The coupon expired. The discount is still running. Nobody canceled it. Nobody noticed.",
@@ -33,7 +31,6 @@ const leaks = [
     severity: "HIGH",
   },
   {
-    emoji: "♾️",
     title: "Forever Discounts",
     description:
       "Someone on your team set a coupon to 'forever.' That customer will pay 30% less than everyone else for the rest of their lifetime. Unless you find it.",
@@ -41,7 +38,6 @@ const leaks = [
     severity: "MEDIUM",
   },
   {
-    emoji: "📉",
     title: "Legacy Pricing",
     description:
       "You raised prices 6 months ago. 40% of your customers are still on the old rate. They're getting the same product for less money than your newest signup. Stripe won't migrate them.",
@@ -49,7 +45,6 @@ const leaks = [
     severity: "MEDIUM",
   },
   {
-    emoji: "🚫",
     title: "Missing Payment Methods",
     description:
       "An active subscription with no credit card attached. The next billing attempt will fail. That customer will silently disappear. You'll count it as churn. It wasn't.",
@@ -60,16 +55,16 @@ const leaks = [
 
 export function LeakTypes() {
   return (
-    <section className="border-t border-[#1A1A1A] py-20 md:py-28">
+    <section className="border-t border-border-light py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-6">
-        <div className="mb-4 text-sm font-semibold uppercase tracking-wider text-[#10B981]">
+        <div className="mb-4 text-sm font-semibold uppercase tracking-wider text-brand">
           What we find
         </div>
         {/* Headline with reason why (Hormozi Hack #4) */}
         <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
           Seven places your money goes to die.
         </h2>
-        <p className="mb-12 text-lg text-[#999] italic">
+        <p className="mb-12 text-lg text-text-muted italic">
           (And why Stripe will never tell you about them.)
         </p>
 
@@ -77,27 +72,29 @@ export function LeakTypes() {
           {leaks.map((leak) => (
             <div
               key={leak.title}
-              className="group rounded-2xl border border-[#2A2A2A] bg-[#111] p-6 transition-all hover:border-[#10B981]/30 hover:bg-[#111]/80"
+              className="group cursor-pointer rounded-2xl border border-border bg-surface p-6 transition-all hover:border-brand/30 hover:bg-surface/80"
             >
               <div className="mb-4 flex items-center justify-between">
-                <span className="text-2xl">{leak.emoji}</span>
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand/10">
+                  <LeakIcon type={leak.title} className="h-6 w-6 text-brand" />
+                </div>
                 <span
                   className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
                     leak.severity === "CRITICAL"
-                      ? "bg-[#EF4444]/10 text-[#EF4444]"
+                      ? "bg-danger/10 text-danger"
                       : leak.severity === "HIGH"
-                        ? "bg-[#F59E0B]/10 text-[#F59E0B]"
-                        : "bg-[#3B82F6]/10 text-[#3B82F6]"
+                        ? "bg-warning/10 text-warning"
+                        : "bg-info/10 text-info"
                   }`}
                 >
                   {leak.severity}
                 </span>
               </div>
               <h3 className="mb-2 text-lg font-bold text-white">{leak.title}</h3>
-              <p className="mb-4 text-sm leading-relaxed text-[#999]">
+              <p className="mb-4 text-sm leading-relaxed text-text-muted">
                 {leak.description}
               </p>
-              <div className="text-sm font-semibold text-[#10B981]">
+              <div className="text-sm font-semibold text-brand">
                 {leak.impact}
               </div>
             </div>

@@ -39,19 +39,19 @@ const stats = [
 
 export function SocialProof() {
   return (
-    <section className="border-t border-[#1A1A1A] py-20 md:py-28">
+    <section className="border-t border-border-light py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-6">
-        <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-[#10B981]">
+        <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-brand">
           Results
         </div>
         {/* Headline with specific proof (Hormozi Hack #2: Say What Only You Can Say) */}
         <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
           847 SaaS founders scanned their Stripe.
           <br />
-          <span className="text-[#999]">94% found money they didn&apos;t know was missing.</span>
+          <span className="text-text-muted">94% found money they didn&apos;t know was missing.</span>
         </h2>
         {/* Status tie (Hormozi Hack #7) */}
-        <p className="mx-auto mb-16 max-w-2xl text-center text-lg text-[#999]">
+        <p className="mx-auto mb-16 max-w-2xl text-center text-lg text-text-muted">
           These are founders at your stage, with your kind of Stripe account,
           who ran a 90-second scan and found thousands they weren&apos;t collecting.
           <br />
@@ -59,31 +59,31 @@ export function SocialProof() {
         </p>
 
         {/* Stats bar */}
-        <div className="mb-16 grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="mb-16 grid grid-cols-2 gap-4 md:grid-cols-4 lg:gap-6">
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className="rounded-xl border border-[#2A2A2A] bg-[#111] p-5 text-center"
+              className="rounded-xl border border-border bg-surface p-5 text-center"
             >
               <div className="text-2xl font-bold text-white md:text-3xl">{stat.value}</div>
-              <div className="mt-1 text-xs text-[#999]">{stat.label}</div>
+              <div className="mt-1 text-xs text-text-muted">{stat.label}</div>
             </div>
           ))}
         </div>
 
         {/* Testimonial cards */}
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-3 lg:gap-8">
           {testimonials.map((t) => (
             <div
               key={t.name}
-              className="flex flex-col rounded-2xl border border-[#2A2A2A] bg-[#111] p-6 transition-all hover:border-[#10B981]/20"
+              className="flex flex-col cursor-pointer rounded-2xl border border-border/50 bg-surface/80 backdrop-blur-sm p-6 transition-all hover:border-brand/20"
             >
               {/* Stars */}
               <div className="mb-4 flex gap-1">
                 {[...Array(5)].map((_, i) => (
                   <svg
                     key={i}
-                    className="h-4 w-4 text-[#F59E0B]"
+                    className="h-4 w-4 text-warning"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -93,22 +93,22 @@ export function SocialProof() {
               </div>
 
               {/* Quote */}
-              <blockquote className="mb-6 flex-1 text-sm leading-relaxed text-[#CCC]">
+              <blockquote className="mb-6 flex-1 text-sm leading-relaxed text-text-secondary">
                 &ldquo;{t.quote}&rdquo;
               </blockquote>
 
               {/* Author */}
-              <div className="border-t border-[#1A1A1A] pt-4">
+              <div className="border-t border-border-light pt-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-sm font-semibold text-white">{t.name}</div>
-                    <div className="text-xs text-[#999]">
+                    <div className="text-xs text-text-muted">
                       {t.role}, {t.company}
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-xs font-semibold text-[#10B981]">{t.recovered}</div>
-                    <div className="text-xs text-[#999]">{t.mrr}</div>
+                    <div className="text-xs font-semibold text-brand">{t.recovered}</div>
+                    <div className="text-xs text-text-muted">{t.mrr}</div>
                   </div>
                 </div>
               </div>

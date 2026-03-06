@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { LeakCategorySummary } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 interface LeakCategoryChartProps {
   categories: LeakCategorySummary[];
@@ -21,20 +22,25 @@ const CATEGORY_COLORS: Record<string, string> = {
 export default function LeakCategoryChart({
   categories,
 }: LeakCategoryChartProps) {
-  const [animate, setAnimate] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+  const [animate, setAnimate] = useState(prefersReducedMotion);
 
   useEffect(() => {
+    if (prefersReducedMotion) {
+      setAnimate(true);
+      return;
+    }
     // Small delay to trigger entry animation
     const timer = setTimeout(() => setAnimate(true), 200);
     return () => clearTimeout(timer);
-  }, []);
+  }, [prefersReducedMotion]);
 
   if (categories.length === 0) return null;
 
   const maxImpact = Math.max(...categories.map((c) => c.totalMonthlyImpact));
 
   return (
-    <div className="bg-[#111111] border border-[#2A2A2A] rounded-xl p-6 animate-fade-in-up animate-delay-200">
+    <div className="bg-surface border border-border rounded-xl p-6 animate-fade-in-up animate-delay-200">
       <h3 className="text-sm font-semibold text-white mb-4">
         Revenue Leak Breakdown
       </h3>
@@ -57,10 +63,10 @@ export default function LeakCategoryChart({
                     className="w-2.5 h-2.5 rounded-full"
                     style={{ backgroundColor: color }}
                   />
-                  <span className="text-sm text-[#ccc]">
+                  <span className="text-sm text-text-secondary">
                     {category.label}
                   </span>
-                  <span className="text-xs text-[#999] bg-[#1A1A1A] px-1.5 py-0.5 rounded">
+                  <span className="text-xs text-text-muted bg-surface-light px-1.5 py-0.5 rounded">
                     {category.count}
                   </span>
                 </div>
@@ -68,13 +74,13 @@ export default function LeakCategoryChart({
                   {formatCurrency(category.totalMonthlyImpact)}/mo
                 </span>
               </div>
-              <div className="w-full h-2.5 bg-[#1A1A1A] rounded-full overflow-hidden group">
+              <div className="w-full h-2.5 bg-surface-light rounded-full overflow-hidden group">
                 <div
-                  className="h-full rounded-full transition-all duration-700 ease-out hover:brightness-125"
+                  className={`h-full rounded-full hover:brightness-125 ${prefersReducedMotion ? "" : "transition-all duration-700 ease-out"}`}
                   style={{
                     width: animate ? `${barWidth}%` : "0%",
                     backgroundColor: color,
-                    transitionDelay: `${i * 120}ms`,
+                    transitionDelay: prefersReducedMotion ? "0ms" : `${i * 120}ms`,
                     boxShadow: animate ? `0 0 8px ${color}40` : "none",
                   }}
                 />

@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 /**
  * Animates a number from 0 to `target` using requestAnimationFrame.
  * Cubic ease-out curve for a satisfying deceleration effect.
+ * Respects prefers-reduced-motion — returns target immediately when enabled.
  *
  * @param target  - The final value to animate to
  * @param duration - Animation duration in ms (default 1200)
@@ -16,11 +18,17 @@ export function useAnimatedNumber(
   duration = 1200,
   delay = 0
 ): number {
-  const [value, setValue] = useState(0);
+  const prefersReducedMotion = useReducedMotion();
+  const [value, setValue] = useState(prefersReducedMotion ? target : 0);
   const rafRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
+    if (prefersReducedMotion) {
+      setValue(target);
+      return;
+    }
+
     if (target === 0) {
       setValue(0);
       return;
@@ -62,7 +70,7 @@ export function useAnimatedNumber(
         cancelAnimationFrame(rafRef.current);
       }
     };
-  }, [target, duration, delay]);
+  }, [target, duration, delay, prefersReducedMotion]);
 
   return value;
 }

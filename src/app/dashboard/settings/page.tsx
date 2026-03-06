@@ -245,7 +245,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-5 h-5 border-2 border-[#10B981] border-t-transparent rounded-full animate-spin" />
+        <div className="w-5 h-5 border-2 border-brand border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -254,26 +254,26 @@ export default function SettingsPage() {
     <div className="max-w-2xl mx-auto space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <p className="text-sm text-[#999] mt-1">
+        <p className="text-sm text-text-muted mt-1">
           Configure automated scans and manage your account.
         </p>
       </div>
 
       {/* Billing section — only show for paid users */}
       {userPlan !== "free" && (
-        <div className="rounded-2xl border border-[#10B981]/20 bg-[#10B981]/5 p-6">
+        <div className="rounded-2xl border border-brand/20 bg-brand/5 p-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-bold text-white mb-1">Subscription</h2>
-              <p className="text-sm text-[#999]">
-                You&apos;re on the <span className="text-[#10B981] font-semibold uppercase">{userPlan}</span> plan.
+              <p className="text-sm text-text-muted">
+                You&apos;re on the <span className="text-brand font-semibold uppercase">{userPlan}</span> plan.
                 Manage your subscription, update payment method, or change plans.
               </p>
             </div>
             <button
               onClick={handleManageBilling}
               disabled={billingLoading}
-              className="px-5 py-2.5 bg-[#10B981] hover:bg-[#059669] text-black font-bold rounded-lg transition disabled:opacity-50 cursor-pointer text-sm shrink-0"
+              className="px-5 py-2.5 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition disabled:opacity-50 cursor-pointer text-sm shrink-0"
             >
               {billingLoading ? "Loading..." : "Manage Billing"}
             </button>
@@ -282,28 +282,28 @@ export default function SettingsPage() {
       )}
 
       {/* Auto-scan config */}
-      <div className="rounded-2xl border border-[#2A2A2A] bg-[#111] p-6">
+      <div className="rounded-2xl border border-border bg-surface p-6">
         <h2 className="text-lg font-bold text-white mb-1">Automated Scans</h2>
-        <p className="text-sm text-[#999] mb-6">
+        <p className="text-sm text-text-muted mb-6">
           Set up recurring scans to catch new revenue leaks automatically.
           Your API key is encrypted and stored securely.
         </p>
 
         {/* Plan gate for free users */}
         {userPlan === "free" && (
-          <div className="rounded-xl border border-[#2A2A2A] bg-[#0A0A0A] p-6 text-center mb-6">
-            <div className="w-12 h-12 bg-[#10B981]/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <svg className="w-6 h-6 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="rounded-xl border border-border bg-surface-dim p-6 text-center mb-6">
+            <div className="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <svg className="w-6 h-6 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
             <h3 className="text-base font-bold text-white mb-1">Pro Feature</h3>
-            <p className="text-sm text-[#999] mb-4 max-w-sm mx-auto">
+            <p className="text-sm text-text-muted mb-4 max-w-sm mx-auto">
               Automated scans require a Pro or Team plan. Upgrade to get weekly scanning, email alerts, and more.
             </p>
             <Link
               href="/#pricing"
-              className="inline-flex px-5 py-2.5 bg-[#10B981] hover:bg-[#059669] text-black font-bold rounded-lg transition text-sm"
+              className="inline-flex px-5 py-2.5 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition text-sm"
             >
               Upgrade to Pro — $299/mo
             </Link>
@@ -314,10 +314,10 @@ export default function SettingsPage() {
         <form onSubmit={handleSave} className="space-y-5">
           {/* API Key */}
           <div>
-            <label className="block text-sm font-medium text-[#ccc] mb-1.5">
+            <label className="block text-sm font-medium text-text-secondary mb-1.5">
               Stripe Restricted API Key
               {hasExistingConfig && (
-                <span className="text-[#10B981] ml-2 font-normal">(key saved — enter new to update)</span>
+                <span className="text-brand ml-2 font-normal">(key saved — enter new to update)</span>
               )}
             </label>
             <div className="relative">
@@ -326,12 +326,12 @@ export default function SettingsPage() {
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder={hasExistingConfig ? "Enter new key to update..." : "rk_live_..."}
-                className="w-full px-4 py-3 pr-12 bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg text-white placeholder-[#999] focus:border-[#10B981] focus:outline-none focus:ring-1 focus:ring-[#10B981] transition font-mono text-sm"
+                className="w-full px-4 py-3 pr-12 bg-surface-dim border border-border rounded-lg text-white placeholder-text-muted focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition font-mono text-sm"
               />
               <button
                 type="button"
                 onClick={() => setShowKey(!showKey)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#999] hover:text-white transition"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition"
                 aria-label={showKey ? "Hide API key" : "Show API key"}
               >
                 {showKey ? (
@@ -350,7 +350,7 @@ export default function SettingsPage() {
 
           {/* Frequency */}
           <div>
-            <label className="block text-sm font-medium text-[#ccc] mb-1.5">
+            <label className="block text-sm font-medium text-text-secondary mb-1.5">
               Scan Frequency
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -361,8 +361,8 @@ export default function SettingsPage() {
                   onClick={() => setFrequency(freq)}
                   className={`py-2.5 text-sm font-medium rounded-lg border transition cursor-pointer ${
                     frequency === freq
-                      ? "border-[#10B981] bg-[#10B981]/10 text-[#10B981]"
-                      : "border-[#2A2A2A] bg-[#0A0A0A] text-[#999] hover:border-[#333]"
+                      ? "border-brand bg-brand/10 text-brand"
+                      : "border-border bg-surface-dim text-text-muted hover:border-border"
                   }`}
                 >
                   {freq.charAt(0).toUpperCase() + freq.slice(1)}
@@ -375,7 +375,7 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-white">Enable auto-scans</p>
-              <p className="text-xs text-[#999]">Automatically scan on schedule</p>
+              <p className="text-xs text-text-muted">Automatically scan on schedule</p>
             </div>
             <button
               type="button"
@@ -384,7 +384,7 @@ export default function SettingsPage() {
               aria-checked={isActive}
               aria-label="Enable auto-scans"
               className={`w-11 h-6 rounded-full transition-colors cursor-pointer ${
-                isActive ? "bg-[#10B981]" : "bg-[#333]"
+                isActive ? "bg-brand" : "bg-border"
               }`}
             >
               <div
@@ -400,8 +400,8 @@ export default function SettingsPage() {
             <div
               className={`rounded-lg px-4 py-3 text-sm ${
                 message.type === "success"
-                  ? "bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981]"
-                  : "bg-[#EF4444]/10 border border-[#EF4444]/20 text-[#EF4444]"
+                  ? "bg-brand/10 border border-brand/20 text-brand"
+                  : "bg-danger/10 border border-danger/20 text-danger"
               }`}
             >
               {message.text}
@@ -413,7 +413,7 @@ export default function SettingsPage() {
             <button
               type="submit"
               disabled={saving || (!apiKey && !hasExistingConfig)}
-              className="px-6 py-2.5 bg-[#10B981] hover:bg-[#059669] text-black font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm"
+              className="px-6 py-2.5 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm"
             >
               {saving ? "Saving..." : hasExistingConfig ? "Update Settings" : "Enable Auto-Scans"}
             </button>
@@ -423,7 +423,7 @@ export default function SettingsPage() {
                 type="button"
                 onClick={handleDeleteConfig}
                 disabled={saving}
-                className="px-4 py-2.5 text-sm text-[#EF4444] hover:bg-[#EF4444]/10 rounded-lg transition disabled:opacity-50 cursor-pointer"
+                className="px-4 py-2.5 text-sm text-danger hover:bg-danger/10 rounded-lg transition disabled:opacity-50 cursor-pointer"
               >
                 Delete Configuration
               </button>
@@ -434,14 +434,14 @@ export default function SettingsPage() {
       </div>
 
       {/* Security note */}
-      <div className="rounded-xl border border-[#2A2A2A] bg-[#111] p-5">
+      <div className="rounded-xl border border-border bg-surface p-5">
         <div className="flex items-start gap-3">
-          <svg className="w-5 h-5 text-[#10B981] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-5 h-5 text-brand flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
           </svg>
           <div>
             <p className="text-sm font-medium text-white">Your key is encrypted</p>
-            <p className="text-xs text-[#999] mt-1">
+            <p className="text-xs text-text-muted mt-1">
               Your Stripe API key is encrypted with AES-256-GCM before storage.
               We only use read-only restricted keys — we can never modify your billing data.
               You can delete your key anytime from this page.
@@ -451,15 +451,15 @@ export default function SettingsPage() {
       </div>
 
       {/* Change Password */}
-      <div className="rounded-2xl border border-[#2A2A2A] bg-[#111] p-6">
+      <div className="rounded-2xl border border-border bg-surface p-6">
         <h2 className="text-lg font-bold text-white mb-1">Change Password</h2>
-        <p className="text-sm text-[#999] mb-6">
+        <p className="text-sm text-text-muted mb-6">
           Update your account password. Must be at least 8 characters.
         </p>
 
         <form onSubmit={handleChangePassword} className="space-y-4">
           <div>
-            <label htmlFor="newPassword" className="block text-sm font-medium text-[#ccc] mb-1.5">
+            <label htmlFor="newPassword" className="block text-sm font-medium text-text-secondary mb-1.5">
               New password
             </label>
             <input
@@ -470,12 +470,12 @@ export default function SettingsPage() {
               placeholder="At least 8 characters"
               required
               minLength={8}
-              className="w-full px-4 py-3 bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg text-white placeholder-[#999] focus:border-[#10B981] focus:outline-none focus:ring-1 focus:ring-[#10B981] transition text-sm"
+              className="w-full px-4 py-3 bg-surface-dim border border-border rounded-lg text-white placeholder-text-muted focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition text-sm"
             />
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#ccc] mb-1.5">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-text-secondary mb-1.5">
               Confirm new password
             </label>
             <input
@@ -486,7 +486,7 @@ export default function SettingsPage() {
               placeholder="Re-enter your password"
               required
               minLength={8}
-              className="w-full px-4 py-3 bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg text-white placeholder-[#999] focus:border-[#10B981] focus:outline-none focus:ring-1 focus:ring-[#10B981] transition text-sm"
+              className="w-full px-4 py-3 bg-surface-dim border border-border rounded-lg text-white placeholder-text-muted focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition text-sm"
             />
           </div>
 
@@ -494,8 +494,8 @@ export default function SettingsPage() {
             <div
               className={`rounded-lg px-4 py-3 text-sm ${
                 passwordMessage.type === "success"
-                  ? "bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981]"
-                  : "bg-[#EF4444]/10 border border-[#EF4444]/20 text-[#EF4444]"
+                  ? "bg-brand/10 border border-brand/20 text-brand"
+                  : "bg-danger/10 border border-danger/20 text-danger"
               }`}
             >
               {passwordMessage.text}
@@ -505,7 +505,7 @@ export default function SettingsPage() {
           <button
             type="submit"
             disabled={passwordSaving || !newPassword || !confirmPassword}
-            className="px-6 py-2.5 bg-[#10B981] hover:bg-[#059669] text-black font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm"
+            className="px-6 py-2.5 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm"
           >
             {passwordSaving ? "Updating..." : "Update Password"}
           </button>
@@ -513,9 +513,9 @@ export default function SettingsPage() {
       </div>
 
       {/* Update Email */}
-      <div className="rounded-2xl border border-[#2A2A2A] bg-[#111] p-6">
+      <div className="rounded-2xl border border-border bg-surface p-6">
         <h2 className="text-lg font-bold text-white mb-1">Update Email</h2>
-        <p className="text-sm text-[#999] mb-6">
+        <p className="text-sm text-text-muted mb-6">
           Change the email address associated with your account.
           {currentEmail && (
             <span className="block mt-1">
@@ -526,7 +526,7 @@ export default function SettingsPage() {
 
         <form onSubmit={handleUpdateEmail} className="space-y-4">
           <div>
-            <label htmlFor="newEmail" className="block text-sm font-medium text-[#ccc] mb-1.5">
+            <label htmlFor="newEmail" className="block text-sm font-medium text-text-secondary mb-1.5">
               New email address
             </label>
             <input
@@ -536,11 +536,11 @@ export default function SettingsPage() {
               onChange={(e) => setNewEmail(e.target.value)}
               placeholder="you@company.com"
               required
-              className="w-full px-4 py-3 bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg text-white placeholder-[#999] focus:border-[#10B981] focus:outline-none focus:ring-1 focus:ring-[#10B981] transition text-sm"
+              className="w-full px-4 py-3 bg-surface-dim border border-border rounded-lg text-white placeholder-text-muted focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition text-sm"
             />
           </div>
 
-          <div className="flex items-start gap-2 text-xs text-[#999]">
+          <div className="flex items-start gap-2 text-xs text-text-muted">
             <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -551,8 +551,8 @@ export default function SettingsPage() {
             <div
               className={`rounded-lg px-4 py-3 text-sm ${
                 emailMessage.type === "success"
-                  ? "bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981]"
-                  : "bg-[#EF4444]/10 border border-[#EF4444]/20 text-[#EF4444]"
+                  ? "bg-brand/10 border border-brand/20 text-brand"
+                  : "bg-danger/10 border border-danger/20 text-danger"
               }`}
             >
               {emailMessage.text}
@@ -562,7 +562,7 @@ export default function SettingsPage() {
           <button
             type="submit"
             disabled={emailSaving || !newEmail}
-            className="px-6 py-2.5 bg-[#10B981] hover:bg-[#059669] text-black font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm"
+            className="px-6 py-2.5 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm"
           >
             {emailSaving ? "Sending..." : "Update Email"}
           </button>
@@ -570,9 +570,9 @@ export default function SettingsPage() {
       </div>
 
       {/* Danger Zone — Delete Account */}
-      <div className="rounded-2xl border border-[#EF4444]/20 bg-[#EF4444]/5 p-6">
-        <h2 className="text-lg font-bold text-[#EF4444] mb-1">Danger Zone</h2>
-        <p className="text-sm text-[#999] mb-6">
+      <div className="rounded-2xl border border-danger/20 bg-danger/5 p-6">
+        <h2 className="text-lg font-bold text-danger mb-1">Danger Zone</h2>
+        <p className="text-sm text-text-muted mb-6">
           Permanently delete your account and all associated data. This action cannot be undone.
           Your scan configurations, saved reports, and encrypted API keys will all be removed.
         </p>
@@ -581,8 +581,8 @@ export default function SettingsPage() {
           <div
             className={`rounded-lg px-4 py-3 text-sm mb-4 ${
               deleteMessage.type === "success"
-                ? "bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981]"
-                : "bg-[#EF4444]/10 border border-[#EF4444]/20 text-[#EF4444]"
+                ? "bg-brand/10 border border-brand/20 text-brand"
+                : "bg-danger/10 border border-danger/20 text-danger"
             }`}
           >
             {deleteMessage.text}
@@ -592,7 +592,7 @@ export default function SettingsPage() {
         <button
           onClick={handleDeleteAccount}
           disabled={deleting}
-          className="px-6 py-2.5 bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm"
+          className="px-6 py-2.5 bg-danger hover:bg-red-700 text-white font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm"
         >
           {deleting ? "Deleting..." : "Delete My Account"}
         </button>

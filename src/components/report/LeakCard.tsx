@@ -14,7 +14,7 @@ export default function LeakCard({ leak }: LeakCardProps) {
 
   return (
     <div
-      className="bg-[#111111] border border-[#2A2A2A] border-l-2 rounded-xl overflow-hidden hover:border-[#3A3A3A] transition"
+      className="bg-surface border border-border border-l-2 rounded-xl overflow-hidden hover:border-border transition"
       style={{ borderLeftColor: severityColor }}
     >
       <button
@@ -26,7 +26,7 @@ export default function LeakCard({ leak }: LeakCardProps) {
         <div className="flex items-start gap-3">
           {/* Severity badge */}
           <span
-            className="flex-shrink-0 px-2 py-0.5 text-[10px] font-bold uppercase rounded tracking-wider mt-0.5"
+            className="flex-shrink-0 px-2 py-0.5 text-xs font-bold uppercase rounded tracking-wider mt-0.5"
             style={{
               backgroundColor: `${severityColor}15`,
               color: severityColor,
@@ -41,19 +41,19 @@ export default function LeakCard({ leak }: LeakCardProps) {
               <h4 className="text-sm font-semibold text-white leading-tight">
                 {leak.title}
               </h4>
-              <span className="flex-shrink-0 text-base font-bold text-[#EF4444]">
+              <span className="flex-shrink-0 text-base font-bold text-danger">
                 {formatCurrency(leak.monthlyImpact)}/mo
               </span>
             </div>
 
             <div className="flex items-center gap-3 mt-1">
-              <span className="text-xs text-[#999]">
+              <span className="text-xs text-text-muted">
                 {LEAK_TYPE_LABELS[leak.type]}
               </span>
               {leak.customerEmail && (
                 <>
-                  <span className="text-xs text-[#999]">·</span>
-                  <span className="text-xs text-[#999] font-mono">
+                  <span className="text-xs text-text-muted">·</span>
+                  <span className="text-xs text-text-muted font-mono">
                     {leak.customerEmail}
                   </span>
                 </>
@@ -63,7 +63,7 @@ export default function LeakCard({ leak }: LeakCardProps) {
 
           {/* Expand icon */}
           <svg
-            className={`w-4 h-4 text-[#999] flex-shrink-0 transition-transform mt-1 ${
+            className={`w-4 h-4 text-text-muted flex-shrink-0 transition-transform mt-1 ${
               expanded ? "rotate-180" : ""
             }`}
             fill="none"
@@ -80,39 +80,42 @@ export default function LeakCard({ leak }: LeakCardProps) {
         </div>
       </button>
 
-      {expanded && (
-        <div className="px-4 pb-4 pt-0 border-t border-[#1A1A1A]">
-          <div className="mt-3 space-y-3">
+      <div className={`grid transition-[grid-template-rows] duration-200 ease-out ${
+        expanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+      }`}>
+        <div className="overflow-hidden">
+          <div className="px-4 pb-4 pt-0 border-t border-border-light">
+            <div className="mt-3 space-y-3">
             {/* Description */}
-            <p className="text-sm text-[#999] leading-relaxed">
+            <p className="text-sm text-text-muted leading-relaxed">
               {leak.description}
             </p>
 
             {/* Impact */}
             <div className="flex gap-4">
-              <div className="bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-lg px-4 py-3" style={{ boxShadow: "0 0 20px rgba(239, 68, 68, 0.08)" }}>
-                <p className="text-[10px] text-[#EF4444] uppercase tracking-wider">
+              <div className="bg-danger/10 border border-danger/20 rounded-lg px-4 py-3" style={{ boxShadow: "0 0 20px rgba(239, 68, 68, 0.08)" }}>
+                <p className="text-xs text-danger uppercase tracking-wider">
                   Monthly Impact
                 </p>
-                <p className="text-base font-bold text-[#EF4444]">
+                <p className="text-base font-bold text-danger">
                   {formatCurrency(leak.monthlyImpact)}
                 </p>
               </div>
-              <div className="bg-[#F59E0B]/10 border border-[#F59E0B]/20 rounded-lg px-4 py-3" style={{ boxShadow: "0 0 20px rgba(245, 158, 11, 0.08)" }}>
-                <p className="text-[10px] text-[#F59E0B] uppercase tracking-wider">
+              <div className="bg-warning/10 border border-warning/20 rounded-lg px-4 py-3" style={{ boxShadow: "0 0 20px rgba(245, 158, 11, 0.08)" }}>
+                <p className="text-xs text-warning uppercase tracking-wider">
                   Annual Impact
                 </p>
-                <p className="text-base font-bold text-[#F59E0B]">
+                <p className="text-base font-bold text-warning">
                   {formatCurrency(leak.annualImpact)}
                 </p>
               </div>
             </div>
 
             {/* Fix suggestion */}
-            <div className="bg-[#10B981]/5 border border-[#10B981]/20 rounded-lg p-3">
+            <div className="bg-brand/5 border border-brand/20 rounded-lg p-3">
               <div className="flex items-start gap-2">
                 <svg
-                  className="w-4 h-4 text-[#10B981] flex-shrink-0 mt-0.5"
+                  className="w-4 h-4 text-brand flex-shrink-0 mt-0.5"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -125,10 +128,10 @@ export default function LeakCard({ leak }: LeakCardProps) {
                   />
                 </svg>
                 <div>
-                  <p className="text-xs font-semibold text-[#10B981] mb-1">
+                  <p className="text-xs font-semibold text-brand mb-1">
                     How to fix
                   </p>
-                  <p className="text-xs text-[#999] leading-relaxed">
+                  <p className="text-xs text-text-muted leading-relaxed">
                     {leak.fixSuggestion}
                   </p>
                   {leak.stripeUrl && (
@@ -136,7 +139,7 @@ export default function LeakCard({ leak }: LeakCardProps) {
                       href={leak.stripeUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 mt-2 text-xs font-medium text-[#10B981] hover:text-[#34D399] transition"
+                      className="inline-flex items-center gap-1 mt-2 text-xs font-medium text-brand hover:text-brand-light transition"
                     >
                       View in Stripe
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -147,9 +150,10 @@ export default function LeakCard({ leak }: LeakCardProps) {
                 </div>
               </div>
             </div>
+            </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

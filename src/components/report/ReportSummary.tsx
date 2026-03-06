@@ -12,7 +12,7 @@ export default function ReportSummary({ summary }: ReportSummaryProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
       {/* Health Score - spans 1 col */}
-      <div className="bg-[#111111] border border-[#2A2A2A] rounded-xl p-6 flex items-center justify-center lg:col-span-1 animate-fade-in-up">
+      <div className="bg-surface border border-border rounded-xl p-6 flex items-center justify-center lg:col-span-1 animate-fade-in-up">
         <HealthScore score={summary.healthScore} />
       </div>
 
@@ -88,20 +88,20 @@ function AnimatedStatCard({
 
   return (
     <div
-      className={`bg-[#111111] border-l-2 border border-[#2A2A2A] rounded-xl p-5 animate-fade-in-up ${glowClass}`}
+      className={`bg-surface border-l-2 border border-border rounded-xl p-5 animate-fade-in-up ${glowClass}`}
       style={{ borderLeftColor: color }}
     >
-      <p className="text-xs text-[#999] uppercase tracking-wider mb-1">
+      <p className="text-xs text-text-muted uppercase tracking-wider mb-1">
         {label}
       </p>
       <p className="text-3xl font-bold" style={{ color }}>
         {isCurrency ? "$" : ""}
         {animated.toLocaleString()}
         {suffix && (
-          <span className="text-sm font-normal text-[#999]">{suffix}</span>
+          <span className="text-sm font-normal text-text-muted">{suffix}</span>
         )}
       </p>
-      <p className="text-xs text-[#999] mt-1">{description}</p>
+      <p className="text-xs text-text-muted mt-1">{description}</p>
     </div>
   );
 }

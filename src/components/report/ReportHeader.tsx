@@ -34,28 +34,28 @@ export default function ReportHeader({ scannedAt, isLoggedIn = false, report }: 
   }
 
   return (
-    <header className="border-b border-[#2A2A2A] bg-[#0A0A0A]/80 backdrop-blur-sm sticky top-0 z-50">
+    <header className="border-b border-border bg-surface-dim/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link
             href={isLoggedIn ? "/dashboard" : "/"}
             className="text-lg font-bold text-white flex items-center gap-2"
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#10B981]">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
               </svg>
             </div>
             RevReclaim
           </Link>
-          <div className="hidden sm:block h-5 w-px bg-[#2A2A2A]" />
-          <span className="hidden sm:block text-sm text-[#999]">
+          <div className="hidden sm:block h-5 w-px bg-border" />
+          <span className="hidden sm:block text-sm text-text-muted">
             Revenue Leak Report
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-[#999] hidden lg:block">
+        <div className="flex items-center gap-2 min-h-[44px]">
+          <span className="text-xs text-text-muted hidden lg:block">
             {formattedDate} at {formattedTime}
           </span>
 
@@ -64,7 +64,7 @@ export default function ReportHeader({ scannedAt, isLoggedIn = false, report }: 
             <>
               <button
                 onClick={handleExportPDF}
-                className="px-2.5 py-1.5 text-xs font-medium text-[#999] border border-[#2A2A2A] rounded-lg hover:text-white hover:border-[#10B981]/30 transition cursor-pointer hidden sm:flex items-center gap-1"
+                className="px-3 py-2 text-xs font-medium text-text-muted border border-border rounded-lg min-h-[36px] hover:text-white hover:border-brand/30 transition cursor-pointer hidden sm:flex items-center gap-1"
                 aria-label="Export as PDF"
               >
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -74,7 +74,7 @@ export default function ReportHeader({ scannedAt, isLoggedIn = false, report }: 
               </button>
               <button
                 onClick={handleExportCSV}
-                className="px-2.5 py-1.5 text-xs font-medium text-[#999] border border-[#2A2A2A] rounded-lg hover:text-white hover:border-[#10B981]/30 transition cursor-pointer hidden sm:flex items-center gap-1"
+                className="px-3 py-2 text-xs font-medium text-text-muted border border-border rounded-lg min-h-[36px] hover:text-white hover:border-brand/30 transition cursor-pointer hidden sm:flex items-center gap-1"
                 aria-label="Export as CSV"
               >
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -88,14 +88,14 @@ export default function ReportHeader({ scannedAt, isLoggedIn = false, report }: 
           {isLoggedIn && (
             <Link
               href="/dashboard"
-              className="px-3 py-1.5 text-xs font-medium text-[#999] border border-[#2A2A2A] rounded-lg hover:text-white hover:border-[#10B981]/30 transition hidden sm:block"
+              className="px-3 py-2 text-xs font-medium text-text-muted border border-border rounded-lg min-h-[36px] hover:text-white hover:border-brand/30 transition hidden sm:block"
             >
               Dashboard
             </Link>
           )}
           <Link
             href="/scan"
-            className="px-3 py-1.5 text-xs font-medium bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20 rounded-lg hover:bg-[#10B981]/20 transition"
+            className="px-3 py-2 text-xs font-medium bg-brand/10 text-brand border border-brand/20 rounded-lg min-h-[36px] hover:bg-brand/20 transition"
           >
             Run New Scan
           </Link>

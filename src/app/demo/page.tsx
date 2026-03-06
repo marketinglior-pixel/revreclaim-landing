@@ -528,7 +528,7 @@ const DEMO_REPORT: ScanReport = {
 
 export default function DemoReportPage() {
   return (
-    <div className="min-h-screen bg-[#0A0A0A]">
+    <div className="min-h-screen bg-surface-dim">
       <ReportHeader
         scannedAt={DEMO_REPORT.scannedAt}
         isLoggedIn={true}

@@ -129,13 +129,13 @@ export default function TeamPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white">Team</h1>
-        <p className="text-sm text-[#999] mt-1">
+        <p className="text-sm text-text-muted mt-1">
           Invite team members to view shared revenue leak reports.
         </p>
       </div>
 
       {/* Invite form */}
-      <div className="rounded-xl border border-[#2A2A2A] bg-[#111] p-6">
+      <div className="rounded-xl border border-border bg-surface p-6">
         <h2 className="text-lg font-semibold text-white mb-4">
           Invite a team member
         </h2>
@@ -145,13 +145,13 @@ export default function TeamPage() {
             value={inviteEmail}
             onChange={(e) => setInviteEmail(e.target.value)}
             placeholder="colleague@company.com"
-            className="flex-1 px-4 py-2.5 rounded-lg bg-[#0A0A0A] border border-[#2A2A2A] text-white placeholder-[#555] text-sm focus:outline-none focus:border-[#10B981] transition"
+            className="flex-1 px-4 py-2.5 rounded-lg bg-surface-dim border border-border text-white placeholder-text-dim text-sm focus:outline-none focus:border-brand transition"
             disabled={inviting}
           />
           <button
             type="submit"
             disabled={inviting || !inviteEmail.trim()}
-            className="px-5 py-2.5 bg-[#10B981] hover:bg-[#059669] disabled:bg-[#10B981]/30 disabled:cursor-not-allowed text-black font-bold rounded-lg transition text-sm"
+            className="px-5 py-2.5 bg-brand hover:bg-brand-dark disabled:bg-brand/30 disabled:cursor-not-allowed text-black font-bold rounded-lg transition text-sm"
           >
             {inviting ? "Sending..." : "Send Invite"}
           </button>
@@ -161,52 +161,52 @@ export default function TeamPage() {
           <div
             className={`mt-3 p-3 rounded-lg text-sm ${
               message.type === "success"
-                ? "bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20"
-                : "bg-[#EF4444]/10 text-[#EF4444] border border-[#EF4444]/20"
+                ? "bg-brand/10 text-brand border border-brand/20"
+                : "bg-danger/10 text-danger border border-danger/20"
             }`}
           >
             {message.text}
           </div>
         )}
 
-        <p className="text-xs text-[#666] mt-3">
+        <p className="text-xs text-text-dim mt-3">
           Team plan supports up to 10 members. Members can view all shared
           reports.
         </p>
       </div>
 
       {/* Members list */}
-      <div className="rounded-xl border border-[#2A2A2A] bg-[#111] overflow-hidden">
-        <div className="px-6 py-4 border-b border-[#2A2A2A] flex items-center justify-between">
+      <div className="rounded-xl border border-border bg-surface overflow-hidden">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h2 className="text-lg font-semibold text-white">
             Team Members
           </h2>
-          <span className="text-xs text-[#999]">
+          <span className="text-xs text-text-muted">
             {members.length}/10 seats used
           </span>
         </div>
 
         {loading ? (
           <div className="p-8 text-center">
-            <div className="w-6 h-6 border-2 border-[#10B981] border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-sm text-[#666] mt-3">Loading team...</p>
+            <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-sm text-text-dim mt-3">Loading team...</p>
           </div>
         ) : members.length === 0 ? (
           <div className="p-8 text-center">
-            <p className="text-sm text-[#666]">
+            <p className="text-sm text-text-dim">
               No team members yet. Send your first invite above.
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-[#2A2A2A]">
+          <div className="divide-y divide-border">
             {members.map((member) => (
               <div
                 key={member.id}
                 className="px-6 py-4 flex items-center justify-between"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-[#10B981]/10 flex items-center justify-center">
-                    <span className="text-sm font-bold text-[#10B981]">
+                  <div className="w-9 h-9 rounded-full bg-brand/10 flex items-center justify-center">
+                    <span className="text-sm font-bold text-brand">
                       {member.member_email[0]?.toUpperCase()}
                     </span>
                   </div>
@@ -215,15 +215,15 @@ export default function TeamPage() {
                       {member.member_email}
                     </p>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-xs text-[#666] capitalize">
+                      <span className="text-xs text-text-dim capitalize">
                         {member.role}
                       </span>
                       {member.invite_status === "pending" ? (
-                        <span className="px-1.5 py-0.5 text-[10px] font-medium bg-yellow-500/10 text-yellow-500 rounded">
+                        <span className="px-2 py-0.5 text-xs font-medium bg-yellow-500/10 text-yellow-500 rounded">
                           Pending
                         </span>
                       ) : (
-                        <span className="px-1.5 py-0.5 text-[10px] font-medium bg-[#10B981]/10 text-[#10B981] rounded">
+                        <span className="px-2 py-0.5 text-xs font-medium bg-brand/10 text-brand rounded">
                           Active
                         </span>
                       )}
@@ -235,7 +235,7 @@ export default function TeamPage() {
                   onClick={() =>
                     handleRemove(member.id, member.member_email)
                   }
-                  className="text-xs text-[#666] hover:text-[#EF4444] transition cursor-pointer"
+                  className="text-xs text-text-dim hover:text-danger transition cursor-pointer"
                 >
                   Remove
                 </button>

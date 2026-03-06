@@ -1,6 +1,7 @@
 "use client";
 
 import { useAnimatedNumber } from "@/lib/useAnimatedNumber";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 interface HealthScoreProps {
   score: number;
@@ -22,6 +23,7 @@ function getScoreLabel(score: number): string {
 }
 
 export default function HealthScore({ score }: HealthScoreProps) {
+  const prefersReducedMotion = useReducedMotion();
   const animatedScore = useAnimatedNumber(score, 1200, 100);
   const color = getScoreColor(score);
   const label = getScoreLabel(score);
@@ -66,7 +68,7 @@ export default function HealthScore({ score }: HealthScoreProps) {
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
-            className="transition-all duration-1000 ease-out"
+            className={prefersReducedMotion ? "" : "transition-all duration-1000 ease-out"}
           />
         </svg>
         {/* Score text */}
@@ -77,14 +79,14 @@ export default function HealthScore({ score }: HealthScoreProps) {
           >
             {animatedScore}
           </span>
-          <span className="text-xs text-[#999]">/ 100</span>
+          <span className="text-xs text-text-muted">/ 100</span>
         </div>
       </div>
       <div className="text-center">
         <p className="text-sm font-semibold" style={{ color }}>
           {label}
         </p>
-        <p className="text-xs text-[#999]">Billing Health Score</p>
+        <p className="text-xs text-text-muted">Billing Health Score</p>
       </div>
     </div>
   );

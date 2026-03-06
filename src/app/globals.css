@@ -7,10 +7,19 @@
   --color-brand-dark: #059669;
   --color-danger: #EF4444;
   --color-warning: #F59E0B;
+  --color-info: #3B82F6;
+  --color-purple: #8B5CF6;
+  --color-orange: #F97316;
   --color-surface: #111111;
   --color-surface-light: #1A1A1A;
   --color-surface-lighter: #222222;
+  --color-surface-dim: #0A0A0A;
   --color-border: #2A2A2A;
+  --color-border-light: #1A1A1A;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #CCCCCC;
+  --color-text-muted: #A3A3A3;
+  --color-text-dim: #666666;
 }
 
 * {
@@ -22,15 +31,28 @@ html {
 }
 
 body {
-  background: #0A0A0A;
+  background: var(--color-surface-dim);
   color: #E5E5E5;
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
 }
 
 ::selection {
-  background: #10B981;
+  background: var(--color-brand);
   color: #000;
 }
+
+/*
+ * ── Button Size System ──────────────────────────────────────
+ * btn-xs : px-3 py-2     text-xs   rounded-lg  min-h-[36px]  → nav pills, export buttons
+ * btn-sm : px-4 py-2.5   text-sm   rounded-lg  min-h-[40px]  → header CTA, secondary buttons
+ * btn-md : px-5 py-3     text-sm   rounded-lg  min-h-[44px]  → pricing CTAs, form submits
+ * btn-lg : px-8 py-4     text-base rounded-xl  min-h-[52px]  → hero CTA, final CTA
+ *
+ * Hover glow for primary (green bg) buttons:
+ *   btn-lg : hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]
+ *   btn-md/sm : hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]
+ * ─────────────────────────────────────────────────────────────
+ */
 
 /* Scroll-triggered fade-in-up animation */
 @keyframes fadeInUp {
@@ -45,18 +67,15 @@ body {
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out both;
+  animation: fadeInUp 0.35s ease-out forwards;
 }
 
-/* Stagger delays for children */
-.animate-delay-100 { animation-delay: 100ms; }
-.animate-delay-200 { animation-delay: 200ms; }
-.animate-delay-300 { animation-delay: 300ms; }
-.animate-delay-400 { animation-delay: 400ms; }
-.animate-delay-500 { animation-delay: 500ms; }
-.animate-delay-600 { animation-delay: 600ms; }
-.animate-delay-700 { animation-delay: 700ms; }
-.animate-delay-800 { animation-delay: 800ms; }
+/* Stagger delays for children (5 levels, 50ms increments) */
+.animate-delay-100 { animation-delay: 50ms; }
+.animate-delay-200 { animation-delay: 100ms; }
+.animate-delay-300 { animation-delay: 150ms; }
+.animate-delay-400 { animation-delay: 200ms; }
+.animate-delay-500 { animation-delay: 250ms; }
 
 /* Pulse glow animation */
 @keyframes pulseGlow {
@@ -70,23 +89,76 @@ body {
   to { width: var(--bar-width); }
 }
 
-/* Glow utility classes */
+/* Glow utility classes — pulse twice then stop */
 .glow-green {
   box-shadow: 0 0 40px rgba(16, 185, 129, 0.15), 0 0 80px rgba(16, 185, 129, 0.05);
-  animation: pulseGlow 3s ease-in-out infinite;
+  animation: pulseGlow 2s ease-in-out 2;
 }
 
 .glow-red {
   box-shadow: 0 0 40px rgba(239, 68, 68, 0.15), 0 0 80px rgba(239, 68, 68, 0.05);
-  animation: pulseGlow 3s ease-in-out infinite;
+  animation: pulseGlow 2s ease-in-out 2;
 }
 
 .glow-orange {
   box-shadow: 0 0 40px rgba(249, 115, 22, 0.15), 0 0 80px rgba(249, 115, 22, 0.05);
-  animation: pulseGlow 3s ease-in-out infinite;
+  animation: pulseGlow 2s ease-in-out 2;
 }
 
 .glow-blue {
   box-shadow: 0 0 40px rgba(59, 130, 246, 0.15), 0 0 80px rgba(59, 130, 246, 0.05);
-  animation: pulseGlow 3s ease-in-out infinite;
+  animation: pulseGlow 2s ease-in-out 2;
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .glow-green,
+  .glow-red,
+  .glow-orange,
+  .glow-blue {
+    animation: none !important;
+  }
+
+  .animate-delay-100,
+  .animate-delay-200,
+  .animate-delay-300,
+  .animate-delay-400,
+  .animate-delay-500 {
+    animation-delay: 0ms !important;
+  }
+
+  .animate-pulse {
+    animation: none !important;
+  }
+
+  .animate-spin {
+    animation: none !important;
+  }
+
+  /* Disable all transitions globally for reduced-motion users */
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* Keyboard focus ring — visible only for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Remove focus ring for mouse clicks */
+:focus:not(:focus-visible) {
+  outline: none;
 }

@@ -135,16 +135,16 @@ export default function ScanForm() {
     <div className="w-full max-w-lg mx-auto">
       {/* Logged-in banner */}
       {isLoggedIn && userEmail && (
-        <div className="mb-4 rounded-lg bg-[#10B981]/10 border border-[#10B981]/20 px-4 py-3 flex items-center justify-between">
+        <div className="mb-4 rounded-lg bg-brand/10 border border-brand/20 px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <svg className="w-4 h-4 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
-            <span className="text-sm text-[#10B981]">
+            <span className="text-sm text-brand">
               Signed in as <span className="font-medium">{userEmail}</span>
             </span>
           </div>
-          <Link href="/dashboard" className="text-xs text-[#10B981] hover:text-[#34D399] transition">
+          <Link href="/dashboard" className="text-xs text-brand hover:text-brand-light transition">
             Dashboard →
           </Link>
         </div>
@@ -152,9 +152,9 @@ export default function ScanForm() {
 
       {/* Not logged in — encourage signup */}
       {!isLoggedIn && (
-        <div className="mb-4 rounded-lg bg-[#111] border border-[#2A2A2A] px-4 py-3 flex items-center justify-between">
-          <span className="text-xs text-[#999]">
-            <Link href="/auth/signup" className="text-[#10B981] hover:text-[#34D399] transition font-medium">
+        <div className="mb-4 rounded-lg bg-surface border border-border px-4 py-3 flex items-center justify-between">
+          <span className="text-xs text-text-muted">
+            <Link href="/auth/signup" className="text-brand hover:text-brand-light transition font-medium">
               Create a free account
             </Link>
             {" "}to save your reports permanently.
@@ -167,7 +167,7 @@ export default function ScanForm() {
         <div>
           <label
             htmlFor="email"
-            className="block text-sm font-medium text-[#ccc] mb-1.5"
+            className="block text-sm font-medium text-text-secondary mb-1.5"
           >
             Work email
           </label>
@@ -178,7 +178,7 @@ export default function ScanForm() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@company.com"
             disabled={isScanning}
-            className="w-full px-4 py-3 bg-[#111111] border border-[#2A2A2A] rounded-lg text-white placeholder-[#666] focus:border-[#10B981] focus:outline-none focus:ring-1 focus:ring-[#10B981] transition disabled:opacity-50"
+            className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-white placeholder-text-dim focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition disabled:opacity-50"
           />
         </div>
 
@@ -186,7 +186,7 @@ export default function ScanForm() {
         <div>
           <label
             htmlFor="apiKey"
-            className="block text-sm font-medium text-[#ccc] mb-1.5"
+            className="block text-sm font-medium text-text-secondary mb-1.5"
           >
             Stripe Restricted API Key
           </label>
@@ -198,12 +198,12 @@ export default function ScanForm() {
               onChange={(e) => setApiKey(e.target.value)}
               placeholder="rk_live_..."
               disabled={isScanning}
-              className="w-full px-4 py-3 pr-12 bg-[#111111] border border-[#2A2A2A] rounded-lg text-white placeholder-[#666] focus:border-[#10B981] focus:outline-none focus:ring-1 focus:ring-[#10B981] transition font-mono text-sm disabled:opacity-50"
+              className="w-full px-4 py-3 pr-12 bg-surface border border-border rounded-lg text-white placeholder-text-dim focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition font-mono text-sm disabled:opacity-50"
             />
             <button
               type="button"
               onClick={() => setShowKey(!showKey)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#999] transition"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-muted transition"
             >
               {showKey ? (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -226,13 +226,13 @@ export default function ScanForm() {
         <button
           type="submit"
           disabled={isScanning}
-          className="w-full py-3.5 bg-[#10B981] hover:bg-[#059669] text-black font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-base"
+          className="w-full py-3 bg-brand text-sm font-bold text-black rounded-lg min-h-[44px] transition-all hover:bg-brand-dark hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           {isScanning ? "Scanning..." : "Scan My Stripe → Get My Report"}
         </button>
 
         {/* Security badge */}
-        <div className="flex items-center justify-center gap-4 text-xs text-[#999]">
+        <div className="flex items-center justify-center gap-4 text-xs text-text-muted">
           <span className="flex items-center gap-1">
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -256,24 +256,24 @@ export default function ScanForm() {
 
       {/* Progress indicator */}
       {isScanning && (
-        <div className="mt-6 bg-[#111111] border border-[#2A2A2A] rounded-xl p-5">
+        <div className="mt-6 bg-surface border border-border rounded-xl p-5">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-5 h-5 border-2 border-[#10B981] border-t-transparent rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-brand border-t-transparent rounded-full animate-spin" />
             <p className="text-sm text-white font-medium">
               {scanStatus.status === "scanning"
                 ? scanStatus.step
                 : "Validating API key..."}
             </p>
           </div>
-          <div className="w-full h-2 bg-[#1A1A1A] rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-surface-light rounded-full overflow-hidden">
             <div
-              className="h-full bg-[#10B981] rounded-full transition-all duration-500 ease-out"
+              className="h-full bg-brand rounded-full transition-all duration-500 ease-out"
               style={{
                 width: `${scanStatus.status === "scanning" ? scanStatus.progress : 5}%`,
               }}
             />
           </div>
-          <p className="text-xs text-[#999] mt-2">
+          <p className="text-xs text-text-muted mt-2">
             This usually takes 30-90 seconds depending on your account size.
           </p>
         </div>
@@ -281,10 +281,10 @@ export default function ScanForm() {
 
       {/* Error message */}
       {scanStatus.status === "error" && (
-        <div className="mt-4 bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl p-4">
+        <div className="mt-4 bg-danger/10 border border-danger/20 rounded-xl p-4">
           <div className="flex items-start gap-3">
             <svg
-              className="w-5 h-5 text-[#EF4444] flex-shrink-0 mt-0.5"
+              className="w-5 h-5 text-danger flex-shrink-0 mt-0.5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -297,8 +297,8 @@ export default function ScanForm() {
               />
             </svg>
             <div>
-              <p className="text-sm text-[#EF4444] font-medium">Scan Failed</p>
-              <p className="text-xs text-[#999] mt-1">{scanStatus.message}</p>
+              <p className="text-sm text-danger font-medium">Scan Failed</p>
+              <p className="text-xs text-text-muted mt-1">{scanStatus.message}</p>
             </div>
           </div>
         </div>

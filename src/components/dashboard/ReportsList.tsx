@@ -5,9 +5,9 @@ import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
 
 function getScoreBg(score: number) {
-  if (score > 75) return "bg-[#10B981]/10 text-[#10B981]";
-  if (score >= 50) return "bg-[#F59E0B]/10 text-[#F59E0B]";
-  return "bg-[#EF4444]/10 text-[#EF4444]";
+  if (score > 75) return "bg-brand/10 text-brand";
+  if (score >= 50) return "bg-warning/10 text-warning";
+  return "bg-danger/10 text-danger";
 }
 
 function relativeTime(dateStr: string): string {
@@ -31,16 +31,16 @@ function relativeTime(dateStr: string): string {
 export default function ReportsList({ reports }: { reports: ScanReport[] }) {
   return (
     <div className="animate-fade-in-up animate-delay-400">
-      <div className="rounded-2xl border border-[#2A2A2A] bg-[#111] overflow-hidden">
-        <div className="px-6 py-4 border-b border-[#2A2A2A] flex items-center justify-between">
+      <div className="rounded-2xl border border-border bg-surface overflow-hidden">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h2 className="text-sm font-semibold text-white">Scan History</h2>
           <div className="flex items-center gap-3">
-            <span className="text-xs text-[#999]">
+            <span className="text-xs text-text-muted">
               {reports.length} report{reports.length === 1 ? "" : "s"}
             </span>
             <Link
               href="/scan"
-              className="text-xs font-semibold text-[#10B981] hover:text-[#34D399] transition"
+              className="text-xs font-semibold text-brand hover:text-brand-light transition"
             >
               Run Another Scan &rarr;
             </Link>
@@ -50,7 +50,7 @@ export default function ReportsList({ reports }: { reports: ScanReport[] }) {
         {/* Desktop Table */}
         <div className="hidden md:block">
           {/* Header */}
-          <div className="grid grid-cols-12 gap-4 px-6 py-3 text-xs font-medium text-[#999] border-b border-[#1A1A1A]">
+          <div className="grid grid-cols-12 gap-4 px-6 py-3 text-xs font-medium text-text-muted border-b border-border-light">
             <div className="col-span-3">Date</div>
             <div className="col-span-2">Health</div>
             <div className="col-span-2">Leaks</div>
@@ -66,7 +66,7 @@ export default function ReportsList({ reports }: { reports: ScanReport[] }) {
               <Link
                 key={report.id}
                 href={`/report/${report.id}`}
-                className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-[#1A1A1A] hover:bg-[#1A1A1A]/50 transition items-center group"
+                className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-border-light hover:bg-surface-light/50 transition items-center group cursor-pointer"
               >
                 <div className="col-span-3">
                   <p className="text-sm text-white">
@@ -76,7 +76,7 @@ export default function ReportsList({ reports }: { reports: ScanReport[] }) {
                       year: "numeric",
                     })}
                   </p>
-                  <p className="text-xs text-[#666]">
+                  <p className="text-xs text-text-dim">
                     {relativeTime(report.scannedAt)}
                   </p>
                 </div>
@@ -85,7 +85,7 @@ export default function ReportsList({ reports }: { reports: ScanReport[] }) {
                   <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-sm font-bold ${getScoreBg(report.summary.healthScore)}`}>
                     {report.summary.healthScore}
                   </span>
-                  <span className="text-xs text-[#999] ml-1">/100</span>
+                  <span className="text-xs text-text-muted ml-1">/100</span>
                 </div>
 
                 <div className="col-span-2">
@@ -93,19 +93,19 @@ export default function ReportsList({ reports }: { reports: ScanReport[] }) {
                     {report.summary.leaksFound}
                   </span>
                   {report.summary.leaksFound > 0 && (
-                    <span className="text-xs text-[#999] ml-1">found</span>
+                    <span className="text-xs text-text-muted ml-1">found</span>
                   )}
                 </div>
 
                 <div className="col-span-3">
-                  <span className="text-sm font-bold text-[#EF4444]">
+                  <span className="text-sm font-bold text-danger">
                     {formatCurrency(report.summary.mrrAtRisk)}
                   </span>
-                  <span className="text-xs text-[#999]">/mo</span>
+                  <span className="text-xs text-text-muted">/mo</span>
                 </div>
 
                 <div className="col-span-2 text-right">
-                  <span className="text-xs text-[#10B981] font-medium group-hover:text-[#34D399] transition">
+                  <span className="text-xs text-brand font-medium group-hover:text-brand-light transition">
                     View Report &rarr;
                   </span>
                 </div>
@@ -115,7 +115,7 @@ export default function ReportsList({ reports }: { reports: ScanReport[] }) {
         </div>
 
         {/* Mobile Cards */}
-        <div className="md:hidden divide-y divide-[#1A1A1A]">
+        <div className="md:hidden divide-y divide-border-light">
           {reports.map((report) => {
             const date = new Date(report.scannedAt);
             const scoreBg = getScoreBg(report.summary.healthScore);
@@ -124,7 +124,7 @@ export default function ReportsList({ reports }: { reports: ScanReport[] }) {
               <Link
                 key={report.id}
                 href={`/report/${report.id}`}
-                className="block p-4 hover:bg-[#1A1A1A]/50 transition active:bg-[#1A1A1A]/70"
+                className="block p-4 hover:bg-surface-light/50 transition active:bg-surface-light/70 cursor-pointer"
               >
                 {/* Top row: date + score pill */}
                 <div className="flex items-center justify-between mb-3">
@@ -136,7 +136,7 @@ export default function ReportsList({ reports }: { reports: ScanReport[] }) {
                         year: "numeric",
                       })}
                     </p>
-                    <p className="text-xs text-[#666]">
+                    <p className="text-xs text-text-dim">
                       {relativeTime(report.scannedAt)}
                     </p>
                   </div>
@@ -148,19 +148,19 @@ export default function ReportsList({ reports }: { reports: ScanReport[] }) {
                 {/* Stats row */}
                 <div className="flex items-center gap-4">
                   <div>
-                    <p className="text-xs text-[#999]">MRR at Risk</p>
-                    <p className="text-sm font-bold text-[#EF4444]">
+                    <p className="text-xs text-text-muted">MRR at Risk</p>
+                    <p className="text-sm font-bold text-danger">
                       {formatCurrency(report.summary.mrrAtRisk)}/mo
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-[#999]">Leaks</p>
+                    <p className="text-xs text-text-muted">Leaks</p>
                     <p className="text-sm font-bold text-white">
                       {report.summary.leaksFound}
                     </p>
                   </div>
                   <div className="ml-auto">
-                    <span className="text-xs font-medium text-[#10B981]">
+                    <span className="text-xs font-medium text-brand">
                       View &rarr;
                     </span>
                   </div>

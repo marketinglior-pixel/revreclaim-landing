@@ -58,16 +58,16 @@ export function FAQ() {
   const sectionRef = useSectionView("faq");
 
   return (
-    <section ref={sectionRef} id="faq" className="border-t border-[#1A1A1A] py-20 md:py-28">
+    <section ref={sectionRef} id="faq" className="border-t border-border-light py-20 md:py-28">
       <div className="mx-auto max-w-3xl px-6">
-        <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-[#10B981]">
+        <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-brand">
           FAQ
         </div>
         {/* Headline — damaging admission builds trust (Hormozi Hack #5) */}
         <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
           Questions we get from skeptical founders
         </h2>
-        <p className="mb-12 text-center text-lg text-[#999] italic">
+        <p className="mb-12 text-center text-lg text-text-muted italic">
           (Good. You should be skeptical.)
         </p>
 
@@ -75,7 +75,7 @@ export function FAQ() {
           {faqs.map((faq, i) => (
             <div
               key={i}
-              className="rounded-xl border border-[#2A2A2A] bg-[#111] transition-colors hover:border-[#333]"
+              className="rounded-xl border border-border bg-surface/80 backdrop-blur-sm transition-colors hover:border-border"
             >
               <button
                 onClick={() => setOpen(open === i ? null : i)}
@@ -83,7 +83,7 @@ export function FAQ() {
               >
                 <span className="text-sm font-semibold text-white">{faq.q}</span>
                 <svg
-                  className={`h-5 w-5 shrink-0 text-[#999] transition-transform ${
+                  className={`h-5 w-5 shrink-0 text-text-muted transition-transform ${
                     open === i ? "rotate-180" : ""
                   }`}
                   fill="none"
@@ -94,11 +94,15 @@ export function FAQ() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              {open === i && (
-                <div className="border-t border-[#1A1A1A] px-5 py-4 text-sm leading-relaxed text-[#999]">
-                  {faq.a}
+              <div className={`grid transition-[grid-template-rows] duration-200 ease-out ${
+                open === i ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+              }`}>
+                <div className="overflow-hidden">
+                  <div className="border-t border-border-light px-5 py-4 text-sm leading-relaxed text-text-muted">
+                    {faq.a}
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </div>

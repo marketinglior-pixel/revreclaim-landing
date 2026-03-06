@@ -43,7 +43,7 @@ export default function ApiKeyInstructions() {
     <div className="w-full">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 text-sm text-[#10B981] hover:text-[#34D399] transition-colors cursor-pointer"
+        className="flex items-center gap-2 text-sm text-brand hover:text-brand-light transition-colors cursor-pointer"
       >
         <svg
           className={`w-4 h-4 transition-transform ${isOpen ? "rotate-90" : ""}`}
@@ -62,11 +62,11 @@ export default function ApiKeyInstructions() {
       </button>
 
       {isOpen && (
-        <div className="mt-4 space-y-4 bg-[#111111] rounded-xl p-5 border border-[#2A2A2A]">
+        <div className="mt-4 space-y-4 bg-surface rounded-xl p-5 border border-border">
           {steps.map((step) => (
             <div key={step.number} className="flex gap-3">
-              <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[#10B981]/10 border border-[#10B981]/20 flex items-center justify-center">
-                <span className="text-xs font-bold text-[#10B981]">
+              <div className="flex-shrink-0 w-7 h-7 rounded-full bg-brand/10 border border-brand/20 flex items-center justify-center">
+                <span className="text-xs font-bold text-brand">
                   {step.number}
                 </span>
               </div>
@@ -74,7 +74,7 @@ export default function ApiKeyInstructions() {
                 <p className="text-sm font-semibold text-white">
                   {step.title}
                 </p>
-                <p className="text-xs text-[#999] mt-0.5">
+                <p className="text-xs text-text-muted mt-0.5">
                   {step.description}
                 </p>
                 {step.link && (
@@ -82,7 +82,7 @@ export default function ApiKeyInstructions() {
                     href={step.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-[#10B981] hover:text-[#34D399] mt-1"
+                    className="inline-flex items-center gap-1 text-xs text-brand hover:text-brand-light mt-1"
                   >
                     Open Stripe Dashboard →
                   </a>
@@ -92,7 +92,7 @@ export default function ApiKeyInstructions() {
                     {step.permissions.map((p) => (
                       <span
                         key={p}
-                        className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-[#10B981]/10 text-[#10B981] rounded border border-[#10B981]/20"
+                        className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-brand/10 text-brand rounded border border-brand/20"
                       >
                         <svg
                           className="w-3 h-3"
@@ -116,9 +116,9 @@ export default function ApiKeyInstructions() {
             </div>
           ))}
 
-          <div className="flex items-center gap-2 mt-4 pt-3 border-t border-[#2A2A2A]">
+          <div className="flex items-center gap-2 mt-4 pt-3 border-t border-border">
             <svg
-              className="w-4 h-4 text-[#10B981]"
+              className="w-4 h-4 text-brand"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -130,7 +130,7 @@ export default function ApiKeyInstructions() {
                 d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
               />
             </svg>
-            <p className="text-xs text-[#999]">
+            <p className="text-xs text-text-muted">
               <span className="text-white font-medium">Read-only access</span>{" "}
               — We can only read data. We can&apos;t modify your Stripe account.
               Your key is never stored.
