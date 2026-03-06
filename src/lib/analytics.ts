@@ -26,8 +26,6 @@ export type AnalyticsEvent =
   | "page_view"
   | "section_viewed"
   | "cta_clicked"
-  | "ab_view"
-  | "ab_conversion"
   | "newsletter_signup";
 
 /**
