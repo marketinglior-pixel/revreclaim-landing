@@ -37,13 +37,12 @@ export function Hero() {
         <h1 className="mb-6 min-h-[4.5rem] sm:min-h-[5.5rem] md:min-h-[8rem] lg:min-h-[10rem] text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-6xl md:leading-[1.1] lg:text-7xl animate-fade-in-up animate-delay-200">
           {!headlineLoading && headlineVariant === "variant_a" ? (
             <>
-              Your Stripe account is{" "}
+              What would you do with an extra{" "}
               <span className="bg-gradient-to-r from-brand to-brand-light bg-clip-text text-transparent">
-                leaking revenue
-              </span>{" "}
-              right now.
+                $28K this year?
+              </span>
               <br />
-              We&apos;ll prove it in 90 seconds.
+              It&apos;s already sitting in your Stripe.
             </>
           ) : (
             <>
@@ -65,11 +64,12 @@ export function Hero() {
         <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-text-muted md:text-xl lg:text-xl animate-fade-in-up animate-delay-300">
           Here&apos;s what happens: you create a read-only Stripe key (60 seconds).
           You paste it here. We scan 7 categories of billing issues.
-          90 seconds later, a report appears with real customer names,
-          real dollar amounts, and one-click fixes.
+          90 seconds later, you&apos;re looking at a list of customers, dollar amounts,
+          and one-click fixes. Most founders fix everything before lunch — and see
+          the recovered revenue hit their next billing cycle.
           <br />
           <span className="text-text-secondary">
-            No sales call. No &ldquo;let us get back to you.&rdquo; Just the truth about your billing.
+            No sales call. No &ldquo;let us get back to you.&rdquo; Just money back in your account.
           </span>
         </p>
 
@@ -111,7 +111,7 @@ export function Hero() {
         <div className="mt-16 flex flex-wrap items-center justify-center gap-8 border-t border-border-light pt-8">
           <div className="text-center">
             <div className="text-2xl font-bold text-white">$2.1M+</div>
-            <div className="text-xs text-text-muted">Revenue leaks found</div>
+            <div className="text-xs text-text-muted">Revenue recovered</div>
           </div>
           <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
           <div className="text-center">

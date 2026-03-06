@@ -13,7 +13,7 @@ const plans = [
     badge: "FREE FOREVER",
     price: "$0",
     period: "",
-    description: "See exactly what you're losing. No strings.",
+    description: "See exactly how much you could recover. No strings.",
     features: [
       "Full 7-category leak scan",
       "Real customer names & dollar amounts",
@@ -33,7 +33,7 @@ const plans = [
     badge: "MOST POPULAR",
     price: "$299",
     period: "/month",
-    description: "Continuous protection. Never leak revenue again.",
+    description: "Set it and forget it. Your revenue stays protected while you build.",
     features: [
       "Everything in Revenue X-Ray",
       "Unlimited on-demand scans",
@@ -128,7 +128,7 @@ export function Pricing() {
         <p className="mx-auto mb-16 max-w-2xl text-center text-lg text-text-muted">
           Average recovery: <span className="text-white font-semibold">$2,340/mo</span>.
           Pro plan: <span className="text-white font-semibold">$299/mo</span>.
-          That&apos;s an <span className="text-brand font-semibold">8x return</span>.
+          That&apos;s an extra <span className="text-brand font-semibold">$24,492/year you keep</span> — from customers you already have.
           <br />
           If we don&apos;t find at least $1,000/mo in recoverable revenue, you pay nothing.
         </p>

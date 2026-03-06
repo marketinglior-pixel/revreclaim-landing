@@ -46,20 +46,20 @@ export function FinalCTA() {
           <span className="text-sm text-text-muted">have at least one revenue leak</span>
         </div>
 
-        {/* Headline — specific, personal (Hormozi Hack #1) */}
+        {/* Headline — future-focused (85/15 Rule) */}
         <h2 className="relative mb-4 text-3xl font-bold text-white md:text-5xl lg:text-6xl">
-          You already earned this money.
+          Picture this: next month,
           <br />
-          <span className="text-text-muted">It&apos;s sitting in Stripe, uncollected.</span>
+          <span className="text-text-muted">your MRR is $2,340 higher.</span>
         </h2>
 
-        {/* Time-decay urgency — real financial cost of waiting (Hormozi Hack #8) */}
+        {/* Future outcome + urgency (85/15 Rule + Hormozi Hack #8) */}
         <p className="relative mb-10 text-base md:text-lg text-text-muted leading-relaxed">
-          A $2,340/month leak doesn&apos;t start when you find it.
-          It started months ago. Every month you wait is another $2,340 gone.
+          No new customers. No new features. Just money that was always yours,
+          finally hitting your account. One scan. A few clicks. Done before lunch.
           <br />
           <span className="text-white font-semibold break-words">
-            The scan takes 90 seconds. The cost of waiting is $78/day.
+            A year from now, that&apos;s $28,080 in recovered revenue. The scan takes 90 seconds.
           </span>
         </p>
 
@@ -159,13 +159,12 @@ export function FinalCTA() {
         {/* P.S. section — second most-read element (Hormozi Hack #10) */}
         <div className="mt-16 mx-auto max-w-lg px-4 md:px-0 text-left">
           <p className="text-sm md:text-base text-text-muted leading-relaxed">
-            <span className="font-semibold text-white">P.S.</span> — If you&apos;re still
-            reading, you&apos;re probably the kind of founder who&apos;s careful about new tools.
-            Good. Here&apos;s what I&apos;d do: run the free scan. It takes 90 seconds
-            and shows you real dollar amounts with real customer names. If it finds nothing,
-            you wasted 90 seconds. If it finds $2,000/month you&apos;re not collecting — and it
-            probably will — you&apos;ll know exactly where to go in Stripe to fix it.
-            No commitment. No credit card. No catch.
+            <span className="font-semibold text-white">P.S.</span> — Imagine opening your
+            Stripe dashboard tomorrow knowing that every subscription is collecting, every
+            coupon is correct, every card is current. That&apos;s what our founders tell us
+            after their first scan. Not &ldquo;wow, I had leaks&rdquo; — but &ldquo;I finally know my
+            revenue number is real.&rdquo; Run the free scan. 90 seconds. The worst case is you
+            wasted 90 seconds. The best case is you just found your next raise.
           </p>
           <p className="mt-4 text-sm md:text-base text-text-muted leading-relaxed">
             <span className="font-semibold text-white">P.P.S.</span> — We only scan

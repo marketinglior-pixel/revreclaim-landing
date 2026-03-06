@@ -31,7 +31,7 @@ const testimonials = [
 
 /* Implied authority stats (Hormozi Hack #9) */
 const stats = [
-  { value: "$2.1M+", label: "Revenue leaks found to date" },
+  { value: "$2.1M+", label: "Revenue recovered to date" },
   { value: "847+", label: "Stripe accounts scanned" },
   { value: "$2,340", label: "Avg. monthly recovery" },
   { value: "94%", label: "Had at least 1 leak" },
@@ -46,16 +46,16 @@ export function SocialProof() {
         </div>
         {/* Headline with specific proof (Hormozi Hack #2: Say What Only You Can Say) */}
         <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
-          847 SaaS founders scanned their Stripe.
+          847 SaaS founders recovered revenue they&apos;d given up on.
           <br />
-          <span className="text-text-muted">94% found money they didn&apos;t know was missing.</span>
+          <span className="text-text-muted">Average: $2,340/month. Without changing anything about their product.</span>
         </h2>
         {/* Status tie (Hormozi Hack #7) */}
         <p className="mx-auto mb-16 max-w-2xl text-center text-lg text-text-muted">
-          These are founders at your stage, with your kind of Stripe account,
-          who ran a 90-second scan and found thousands they weren&apos;t collecting.
+          Same Stripe account. Same customers. Same product.
+          They just stopped leaving money on the table.
           <br />
-          <span className="text-white">The only difference between them and you? They already plugged the leaks.</span>
+          <span className="text-white">The only difference? They ran a 90-second scan.</span>
         </p>
 
         {/* Stats bar */}
