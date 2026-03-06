@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { trackEvent } from "@/lib/analytics";
 import { useSectionView } from "@/hooks/useSectionView";
-import { useExperiment } from "@/hooks/useExperiment";
 
 /* Grand Slam Offer naming ($100M Offers) + value stacking */
 const plans = [
@@ -75,8 +74,6 @@ export function Pricing() {
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const sectionRef = useSectionView("pricing");
-  const { trackConversion: trackHeadlineConversion } = useExperiment("hero_headline");
-  const { trackConversion: trackCtaConversion } = useExperiment("cta_text");
 
   async function handleCheckout(planId: string) {
     setLoadingPlan(planId);
@@ -206,7 +203,7 @@ export function Pricing() {
               {/* CTA Button */}
               {plan.isPaid ? (
                 <button
-                  onClick={() => { trackEvent("cta_clicked", null, { location: "pricing", action: "upgrade" }).catch(() => {}); trackHeadlineConversion("pricing_cta_click"); trackCtaConversion("pricing_cta_click"); handleCheckout(plan.planId); }}
+                  onClick={() => { trackEvent("cta_clicked", null, { location: "pricing", action: "upgrade" }).catch(() => {}); handleCheckout(plan.planId); }}
                   disabled={loadingPlan !== null}
                   className={`block w-full rounded-lg py-3 text-center text-sm font-semibold min-h-[44px] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
                     plan.highlighted
@@ -229,7 +226,7 @@ export function Pricing() {
               ) : (
                 <Link
                   href={plan.href}
-                  onClick={() => { trackHeadlineConversion("pricing_cta_click"); trackCtaConversion("pricing_cta_click"); }}
+                  onClick={() => { trackEvent("cta_clicked", null, { location: "pricing", action: "scan" }).catch(() => {}); }}
                   className={`block w-full rounded-lg py-3 text-center text-sm font-semibold min-h-[44px] transition-all ${
                     plan.highlighted
                       ? "bg-brand text-black hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"

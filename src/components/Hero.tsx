@@ -3,12 +3,9 @@
 import { ScanCounter } from "./ScanCounter";
 import { useSectionView } from "@/hooks/useSectionView";
 import { trackEvent } from "@/lib/analytics";
-import { useExperiment } from "@/hooks/useExperiment";
 
 export function Hero() {
   const sectionRef = useSectionView("hero");
-  const { variant: headlineVariant, isLoading: headlineLoading } = useExperiment("hero_headline");
-  const { variant: ctaVariant, isLoading: ctaLoading, trackConversion: trackCtaConversion } = useExperiment("cta_text");
 
   return (
     <section ref={sectionRef} className="relative overflow-hidden pt-32 pb-20 md:pt-44 md:pb-32 lg:pb-36">
@@ -33,28 +30,14 @@ export function Hero() {
           </span>
         </div>
 
-        {/* Headline — concrete $ not % (Hormozi Hack #1) + A/B test */}
-        <h1 className="mb-6 min-h-[4.5rem] sm:min-h-[5.5rem] md:min-h-[8rem] lg:min-h-[10rem] text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-6xl md:leading-[1.1] lg:text-7xl animate-fade-in-up animate-delay-200">
-          {!headlineLoading && headlineVariant === "variant_a" ? (
-            <>
-              What would you do with an extra{" "}
-              <span className="bg-gradient-to-r from-brand to-brand-light bg-clip-text text-transparent">
-                $28K this year?
-              </span>
-              <br />
-              It&apos;s already sitting in your billing data.
-            </>
-          ) : (
-            <>
-              The average SaaS loses{" "}
-              <span className="bg-gradient-to-r from-brand to-brand-light bg-clip-text text-transparent">
-                $2,340/mo
-              </span>{" "}
-              to billing leaks
-              <br />
-              they can&apos;t see.
-            </>
-          )}
+        {/* Headline — concrete $ not % (Hormozi Hack #1) */}
+        <h1 className="mb-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-6xl md:leading-[1.1] lg:text-7xl animate-fade-in-up animate-delay-200">
+          What would you do with an extra{" "}
+          <span className="bg-gradient-to-r from-brand to-brand-light bg-clip-text text-transparent">
+            $28K this year?
+          </span>
+          <br />
+          It&apos;s already sitting in your billing data.
         </h1>
         <p className="mb-2 text-lg text-text-muted italic animate-fade-in-up animate-delay-250">
           (Unless you paste one key and see for yourself.)
@@ -79,13 +62,10 @@ export function Hero() {
             href="/scan"
             onClick={() => {
               trackEvent("cta_clicked", null, { location: "hero", action: "scan" }).catch(() => {});
-              trackCtaConversion("hero_cta_click");
             }}
             className="group flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black min-h-[52px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
           >
-            {!ctaLoading && ctaVariant === "variant_a"
-              ? "Find My Hidden Revenue \u2192 Free Scan"
-              : "Scan My Billing \u2192 Get My Report"}
+            Find My Hidden Revenue → Free Scan
             <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
