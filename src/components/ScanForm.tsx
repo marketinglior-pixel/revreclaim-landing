@@ -237,7 +237,7 @@ export default function ScanForm() {
             <button
               type="button"
               onClick={() => setShowKey(!showKey)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-muted transition"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition"
             >
               {showKey ? (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

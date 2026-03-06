@@ -1,7 +1,6 @@
 "use client";
 
 import { ScanReport } from "@/lib/types";
-import { formatCurrency } from "@/lib/utils";
 import { useAnimatedNumber } from "@/lib/useAnimatedNumber";
 
 export default function HeroRecoveryCard({ report }: { report: ScanReport }) {

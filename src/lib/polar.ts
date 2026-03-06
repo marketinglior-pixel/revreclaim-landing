@@ -129,6 +129,13 @@ export function verifyWebhookSignature(
     "base64"
   );
 
+  // Reject timestamps older than 5 minutes to prevent replay attacks
+  const ts = parseInt(webhookTimestamp, 10);
+  const nowSeconds = Math.floor(Date.now() / 1000);
+  if (isNaN(ts) || Math.abs(nowSeconds - ts) > 300) {
+    return false;
+  }
+
   const signedContent = `${webhookId}.${webhookTimestamp}.${rawBody}`;
   const computedSignature = crypto
     .createHmac("sha256", secretBytes)

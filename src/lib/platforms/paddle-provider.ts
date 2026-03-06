@@ -100,10 +100,10 @@ export const paddleProvider: BillingProvider = {
         id: d.id as string,
         couponId: d.id as string,
         couponName: (d.description as string) || (d.code as string) || null,
-        percentOff: d.type === "percentage" ? parseFloat(d.amount as string) : null,
+        percentOff: d.type === "percentage" ? (parseFloat(d.amount as string) || 0) : null,
         amountOffCents:
           d.type === "flat" || d.type === "flat_per_unit"
-            ? Math.round(parseFloat(d.amount as string) * 100)
+            ? Math.round((parseFloat(d.amount as string) || 0) * 100)
             : null,
         duration:
           d.recur && !(d.maximum_recurring_intervals as number | null)
@@ -135,7 +135,7 @@ export const paddleProvider: BillingProvider = {
                 priceId: (price?.id as string) || "",
                 productId: (price?.product_id as string) || "",
                 unitAmountCents: Math.round(
-                  parseFloat((unitPrice?.amount as string) || "0")
+                  parseFloat((unitPrice?.amount as string) || "0") || 0
                 ),
                 quantity: (item.quantity as number) || 1,
                 interval: mapPaddleInterval(

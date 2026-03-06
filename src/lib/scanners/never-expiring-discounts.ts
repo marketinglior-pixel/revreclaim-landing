@@ -27,12 +27,13 @@ export function scanNeverExpiringDiscounts(
         if (discountAmount <= 0) continue;
 
         const discountPercent = coupon.percent_off || 0;
+        const amountOff = coupon.amount_off || 0;
         const severity =
-          discountPercent > 30
-            ? "high"
-            : discountPercent > 10
-              ? "medium"
-              : "low";
+          discountPercent > 30 ? "high"
+            : discountPercent > 10 ? "medium"
+            : amountOff > 5000 ? "high"    // $50+ fixed discount
+            : amountOff > 2000 ? "medium"  // $20+ fixed discount
+            : "low";
 
         const customerEmail =
           typeof sub.customer === "string"

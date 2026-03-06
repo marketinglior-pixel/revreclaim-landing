@@ -52,8 +52,8 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Always log to Vercel logs as backup
-    console.log(`[SIGNUP] ${email} (plan: ${plan || "general"}) at ${new Date().toISOString()}`);
+    // Log signup event (no PII in logs)
+    console.log(`[SIGNUP] New subscriber (plan: ${plan || "general"}) at ${new Date().toISOString()}`);
 
     return NextResponse.json({ success: true });
   } catch {

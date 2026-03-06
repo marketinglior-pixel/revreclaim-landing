@@ -80,9 +80,9 @@ export async function POST(req: NextRequest) {
     // Track scan started event
     trackEvent("scan_started", authenticatedUserId, { email }).catch(() => {});
 
-    // Log the scan attempt (NOT the API key)
+    // Log the scan attempt (NOT the API key or email)
     console.log(
-      `[SCAN] Started for ${email} at ${new Date().toISOString()}`
+      `[SCAN] Started for user=${authenticatedUserId || "anon"} platform=${platform} at ${new Date().toISOString()}`
     );
 
     // Log to Google Sheets webhook
@@ -117,7 +117,7 @@ export async function POST(req: NextRequest) {
     }
 
     console.log(
-      `[SCAN] Complete for ${email}: ${report.summary.leaksFound} leaks found, $${(report.summary.mrrAtRisk / 100).toFixed(0)}/mo at risk`
+      `[SCAN] Complete for user=${authenticatedUserId || "anon"}: ${report.summary.leaksFound} leaks found, $${(report.summary.mrrAtRisk / 100).toFixed(0)}/mo at risk`
     );
 
     // Log completion to webhook
@@ -170,21 +170,21 @@ export async function POST(req: NextRequest) {
           }).catch(() => {});
           sendScanCompleteEmail(email, report.summary, report.id).catch(() => {});
 
-          // Increment scan count for this billing period
-          const { data: currentProfile } = await supabase
+          // Increment scan count (fire-and-forget)
+          supabase
             .from("profiles")
             .select("scan_count_this_period")
             .eq("id", userId)
-            .single();
-
-          if (currentProfile) {
-            await supabase
-              .from("profiles")
-              .update({
-                scan_count_this_period: (currentProfile.scan_count_this_period ?? 0) + 1,
-              })
-              .eq("id", userId);
-          }
+            .single()
+            .then(({ data: p }) => {
+              if (p) {
+                supabase
+                  .from("profiles")
+                  .update({ scan_count_this_period: (p.scan_count_this_period ?? 0) + 1 })
+                  .eq("id", userId)
+                  .then(() => {});
+              }
+            });
         }
       }
     } catch (dbErr) {

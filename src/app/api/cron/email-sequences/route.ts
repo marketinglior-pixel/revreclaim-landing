@@ -80,7 +80,8 @@ export async function GET(req: NextRequest) {
     const { data: freeUsers } = await supabase
       .from("profiles")
       .select("id, email")
-      .eq("plan", "free");
+      .eq("plan", "free")
+      .limit(500);
 
     if (freeUsers) {
       for (const user of freeUsers) {

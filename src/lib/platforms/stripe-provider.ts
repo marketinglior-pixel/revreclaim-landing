@@ -50,7 +50,7 @@ export const stripeProvider: BillingProvider = {
     // This method exists to satisfy the interface but won't be called
     // for the initial implementation
     throw new Error(
-      "Stripe uses legacy scan path. Use runFullScan() directly."
+      "Stripe uses the legacy scan path. Call runStripeScan() directly instead of runPlatformScan(). The scan API route and cron jobs handle this dispatch automatically."
     );
   },
 };

@@ -40,9 +40,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL ||
-      `https://${req.headers.get("host")}`;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    if (!baseUrl) {
+      throw new Error("NEXT_PUBLIC_BASE_URL is not configured");
+    }
 
     // Create Polar checkout session
     const url = await createCheckout({
@@ -55,10 +56,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ url });
   } catch (error) {
     console.error("[CHECKOUT ERROR]", error);
-    const message =
-      error instanceof Error
-        ? error.message
-        : "Failed to create checkout session";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create checkout session. Please try again." },
+      { status: 500 }
+    );
   }
 }

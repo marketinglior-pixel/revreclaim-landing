@@ -155,8 +155,11 @@ export const lemonSqueezyProvider: BillingProvider = {
 
         // LS has price info directly on the subscription
         const variantId = attrs.variant_id as number | null;
-        const priceAmount = (attrs.first_subscription_item as Record<string, unknown>)?.price as number || 0;
-        const interval = mapLSInterval(attrs.billing_anchor as number);
+        const firstItem = attrs.first_subscription_item as Record<string, unknown> | null;
+        const priceAmount = (firstItem?.price as number) || 0;
+        const interval = mapLSIntervalName(
+          (firstItem?.interval as string) || "month"
+        );
 
         const items = [
           {
@@ -339,13 +342,6 @@ function mapLSDuration(
     default:
       return "once";
   }
-}
-
-function mapLSInterval(
-  _billingAnchor: number
-): "day" | "week" | "month" | "year" {
-  // LS billing_anchor is day of month — subscriptions are monthly by default
-  return "month";
 }
 
 function mapLSIntervalName(

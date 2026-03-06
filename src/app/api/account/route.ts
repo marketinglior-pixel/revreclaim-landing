@@ -57,13 +57,20 @@ export async function DELETE(req: NextRequest) {
     const userId = user.id;
 
     // Delete user's data in order (respecting foreign keys)
-    // 1. Delete scan configs
+    // 1. Delete team memberships (owner or member)
+    await adminClient.from("team_members").delete().eq("team_owner_id", userId);
+    await adminClient.from("team_members").delete().eq("member_id", userId);
+
+    // 2. Delete analytics events
+    await adminClient.from("analytics_events").delete().eq("user_id", userId);
+
+    // 3. Delete scan configs
     await adminClient.from("scan_configs").delete().eq("user_id", userId);
 
-    // 2. Delete reports
+    // 4. Delete reports
     await adminClient.from("reports").delete().eq("user_id", userId);
 
-    // 3. Delete profile (will cascade from auth.users in some setups)
+    // 5. Delete profile
     await adminClient.from("profiles").delete().eq("id", userId);
 
     // 4. Delete the auth user
@@ -76,7 +83,7 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    console.log(`[ACCOUNT] Deleted user ${userId} (${user.email})`);
+    console.log(`[ACCOUNT] Deleted user ${userId}`);
 
     return NextResponse.json({ message: "Account deleted successfully." });
   } catch (err) {
