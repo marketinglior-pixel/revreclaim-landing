@@ -67,19 +67,51 @@ export function calculateHealthScore(
   return Math.max(0, Math.round(score));
 }
 
-export function validateApiKey(key: string): {
+export function validateApiKey(
+  key: string,
+  platform: string = "stripe"
+): {
   valid: boolean;
   error?: string;
 } {
   if (!key) return { valid: false, error: "API key is required" };
-  if (key.length < 20)
-    return { valid: false, error: "API key is too short" };
-  if (!/^rk_(live|test)_[A-Za-z0-9]+$/.test(key)) {
-    return {
-      valid: false,
-      error:
-        "Must be a Stripe restricted API key (starts with rk_live_ or rk_test_)",
-    };
+  if (key.length < 10) return { valid: false, error: "API key is too short" };
+
+  switch (platform) {
+    case "stripe":
+      if (!/^rk_(live|test)_[A-Za-z0-9]+$/.test(key)) {
+        return {
+          valid: false,
+          error:
+            "Must be a Stripe restricted API key (starts with rk_live_ or rk_test_)",
+        };
+      }
+      break;
+    case "polar":
+      if (!key.startsWith("polar_oat_")) {
+        return {
+          valid: false,
+          error:
+            "Must be a Polar Organization Access Token (starts with polar_oat_)",
+        };
+      }
+      break;
+    case "lemonsqueezy":
+      if (key.length < 30) {
+        return {
+          valid: false,
+          error: "Lemon Squeezy API key appears too short",
+        };
+      }
+      break;
+    case "paddle":
+      if (key.length < 20) {
+        return {
+          valid: false,
+          error: "Paddle API key appears too short",
+        };
+      }
+      break;
   }
   return { valid: true };
 }

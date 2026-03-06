@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runFullScan } from "@/lib/stripe-scanner";
+import { runPlatformScan, type BillingPlatform } from "@/lib/platforms";
 import { validateApiKey, validateEmail } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
@@ -23,7 +24,11 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { email, apiKey } = body;
+    const { email, apiKey, platform: rawPlatform } = body;
+
+    // Validate platform (default to stripe)
+    const validPlatforms: BillingPlatform[] = ["stripe", "polar", "lemonsqueezy", "paddle"];
+    const platform: BillingPlatform = validPlatforms.includes(rawPlatform) ? rawPlatform : "stripe";
 
     // Validate email
     if (!email || !validateEmail(email)) {
@@ -33,8 +38,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate API key format
-    const keyValidation = validateApiKey(apiKey);
+    // Validate API key format (platform-aware)
+    const keyValidation = validateApiKey(apiKey, platform);
     if (!keyValidation.valid) {
       return NextResponse.json(
         { error: keyValidation.error },
@@ -95,8 +100,21 @@ export async function POST(req: NextRequest) {
       }).catch(() => {}); // Fire and forget
     }
 
-    // Run the full scan
-    const report = await runFullScan(apiKey);
+    // Run the full scan — dispatch to correct platform scanner
+    const report = platform === "stripe"
+      ? await runFullScan(apiKey)
+      : await runPlatformScan(platform, apiKey);
+
+    // Ensure platform field is set
+    if (!report.platform) report.platform = platform;
+    // Set platformUrl aliases for Stripe reports
+    if (platform === "stripe") {
+      for (const leak of report.leaks) {
+        if (leak.stripeUrl && !leak.platformUrl) {
+          leak.platformUrl = leak.stripeUrl;
+        }
+      }
+    }
 
     console.log(
       `[SCAN] Complete for ${email}: ${report.summary.leaksFound} leaks found, $${(report.summary.mrrAtRisk / 100).toFixed(0)}/mo at risk`
@@ -125,10 +143,13 @@ export async function POST(req: NextRequest) {
       const userId = authenticatedUserId;
 
       if (userId) {
-        const isTestMode = apiKey.startsWith("rk_test_");
+        const isTestMode = platform === "stripe"
+          ? apiKey.startsWith("rk_test_")
+          : false;
         const { error: dbError } = await supabase.from("reports").insert({
           id: report.id,
           user_id: userId,
+          platform,
           summary: JSON.parse(JSON.stringify(report.summary)),
           categories: JSON.parse(JSON.stringify(report.categories)),
           leaks: JSON.parse(JSON.stringify(report.leaks)),

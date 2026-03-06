@@ -38,7 +38,8 @@ export interface Leak {
   monthlyImpact: number; // in cents
   annualImpact: number; // in cents
   fixSuggestion: string;
-  stripeUrl?: string; // Direct link to Stripe Dashboard
+  platformUrl?: string; // Direct link to platform dashboard
+  stripeUrl?: string; // @deprecated — use platformUrl. Kept for backward compat.
   detectedAt: string; // ISO 8601
   metadata: Record<string, unknown>;
 }
@@ -63,6 +64,7 @@ export interface ScanSummary {
 
 export interface ScanReport {
   id: string;
+  platform?: string; // BillingPlatform — which platform was scanned
   scannedAt: string; // ISO 8601
   summary: ScanSummary;
   categories: LeakCategorySummary[];
@@ -72,6 +74,7 @@ export interface ScanReport {
 export interface ScanRequest {
   email: string;
   apiKey: string;
+  platform?: string; // BillingPlatform — defaults to 'stripe'
 }
 
 export type ScanStatus =

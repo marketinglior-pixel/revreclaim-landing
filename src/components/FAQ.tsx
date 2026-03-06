@@ -5,17 +5,16 @@ import { useSectionView } from "@/hooks/useSectionView";
 
 const faqs = [
   {
-    q: "Is my Stripe data safe?",
+    q: "Is my billing data safe?",
     a: "Yes. You create a restricted API key with read-only permissions. We can only read data — we cannot modify your billing, create charges, or access card numbers. The key is used only during the scan and is never stored or logged.",
   },
   {
-    q: "What permissions does the API key need?",
-    a: "Read access for: Customers, Subscriptions, Invoices, Products, Prices, Coupons, and Payment Methods. We provide step-by-step instructions on the scan page. It takes about 60 seconds to create.",
+    q: "Which billing platforms do you support?",
+    a: "We support Stripe, Polar.sh, Lemon Squeezy, and Paddle. Select your platform on the scan page and we'll guide you through creating a read-only API key. Each platform gets a tailored scan covering the leak types it supports.",
   },
-  /* Damaging admission (Hormozi Hack #5): admit limitation, then pivot to strength */
   {
-    q: "What if I use Chargebee or Paddle instead of Stripe?",
-    a: "Honestly? We can't help you yet. We only scan Stripe right now. We chose to go deep on one platform instead of shallow on three. For the 80%+ of SaaS companies that run on Stripe, we find every dollar. Chargebee and Paddle are on the roadmap for Q3 2026.",
+    q: "What permissions does the API key need?",
+    a: "Read access for: Customers, Subscriptions, Invoices, Products, Prices, Coupons, and Payment Methods (exact names vary by platform). We provide step-by-step instructions on the scan page. It takes about 60 seconds to create.",
   },
   {
     q: "How long does the scan take?",
@@ -27,7 +26,7 @@ const faqs = [
   },
   {
     q: "What do I do with the report?",
-    a: "Open the report. See the customer name. See the dollar amount. See the one-sentence fix. Click the link — it takes you straight to that customer in Stripe. Fix it. That money hits your account next billing cycle.",
+    a: "Open the report. See the customer name. See the dollar amount. See the one-sentence fix. Click the link — it takes you straight to that customer in your billing dashboard. Fix it. That money hits your account next billing cycle.",
   },
   {
     q: "What if you don't find any leaks?",
@@ -44,12 +43,12 @@ const faqs = [
   /* Exclusionary FAQ (Hormozi Hack #3): explicitly say who it's NOT for */
   {
     q: "Is this worth it if I have fewer than 50 customers?",
-    a: "Probably not. Revenue leaks compound with scale. If you have 10 customers, you probably know each one by name and you'd catch these issues manually. RevReclaim is built for the stage where your Stripe account has grown past what one person can monitor — typically 100+ customers, $30K+ MRR.",
+    a: "Probably not. Revenue leaks compound with scale. If you have 10 customers, you probably know each one by name and you'd catch these issues manually. RevReclaim is built for the stage where your billing account has grown past what one person can monitor — typically 100+ customers, $30K+ MRR.",
   },
   /* Trust FAQ — damaging admission + transparency (Hormozi Hack #5) */
   {
-    q: "Why should I trust you with my Stripe data?",
-    a: "Fair question. Here's the honest answer: you shouldn't blindly trust anyone with your billing data. That's why we designed RevReclaim to work with Stripe's restricted API keys — read-only, scoped to specific resources, and you can revoke them instantly. We never see card numbers. We never store the key after the scan.",
+    q: "Why should I trust you with my billing data?",
+    a: "Fair question. Here's the honest answer: you shouldn't blindly trust anyone with your billing data. That's why we designed RevReclaim to work with restricted, read-only API keys — scoped to specific resources, and you can revoke them instantly. We never see card numbers. We never store the key after the scan.",
   },
 ];
 

@@ -5,9 +5,9 @@ import { PageViewTracker } from "@/components/PageViewTracker";
 import { LeakIcon } from "@/components/LeakIcons";
 
 export const metadata: Metadata = {
-  title: "Paste Your Stripe Key → See Your Leaks | RevReclaim",
+  title: "Paste Your API Key → See Your Leaks | RevReclaim",
   description:
-    "Paste a read-only Stripe key. See every revenue leak in your account in 90 seconds. Real customer names. Real dollar amounts. Free forever.",
+    "Paste a read-only API key from Stripe, Polar, Lemon Squeezy, or Paddle. See every revenue leak in your account in 90 seconds. Real customer names. Real dollar amounts. Free forever.",
 };
 
 export default function ScanPage() {
@@ -52,7 +52,7 @@ export default function ScanPage() {
           </h1>
           <p className="text-text-muted max-w-md mx-auto">
             In 90 seconds, you&apos;ll see every customer name, every dollar amount,
-            and exactly where to click in Stripe to fix each leak.
+            and exactly where to click to fix each leak.
             The average founder finds $2,340/month they weren&apos;t collecting.
           </p>
         </div>

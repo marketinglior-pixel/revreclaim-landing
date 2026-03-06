@@ -91,7 +91,7 @@ export function FinalCTA() {
               >
                 {!ctaLoading && ctaVariant === "variant_a"
                   ? "Find My Hidden Revenue \u2192 Free Scan"
-                  : "Scan My Stripe \u2192 Get My Report"}
+                  : "Scan My Billing \u2192 Get My Report"}
                 <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -160,16 +160,16 @@ export function FinalCTA() {
         <div className="mt-16 mx-auto max-w-lg px-4 md:px-0 text-left">
           <p className="text-sm md:text-base text-text-muted leading-relaxed">
             <span className="font-semibold text-white">P.S.</span> — Imagine opening your
-            Stripe dashboard tomorrow knowing that every subscription is collecting, every
+            billing dashboard tomorrow knowing that every subscription is collecting, every
             coupon is correct, every card is current. That&apos;s what our founders tell us
             after their first scan. Not &ldquo;wow, I had leaks&rdquo; — but &ldquo;I finally know my
             revenue number is real.&rdquo; Run the free scan. 90 seconds. The worst case is you
             wasted 90 seconds. The best case is you just found your next raise.
           </p>
           <p className="mt-4 text-sm md:text-base text-text-muted leading-relaxed">
-            <span className="font-semibold text-white">P.P.S.</span> — We only scan
-            Stripe. If you&apos;re on Chargebee or Paddle, this isn&apos;t for you yet. But if
-            your SaaS runs on Stripe and you&apos;re doing $30K–$500K MRR, I&apos;d bet money
+            <span className="font-semibold text-white">P.P.S.</span> — We scan
+            Stripe, Polar, Lemon Squeezy, and Paddle. If
+            your SaaS is doing $30K–$500K MRR, I&apos;d bet money
             (literally — that&apos;s our $1,000/mo guarantee) that you have leaks right now.
           </p>
         </div>

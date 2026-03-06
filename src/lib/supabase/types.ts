@@ -72,6 +72,7 @@ export interface Database {
           leaks: Json;
           stripe_account_id: string | null;
           is_test_mode: boolean;
+          platform: string;
         };
         Insert: {
           id?: string;
@@ -82,6 +83,7 @@ export interface Database {
           leaks: Json;
           stripe_account_id?: string | null;
           is_test_mode?: boolean;
+          platform?: string;
         };
         Update: {
           id?: string;
@@ -92,6 +94,7 @@ export interface Database {
           leaks?: Json;
           stripe_account_id?: string | null;
           is_test_mode?: boolean;
+          platform?: string;
         };
         Relationships: [
           {
@@ -108,6 +111,7 @@ export interface Database {
           id: string;
           user_id: string;
           encrypted_api_key: string;
+          platform: string;
           scan_frequency: "weekly" | "daily" | "monthly";
           is_active: boolean;
           last_scan_at: string | null;
@@ -119,6 +123,7 @@ export interface Database {
           id?: string;
           user_id: string;
           encrypted_api_key: string;
+          platform?: string;
           scan_frequency?: "weekly" | "daily" | "monthly";
           is_active?: boolean;
           last_scan_at?: string | null;
@@ -130,6 +135,7 @@ export interface Database {
           id?: string;
           user_id?: string;
           encrypted_api_key?: string;
+          platform?: string;
           scan_frequency?: "weekly" | "daily" | "monthly";
           is_active?: boolean;
           last_scan_at?: string | null;

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { runFullScan } from "@/lib/stripe-scanner";
+import { runPlatformScan } from "@/lib/platforms";
+import type { BillingPlatform } from "@/lib/platforms/types";
 import { decrypt } from "@/lib/encryption";
 import { sendScanCompleteEmail } from "@/lib/email";
 
@@ -65,14 +67,17 @@ export async function GET(req: NextRequest) {
     try {
       // Decrypt the API key
       const apiKey = decrypt(config.encrypted_api_key);
+      const platform: BillingPlatform = (config.platform as BillingPlatform) || "stripe";
 
-      console.log(`[CRON] Running scan for user ${config.user_id}`);
+      console.log(`[CRON] Running ${platform} scan for user ${config.user_id}`);
 
-      // Run the scan
-      const report = await runFullScan(apiKey);
+      // Run the scan — dispatch to correct scanner
+      const report = platform === "stripe"
+        ? await runFullScan(apiKey)
+        : await runPlatformScan(platform, apiKey);
 
       // Save report to database
-      const isTestMode = apiKey.startsWith("rk_test_");
+      const isTestMode = platform === "stripe" ? apiKey.startsWith("rk_test_") : false;
       const { error: insertError } = await supabase.from("reports").insert({
         id: report.id,
         user_id: config.user_id,
@@ -80,6 +85,7 @@ export async function GET(req: NextRequest) {
         categories: report.categories as unknown as Record<string, unknown>[],
         leaks: report.leaks as unknown as Record<string, unknown>[],
         is_test_mode: isTestMode,
+        platform,
       });
 
       if (insertError) {

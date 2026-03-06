@@ -4,21 +4,21 @@ const steps = [
     number: "01",
     title: "Create a Read-Only Key",
     description:
-      "Open Stripe Dashboard. Click Developers. Click API Keys. Click 'Create restricted key.' Toggle on read access for subscriptions, invoices, customers, and prices. Copy the key. Done.",
+      "Open your billing dashboard (Stripe, Polar, Lemon Squeezy, or Paddle). Navigate to API Keys. Create a restricted read-only key. Copy it. Done.",
     detail: "60 seconds. We show you exactly where to click.",
   },
   {
     number: "02",
     title: "Paste It Here",
     description:
-      "Come back to RevReclaim. Paste the key into the box. Click 'Scan.' Watch the progress bar. We're reading every subscription, every invoice, every coupon, every payment method in your account.",
+      "Come back to RevReclaim. Select your platform. Paste the key into the box. Click 'Scan.' Watch the progress bar. We're reading every subscription, every invoice, every coupon, every payment method in your account.",
     detail: "The scan runs in under 90 seconds.",
   },
   {
     number: "03",
     title: "See Where Your Money Went",
     description:
-      "A report appears. Customer names on the left. Dollar amounts on the right. A green 'Fix' button next to each one. Click it and it takes you to the exact Stripe page to fix that leak. That's it.",
+      "A report appears. Customer names on the left. Dollar amounts on the right. A green 'Fix' button next to each one. Click it and it takes you to the exact page in your billing dashboard to fix that leak. That's it.",
     detail: "Average recovery: $2,340/mo",
   },
 ];
@@ -35,9 +35,9 @@ export function HowItWorks() {
         </h2>
         {/* Damaging admission (Hormozi Hack #5) */}
         <p className="mb-16 max-w-2xl text-lg text-text-muted">
-          We won&apos;t lie — there&apos;s no magic here. We&apos;re reading data that Stripe
-          already has but doesn&apos;t surface to you. The magic is that nobody else
-          built a tool to show you. So we did. And it takes 90 seconds.
+          We won&apos;t lie — there&apos;s no magic here. We&apos;re reading data that your
+          billing platform already has but doesn&apos;t surface to you. The magic is
+          that nobody else built a tool to show you. So we did. And it takes 90 seconds.
         </p>
 
         <div className="relative">

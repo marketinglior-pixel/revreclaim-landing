@@ -25,7 +25,7 @@ export function Hero() {
         {/* Audience badge — exclusionary positioning (Hormozi Hack #3) */}
         <div className="mb-8 inline-flex flex-col items-center gap-1 animate-fade-in-up animate-delay-100">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm text-text-muted">
-            For SaaS founders doing $30K–$500K MRR on Stripe
+            For SaaS founders doing $30K–$500K MRR
           </div>
           <span className="hidden sm:inline text-xs text-text-dim">
             (Under $30K? This won&apos;t move the needle yet. Over $500K?{" "}
@@ -42,7 +42,7 @@ export function Hero() {
                 $28K this year?
               </span>
               <br />
-              It&apos;s already sitting in your Stripe.
+              It&apos;s already sitting in your billing data.
             </>
           ) : (
             <>
@@ -62,7 +62,7 @@ export function Hero() {
 
         {/* Subheadline — Show Don't Tell: describe the moment (Hormozi Hack #6) */}
         <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-text-muted md:text-xl lg:text-xl animate-fade-in-up animate-delay-300">
-          Here&apos;s what happens: you create a read-only Stripe key (60 seconds).
+          Here&apos;s what happens: you create a read-only API key (60 seconds).
           You paste it here. We scan 7 categories of billing issues.
           90 seconds later, you&apos;re looking at a list of customers, dollar amounts,
           and one-click fixes. Most founders fix everything before lunch — and see
@@ -85,7 +85,7 @@ export function Hero() {
           >
             {!ctaLoading && ctaVariant === "variant_a"
               ? "Find My Hidden Revenue \u2192 Free Scan"
-              : "Scan My Stripe \u2192 Get My Report"}
+              : "Scan My Billing \u2192 Get My Report"}
             <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>

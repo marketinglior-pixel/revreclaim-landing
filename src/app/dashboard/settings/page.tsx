@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import type { BillingPlatform } from "@/lib/platforms/types";
+import { PLATFORM_LABELS } from "@/lib/platforms/types";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -11,6 +13,7 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [apiKey, setApiKey] = useState("");
   const [showKey, setShowKey] = useState(false);
+  const [platform, setPlatform] = useState<BillingPlatform>("stripe");
   const [frequency, setFrequency] = useState<"weekly" | "daily" | "monthly">("weekly");
   const [isActive, setIsActive] = useState(false);
   const [hasExistingConfig, setHasExistingConfig] = useState(false);
@@ -58,15 +61,15 @@ export default function SettingsPage() {
 
     const { data } = await supabase
       .from("scan_configs")
-      .select("scan_frequency, is_active")
+      .select("scan_frequency, is_active, platform")
       .eq("user_id", user.id)
       .single();
 
     if (data) {
-      const config = data as Record<string, unknown>;
       setHasExistingConfig(true);
-      setFrequency((config.scan_frequency as "weekly" | "daily" | "monthly") || "weekly");
-      setIsActive(config.is_active as boolean);
+      setFrequency(data.scan_frequency || "weekly");
+      setIsActive(data.is_active);
+      if (data.platform) setPlatform(data.platform as BillingPlatform);
       setApiKey("");
     }
 
@@ -98,6 +101,7 @@ export default function SettingsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           apiKey: apiKey || undefined,
+          platform,
           frequency,
           isActive,
         }),
@@ -312,10 +316,33 @@ export default function SettingsPage() {
 
         {userPlan !== "free" && (
         <form onSubmit={handleSave} className="space-y-5">
+          {/* Platform selector */}
+          <div>
+            <label className="block text-sm font-medium text-text-secondary mb-1.5">
+              Billing Platform
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {(["stripe", "polar", "lemonsqueezy", "paddle"] as const).map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => { setPlatform(p); setApiKey(""); }}
+                  className={`py-2.5 text-sm font-medium rounded-lg border transition cursor-pointer ${
+                    platform === p
+                      ? "border-brand bg-brand/10 text-brand"
+                      : "border-border bg-surface-dim text-text-muted hover:border-border hover:text-white"
+                  }`}
+                >
+                  {PLATFORM_LABELS[p]}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* API Key */}
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-1.5">
-              Stripe Restricted API Key
+              {PLATFORM_LABELS[platform]} API Key
               {hasExistingConfig && (
                 <span className="text-brand ml-2 font-normal">(key saved — enter new to update)</span>
               )}
@@ -325,7 +352,7 @@ export default function SettingsPage() {
                 type={showKey ? "text" : "password"}
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
-                placeholder={hasExistingConfig ? "Enter new key to update..." : "rk_live_..."}
+                placeholder={hasExistingConfig ? "Enter new key to update..." : platform === "stripe" ? "rk_live_..." : platform === "polar" ? "polar_oat_..." : "Your API key..."}
                 className="w-full px-4 py-3 pr-12 bg-surface-dim border border-border rounded-lg text-white placeholder-text-muted focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition font-mono text-sm"
               />
               <button
@@ -442,7 +469,7 @@ export default function SettingsPage() {
           <div>
             <p className="text-sm font-medium text-white">Your key is encrypted</p>
             <p className="text-xs text-text-muted mt-1">
-              Your Stripe API key is encrypted with AES-256-GCM before storage.
+              Your API key is encrypted with AES-256-GCM before storage.
               We only use read-only restricted keys — we can never modify your billing data.
               You can delete your key anytime from this page.
             </p>

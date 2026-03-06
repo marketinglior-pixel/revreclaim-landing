@@ -48,7 +48,8 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { apiKey, frequency, isActive } = body;
+    const { apiKey, platform, frequency, isActive } = body;
+    const validPlatform = platform || "stripe";
 
     // Check if config already exists
     const { data: existing } = await supabase
@@ -60,7 +61,7 @@ export async function POST(req: NextRequest) {
     // If providing a new API key, validate and encrypt it
     let encryptedKey: string | undefined;
     if (apiKey) {
-      const validation = validateApiKey(apiKey);
+      const validation = validateApiKey(apiKey, validPlatform);
       if (!validation.valid) {
         return NextResponse.json({ error: validation.error }, { status: 400 });
       }
@@ -101,6 +102,7 @@ export async function POST(req: NextRequest) {
       const { error } = await supabase.from("scan_configs").insert({
         user_id: user.id,
         encrypted_api_key: encryptedKey!,
+        platform: validPlatform,
         scan_frequency: frequency || "weekly",
         is_active: isActive ?? true,
         next_scan_at: nextScanAt,

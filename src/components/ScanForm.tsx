@@ -6,6 +6,8 @@ import { ScanReport, ScanStatus } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
 import ApiKeyInstructions from "./ApiKeyInstructions";
 import Link from "next/link";
+import type { BillingPlatform } from "@/lib/platforms/types";
+import { PLATFORM_LABELS } from "@/lib/platforms/types";
 
 const SCAN_STEPS = [
   "Validating API key...",
@@ -22,6 +24,7 @@ export default function ScanForm() {
   const [email, setEmail] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [showKey, setShowKey] = useState(false);
+  const [platform, setPlatform] = useState<BillingPlatform>("stripe");
   const [scanStatus, setScanStatus] = useState<ScanStatus>({ status: "idle" });
   const abortRef = useRef<AbortController | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -49,7 +52,7 @@ export default function ScanForm() {
     if (!apiKey) {
       setScanStatus({
         status: "error",
-        message: "Please enter your Stripe API key.",
+        message: `Please enter your ${PLATFORM_LABELS[platform]} API key.`,
       });
       return;
     }
@@ -81,7 +84,7 @@ export default function ScanForm() {
       const response = await fetch("/api/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, apiKey }),
+        body: JSON.stringify({ email, apiKey, platform }),
         signal: abortRef.current.signal,
       });
 
@@ -163,6 +166,30 @@ export default function ScanForm() {
       )}
 
       <form onSubmit={handleScan} className="space-y-4">
+        {/* Platform selector */}
+        <div>
+          <label className="block text-sm font-medium text-text-secondary mb-1.5">
+            Billing Platform
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {(["stripe", "polar", "lemonsqueezy", "paddle"] as const).map((p) => (
+              <button
+                key={p}
+                type="button"
+                onClick={() => { setPlatform(p); setApiKey(""); }}
+                disabled={isScanning}
+                className={`py-2.5 text-sm font-medium rounded-lg border transition cursor-pointer disabled:opacity-50 ${
+                  platform === p
+                    ? "border-brand bg-brand/10 text-brand"
+                    : "border-border bg-surface text-text-muted hover:border-border hover:text-white"
+                }`}
+              >
+                {PLATFORM_LABELS[p]}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Email input */}
         <div>
           <label
@@ -188,7 +215,10 @@ export default function ScanForm() {
             htmlFor="apiKey"
             className="block text-sm font-medium text-text-secondary mb-1.5"
           >
-            Stripe Restricted API Key
+            {platform === "stripe" ? "Stripe Restricted API Key" :
+             platform === "polar" ? "Polar Organization Access Token" :
+             platform === "lemonsqueezy" ? "Lemon Squeezy API Key" :
+             "Paddle API Key"}
           </label>
           <div className="relative">
             <input
@@ -196,7 +226,11 @@ export default function ScanForm() {
               type={showKey ? "text" : "password"}
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              placeholder="rk_live_..."
+              placeholder={
+                platform === "stripe" ? "rk_live_..." :
+                platform === "polar" ? "polar_oat_..." :
+                "Your API key..."
+              }
               disabled={isScanning}
               className="w-full px-4 py-3 pr-12 bg-surface border border-border rounded-lg text-white placeholder-text-dim focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition font-mono text-sm disabled:opacity-50"
             />
@@ -220,7 +254,7 @@ export default function ScanForm() {
         </div>
 
         {/* API Key Instructions */}
-        <ApiKeyInstructions />
+        <ApiKeyInstructions platform={platform} />
 
         {/* Submit button */}
         <button
@@ -228,7 +262,7 @@ export default function ScanForm() {
           disabled={isScanning}
           className="w-full py-3 bg-brand text-sm font-bold text-black rounded-lg min-h-[44px] transition-all hover:bg-brand-dark hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
-          {isScanning ? "Scanning..." : "Scan My Stripe → Get My Report"}
+          {isScanning ? "Scanning..." : `Scan My ${PLATFORM_LABELS[platform]} → Get My Report`}
         </button>
 
         {/* Security badge */}

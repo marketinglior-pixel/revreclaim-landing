@@ -134,14 +134,14 @@ export default function LeakCard({ leak }: LeakCardProps) {
                   <p className="text-xs text-text-muted leading-relaxed">
                     {leak.fixSuggestion}
                   </p>
-                  {leak.stripeUrl && (
+                  {(leak.platformUrl || leak.stripeUrl) && (
                     <a
-                      href={leak.stripeUrl}
+                      href={leak.platformUrl || leak.stripeUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 mt-2 text-xs font-medium text-brand hover:text-brand-light transition"
                     >
-                      View in Stripe
+                      View in Dashboard
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>

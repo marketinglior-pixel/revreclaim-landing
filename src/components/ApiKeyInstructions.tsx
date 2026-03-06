@@ -1,43 +1,135 @@
 "use client";
 
 import { useState } from "react";
+import type { BillingPlatform } from "@/lib/platforms/types";
+import { PLATFORM_LABELS } from "@/lib/platforms/types";
 
-const steps = [
-  {
-    number: "1",
-    title: "Open Stripe Dashboard",
-    description: 'Go to Stripe → Developers → API Keys',
-    link: "https://dashboard.stripe.com/apikeys",
-  },
-  {
-    number: "2",
-    title: "Create Restricted Key",
-    description:
-      'Click "Create restricted key" at the bottom of the page',
-  },
-  {
-    number: "3",
-    title: "Enable Read Permissions",
-    description: "Set these to Read access:",
-    permissions: [
-      "Customers",
-      "Subscriptions",
-      "Invoices",
-      "Products",
-      "Prices",
-      "Coupons",
-      "Payment Methods",
-    ],
-  },
-  {
-    number: "4",
-    title: "Copy Your Key",
-    description: 'Click "Create key" and copy the key starting with rk_live_',
-  },
-];
+interface StepConfig {
+  number: string;
+  title: string;
+  description: string;
+  link?: string;
+  linkLabel?: string;
+  permissions?: string[];
+}
 
-export default function ApiKeyInstructions() {
+const PLATFORM_STEPS: Record<BillingPlatform, StepConfig[]> = {
+  stripe: [
+    {
+      number: "1",
+      title: "Open Stripe Dashboard",
+      description: "Go to Stripe \u2192 Developers \u2192 API Keys",
+      link: "https://dashboard.stripe.com/apikeys",
+      linkLabel: "Open Stripe Dashboard \u2192",
+    },
+    {
+      number: "2",
+      title: "Create Restricted Key",
+      description: 'Click "Create restricted key" at the bottom of the page',
+    },
+    {
+      number: "3",
+      title: "Enable Read Permissions",
+      description: "Set these to Read access:",
+      permissions: [
+        "Customers",
+        "Subscriptions",
+        "Invoices",
+        "Products",
+        "Prices",
+        "Coupons",
+        "Payment Methods",
+      ],
+    },
+    {
+      number: "4",
+      title: "Copy Your Key",
+      description:
+        'Click "Create key" and copy the key starting with rk_live_',
+    },
+  ],
+  polar: [
+    {
+      number: "1",
+      title: "Open Polar Dashboard",
+      description: "Go to Polar.sh and navigate to Settings",
+      link: "https://polar.sh/settings",
+      linkLabel: "Open Polar Settings \u2192",
+    },
+    {
+      number: "2",
+      title: "Create Access Token",
+      description:
+        'Go to "Access Tokens" and click "Create Token"',
+    },
+    {
+      number: "3",
+      title: "Set Read Permissions",
+      description: "Enable read access for:",
+      permissions: [
+        "Subscriptions",
+        "Customers",
+        "Orders",
+        "Discounts",
+        "Products",
+      ],
+    },
+    {
+      number: "4",
+      title: "Copy Your Token",
+      description: "Copy the token starting with polar_oat_",
+    },
+  ],
+  lemonsqueezy: [
+    {
+      number: "1",
+      title: "Open Lemon Squeezy Dashboard",
+      description: "Go to Settings \u2192 API",
+      link: "https://app.lemonsqueezy.com/settings/api",
+      linkLabel: "Open Lemon Squeezy API Settings \u2192",
+    },
+    {
+      number: "2",
+      title: "Generate API Key",
+      description: 'Click "+" to generate a new API key',
+    },
+    {
+      number: "3",
+      title: "Copy Your Key",
+      description: "Copy the full API key",
+    },
+  ],
+  paddle: [
+    {
+      number: "1",
+      title: "Open Paddle Dashboard",
+      description: "Go to Developer Tools \u2192 Authentication",
+      link: "https://vendors.paddle.com/authentication",
+      linkLabel: "Open Paddle Dashboard \u2192",
+    },
+    {
+      number: "2",
+      title: "Generate API Key",
+      description: "Create a new API key with read permissions",
+    },
+    {
+      number: "3",
+      title: "Copy Your Key",
+      description: "Copy the API key",
+    },
+  ],
+};
+
+interface ApiKeyInstructionsProps {
+  platform?: BillingPlatform;
+}
+
+export default function ApiKeyInstructions({
+  platform = "stripe",
+}: ApiKeyInstructionsProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const steps = PLATFORM_STEPS[platform];
+  const platformLabel = PLATFORM_LABELS[platform];
 
   return (
     <div className="w-full">
@@ -84,7 +176,7 @@ export default function ApiKeyInstructions() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-xs text-brand hover:text-brand-light mt-1"
                   >
-                    Open Stripe Dashboard →
+                    {step.linkLabel || `Open ${platformLabel} Dashboard \u2192`}
                   </a>
                 )}
                 {step.permissions && (
@@ -132,7 +224,7 @@ export default function ApiKeyInstructions() {
             </svg>
             <p className="text-xs text-text-muted">
               <span className="text-white font-medium">Read-only access</span>{" "}
-              — We can only read data. We can&apos;t modify your Stripe account.
+              &mdash; We can only read data. We can&apos;t modify your {platformLabel} account.
               Your key is never stored.
             </p>
           </div>
