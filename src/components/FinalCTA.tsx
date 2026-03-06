@@ -33,7 +33,7 @@ export function FinalCTA() {
   }
 
   return (
-    <section ref={sectionRef} id="cta" className="border-t border-border-light py-20 md:py-28">
+    <section ref={sectionRef} id="cta" className="relative overflow-hidden border-t border-border-light py-20 md:py-28">
       <div className="mx-auto max-w-3xl px-6 text-center">
         {/* Glow */}
         <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 h-[300px] w-[500px] rounded-full bg-brand/5 blur-[100px]" />

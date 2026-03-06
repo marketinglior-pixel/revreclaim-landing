@@ -16,7 +16,7 @@ export function Footer() {
               <span className="text-sm font-bold text-white">RevReclaim</span>
             </Link>
             <p className="text-xs text-text-muted leading-relaxed max-w-[200px]">
-              Find and fix revenue leaks in your Stripe billing. Built for SaaS founders.
+              Find and fix revenue leaks in your billing. Built for SaaS founders.
             </p>
           </div>
 
