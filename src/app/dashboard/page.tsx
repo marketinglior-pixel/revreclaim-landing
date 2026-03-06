@@ -38,13 +38,14 @@ export default async function DashboardPage() {
   // Fetch reports
   const { data: reportRows } = await supabase
     .from("reports")
-    .select("id, created_at, summary, categories, leaks")
+    .select("id, created_at, platform, summary, categories, leaks")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(20);
 
   const reports: ScanReport[] = (reportRows || []).map((row: Record<string, unknown>) => ({
     id: row.id as string,
+    platform: (row.platform as string) || "stripe",
     scannedAt: row.created_at as string,
     summary: row.summary as unknown as ScanReport["summary"],
     categories: row.categories as unknown as ScanReport["categories"],

@@ -201,9 +201,16 @@ export async function POST(req: NextRequest) {
 
     // Determine error type for the client
     let errorType = "scan_failed";
-    if (message.includes("Invalid API key")) {
+    const lowerMessage = message.toLowerCase();
+    if (
+      lowerMessage.includes("invalid api key") ||
+      lowerMessage.includes("invalid api token") ||
+      lowerMessage.includes("unauthorized") ||
+      lowerMessage.includes("authentication") ||
+      lowerMessage.includes("401")
+    ) {
       errorType = "invalid_key";
-    } else if (message.includes("permissions")) {
+    } else if (lowerMessage.includes("permissions") || lowerMessage.includes("forbidden")) {
       errorType = "insufficient_permissions";
     }
 

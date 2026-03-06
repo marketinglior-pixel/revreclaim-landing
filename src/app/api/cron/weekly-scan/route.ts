@@ -122,7 +122,8 @@ export async function GET(req: NextRequest) {
       console.error(`[CRON] Scan failed for ${config.user_id}:`, message);
 
       // If API key is invalid, deactivate the config
-      if (message.includes("Invalid API key") || message.includes("permissions")) {
+      const lm = message.toLowerCase();
+      if (lm.includes("invalid api") || lm.includes("unauthorized") || lm.includes("401") || lm.includes("permissions") || lm.includes("forbidden")) {
         await supabase
           .from("scan_configs")
           .update({ is_active: false })
@@ -156,10 +157,16 @@ function calculateNextScan(frequency: string): string {
       now.setDate(now.getDate() + 7);
       now.setHours(6, 0, 0, 0);
       break;
-    case "monthly":
+    case "monthly": {
+      // Avoid date overflow: Jan 31 + 1 month → Feb 28, not Mar 3
+      const currentDay = now.getDate();
+      now.setDate(1); // Reset to 1st to avoid overflow
       now.setMonth(now.getMonth() + 1);
+      const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      now.setDate(Math.min(currentDay, lastDay));
       now.setHours(6, 0, 0, 0);
       break;
+    }
     default:
       now.setDate(now.getDate() + 7);
       now.setHours(6, 0, 0, 0);

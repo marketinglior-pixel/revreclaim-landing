@@ -165,10 +165,16 @@ function calculateNextScan(frequency: string): string {
       now.setDate(now.getDate() + 7);
       now.setHours(6, 0, 0, 0);
       break;
-    case "monthly":
+    case "monthly": {
+      // Avoid date overflow: Jan 31 + 1 month → Feb 28, not Mar 3
+      const currentDay = now.getDate();
+      now.setDate(1);
       now.setMonth(now.getMonth() + 1);
+      const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      now.setDate(Math.min(currentDay, lastDay));
       now.setHours(6, 0, 0, 0);
       break;
+    }
     default:
       now.setDate(now.getDate() + 7);
       now.setHours(6, 0, 0, 0);

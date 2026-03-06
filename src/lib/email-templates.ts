@@ -53,8 +53,8 @@ export function welcomeEmailHtml(): string {
   return baseLayout("Welcome to RevReclaim", `
     <h1 style="color:white;font-size:24px;margin:0 0 16px;">Welcome to RevReclaim!</h1>
     <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
-      You're all set up. RevReclaim scans your Stripe account for revenue leaks — expired coupons,
-      failed payments, ghost subscriptions, and more.
+      You're all set up. RevReclaim scans your billing platform for revenue leaks — expired coupons,
+      failed payments, ghost subscriptions, and more. We support Stripe, Polar, Lemon Squeezy, and Paddle.
     </p>
 
     <h2 style="color:white;font-size:16px;margin:0 0 12px;">Get started in 3 steps:</h2>
@@ -69,7 +69,7 @@ export function welcomeEmailHtml(): string {
       </div>
       <div style="padding:12px 0;">
         <span style="color:${BRAND_COLOR};font-weight:bold;">3.</span>
-        <span style="color:#CCC;margin-left:8px;">Fix leaks directly in Stripe</span>
+        <span style="color:#CCC;margin-left:8px;">Fix leaks directly in your billing dashboard</span>
       </div>
     </div>
 
@@ -91,7 +91,7 @@ export function scanCompleteEmailHtml(summary: {
   return baseLayout("Your Revenue Leak Report is Ready", `
     <h1 style="color:white;font-size:24px;margin:0 0 8px;">Your scan is complete!</h1>
     <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
-      We found <strong style="color:#EF4444;">${summary.leaksFound} revenue leaks</strong> in your Stripe account.
+      We found <strong style="color:#EF4444;">${summary.leaksFound} revenue leaks</strong> in your billing account.
     </p>
 
     <!-- Stats Grid -->
@@ -115,7 +115,7 @@ export function scanCompleteEmailHtml(summary: {
     </a>
 
     <p style="color:#666;font-size:13px;margin-top:16px;">
-      Each leak includes a direct fix link to your Stripe Dashboard.
+      Each leak includes a direct fix link to your billing dashboard.
     </p>
   `);
 }

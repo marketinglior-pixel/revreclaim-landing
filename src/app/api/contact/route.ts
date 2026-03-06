@@ -34,6 +34,18 @@ function isRateLimited(ip: string): boolean {
 }
 
 // ---------------------------------------------------------------------------
+// HTML sanitization
+// ---------------------------------------------------------------------------
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// ---------------------------------------------------------------------------
 // POST handler
 // ---------------------------------------------------------------------------
 export async function POST(req: NextRequest) {
@@ -70,6 +82,11 @@ export async function POST(req: NextRequest) {
     const subjectLabel = subjectLabels[subject] || subject || "General";
     const emailSubject = `[RevReclaim Contact] ${subjectLabel} from ${name}`;
 
+    // Sanitize user inputs for HTML email
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safeMessage = escapeHtml(message);
+
     // Send email via Resend
     const resendKey = process.env.RESEND_API_KEY;
     if (resendKey) {
@@ -85,11 +102,11 @@ export async function POST(req: NextRequest) {
             <table style="width: 100%; border-collapse: collapse;">
               <tr>
                 <td style="padding: 8px 12px; font-weight: bold; color: #6b7280; width: 100px;">Name</td>
-                <td style="padding: 8px 12px; color: #111827;">${name}</td>
+                <td style="padding: 8px 12px; color: #111827;">${safeName}</td>
               </tr>
               <tr>
                 <td style="padding: 8px 12px; font-weight: bold; color: #6b7280;">Email</td>
-                <td style="padding: 8px 12px; color: #111827;"><a href="mailto:${email}">${email}</a></td>
+                <td style="padding: 8px 12px; color: #111827;"><a href="mailto:${safeEmail}">${safeEmail}</a></td>
               </tr>
               <tr>
                 <td style="padding: 8px 12px; font-weight: bold; color: #6b7280;">Subject</td>
@@ -98,7 +115,7 @@ export async function POST(req: NextRequest) {
             </table>
             <div style="margin-top: 24px; padding: 16px; background: #f3f4f6; border-radius: 8px;">
               <p style="font-weight: bold; color: #6b7280; margin: 0 0 8px 0;">Message</p>
-              <p style="color: #111827; margin: 0; white-space: pre-wrap;">${message}</p>
+              <p style="color: #111827; margin: 0; white-space: pre-wrap;">${safeMessage}</p>
             </div>
             <p style="margin-top: 24px; font-size: 12px; color: #9ca3af;">
               Sent from RevReclaim contact form at ${new Date().toISOString()}

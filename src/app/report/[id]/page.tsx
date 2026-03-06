@@ -42,7 +42,7 @@ export default function ReportPage() {
         if (user) setIsLoggedIn(true);
         const { data: row, error } = await supabase
           .from("reports")
-          .select("id, created_at, summary, categories, leaks")
+          .select("id, created_at, platform, summary, categories, leaks")
           .eq("id", reportId)
           .single();
 
@@ -50,6 +50,7 @@ export default function ReportPage() {
           const r = row as Record<string, unknown>;
           const dbReport: ScanReport = {
             id: r.id as string,
+            platform: (r.platform as string) || "stripe",
             scannedAt: r.created_at as string,
             summary: r.summary as unknown as ScanReport["summary"],
             categories: r.categories as unknown as ScanReport["categories"],

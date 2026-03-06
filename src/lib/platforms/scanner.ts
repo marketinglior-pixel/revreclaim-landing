@@ -48,32 +48,35 @@ export async function runPlatformScan(
 
   const allLeaks: Leak[] = [];
 
+  // Run each scanner in isolation — one failure won't kill the whole scan
+  function runScanner(name: string, fn: () => Leak[]) {
+    try {
+      allLeaks.push(...fn());
+    } catch (err) {
+      console.error(`[SCANNER] ${name} failed for ${platform}:`, err);
+    }
+  }
+
   if (caps.failedPayments) {
-    allLeaks.push(...scanFailedPayments(data.invoices));
+    runScanner("failedPayments", () => scanFailedPayments(data.invoices));
   }
   if (caps.ghostSubscriptions) {
-    allLeaks.push(...scanGhostSubscriptions(data.subscriptions));
+    runScanner("ghostSubscriptions", () => scanGhostSubscriptions(data.subscriptions));
   }
   if (caps.expiringCards) {
-    allLeaks.push(
-      ...scanExpiringCards(data.subscriptions, data.paymentMethods)
-    );
+    runScanner("expiringCards", () => scanExpiringCards(data.subscriptions, data.paymentMethods));
   }
   if (caps.expiredCoupons) {
-    allLeaks.push(...scanExpiredCoupons(data.subscriptions));
+    runScanner("expiredCoupons", () => scanExpiredCoupons(data.subscriptions));
   }
   if (caps.neverExpiringDiscounts) {
-    allLeaks.push(...scanNeverExpiringDiscounts(data.subscriptions));
+    runScanner("neverExpiringDiscounts", () => scanNeverExpiringDiscounts(data.subscriptions));
   }
   if (caps.legacyPricing) {
-    allLeaks.push(
-      ...scanLegacyPricing(data.subscriptions, data.prices, data.products)
-    );
+    runScanner("legacyPricing", () => scanLegacyPricing(data.subscriptions, data.prices, data.products));
   }
   if (caps.missingPaymentMethods) {
-    allLeaks.push(
-      ...scanMissingPaymentMethods(data.subscriptions, data.paymentMethods)
-    );
+    runScanner("missingPaymentMethods", () => scanMissingPaymentMethods(data.subscriptions, data.paymentMethods));
   }
 
   onProgress?.({ step: "Building report...", progress: 90 });
