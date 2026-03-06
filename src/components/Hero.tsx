@@ -34,26 +34,26 @@ export function Hero() {
         </div>
 
         {/* Headline — concrete $ not % (Hormozi Hack #1) + A/B test */}
-        <h1 className="mb-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-6xl md:leading-[1.1] lg:text-7xl animate-fade-in-up animate-delay-200">
+        <h1 className="mb-6 min-h-[4.5rem] sm:min-h-[5.5rem] md:min-h-[8rem] lg:min-h-[10rem] text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-6xl md:leading-[1.1] lg:text-7xl animate-fade-in-up animate-delay-200">
           {!headlineLoading && headlineVariant === "variant_a" ? (
             <>
-              Your Stripe account has{" "}
+              Your Stripe account is{" "}
               <span className="bg-gradient-to-r from-brand to-brand-light bg-clip-text text-transparent">
-                $2,340
+                leaking revenue
               </span>{" "}
-              in uncollected revenue.
+              right now.
               <br />
-              Here&apos;s proof.
+              We&apos;ll prove it in 90 seconds.
             </>
           ) : (
             <>
-              Last month, you left{" "}
+              The average SaaS loses{" "}
               <span className="bg-gradient-to-r from-brand to-brand-light bg-clip-text text-transparent">
-                $2,340
+                $2,340/mo
               </span>{" "}
-              sitting in Stripe.
+              to billing leaks
               <br />
-              This month, you&apos;ll do it again.
+              they can&apos;t see.
             </>
           )}
         </h1>
@@ -84,8 +84,8 @@ export function Hero() {
             className="group flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black min-h-[52px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
           >
             {!ctaLoading && ctaVariant === "variant_a"
-              ? "Show Me My Revenue Leaks (Free)"
-              : "Paste Your Stripe Key \u2192 Get Your Report"}
+              ? "Find My Hidden Revenue \u2192 Free Scan"
+              : "Scan My Stripe \u2192 Get My Report"}
             <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>

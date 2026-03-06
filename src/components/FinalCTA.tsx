@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { useSectionView } from "@/hooks/useSectionView";
 import { trackEvent } from "@/lib/analytics";
+import { useExperiment } from "@/hooks/useExperiment";
 
 export function FinalCTA() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const sectionRef = useSectionView("final_cta");
+  const { variant: ctaVariant, isLoading: ctaLoading, trackConversion } = useExperiment("cta_text");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -23,6 +25,7 @@ export function FinalCTA() {
       if (res.ok) {
         setStatus("success");
         setEmail("");
+        trackEvent("newsletter_signup", null, { location: "final_cta" }).catch(() => {});
       } else {
         setStatus("error");
       }
@@ -80,10 +83,15 @@ export function FinalCTA() {
             <div className="space-y-4">
               <a
                 href="/scan"
-                onClick={() => trackEvent("cta_clicked", null, { location: "final_cta", action: "scan" }).catch(() => {})}
+                onClick={() => {
+                  trackEvent("cta_clicked", null, { location: "final_cta", action: "scan" }).catch(() => {});
+                  trackConversion("final_cta_click");
+                }}
                 className="group inline-flex items-center gap-2 rounded-lg bg-brand px-5 py-3 text-sm font-bold text-black min-h-[44px] transition-all hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
               >
-                Paste Your Key &rarr; See Your Leaks (Free)
+                {!ctaLoading && ctaVariant === "variant_a"
+                  ? "Find My Hidden Revenue \u2192 Free Scan"
+                  : "Scan My Stripe \u2192 Get My Report"}
                 <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>

@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,12 +18,27 @@ export async function POST(req: NextRequest) {
 
     const { email, plan } = await req.json();
 
-    if (!email || !email.includes("@")) {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json({ error: "Invalid email" }, { status: 400 });
     }
 
-    const webhookUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
+    // Add to Resend audience if configured
+    const audienceId = process.env.RESEND_AUDIENCE_ID;
+    if (audienceId && process.env.RESEND_API_KEY) {
+      try {
+        await resend.contacts.create({
+          audienceId,
+          email,
+          unsubscribed: false,
+        });
+      } catch (err) {
+        // Log but don't fail — Google Sheet fallback still works
+        console.error("[SUBSCRIBE] Resend audience error:", err);
+      }
+    }
 
+    // Google Sheet webhook fallback
+    const webhookUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
     if (webhookUrl) {
       await fetch(webhookUrl, {
         method: "POST",
