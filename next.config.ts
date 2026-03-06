@@ -36,12 +36,12 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.lemonsqueezy.com", // Next.js needs inline scripts
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://polar.sh", // Next.js needs inline scripts
               "style-src 'self' 'unsafe-inline'", // Tailwind uses inline styles
-              "img-src 'self' data: blob: https://*.lemonsqueezy.com",
+              "img-src 'self' data: blob: https://*.polar.sh",
               "font-src 'self'",
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.lemonsqueezy.com https://*.lemonsqueezy.com https://*.sentry.io",
-              "frame-src 'self' https://*.lemonsqueezy.com",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.polar.sh https://*.polar.sh https://*.sentry.io",
+              "frame-src 'self' https://*.polar.sh",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",

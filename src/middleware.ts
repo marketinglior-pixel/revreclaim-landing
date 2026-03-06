@@ -14,7 +14,7 @@ export const config = {
      * - favicon.ico (favicon file)
      * - icon.svg
      * - api/cron (cron jobs use secret, not session)
-     * - api/webhooks (Lemon Squeezy webhooks use signature verification, not session)
+     * - api/webhooks (Polar webhooks use signature verification, not session)
      */
     "/((?!_next/static|_next/image|favicon.ico|icon.svg|api/cron|api/webhooks).*)",
   ],

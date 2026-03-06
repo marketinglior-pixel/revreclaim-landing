@@ -3,7 +3,50 @@ import { Resend } from "resend";
 
 const CONTACT_EMAIL = "revreclaim@gmail.com";
 
+// ---------------------------------------------------------------------------
+// Simple in-memory rate limiter
+// ---------------------------------------------------------------------------
+const rateLimitMap = new Map<
+  string,
+  { count: number; resetAt: number }
+>();
+const RATE_LIMIT_MAX = 3;
+const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  // Clean up expired entries periodically
+  if (rateLimitMap.size > 1000) {
+    for (const [key, val] of rateLimitMap) {
+      if (val.resetAt < now) rateLimitMap.delete(key);
+    }
+  }
+
+  if (!entry || entry.resetAt < now) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
+    return false;
+  }
+
+  entry.count++;
+  return entry.count > RATE_LIMIT_MAX;
+}
+
+// ---------------------------------------------------------------------------
+// POST handler
+// ---------------------------------------------------------------------------
 export async function POST(req: NextRequest) {
+  const ip =
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    "unknown";
+  if (isRateLimited(ip)) {
+    return NextResponse.json(
+      { error: "Too many messages. Please try again in 15 minutes." },
+      { status: 429 }
+    );
+  }
+
   try {
     const { name, email, subject, message } = await req.json();
 

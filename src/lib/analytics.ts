@@ -18,6 +18,7 @@ export type AnalyticsEvent =
   | "scan_completed"
   | "plan_upgraded"
   | "plan_cancelled"
+  | "plan_reactivated"
   | "auto_scan_enabled"
   | "team_member_invited"
   | "checkout_started"

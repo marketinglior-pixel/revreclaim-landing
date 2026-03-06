@@ -103,7 +103,7 @@ export function Pricing() {
       // Track checkout event (fire-and-forget)
       trackEvent("checkout_started", null, { plan: planId }).catch(() => {});
 
-      // Redirect to Lemon Squeezy Checkout
+      // Redirect to Polar Checkout
       window.location.href = data.url;
     } catch {
       setError("Failed to start checkout. Please try again.");

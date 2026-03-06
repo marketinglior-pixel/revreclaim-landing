@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createCheckout } from "@/lib/lemonsqueezy";
+import { createCheckout } from "@/lib/polar";
 
 export async function POST(req: NextRequest) {
   try {
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       process.env.NEXT_PUBLIC_BASE_URL ||
       `https://${req.headers.get("host")}`;
 
-    // Create Lemon Squeezy checkout session via API
+    // Create Polar checkout session
     const url = await createCheckout({
       userId: user.id,
       email: user.email!,
