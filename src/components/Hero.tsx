@@ -42,6 +42,10 @@ export function Hero() {
         <p className="mb-2 text-lg text-text-muted italic animate-fade-in-up animate-delay-250">
           (Unless you paste one key and see for yourself.)
         </p>
+        <p className="mb-2 text-sm text-text-secondary animate-fade-in-up animate-delay-250">
+          This isn&apos;t dunning. This isn&apos;t webhook alerts.
+          This is the money your billing platform knows about but never tells you.
+        </p>
 
         {/* Subheadline — Show Don't Tell: describe the moment (Hormozi Hack #6) */}
         <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-text-muted md:text-xl lg:text-xl animate-fade-in-up animate-delay-300">

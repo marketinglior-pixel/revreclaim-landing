@@ -3,12 +3,28 @@ import { LeakIcon } from "@/components/LeakIcons";
 /* Each description is a mini-story with an emotional punch (Hormozi Hack #6: Show Don't Tell) */
 const leaks = [
   {
-    title: "Failed Payments",
+    title: "Expired Coupons",
     description:
-      "A customer's card was declined 12 days ago. The invoice is sitting there, open. You earned that money. It's just… not arriving. Nobody on your team got an alert.",
-    impact: "$499/mo sitting uncollected",
-    afterFix: "One click retries the charge. That $499 hits your account within 24 hours.",
-    severity: "CRITICAL",
+      "Your sales rep promised '3 months at 50% off.' That was 8 months ago. The coupon expired. The discount is still running. Nobody canceled it. Nobody noticed.",
+    impact: "Most common leak — 35% of all scans",
+    afterFix: "Remove the expired discount. Full-price billing starts next cycle.",
+    severity: "HIGH",
+  },
+  {
+    title: "Legacy Pricing",
+    description:
+      "You raised prices 6 months ago. 40% of your customers are still on the old rate. They're getting the same product for less money than your newest signup. Stripe won't migrate them.",
+    impact: "Found in 22% of scans",
+    afterFix: "Migrate to current pricing. One email, instant revenue lift.",
+    severity: "MEDIUM",
+  },
+  {
+    title: "Forever Discounts",
+    description:
+      "Someone on your team set a coupon to 'forever.' That customer will pay 30% less than everyone else for the rest of their lifetime. Unless you find it.",
+    impact: "Silent margin killer",
+    afterFix: "Set an end date. Your margins recover month over month.",
+    severity: "MEDIUM",
   },
   {
     title: "Ghost Subscriptions",
@@ -27,28 +43,12 @@ const leaks = [
     severity: "HIGH",
   },
   {
-    title: "Expired Coupons",
+    title: "Uncollected Revenue",
     description:
-      "Your sales rep promised '3 months at 50% off.' That was 8 months ago. The coupon expired. The discount is still running. Nobody canceled it. Nobody noticed.",
-    impact: "Most common leak — 35% of all scans",
-    afterFix: "Remove the expired discount. Full-price billing starts next cycle.",
-    severity: "HIGH",
-  },
-  {
-    title: "Forever Discounts",
-    description:
-      "Someone on your team set a coupon to 'forever.' That customer will pay 30% less than everyone else for the rest of their lifetime. Unless you find it.",
-    impact: "Silent margin killer",
-    afterFix: "Set an end date. Your margins recover month over month.",
-    severity: "MEDIUM",
-  },
-  {
-    title: "Legacy Pricing",
-    description:
-      "You raised prices 6 months ago. 40% of your customers are still on the old rate. They're getting the same product for less money than your newest signup. Stripe won't migrate them.",
-    impact: "Found in 22% of scans",
-    afterFix: "Migrate to current pricing. One email, instant revenue lift.",
-    severity: "MEDIUM",
+      "A customer's card was declined 12 days ago. The invoice is sitting there, open. You earned that money. It's just… not arriving. Nobody on your team got an alert.",
+    impact: "$499/mo sitting uncollected",
+    afterFix: "One click retries the charge. That $499 hits your account within 24 hours.",
+    severity: "CRITICAL",
   },
   {
     title: "Missing Payment Methods",

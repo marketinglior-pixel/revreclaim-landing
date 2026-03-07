@@ -16,6 +16,13 @@ const leakIconPaths: Record<string, ReactNode> = {
       <path d="M15 14l4 4m0-4l-4 4" />
     </>
   ),
+  "Uncollected Revenue": (
+    <>
+      <path d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" />
+      <path d="M2 10h20" />
+      <path d="M15 14l4 4m0-4l-4 4" />
+    </>
+  ),
   "Ghost Subscriptions": (
     <>
       <path d="M12 2a7 7 0 0 0-7 7v11l2.5-2 2.5 2 2-2 2 2 2.5-2L19 20V9a7 7 0 0 0-7-7Z" />

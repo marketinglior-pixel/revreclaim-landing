@@ -28,32 +28,11 @@ const DEMO_REPORT: ScanReport = {
   },
   categories: [
     {
-      type: "failed_payment",
-      label: "Failed Payments",
-      count: 6,
-      totalMonthlyImpact: 214900, // $2,149/mo
-      percentage: 44.5,
-    },
-    {
-      type: "ghost_subscription",
-      label: "Ghost Subscriptions",
-      count: 4,
-      totalMonthlyImpact: 89700, // $897/mo
-      percentage: 18.6,
-    },
-    {
       type: "expired_coupon",
       label: "Expired Coupons",
       count: 3,
       totalMonthlyImpact: 75000, // $750/mo
       percentage: 15.5,
-    },
-    {
-      type: "expiring_card",
-      label: "Expiring Cards",
-      count: 5,
-      totalMonthlyImpact: 54200, // $542/mo
-      percentage: 11.2,
     },
     {
       type: "legacy_pricing",
@@ -63,18 +42,39 @@ const DEMO_REPORT: ScanReport = {
       percentage: 6.6,
     },
     {
-      type: "missing_payment_method",
-      label: "Missing Payment Methods",
-      count: 2,
-      totalMonthlyImpact: 12200, // $122/mo
-      percentage: 2.5,
-    },
-    {
       type: "never_expiring_discount",
       label: "Never-Expiring Discounts",
       count: 1,
       totalMonthlyImpact: 5000, // $50/mo
       percentage: 1.0,
+    },
+    {
+      type: "ghost_subscription",
+      label: "Ghost Subscriptions",
+      count: 4,
+      totalMonthlyImpact: 89700, // $897/mo
+      percentage: 18.6,
+    },
+    {
+      type: "expiring_card",
+      label: "Expiring Cards",
+      count: 5,
+      totalMonthlyImpact: 54200, // $542/mo
+      percentage: 11.2,
+    },
+    {
+      type: "failed_payment",
+      label: "Uncollected Revenue",
+      count: 6,
+      totalMonthlyImpact: 214900, // $2,149/mo
+      percentage: 44.5,
+    },
+    {
+      type: "missing_payment_method",
+      label: "Missing Payment Methods",
+      count: 2,
+      totalMonthlyImpact: 12200, // $122/mo
+      percentage: 2.5,
     },
   ],
   leaks: [

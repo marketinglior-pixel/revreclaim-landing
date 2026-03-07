@@ -12,7 +12,7 @@ export type LeakType =
 export const LEAK_TYPE_LABELS: Record<LeakType, string> = {
   expired_coupon: "Expired Coupons",
   never_expiring_discount: "Never-Expiring Discounts",
-  failed_payment: "Failed Payments",
+  failed_payment: "Uncollected Revenue",
   expiring_card: "Expiring Cards",
   ghost_subscription: "Ghost Subscriptions",
   legacy_pricing: "Legacy Pricing",
