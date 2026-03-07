@@ -21,6 +21,7 @@ export interface Database {
           plan_period_start: string | null;
           plan_period_end: string | null;
           scan_count_this_period: number;
+          is_disabled: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -35,6 +36,7 @@ export interface Database {
           plan_period_start?: string | null;
           plan_period_end?: string | null;
           scan_count_this_period?: number;
+          is_disabled?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -49,6 +51,7 @@ export interface Database {
           plan_period_start?: string | null;
           plan_period_end?: string | null;
           scan_count_this_period?: number;
+          is_disabled?: boolean;
           created_at?: string;
           updated_at?: string;
         };

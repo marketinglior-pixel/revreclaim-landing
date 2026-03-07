@@ -35,9 +35,17 @@ export async function POST(req: NextRequest) {
     // Plan enforcement: check if user can enable auto-scans
     const { data: profile } = await supabase
       .from("profiles")
-      .select("plan")
+      .select("plan, is_disabled")
       .eq("id", user.id)
       .single();
+
+    // Kill switch: block disabled users
+    if (profile?.is_disabled) {
+      return NextResponse.json(
+        { error: "Your account has been suspended. Please contact support." },
+        { status: 403 }
+      );
+    }
 
     const userPlan = ((profile?.plan as string) || "free") as PlanType;
     const autoScanCheck = canEnableAutoScan(userPlan);

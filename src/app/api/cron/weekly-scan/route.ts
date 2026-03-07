@@ -42,8 +42,9 @@ export async function GET(req: NextRequest) {
   const now = new Date().toISOString();
   const { data: configs, error: fetchError } = await supabase
     .from("scan_configs")
-    .select("*, profiles!inner(email)")
+    .select("*, profiles!inner(email, is_disabled)")
     .eq("is_active", true)
+    .eq("profiles.is_disabled", false)
     .lte("next_scan_at", now);
 
   if (fetchError) {

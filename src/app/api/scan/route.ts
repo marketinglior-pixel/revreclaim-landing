@@ -56,11 +56,19 @@ export async function POST(req: NextRequest) {
         authenticatedUserId = authUser.id;
         const { data: profile } = await supabaseCheck
           .from("profiles")
-          .select("plan, scan_count_this_period")
+          .select("plan, scan_count_this_period, is_disabled")
           .eq("id", authUser.id)
           .single();
 
         if (profile) {
+          // Kill switch: block disabled users instantly
+          if (profile.is_disabled) {
+            return NextResponse.json(
+              { error: "Your account has been suspended. Please contact support." },
+              { status: 403 }
+            );
+          }
+
           const plan = (profile.plan || "free") as PlanType;
           const scanCount = profile.scan_count_this_period ?? 0;
           const scanCheck = canRunScan(plan, scanCount);
