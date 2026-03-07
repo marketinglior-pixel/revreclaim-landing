@@ -91,12 +91,12 @@ const PLATFORM_STEPS: Record<BillingPlatform, StepConfig[]> = {
     {
       number: "2",
       title: "Generate API Key",
-      description: 'Click "+" to generate a new API key. Lemon Squeezy keys have full access — we only use yours to read data.',
+      description: 'Click "+" to generate a new API key',
     },
     {
       number: "3",
-      title: "Copy & Paste Your Key",
-      description: "Copy the full API key. After your scan, we recommend revoking it from your dashboard.",
+      title: "Copy Your Key",
+      description: "Copy the full API key and paste it below. We only read your data and the key is never stored.",
     },
   ],
   paddle: [
@@ -223,19 +223,11 @@ export default function ApiKeyInstructions({
               />
             </svg>
             <p className="text-xs text-text-muted">
-              {platform === "lemonsqueezy" ? (
-                <>
-                  <span className="text-white font-medium">We only read your data</span>{" "}
-                  &mdash; We never modify your {platformLabel} account.
-                  Since Lemon Squeezy doesn&apos;t support restricted keys, we recommend revoking the key after your scan.
-                </>
-              ) : (
-                <>
-                  <span className="text-white font-medium">Read-only access</span>{" "}
-                  &mdash; We can only read data. We can&apos;t modify your {platformLabel} account.
-                  Your key is never stored.
-                </>
-              )}
+              <span className="text-white font-medium">
+                {platform === "lemonsqueezy" ? "We only read your data" : "Read-only access"}
+              </span>{" "}
+              &mdash; We can&apos;t modify your {platformLabel} account.
+              Your key is never stored.
             </p>
           </div>
         </div>
