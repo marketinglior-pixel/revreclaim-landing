@@ -31,7 +31,7 @@ export default function TeamPage() {
       const data = await res.json();
       setMembers(data.members || []);
     } catch {
-      console.error("Failed to fetch team members");
+      // Silent fail — error state handled by empty members array
     } finally {
       setLoading(false);
     }

@@ -23,7 +23,7 @@ export default function ReportSummary({ summary }: ReportSummaryProps) {
           cents={summary.mrrAtRisk}
           suffix="/mo"
           color="#EF4444"
-          description={`${((summary.mrrAtRisk / Math.max(summary.totalMRR, 1)) * 100).toFixed(1)}% of your MRR`}
+          description={`${Math.min((summary.mrrAtRisk / Math.max(summary.totalMRR, 1)) * 100, 100).toFixed(1)}% of your MRR`}
           delay={100}
           glow={summary.mrrAtRisk > 0}
         />

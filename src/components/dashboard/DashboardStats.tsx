@@ -39,7 +39,7 @@ export default function DashboardStats({ report }: { report: ScanReport }) {
           <span className="text-sm text-text-muted">/mo</span>
         </div>
         <p className="mt-1 text-xs text-text-muted">
-          {((summary.mrrAtRisk / Math.max(summary.totalMRR, 1)) * 100).toFixed(1)}% of MRR
+          {Math.min((summary.mrrAtRisk / Math.max(summary.totalMRR, 1)) * 100, 100).toFixed(1)}% of MRR
         </p>
       </div>
 
