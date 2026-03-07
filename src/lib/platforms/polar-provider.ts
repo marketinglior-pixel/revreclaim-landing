@@ -32,11 +32,14 @@ export const polarProvider: BillingProvider = {
   },
 
   async validateConnection(apiKey: string) {
-    const res = await fetch("https://api.polar.sh/v1/oauth2/userinfo", {
+    // Use /v1/organizations/ to validate OATs — the /v1/oauth2/userinfo
+    // endpoint only works with OAuth2 user tokens (polar_at_), NOT with
+    // Organization Access Tokens (polar_oat_).
+    const res = await fetch("https://api.polar.sh/v1/organizations/", {
       headers: { Authorization: `Bearer ${apiKey}` },
     });
     if (!res.ok) {
-      if (res.status === 401) {
+      if (res.status === 401 || res.status === 403) {
         throw new Error(
           "Invalid API token. Please check that you copied the full Organization Access Token from Polar."
         );
