@@ -470,7 +470,7 @@ export default function SettingsPage() {
             <p className="text-sm font-medium text-white">Your key is encrypted</p>
             <p className="text-xs text-text-muted mt-1">
               Your API key is encrypted with AES-256-GCM before storage.
-              We only use read-only restricted keys — we can never modify your billing data.
+              We only perform read operations — we can never modify your billing data.
               You can delete your key anytime from this page.
             </p>
           </div>

@@ -45,7 +45,7 @@ export function Hero() {
 
         {/* Subheadline — Show Don't Tell: describe the moment (Hormozi Hack #6) */}
         <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-text-muted md:text-xl lg:text-xl animate-fade-in-up animate-delay-300">
-          Here&apos;s what happens: you create a read-only API key (60 seconds).
+          Here&apos;s what happens: you grab an API key (60 seconds).
           You paste it here. We scan 7 categories of billing issues.
           90 seconds later, you&apos;re looking at a list of customers, dollar amounts,
           and one-click fixes. Most founders fix everything before lunch — and see

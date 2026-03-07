@@ -6,11 +6,11 @@ import { useSectionView } from "@/hooks/useSectionView";
 const faqs = [
   {
     q: "Is my billing data safe?",
-    a: "Yes. You create a restricted API key with read-only permissions. We can only read data — we cannot modify your billing, create charges, or access card numbers. The key is used only during the scan and is never stored or logged.",
+    a: "Yes. Most platforms support restricted read-only keys (Stripe, Polar, Paddle). For Lemon Squeezy, which doesn't offer key restrictions, we still only read data and recommend revoking the key after your scan. We cannot modify your billing, create charges, or access card numbers. One-time scan keys are never stored or logged.",
   },
   {
     q: "Which billing platforms do you support?",
-    a: "We support Stripe, Polar.sh, Lemon Squeezy, and Paddle. Select your platform on the scan page and we'll guide you through creating a read-only API key. Each platform gets a tailored scan covering the leak types it supports.",
+    a: "We support Stripe, Polar.sh, Lemon Squeezy, and Paddle. Select your platform on the scan page and we'll guide you through creating an API key. Each platform gets a tailored scan covering the leak types it supports.",
   },
   {
     q: "What permissions does the API key need?",
@@ -48,7 +48,7 @@ const faqs = [
   /* Trust FAQ — damaging admission + transparency (Hormozi Hack #5) */
   {
     q: "Why should I trust you with my billing data?",
-    a: "Fair question. Here's the honest answer: you shouldn't blindly trust anyone with your billing data. That's why we designed RevReclaim to work with restricted, read-only API keys — scoped to specific resources, and you can revoke them instantly. We never see card numbers. We never store the key after the scan.",
+    a: "Fair question. Here's the honest answer: you shouldn't blindly trust anyone with your billing data. That's why we designed RevReclaim to work with read-only API keys where supported (Stripe, Polar, Paddle). For platforms without key restrictions, we only perform read operations and never modify your data. You can revoke any key instantly. We never see card numbers. We never store the key after the scan.",
   },
 ];
 
