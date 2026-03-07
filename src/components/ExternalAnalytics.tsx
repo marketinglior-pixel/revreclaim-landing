@@ -3,16 +3,18 @@
 import Script from "next/script";
 
 /**
- * Google Analytics 4 + Meta Pixel scripts.
+ * Google Analytics 4 + LinkedIn Insight Tag + Meta Pixel scripts.
  *
  * Env vars:
- *   NEXT_PUBLIC_GA4_ID          — e.g. "G-XXXXXXXXXX"
- *   NEXT_PUBLIC_META_PIXEL_ID   — e.g. "1234567890"
+ *   NEXT_PUBLIC_GA4_ID              — e.g. "G-XXXXXXXXXX"
+ *   NEXT_PUBLIC_LINKEDIN_PARTNER_ID — e.g. "1234567"
+ *   NEXT_PUBLIC_META_PIXEL_ID       — e.g. "1234567890" (optional, for future use)
  *
- * If either env var is missing, the corresponding script is not rendered.
+ * If an env var is missing, the corresponding script is not rendered.
  */
 
 const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID;
+const LINKEDIN_PARTNER_ID = process.env.NEXT_PUBLIC_LINKEDIN_PARTNER_ID;
 const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
 export default function ExternalAnalytics() {
@@ -39,7 +41,27 @@ export default function ExternalAnalytics() {
         </>
       )}
 
-      {/* ───── Meta Pixel ───── */}
+      {/* ───── LinkedIn Insight Tag ───── */}
+      {LINKEDIN_PARTNER_ID && (
+        <Script id="linkedin-insight-init" strategy="afterInteractive">
+          {`
+            _linkedin_partner_id = "${LINKEDIN_PARTNER_ID}";
+            window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+            window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+            (function(l) {
+              if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+              window.lintrk.q=[]}
+              var s = document.getElementsByTagName("script")[0];
+              var b = document.createElement("script");
+              b.type = "text/javascript";b.async = true;
+              b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+              s.parentNode.insertBefore(b, s);
+            })(window.lintrk);
+          `}
+        </Script>
+      )}
+
+      {/* ───── Meta Pixel (kept for future use) ───── */}
       {META_PIXEL_ID && (
         <Script id="meta-pixel-init" strategy="afterInteractive">
           {`

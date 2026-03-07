@@ -1,10 +1,10 @@
 /**
- * Client-side conversion tracking for GA4 + Meta Pixel.
+ * Client-side conversion tracking for GA4 + LinkedIn Insight Tag + Meta Pixel.
  *
  * Call these functions alongside the existing internal trackEvent() calls
- * to also fire events to Google Analytics 4 and Meta Pixel for ad optimisation.
+ * to also fire events to external ad platforms for campaign optimisation.
  *
- * All functions are safe to call even if GA4/Meta are not configured —
+ * All functions are safe to call even if a platform is not configured —
  * they silently no-op when the global objects don't exist.
  */
 
@@ -12,6 +12,7 @@
 declare global {
   interface Window {
     gtag?: (...args: any[]) => void;
+    lintrk?: (action: string, data: Record<string, unknown>) => void;
     fbq?: (...args: any[]) => void;
   }
 }
@@ -24,7 +25,26 @@ function ga4Event(name: string, params?: Record<string, unknown>) {
   }
 }
 
-// ─── Meta Pixel helpers ──────────────────────────────────────────────────
+// ─── LinkedIn Insight Tag helpers ─────────────────────────────────────────
+// LinkedIn uses conversion IDs created in Campaign Manager.
+// Set these env vars to map events to LinkedIn conversion IDs:
+//   NEXT_PUBLIC_LI_CONV_SCAN      — Scan completed conversion ID
+//   NEXT_PUBLIC_LI_CONV_SIGNUP    — Signup conversion ID
+//   NEXT_PUBLIC_LI_CONV_PURCHASE  — Purchase conversion ID
+//   NEXT_PUBLIC_LI_CONV_LEAD      — Lead/newsletter conversion ID
+
+const LI_CONV_SCAN = process.env.NEXT_PUBLIC_LI_CONV_SCAN;
+const LI_CONV_SIGNUP = process.env.NEXT_PUBLIC_LI_CONV_SIGNUP;
+const LI_CONV_PURCHASE = process.env.NEXT_PUBLIC_LI_CONV_PURCHASE;
+const LI_CONV_LEAD = process.env.NEXT_PUBLIC_LI_CONV_LEAD;
+
+function linkedInConversion(conversionId: string | undefined) {
+  if (typeof window !== "undefined" && window.lintrk && conversionId) {
+    window.lintrk("track", { conversion_id: conversionId });
+  }
+}
+
+// ─── Meta Pixel helpers (kept for future use) ────────────────────────────
 
 function metaEvent(name: string, params?: Record<string, unknown>) {
   if (typeof window !== "undefined" && window.fbq) {
@@ -54,6 +74,7 @@ export function trackScanCompleted(leaksFound: number, mrrAtRisk: number) {
     value: mrrAtRisk,
     currency: "USD",
   });
+  linkedInConversion(LI_CONV_SCAN);
   metaEvent("CompleteRegistration", {
     content_name: "scan",
     value: mrrAtRisk,
@@ -83,6 +104,7 @@ export function trackPurchase(plan: string, value: number) {
     transaction_id: `${plan}_${Date.now()}`,
     items: [{ item_name: plan }],
   });
+  linkedInConversion(LI_CONV_PURCHASE);
   metaEvent("Purchase", {
     content_name: plan,
     value,
@@ -93,18 +115,19 @@ export function trackPurchase(plan: string, value: number) {
 /** User signed up (created account) */
 export function trackSignup(method = "email") {
   ga4Event("sign_up", { method });
+  linkedInConversion(LI_CONV_SIGNUP);
   metaEvent("Lead", { content_name: "signup" });
 }
 
 /** CTA click (generic, with location context) */
 export function trackCTAClick(location: string, action: string) {
   ga4Event("cta_click", { location, action });
-  // Meta: no standard event, using custom
   metaCustomEvent("CTAClick", { location, action });
 }
 
 /** Newsletter signup */
 export function trackNewsletterSignup() {
   ga4Event("generate_lead", { content: "newsletter" });
+  linkedInConversion(LI_CONV_LEAD);
   metaEvent("Lead", { content_name: "newsletter" });
 }
