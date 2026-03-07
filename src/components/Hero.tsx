@@ -80,10 +80,9 @@ export function Hero() {
             </svg>
           </a>
         </div>
-        <span className="mt-4 inline-block text-sm text-text-muted animate-fade-in-up animate-delay-400">Free forever. No credit card. No sales call. Report in 90 seconds.</span>
-
-        {/* Guarantee badge — with "because" reason (Hormozi Hack #4) */}
-        <div className="mt-8 inline-flex flex-col items-center gap-1">
+        {/* Trust stack — three lines, vertically centered */}
+        <div className="mt-6 flex flex-col items-center gap-3 animate-fade-in-up animate-delay-400">
+          <span className="text-sm text-text-muted">Free forever. No credit card. No sales call. Report in 90 seconds.</span>
           <div className="inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-5 py-2.5">
             <svg className="h-5 w-5 text-brand" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
