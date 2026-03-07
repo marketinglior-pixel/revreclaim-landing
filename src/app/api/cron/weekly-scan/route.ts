@@ -9,6 +9,8 @@ import { calculateNextScan } from "@/lib/scan-utils";
 import { generateRecoveryActions } from "@/lib/recovery/action-generator";
 import { canUseRecoveryActions } from "@/lib/plan-limits";
 import type { PlanType } from "@/lib/plan-limits";
+import { verifyCronSecret } from "@/lib/api-security";
+import { fireAndForget } from "@/lib/fire-and-forget";
 
 export const maxDuration = 300; // 5 minutes for batch processing
 
@@ -19,11 +21,8 @@ export const maxDuration = 300; // 5 minutes for batch processing
  * Security: Protected by CRON_SECRET bearer token.
  */
 export async function GET(req: NextRequest) {
-  // Verify cron secret
-  const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+  // Verify cron secret (timing-safe comparison)
+  if (!verifyCronSecret(req.headers.get("authorization"))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -159,7 +158,7 @@ export async function GET(req: NextRequest) {
 
       // Send scan completion email (fire-and-forget)
       if (profileData?.email) {
-        sendScanCompleteEmail(profileData.email, report.summary, report.id).catch(() => {});
+        fireAndForget(sendScanCompleteEmail(profileData.email, report.summary, report.id), "CRON_SCAN_COMPLETE_EMAIL");
       }
 
       successCount++;

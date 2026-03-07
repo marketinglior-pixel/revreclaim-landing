@@ -5,12 +5,17 @@ import type { PlanType } from "@/lib/plan-limits";
 import { sendTeamInviteEmail } from "@/lib/email";
 import { trackEvent } from "@/lib/analytics";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
+import { guardMutation } from "@/lib/api-security";
+import { fireAndForget } from "@/lib/fire-and-forget";
 
 export async function POST(req: NextRequest) {
+  const guard = guardMutation(req);
+  if (guard) return guard;
+
   try {
     // Rate limit: 10 team invites per IP per hour
     const ip = getClientIP(req);
-    const rl = rateLimit({ name: "team-invite", maxRequests: 10, windowSeconds: 3600 }, ip);
+    const rl = await rateLimit({ name: "team-invite", maxRequests: 10, windowSeconds: 3600 }, ip);
     if (!rl.allowed) {
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },
@@ -115,9 +120,8 @@ export async function POST(req: NextRequest) {
     }
 
     // Track event + send invite email (fire-and-forget)
-    trackEvent("team_member_invited", user.id, { invitedEmail: normalizedEmail }).catch(() => {});
-    sendTeamInviteEmail(normalizedEmail, profile?.email || user.email || "")
-      .catch(() => {});
+    fireAndForget(trackEvent("team_member_invited", user.id, { invitedEmail: normalizedEmail }), "TEAM_INVITE_TRACKING");
+    fireAndForget(sendTeamInviteEmail(normalizedEmail, profile?.email || user.email || ""), "TEAM_INVITE_EMAIL");
 
     return NextResponse.json({
       message: inviteeProfile

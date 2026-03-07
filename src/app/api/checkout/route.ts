@@ -2,12 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createCheckout } from "@/lib/polar";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
+import { guardMutation } from "@/lib/api-security";
 
 export async function POST(req: NextRequest) {
+  const guard = guardMutation(req);
+  if (guard) return guard;
+
   try {
     // Rate limit: 5 checkout attempts per IP per hour
     const ip = getClientIP(req);
-    const rl = rateLimit({ name: "checkout", maxRequests: 5, windowSeconds: 3600 }, ip);
+    const rl = await rateLimit({ name: "checkout", maxRequests: 5, windowSeconds: 3600 }, ip);
     if (!rl.allowed) {
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },

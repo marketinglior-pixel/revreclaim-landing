@@ -2,21 +2,28 @@ import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from "crypt
 
 const ALGORITHM = "aes-256-gcm";
 
-function getKey(): Buffer {
+/** Static salt used in the legacy (3-part) format — kept for backward compatibility only. */
+const LEGACY_SALT = "revreclaim-salt";
+
+function deriveKey(salt: Buffer | string): Buffer {
   const secret = process.env.ENCRYPTION_SECRET;
   if (!secret) {
     throw new Error("ENCRYPTION_SECRET environment variable is not set");
   }
-  // Derive a 32-byte key from the secret
-  return scryptSync(secret, "revreclaim-salt", 32);
+  return scryptSync(secret, salt, 32);
 }
 
 /**
  * Encrypt a plaintext string (e.g., a Stripe API key).
- * Returns a string in format: iv:authTag:encryptedData (all hex-encoded)
+ * Returns a string in format: salt:iv:authTag:encryptedData (all hex-encoded).
+ *
+ * Each encryption generates a unique random salt, so identical plaintexts
+ * produce different ciphertexts and an exposed ENCRYPTION_SECRET alone
+ * cannot derive the key without the per-record salt.
  */
 export function encrypt(plaintext: string): string {
-  const key = getKey();
+  const salt = randomBytes(16);
+  const key = deriveKey(salt);
   const iv = randomBytes(16);
   const cipher = createCipheriv(ALGORITHM, key, iv);
 
@@ -25,21 +32,42 @@ export function encrypt(plaintext: string): string {
 
   const authTag = cipher.getAuthTag();
 
-  return `${iv.toString("hex")}:${authTag.toString("hex")}:${encrypted}`;
+  // New 4-part format: salt:iv:authTag:encryptedData
+  return `${salt.toString("hex")}:${iv.toString("hex")}:${authTag.toString("hex")}:${encrypted}`;
 }
 
 /**
  * Decrypt an encrypted string back to plaintext.
- * Expects format: iv:authTag:encryptedData (all hex-encoded)
+ *
+ * Supports two formats for backward compatibility:
+ * - Legacy  (3-part): iv:authTag:encryptedData  (static salt)
+ * - Current (4-part): salt:iv:authTag:encryptedData (per-record salt)
  */
 export function decrypt(encryptedString: string): string {
-  const key = getKey();
-  const [ivHex, authTagHex, encrypted] = encryptedString.split(":");
+  const parts = encryptedString.split(":");
+
+  let salt: Buffer | string;
+  let ivHex: string;
+  let authTagHex: string;
+  let encrypted: string;
+
+  if (parts.length === 4) {
+    // New format: salt:iv:authTag:encryptedData
+    [, ivHex, authTagHex, encrypted] = parts;
+    salt = Buffer.from(parts[0], "hex");
+  } else if (parts.length === 3) {
+    // Legacy format: iv:authTag:encryptedData (static salt)
+    [ivHex, authTagHex, encrypted] = parts;
+    salt = LEGACY_SALT;
+  } else {
+    throw new Error("Invalid encrypted string format");
+  }
 
   if (!ivHex || !authTagHex || !encrypted) {
     throw new Error("Invalid encrypted string format");
   }
 
+  const key = deriveKey(salt);
   const iv = Buffer.from(ivHex, "hex");
   const authTag = Buffer.from(authTagHex, "hex");
   const decipher = createDecipheriv(ALGORITHM, key, iv);

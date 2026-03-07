@@ -10,14 +10,19 @@ import { sendScanCompleteEmail, sendScanLimitReachedEmail } from "@/lib/email";
 import { trackEvent } from "@/lib/analytics";
 import { generateRecoveryActions } from "@/lib/recovery/action-generator";
 import { canUseRecoveryActions } from "@/lib/plan-limits";
+import { guardMutation } from "@/lib/api-security";
+import { fireAndForget } from "@/lib/fire-and-forget";
 
 export const maxDuration = 60; // Allow up to 60s for large accounts
 
 export async function POST(req: NextRequest) {
+  const guard = guardMutation(req);
+  if (guard) return guard;
+
   try {
     // Rate limit: 5 scans per IP per hour
     const ip = getClientIP(req);
-    const rl = rateLimit({ name: "scan", maxRequests: 5, windowSeconds: 3600 }, ip);
+    const rl = await rateLimit({ name: "scan", maxRequests: 5, windowSeconds: 3600 }, ip);
     if (!rl.allowed) {
       return NextResponse.json(
         { error: `Too many scans. Please try again in ${rl.retryAfterSeconds} seconds.` },
@@ -75,7 +80,7 @@ export async function POST(req: NextRequest) {
           const scanCount = profile.scan_count_this_period ?? 0;
           const scanCheck = canRunScan(plan, scanCount);
           if (!scanCheck.allowed) {
-            sendScanLimitReachedEmail(email).catch(() => {});
+            fireAndForget(sendScanLimitReachedEmail(email), "SCAN_LIMIT_EMAIL");
             return NextResponse.json(
               { error: scanCheck.reason, errorType: "plan_limit" },
               { status: 403 }
@@ -88,7 +93,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Track scan started event
-    trackEvent("scan_started", authenticatedUserId, { email }).catch(() => {});
+    fireAndForget(trackEvent("scan_started", authenticatedUserId, { email }), "SCAN_STARTED_TRACKING");
 
     // Log the scan attempt (NOT the API key or email)
     console.log(
@@ -98,7 +103,7 @@ export async function POST(req: NextRequest) {
     // Log to Google Sheets webhook
     const webhookUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
     if (webhookUrl) {
-      fetch(webhookUrl, {
+      fireAndForget(fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -107,7 +112,7 @@ export async function POST(req: NextRequest) {
           action: "scan_started",
           timestamp: new Date().toISOString(),
         }),
-      }).catch(() => {}); // Fire and forget
+      }), "SCAN_STARTED_WEBHOOK");
     }
 
     // Run the full scan — dispatch to correct platform scanner
@@ -141,7 +146,7 @@ export async function POST(req: NextRequest) {
 
     // Log completion to webhook
     if (webhookUrl) {
-      fetch(webhookUrl, {
+      fireAndForget(fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -153,7 +158,7 @@ export async function POST(req: NextRequest) {
           healthScore: report.summary.healthScore,
           timestamp: new Date().toISOString(),
         }),
-      }).catch(() => {});
+      }), "SCAN_COMPLETED_WEBHOOK");
     }
 
     // If user is authenticated, save report to database and increment scan count
@@ -181,13 +186,13 @@ export async function POST(req: NextRequest) {
           console.log(`[SCAN] Report ${report.id} saved to DB for user ${userId}`);
 
           // Track scan completed + send email (fire-and-forget)
-          trackEvent("scan_completed", userId, {
+          fireAndForget(trackEvent("scan_completed", userId, {
             reportId: report.id,
             leaksFound: report.summary.leaksFound,
             mrrAtRisk: report.summary.mrrAtRisk,
             healthScore: report.summary.healthScore,
-          }).catch(() => {});
-          sendScanCompleteEmail(email, report.summary, report.id).catch(() => {});
+          }), "SCAN_COMPLETED_TRACKING");
+          fireAndForget(sendScanCompleteEmail(email, report.summary, report.id), "SCAN_COMPLETE_EMAIL");
 
           // Increment scan count (fire-and-forget)
           supabase

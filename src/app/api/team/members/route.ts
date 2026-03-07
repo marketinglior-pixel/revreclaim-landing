@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { guardMutation } from "@/lib/api-security";
 
 /**
  * GET /api/team/members — List team members for the authenticated user.
@@ -43,6 +44,9 @@ export async function GET() {
  * DELETE /api/team/members — Remove a team member by ID.
  */
 export async function DELETE(req: NextRequest) {
+  const guard = guardMutation(req);
+  if (guard) return guard;
+
   try {
     const supabase = await createClient();
     const {

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { guardMutation } from "@/lib/api-security";
+import { fireAndForget } from "@/lib/fire-and-forget";
 
 const CONTACT_EMAIL = "revreclaim@gmail.com";
 
@@ -49,6 +51,9 @@ function escapeHtml(str: string): string {
 // POST handler
 // ---------------------------------------------------------------------------
 export async function POST(req: NextRequest) {
+  const guard = guardMutation(req);
+  if (guard) return guard;
+
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     "unknown";
@@ -146,7 +151,7 @@ export async function POST(req: NextRequest) {
     // Also log to Google Sheets webhook (fire-and-forget)
     const webhookUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
     if (webhookUrl) {
-      fetch(webhookUrl, {
+      fireAndForget(fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -157,7 +162,7 @@ export async function POST(req: NextRequest) {
           message,
           timestamp: new Date().toISOString(),
         }),
-      }).catch(() => {});
+      }), "CONTACT_FORM_WEBHOOK");
     }
 
     return NextResponse.json({ success: true });

@@ -1,14 +1,78 @@
 /**
- * Simple in-memory rate limiter for serverless.
+ * Rate limiter with Upstash Redis support (production) and
+ * in-memory fallback (development / when Redis is not configured).
  *
- * Works per-instance (each cold start resets). For stronger guarantees
- * upgrade to Upstash Redis: https://upstash.com/docs/redis/sdks/ratelimit-ts
+ * Redis-backed limiting is distributed across all Vercel instances and
+ * survives cold starts. The in-memory fallback still blocks burst abuse
+ * within a single warm instance.
  *
- * Still effective because:
- * - Vercel reuses warm instances for many requests
- * - Blocks burst abuse within a warm window
- * - Zero external dependencies
+ * Upstash setup: https://upstash.com/docs/redis/sdks/ratelimit-ts
+ *   Env vars: UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN
  */
+
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+
+// ---------------------------------------------------------------------------
+// Types (unchanged — all callers use these)
+// ---------------------------------------------------------------------------
+
+interface RateLimitConfig {
+  /** Unique name for this limiter (e.g., "scan", "subscribe") */
+  name: string;
+  /** Max requests allowed in the window */
+  maxRequests: number;
+  /** Time window in seconds */
+  windowSeconds: number;
+}
+
+interface RateLimitResult {
+  allowed: boolean;
+  remaining: number;
+  retryAfterSeconds: number;
+}
+
+// ---------------------------------------------------------------------------
+// Upstash Redis rate limiter (lazy-initialised, one Ratelimit per config name)
+// ---------------------------------------------------------------------------
+
+let redis: Redis | null = null;
+const redisLimiters = new Map<string, Ratelimit>();
+
+function getRedis(): Redis | null {
+  if (redis) return redis;
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return null;
+  redis = new Redis({ url, token });
+  return redis;
+}
+
+function getRedisLimiter(config: RateLimitConfig): Ratelimit | null {
+  const r = getRedis();
+  if (!r) return null;
+
+  const cacheKey = `${config.name}:${config.maxRequests}:${config.windowSeconds}`;
+  if (!redisLimiters.has(cacheKey)) {
+    redisLimiters.set(
+      cacheKey,
+      new Ratelimit({
+        redis: r,
+        limiter: Ratelimit.slidingWindow(
+          config.maxRequests,
+          `${config.windowSeconds} s`
+        ),
+        prefix: `rl:${config.name}`,
+        analytics: true,
+      })
+    );
+  }
+  return redisLimiters.get(cacheKey)!;
+}
+
+// ---------------------------------------------------------------------------
+// In-memory fallback (original implementation)
+// ---------------------------------------------------------------------------
 
 interface RateLimitEntry {
   count: number;
@@ -29,22 +93,7 @@ setInterval(() => {
   }
 }, 5 * 60 * 1000);
 
-interface RateLimitConfig {
-  /** Unique name for this limiter (e.g., "scan", "subscribe") */
-  name: string;
-  /** Max requests allowed in the window */
-  maxRequests: number;
-  /** Time window in seconds */
-  windowSeconds: number;
-}
-
-interface RateLimitResult {
-  allowed: boolean;
-  remaining: number;
-  retryAfterSeconds: number;
-}
-
-export function rateLimit(
+function inMemoryRateLimit(
   config: RateLimitConfig,
   key: string
 ): RateLimitResult {
@@ -58,7 +107,6 @@ export function rateLimit(
   const entry = store.get(key);
 
   if (!entry || now > entry.resetAt) {
-    // First request or window expired — reset
     store.set(key, { count: 1, resetAt: now + windowMs });
     return {
       allowed: true,
@@ -68,7 +116,6 @@ export function rateLimit(
   }
 
   if (entry.count >= config.maxRequests) {
-    // Limit exceeded
     const retryAfter = Math.ceil((entry.resetAt - now) / 1000);
     return {
       allowed: false,
@@ -77,13 +124,48 @@ export function rateLimit(
     };
   }
 
-  // Increment
   entry.count += 1;
   return {
     allowed: true,
     remaining: config.maxRequests - entry.count,
     retryAfterSeconds: 0,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Public API  — now async (Redis calls are async)
+// ---------------------------------------------------------------------------
+
+/**
+ * Rate-limit a request. Uses Upstash Redis when configured,
+ * otherwise falls back to in-memory limiting.
+ */
+export async function rateLimit(
+  config: RateLimitConfig,
+  key: string
+): Promise<RateLimitResult> {
+  const limiter = getRedisLimiter(config);
+
+  if (limiter) {
+    try {
+      const { success, remaining, reset } = await limiter.limit(key);
+      return {
+        allowed: success,
+        remaining,
+        retryAfterSeconds: success
+          ? 0
+          : Math.max(0, Math.ceil((reset - Date.now()) / 1000)),
+      };
+    } catch (err) {
+      // Redis failure — fall back to in-memory so we never block legitimate users
+      console.error(
+        "[RATE_LIMIT] Redis error, falling back to in-memory:",
+        err instanceof Error ? err.message : String(err)
+      );
+    }
+  }
+
+  return inMemoryRateLimit(config, key);
 }
 
 /**

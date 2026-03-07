@@ -91,6 +91,65 @@ export const paddleProvider: BillingProvider = {
         fetchAllPaddlePages(`${PADDLE_API_BASE}/discounts`, headers),
       ]);
 
+    onProgress?.({ step: "Fetching payment methods...", progress: 55 });
+
+    // Fetch payment methods for each unique customer with active/trialing subs
+    const activeCustomerIds = [
+      ...new Set(
+        subscriptionsRaw
+          .filter(
+            (s: Record<string, unknown>) =>
+              s.status === "active" || s.status === "trialing"
+          )
+          .map((s: Record<string, unknown>) => s.customer_id as string)
+          .filter(Boolean)
+      ),
+    ];
+
+    const paymentMethods = new Map<string, NormalizedPaymentMethod[]>();
+    const PM_BATCH_SIZE = 10;
+
+    for (let i = 0; i < activeCustomerIds.length; i += PM_BATCH_SIZE) {
+      const batch = activeCustomerIds.slice(i, i + PM_BATCH_SIZE);
+      const results = await Promise.all(
+        batch.map(async (customerId) => {
+          try {
+            const methods = await fetchAllPaddlePages(
+              `${PADDLE_API_BASE}/customers/${customerId}/payment-methods`,
+              headers
+            );
+            return { customerId, methods };
+          } catch {
+            // Customer might not have payment methods — skip gracefully
+            return { customerId, methods: [] };
+          }
+        })
+      );
+
+      for (const { customerId, methods } of results) {
+        const normalized: NormalizedPaymentMethod[] = methods
+          .filter(
+            (m: Record<string, unknown>) =>
+              m.type === "card" && (m.card as Record<string, unknown> | null)
+          )
+          .map((m: Record<string, unknown>) => {
+            const card = m.card as Record<string, unknown>;
+            return {
+              id: (m.id as string) || "",
+              type: "card" as const,
+              cardLast4: (card.last4 as string) || null,
+              cardBrand: (card.type as string) || null,
+              cardExpMonth: (card.expiry_month as number) || null,
+              cardExpYear: (card.expiry_year as number) || null,
+            };
+          });
+
+        if (normalized.length > 0) {
+          paymentMethods.set(customerId, normalized);
+        }
+      }
+    }
+
     onProgress?.({ step: "Normalizing data...", progress: 60 });
 
     // Build discount lookup
@@ -171,7 +230,8 @@ export const paddleProvider: BillingProvider = {
           monthlyAmountCents,
           items,
           discounts,
-          defaultPaymentMethod: null, // Paddle doesn't expose payment methods in sub
+          defaultPaymentMethod:
+            paymentMethods.get((sub.customer_id as string) || "")?.[0] ?? null,
           createdAt: sub.created_at
             ? Math.floor(new Date(sub.created_at as string).getTime() / 1000)
             : Math.floor(Date.now() / 1000),
@@ -258,7 +318,7 @@ export const paddleProvider: BillingProvider = {
       invoices,
       prices,
       products,
-      paymentMethods: new Map<string, NormalizedPaymentMethod[]>(),
+      paymentMethods,
     };
   },
 };

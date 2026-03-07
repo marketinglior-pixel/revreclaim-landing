@@ -1,8 +1,11 @@
 "use client";
 
-import { Leak, LEAK_TYPE_LABELS } from "@/lib/types";
+import { Leak, LeakType, LEAK_TYPE_LABELS } from "@/lib/types";
 import { formatCurrency, getSeverityColor } from "@/lib/utils";
 import { useState } from "react";
+
+// Leak types that have no automated recovery action — require human judgment
+const ADVISORY_LEAK_TYPES: Set<LeakType> = new Set(["legacy_pricing"]);
 
 interface LeakCardProps {
   leak: Leak;
@@ -50,6 +53,11 @@ export default function LeakCard({ leak }: LeakCardProps) {
               <span className="text-xs text-text-muted">
                 {LEAK_TYPE_LABELS[leak.type]}
               </span>
+              {ADVISORY_LEAK_TYPES.has(leak.type) && (
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-info bg-info/10 border border-info/20 rounded">
+                  Manual Review
+                </span>
+              )}
               {leak.customerEmail && (
                 <>
                   <span className="text-xs text-text-muted">·</span>
@@ -150,6 +158,37 @@ export default function LeakCard({ leak }: LeakCardProps) {
                 </div>
               </div>
             </div>
+
+            {/* Advisory callout for leak types without automated recovery */}
+            {ADVISORY_LEAK_TYPES.has(leak.type) && (
+              <div className="bg-info/5 border border-info/20 rounded-lg p-3">
+                <div className="flex items-start gap-2">
+                  <svg
+                    className="w-4 h-4 text-info flex-shrink-0 mt-0.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <div>
+                    <p className="text-xs font-semibold text-info mb-1">
+                      Why this requires manual review
+                    </p>
+                    <p className="text-xs text-text-muted leading-relaxed">
+                      Price migrations are a business decision that affect
+                      customer relationships. We recommend reviewing each case
+                      individually before making changes.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
             </div>
           </div>
         </div>

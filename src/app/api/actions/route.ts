@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { canUseRecoveryActions } from "@/lib/plan-limits";
 import type { PlanType } from "@/lib/plan-limits";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
+import { guardMutation } from "@/lib/api-security";
 
 /**
  * GET /api/actions — Fetch user's recovery actions.
@@ -81,10 +82,13 @@ export async function GET(req: NextRequest) {
  * Body: { actionIds: string[], decision: "approve" | "dismiss" }
  */
 export async function POST(req: NextRequest) {
+  const guard = guardMutation(req);
+  if (guard) return guard;
+
   try {
     // Rate limit: 30 action updates per IP per hour
     const ip = getClientIP(req);
-    const rl = rateLimit({ name: "actions", maxRequests: 30, windowSeconds: 3600 }, ip);
+    const rl = await rateLimit({ name: "actions", maxRequests: 30, windowSeconds: 3600 }, ip);
     if (!rl.allowed) {
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },

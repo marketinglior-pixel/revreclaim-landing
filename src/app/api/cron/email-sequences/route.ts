@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { sendReminderEmail, sendUpgradeNudgeEmail } from "@/lib/email";
+import { verifyCronSecret } from "@/lib/api-security";
 
 export const maxDuration = 60;
 
@@ -12,11 +13,8 @@ export const maxDuration = 60;
  * Security: Protected by CRON_SECRET bearer token.
  */
 export async function GET(req: NextRequest) {
-  // Verify cron secret
-  const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+  // Verify cron secret (timing-safe comparison)
+  if (!verifyCronSecret(req.headers.get("authorization"))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

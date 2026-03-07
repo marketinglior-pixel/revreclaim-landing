@@ -88,6 +88,89 @@ export const polarProvider: BillingProvider = {
       fetchAllPages("https://api.polar.sh/v1/products/", headers),
     ]);
 
+    onProgress?.({ step: "Fetching payment methods...", progress: 55 });
+
+    // Fetch payment methods for each unique customer with active/trialing subs.
+    // Polar requires a Customer Session token per customer to access payment methods:
+    //   1. POST /v1/customer-sessions/  (OAT auth) → get customer session token
+    //   2. GET /v1/customer-portal/customers/me/payment-methods  (customer token auth)
+    const activeCustomerIds = [
+      ...new Set(
+        subscriptionsRaw
+          .filter(
+            (s: Record<string, unknown>) =>
+              s.status === "active" || s.status === "trialing"
+          )
+          .map((s: Record<string, unknown>) => s.customer_id as string)
+          .filter(Boolean)
+      ),
+    ];
+
+    const paymentMethods = new Map<string, NormalizedPaymentMethod[]>();
+    const PM_BATCH_SIZE = 10;
+
+    for (let i = 0; i < activeCustomerIds.length; i += PM_BATCH_SIZE) {
+      const batch = activeCustomerIds.slice(i, i + PM_BATCH_SIZE);
+      const results = await Promise.all(
+        batch.map(async (customerId) => {
+          try {
+            // Step 1: Create a customer session
+            const sessionRes = await fetch(
+              "https://api.polar.sh/v1/customer-sessions/",
+              {
+                method: "POST",
+                headers,
+                body: JSON.stringify({ customer_id: customerId }),
+              }
+            );
+            if (!sessionRes.ok) return { customerId, methods: [] };
+            const session = await sessionRes.json();
+            const customerToken = session.token as string;
+            if (!customerToken) return { customerId, methods: [] };
+
+            // Step 2: Use customer token to fetch payment methods
+            const pmRes = await fetch(
+              "https://api.polar.sh/v1/customer-portal/customers/me/payment-methods?limit=10",
+              {
+                headers: {
+                  Authorization: `Bearer ${customerToken}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+            if (!pmRes.ok) return { customerId, methods: [] };
+            const pmData = await pmRes.json();
+            const items = pmData.items || [];
+
+            return { customerId, methods: items as Array<Record<string, unknown>> };
+          } catch {
+            // Skip gracefully — customer session creation may fail
+            return { customerId, methods: [] };
+          }
+        })
+      );
+
+      for (const { customerId, methods } of results) {
+        const normalized: NormalizedPaymentMethod[] = methods
+          .filter((m: Record<string, unknown>) => m.type === "card")
+          .map((m: Record<string, unknown>) => {
+            const meta = m.method_metadata as Record<string, unknown> | null;
+            return {
+              id: (m.id as string) || "",
+              type: "card" as const,
+              cardLast4: (meta?.last4 as string) || null,
+              cardBrand: (meta?.brand as string) || null,
+              cardExpMonth: (meta?.exp_month as number) || null,
+              cardExpYear: (meta?.exp_year as number) || null,
+            };
+          });
+
+        if (normalized.length > 0) {
+          paymentMethods.set(customerId, normalized);
+        }
+      }
+    }
+
     onProgress?.({ step: "Normalizing data...", progress: 60 });
 
     // Build discount lookup
@@ -144,7 +227,8 @@ export const polarProvider: BillingProvider = {
           monthlyAmountCents,
           items,
           discounts,
-          defaultPaymentMethod: null, // Polar doesn't expose payment methods
+          defaultPaymentMethod:
+            paymentMethods.get((sub.customer_id as string) || "")?.[0] ?? null,
           createdAt: sub.started_at
             ? Math.floor(new Date(sub.started_at as string).getTime() / 1000)
             : Math.floor(Date.now() / 1000),
@@ -213,7 +297,7 @@ export const polarProvider: BillingProvider = {
       invoices,
       prices,
       products,
-      paymentMethods: new Map<string, NormalizedPaymentMethod[]>(),
+      paymentMethods,
     };
   },
 };

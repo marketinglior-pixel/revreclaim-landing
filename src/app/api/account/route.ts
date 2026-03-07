@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
+import { guardMutation } from "@/lib/api-security";
 
 /**
  * DELETE /api/account
@@ -9,10 +10,13 @@ import { rateLimit, getClientIP } from "@/lib/rate-limit";
  * Requires authentication.
  */
 export async function DELETE(req: NextRequest) {
+  const guard = guardMutation(req);
+  if (guard) return guard;
+
   try {
     // Rate limit: 3 per IP per hour
     const ip = getClientIP(req);
-    const rl = rateLimit({ name: "account-delete", maxRequests: 3, windowSeconds: 3600 }, ip);
+    const rl = await rateLimit({ name: "account-delete", maxRequests: 3, windowSeconds: 3600 }, ip);
     if (!rl.allowed) {
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },

@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { sendWelcomeEmail } from "@/lib/email";
+import { safeRedirect } from "@/lib/safe-redirect";
+import { fireAndForget } from "@/lib/fire-and-forget";
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
   const code = searchParams.get("code");
-  const redirect = searchParams.get("redirect") || "/dashboard";
+  const redirect = safeRedirect(searchParams.get("redirect"));
 
   if (code) {
     const supabase = await createClient();
@@ -41,7 +43,7 @@ export async function GET(request: NextRequest) {
         if (isNewUser) {
           // Send welcome email (fire-and-forget)
           if (user.email) {
-            sendWelcomeEmail(user.email).catch(() => {});
+            fireAndForget(sendWelcomeEmail(user.email), "WELCOME_EMAIL");
           }
 
           // Redirect new users to scan instead of empty dashboard

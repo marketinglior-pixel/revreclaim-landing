@@ -23,19 +23,7 @@ export default function ReportPage() {
 
   useEffect(() => {
     async function loadReport() {
-      // 1. Try sessionStorage first (fastest)
-      try {
-        const stored = sessionStorage.getItem(`report_${reportId}`);
-        if (stored) {
-          setReport(JSON.parse(stored));
-          setLoading(false);
-          return;
-        }
-      } catch {
-        // sessionStorage might not be available
-      }
-
-      // 2. Try loading from database (for logged-in users)
+      // 1. Try loading from database first (RLS-protected, preferred for auth users)
       try {
         const supabase = createClient();
         const { data: { user } } = await supabase.auth.getUser();
@@ -57,13 +45,25 @@ export default function ReportPage() {
             leaks: r.leaks as unknown as ScanReport["leaks"],
           };
           setReport(dbReport);
-          // Cache in sessionStorage for faster subsequent loads
-          sessionStorage.setItem(`report_${reportId}`, JSON.stringify(dbReport));
+          // Clear sessionStorage copy now that we loaded from DB (reduce PII exposure)
+          try { sessionStorage.removeItem(`report_${reportId}`); } catch { /* ignore */ }
           setLoading(false);
           return;
         }
       } catch {
         // DB fetch might fail if not authenticated or Supabase not configured
+      }
+
+      // 2. Fall back to sessionStorage (for unauthenticated users who just ran a scan)
+      try {
+        const stored = sessionStorage.getItem(`report_${reportId}`);
+        if (stored) {
+          setReport(JSON.parse(stored));
+          setLoading(false);
+          return;
+        }
+      } catch {
+        // sessionStorage might not be available
       }
 
       // 3. Not found anywhere

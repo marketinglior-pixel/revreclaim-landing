@@ -155,7 +155,7 @@ export const PLATFORM_CAPABILITIES: Record<
   polar: {
     failedPayments: true,
     ghostSubscriptions: true,
-    expiringCards: false, // no card expiry data exposed
+    expiringCards: true, // via Customer Session → Customer Portal payment methods API
     expiredCoupons: true,
     neverExpiringDiscounts: true,
     legacyPricing: true,
@@ -164,7 +164,7 @@ export const PLATFORM_CAPABILITIES: Record<
   paddle: {
     failedPayments: true,
     ghostSubscriptions: true,
-    expiringCards: false, // no card expiry data exposed
+    expiringCards: true, // via GET /customers/{id}/payment-methods
     expiredCoupons: true,
     neverExpiringDiscounts: true,
     legacyPricing: true,

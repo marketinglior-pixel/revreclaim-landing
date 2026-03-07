@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { ActionCard, type ActionCardData } from "./ActionCard";
 import type { ActionStatus, ActionType } from "@/lib/recovery/types";
+import { ConfirmActionDialog, DESTRUCTIVE_ACTIONS } from "./ConfirmActionDialog";
 
 interface ActionQueueProps {
   plan: "free" | "pro" | "team";
@@ -27,6 +28,9 @@ export function ActionQueue({ plan }: ActionQueueProps) {
   // Executing state
   const [executingId, setExecutingId] = useState<string | null>(null);
   const [bulkProcessing, setBulkProcessing] = useState(false);
+
+  // Confirmation dialog for destructive actions
+  const [confirmAction, setConfirmAction] = useState<ActionCardData | null>(null);
 
   const fetchActions = useCallback(async () => {
     setLoading(true);
@@ -166,6 +170,19 @@ export function ActionQueue({ plan }: ActionQueueProps) {
   }
 
   async function handleExecute(id: string) {
+    const action = actions.find((a) => a.id === id);
+    if (!action) return;
+
+    // Gate destructive actions through a confirmation dialog
+    if (DESTRUCTIVE_ACTIONS.has(action.action_type)) {
+      setConfirmAction(action);
+      return;
+    }
+
+    await executeActionDirectly(id);
+  }
+
+  async function executeActionDirectly(id: string) {
     setExecutingId(id);
     try {
       const res = await fetch("/api/actions/execute", {
@@ -184,6 +201,7 @@ export function ActionQueue({ plan }: ActionQueueProps) {
       setError("Failed to execute action");
     } finally {
       setExecutingId(null);
+      setConfirmAction(null);
     }
   }
 
@@ -364,6 +382,16 @@ export function ActionQueue({ plan }: ActionQueueProps) {
           </div>
         )}
       </div>
+
+      {/* Confirmation dialog for destructive actions */}
+      <ConfirmActionDialog
+        action={confirmAction}
+        onConfirm={() => {
+          if (confirmAction) executeActionDirectly(confirmAction.id);
+        }}
+        onCancel={() => setConfirmAction(null)}
+        executing={executingId === confirmAction?.id}
+      />
     </div>
   );
 }

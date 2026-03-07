@@ -7,6 +7,8 @@ import { executeAction } from "@/lib/recovery/executor";
 import type { RecoveryAction } from "@/lib/recovery/types";
 import { trackEvent } from "@/lib/analytics";
 import { decrypt } from "@/lib/encryption";
+import { guardMutation } from "@/lib/api-security";
+import { fireAndForget } from "@/lib/fire-and-forget";
 
 /**
  * POST /api/actions/execute — Execute a single approved action.
@@ -16,10 +18,13 @@ import { decrypt } from "@/lib/encryption";
  * and updates status to "executed" or "failed".
  */
 export async function POST(req: NextRequest) {
+  const guard = guardMutation(req);
+  if (guard) return guard;
+
   try {
     // Rate limit: 20 executions per IP per hour
     const ip = getClientIP(req);
-    const rl = rateLimit({ name: "actions-execute", maxRequests: 20, windowSeconds: 3600 }, ip);
+    const rl = await rateLimit({ name: "actions-execute", maxRequests: 20, windowSeconds: 3600 }, ip);
     if (!rl.allowed) {
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },
@@ -160,11 +165,11 @@ export async function POST(req: NextRequest) {
       console.log(`[EXECUTE] Action ${actionId} executed successfully`);
 
       // Track event (fire-and-forget)
-      trackEvent("action_executed", user.id, {
+      fireAndForget(trackEvent("action_executed", user.id, {
         actionId,
         actionType: action.action_type,
         monthlyImpact: action.monthly_impact,
-      }).catch(() => {});
+      }), "ACTION_EXECUTED_TRACKING");
 
       return NextResponse.json({
         success: true,
@@ -183,11 +188,11 @@ export async function POST(req: NextRequest) {
 
       console.error(`[EXECUTE] Action ${actionId} failed: ${result.error}`);
 
-      trackEvent("action_failed", user.id, {
+      fireAndForget(trackEvent("action_failed", user.id, {
         actionId,
         actionType: action.action_type,
         error: result.error,
-      }).catch(() => {});
+      }), "ACTION_FAILED_TRACKING");
 
       return NextResponse.json({
         success: false,

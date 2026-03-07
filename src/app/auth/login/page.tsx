@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { safeRedirect } from "@/lib/safe-redirect";
 
 export default function LoginPage() {
   return (
@@ -25,7 +26,7 @@ function LoginForm() {
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [mode, setMode] = useState<"password" | "magic">("password");
   const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") || "/dashboard";
+  const redirect = safeRedirect(searchParams.get("redirect"));
 
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();

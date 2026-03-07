@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
+import { guardMutation } from "@/lib/api-security";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
+  const guard = guardMutation(req);
+  if (guard) return guard;
+
   try {
     // Rate limit: 3 subscriptions per IP per hour
     const ip = getClientIP(req);
-    const rl = rateLimit({ name: "subscribe", maxRequests: 3, windowSeconds: 3600 }, ip);
+    const rl = await rateLimit({ name: "subscribe", maxRequests: 3, windowSeconds: 3600 }, ip);
     if (!rl.allowed) {
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },

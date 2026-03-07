@@ -11,6 +11,7 @@ import {
   sendPaymentFailedEmail,
 } from "@/lib/email";
 import { trackEvent } from "@/lib/analytics";
+import { fireAndForget } from "@/lib/fire-and-forget";
 
 export const dynamic = "force-dynamic";
 
@@ -110,7 +111,7 @@ export async function POST(req: NextRequest) {
           .eq("id", userId);
 
         // Track upgrade event
-        trackEvent("plan_upgraded", userId, { plan }).catch(() => {});
+        fireAndForget(trackEvent("plan_upgraded", userId, { plan }), "WEBHOOK_PLAN_UPGRADED_TRACKING");
 
         // Send confirmation email
         const { data: profile } = await supabase
@@ -120,9 +121,7 @@ export async function POST(req: NextRequest) {
           .single();
 
         if (profile?.email) {
-          sendUpgradeConfirmationEmail(profile.email, plan).catch(
-            () => {}
-          );
+          fireAndForget(sendUpgradeConfirmationEmail(profile.email, plan), "WEBHOOK_UPGRADE_EMAIL");
         }
 
         break;
@@ -204,9 +203,9 @@ export async function POST(req: NextRequest) {
           console.log(
             `[POLAR WEBHOOK] Subscription ${status}: user=${profile.id}, reverted to free`
           );
-          trackEvent("plan_cancelled", profile.id, {
+          fireAndForget(trackEvent("plan_cancelled", profile.id, {
             reason: status,
-          }).catch(() => {});
+          }), "WEBHOOK_PLAN_CANCELLED_TRACKING");
         }
 
         if (Object.keys(updates).length > 0) {
@@ -285,9 +284,9 @@ export async function POST(req: NextRequest) {
             );
           }
 
-          trackEvent("plan_cancelled", profile.id, {
+          fireAndForget(trackEvent("plan_cancelled", profile.id, {
             reason: "canceled",
-          }).catch(() => {});
+          }), "WEBHOOK_PLAN_CANCELLED_TRACKING");
         }
 
         break;
@@ -309,9 +308,7 @@ export async function POST(req: NextRequest) {
           console.log(
             `[POLAR WEBHOOK] Subscription reactivated: user=${profile.id}`
           );
-          trackEvent("plan_reactivated", profile.id, {}).catch(
-            () => {}
-          );
+          fireAndForget(trackEvent("plan_reactivated", profile.id, {}), "WEBHOOK_PLAN_REACTIVATED_TRACKING");
         }
 
         break;
@@ -340,7 +337,7 @@ export async function POST(req: NextRequest) {
             .eq("id", profile.id);
 
           if (profile.email) {
-            sendPaymentFailedEmail(profile.email).catch(() => {});
+            fireAndForget(sendPaymentFailedEmail(profile.email), "WEBHOOK_PAYMENT_FAILED_EMAIL");
           }
 
           console.log(

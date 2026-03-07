@@ -6,16 +6,21 @@ import { rateLimit, getClientIP } from "@/lib/rate-limit";
 import { canEnableAutoScan } from "@/lib/plan-limits";
 import type { PlanType } from "@/lib/plan-limits";
 import { trackEvent } from "@/lib/analytics";
+import { guardMutation } from "@/lib/api-security";
+import { fireAndForget } from "@/lib/fire-and-forget";
 import { calculateNextScan } from "@/lib/scan-utils";
 import type { Database } from "@/lib/supabase/types";
 
 type ScanConfigUpdate = Database["public"]["Tables"]["scan_configs"]["Update"];
 
 export async function POST(req: NextRequest) {
+  const guard = guardMutation(req);
+  if (guard) return guard;
+
   try {
     // Rate limit: 10 config updates per IP per hour
     const ip = getClientIP(req);
-    const rl = rateLimit({ name: "scan-config", maxRequests: 10, windowSeconds: 3600 }, ip);
+    const rl = await rateLimit({ name: "scan-config", maxRequests: 10, windowSeconds: 3600 }, ip);
     if (!rl.allowed) {
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },
@@ -153,7 +158,7 @@ export async function POST(req: NextRequest) {
       if (error) throw error;
 
       // Track auto-scan enabled event
-      trackEvent("auto_scan_enabled", user.id, { frequency: validFrequency }).catch(() => {});
+      fireAndForget(trackEvent("auto_scan_enabled", user.id, { frequency: validFrequency }), "AUTO_SCAN_ENABLED_TRACKING");
 
       return NextResponse.json({
         message: "Auto-scans enabled! Your first automated scan will run soon.",
@@ -195,7 +200,10 @@ export async function GET() {
   }
 }
 
-export async function DELETE() {
+export async function DELETE(req: NextRequest) {
+  const guard = guardMutation(req);
+  if (guard) return guard;
+
   try {
     const supabase = await createClient();
     const {

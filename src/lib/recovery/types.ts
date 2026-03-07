@@ -121,6 +121,8 @@ export const LEAK_TO_ACTIONS: Partial<
   expired_coupon: [
     { actionType: "remove_coupon" },
   ],
-  // never_expiring_discount → manual review only
-  // legacy_pricing → manual review only
+  never_expiring_discount: [
+    { actionType: "remove_coupon" },
+  ],
+  // legacy_pricing → manual review only (requires manual price migration)
 };

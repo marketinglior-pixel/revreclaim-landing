@@ -13,13 +13,6 @@ export default function ReportCTA({ mrrAtRisk }: ReportCTAProps) {
 
   return (
     <div className="bg-gradient-to-br from-brand/10 to-brand-dark/5 border border-brand/20 rounded-xl p-8 text-center glow-green animate-fade-in-up animate-delay-400">
-      <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand/10 border border-brand/20 rounded-full mb-4">
-        <span className="w-2 h-2 bg-brand rounded-full animate-pulse" />
-        <span className="text-xs font-medium text-brand">
-          Coming Soon
-        </span>
-      </div>
-
       <h3 className="text-xl font-bold text-white mb-2">
         Want Continuous Monitoring?
       </h3>
