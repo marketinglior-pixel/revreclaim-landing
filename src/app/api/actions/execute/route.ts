@@ -69,16 +69,41 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Fetch the action — must belong to this user and be in "approved" status
-    const { data: actionRow, error: fetchError } = await supabase
+    // Atomically claim the action: update status from "approved" → "executing"
+    // This prevents double execution if two requests arrive simultaneously
+    const { data: claimedRows, error: claimError } = await supabase
       .from("recovery_actions")
-      .select("*")
+      .update({ status: "executing" as string })
       .eq("id", actionId)
       .eq("user_id", user.id)
       .eq("status", "approved")
-      .single();
+      .select("*");
 
-    if (fetchError || !actionRow) {
+    if (claimError) {
+      return NextResponse.json(
+        { error: "Failed to claim action for execution." },
+        { status: 500 }
+      );
+    }
+
+    if (!claimedRows || claimedRows.length === 0) {
+      // Check if already executed (idempotent response)
+      const { data: existing } = await supabase
+        .from("recovery_actions")
+        .select("status")
+        .eq("id", actionId)
+        .eq("user_id", user.id)
+        .single();
+
+      if (existing?.status === "executed" || existing?.status === "executing") {
+        return NextResponse.json({
+          success: true,
+          actionId,
+          status: "executed",
+          message: "Action was already executed.",
+        });
+      }
+
       return NextResponse.json(
         { error: "Action not found or not in approved status." },
         { status: 404 }
@@ -86,7 +111,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Cast to our typed interface
-    const action = actionRow as unknown as RecoveryAction;
+    const action = claimedRows[0] as unknown as RecoveryAction;
 
     console.log(
       `[EXECUTE] Executing action ${actionId} (${action.action_type}) for user ${user.id}`

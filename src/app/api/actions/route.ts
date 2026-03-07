@@ -139,29 +139,42 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!["approve", "dismiss"].includes(decision)) {
+    if (!["approve", "dismiss", "retry"].includes(decision)) {
       return NextResponse.json(
-        { error: "Decision must be 'approve' or 'dismiss'." },
+        { error: "Decision must be 'approve', 'dismiss', or 'retry'." },
         { status: 400 }
       );
     }
 
-    const newStatus = decision === "approve" ? "approved" : "dismissed";
     const now = new Date().toISOString();
 
-    const updateData: Record<string, unknown> = {
-      status: newStatus,
-    };
-    if (decision === "approve") {
+    // Determine the status transition
+    let fromStatus: string;
+    let newStatus: string;
+    const updateData: Record<string, unknown> = {};
+
+    if (decision === "retry") {
+      // Move failed actions back to approved for re-execution
+      fromStatus = "failed";
+      newStatus = "approved";
+      updateData.status = newStatus;
+      updateData.error_message = null;
       updateData.approved_at = now;
+    } else {
+      fromStatus = "pending";
+      newStatus = decision === "approve" ? "approved" : "dismissed";
+      updateData.status = newStatus;
+      if (decision === "approve") {
+        updateData.approved_at = now;
+      }
     }
 
-    // Update only actions belonging to this user and in pending status
+    // Update only actions belonging to this user and in the expected status
     const { data: updated, error: updateError } = await supabase
       .from("recovery_actions")
       .update(updateData)
       .eq("user_id", user.id)
-      .eq("status", "pending")
+      .eq("status", fromStatus)
       .in("id", actionIds)
       .select("id, status");
 

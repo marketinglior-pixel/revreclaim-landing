@@ -4,9 +4,20 @@ import { canInviteTeamMember } from "@/lib/plan-limits";
 import type { PlanType } from "@/lib/plan-limits";
 import { sendTeamInviteEmail } from "@/lib/email";
 import { trackEvent } from "@/lib/analytics";
+import { rateLimit, getClientIP } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limit: 10 team invites per IP per hour
+    const ip = getClientIP(req);
+    const rl = rateLimit({ name: "team-invite", maxRequests: 10, windowSeconds: 3600 }, ip);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(rl.retryAfterSeconds) } }
+      );
+    }
+
     const supabase = await createClient();
     const {
       data: { user },

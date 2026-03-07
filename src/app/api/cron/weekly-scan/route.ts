@@ -81,7 +81,9 @@ export async function GET(req: NextRequest) {
       let emailMap = new Map<string, string>();
 
       if (platform === "stripe") {
-        report = await runFullScan(apiKey);
+        const result = await runFullScan(apiKey);
+        report = result.report;
+        emailMap = result.emailMap;
       } else {
         const result = await runPlatformScan(platform, apiKey);
         report = result.report;

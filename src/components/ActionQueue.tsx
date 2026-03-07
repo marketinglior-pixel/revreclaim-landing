@@ -148,6 +148,23 @@ export function ActionQueue({ plan }: ActionQueueProps) {
     }
   }
 
+  async function handleRetry(id: string) {
+    try {
+      const res = await fetch("/api/actions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ actionIds: [id], decision: "retry" }),
+      });
+      if (res.ok) await fetchActions();
+      else {
+        const data = await res.json();
+        setError(data.error || "Failed to retry action");
+      }
+    } catch {
+      setError("Failed to retry action");
+    }
+  }
+
   async function handleExecute(id: string) {
     setExecutingId(id);
     try {
@@ -339,6 +356,7 @@ export function ActionQueue({ plan }: ActionQueueProps) {
                 onApprove={handleSingleApprove}
                 onDismiss={handleSingleDismiss}
                 onExecute={handleExecute}
+                onRetry={handleRetry}
                 canApprove={canApprove}
                 executing={executingId === action.id}
               />

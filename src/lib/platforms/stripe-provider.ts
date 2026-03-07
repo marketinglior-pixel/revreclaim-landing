@@ -63,7 +63,7 @@ export async function runStripeScan(
   apiKey: string,
   onProgress?: (progress: ScanProgress) => void
 ): Promise<ScanReport> {
-  const report = await runFullScan(apiKey, onProgress);
+  const { report } = await runFullScan(apiKey, onProgress);
   // Add platform field and set platformUrl aliases
   report.platform = "stripe";
   for (const leak of report.leaks) {

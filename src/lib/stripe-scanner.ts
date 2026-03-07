@@ -285,10 +285,15 @@ function buildCategorySummaries(
 /**
  * Main scan function. Orchestrates the full Stripe billing audit.
  */
+export interface StripeScanResult {
+  report: ScanReport;
+  emailMap: Map<string, string>;
+}
+
 export async function runFullScan(
   apiKey: string,
   onProgress?: ProgressCallback
-): Promise<ScanReport> {
+): Promise<StripeScanResult> {
   // Step 1: Validate API key and create Stripe instance
   onProgress?.({ step: "Validating API key...", progress: 5 });
   const stripe = await validateAndCreateStripe(apiKey);
@@ -308,6 +313,21 @@ export async function runFullScan(
     ...scanLegacyPricing(data.subscriptions, data.prices, data.products),
     ...scanMissingPaymentMethods(data.subscriptions, data.paymentMethods),
   ];
+
+  // Step 3b: Build emailMap from expanded customer data (before masking)
+  const emailMap = new Map<string, string>();
+  for (const sub of data.subscriptions) {
+    const cust = sub.customer;
+    if (typeof cust !== "string" && cust && !("deleted" in cust && cust.deleted) && cust.email) {
+      emailMap.set(cust.id, cust.email);
+    }
+  }
+  for (const inv of data.invoices) {
+    const cust = inv.customer;
+    if (typeof cust !== "string" && cust && !("deleted" in cust && cust.deleted) && cust.email && !emailMap.has(cust.id)) {
+      emailMap.set(cust.id, cust.email);
+    }
+  }
 
   onProgress?.({ step: "Building report...", progress: 90 });
 
@@ -343,5 +363,5 @@ export async function runFullScan(
 
   onProgress?.({ step: "Scan complete!", progress: 100 });
 
-  return report;
+  return { report, emailMap };
 }
