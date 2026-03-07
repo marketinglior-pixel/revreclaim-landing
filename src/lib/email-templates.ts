@@ -249,3 +249,138 @@ export function teamInviteEmailHtml(inviterEmail: string): string {
     </a>
   `);
 }
+
+// ============================================================
+// Dunning Email Templates — sent to SaaS end-customers
+// ============================================================
+
+function dunningBaseLayout(title: string, content: string): string {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <div style="max-width:600px;margin:0 auto;padding:40px 20px;">
+    <div style="background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;padding:32px;">
+      ${content}
+    </div>
+    <div style="text-align:center;margin-top:24px;color:#9ca3af;font-size:11px;">
+      <p style="margin:0;">This is an automated billing notification. If you believe you received this in error, please contact support.</p>
+    </div>
+  </div>
+</body>
+</html>`.trim();
+}
+
+export interface DunningEmailData {
+  amountCents?: number;
+  invoiceNumber?: string;
+  cardLast4?: string;
+  cardBrand?: string;
+  expMonth?: number;
+  expYear?: number;
+  billingPortalUrl?: string;
+  platformDashboardUrl?: string;
+}
+
+export function dunningFailedPaymentHtml(data: DunningEmailData): string {
+  const amount = data.amountCents ? formatCentsAsDollars(data.amountCents) : "your recent payment";
+  const invoiceRef = data.invoiceNumber ? ` (Invoice ${escapeHtml(data.invoiceNumber)})` : "";
+  const portalLink = data.billingPortalUrl || data.platformDashboardUrl || "#";
+
+  return dunningBaseLayout("Action Required: Payment Failed", `
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="display:inline-block;width:48px;height:48px;background:#fef2f2;border-radius:50%;line-height:48px;font-size:24px;">&#9888;</div>
+    </div>
+
+    <h1 style="color:#111827;font-size:22px;margin:0 0 12px;text-align:center;">Your payment didn't go through</h1>
+
+    <p style="color:#6b7280;font-size:15px;line-height:1.6;margin:0 0 20px;text-align:center;">
+      We attempted to charge <strong style="color:#111827;">${amount}</strong>${invoiceRef} but the payment was declined.
+      This may be due to an expired card, insufficient funds, or a bank restriction.
+    </p>
+
+    <p style="color:#6b7280;font-size:15px;line-height:1.6;margin:0 0 24px;text-align:center;">
+      To keep your subscription active, please update your payment method:
+    </p>
+
+    <div style="text-align:center;">
+      <a href="${escapeHtml(portalLink)}" style="display:inline-block;background:#111827;color:#fff;font-weight:600;padding:12px 32px;border-radius:8px;text-decoration:none;font-size:14px;">
+        Update Payment Method
+      </a>
+    </div>
+
+    <p style="color:#9ca3af;font-size:13px;margin:24px 0 0;text-align:center;">
+      If you've already updated your payment, you can disregard this email.
+    </p>
+  `);
+}
+
+export function dunningExpiringCardHtml(data: DunningEmailData): string {
+  const card = data.cardBrand && data.cardLast4
+    ? `${escapeHtml(data.cardBrand)} ending in ${escapeHtml(data.cardLast4)}`
+    : "your card on file";
+  const expiry = data.expMonth && data.expYear
+    ? `${String(data.expMonth).padStart(2, "0")}/${data.expYear}`
+    : "soon";
+  const portalLink = data.billingPortalUrl || data.platformDashboardUrl || "#";
+
+  return dunningBaseLayout("Heads Up: Your Card Expires Soon", `
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="display:inline-block;width:48px;height:48px;background:#fffbeb;border-radius:50%;line-height:48px;font-size:24px;">&#128179;</div>
+    </div>
+
+    <h1 style="color:#111827;font-size:22px;margin:0 0 12px;text-align:center;">Your card expires ${escapeHtml(expiry)}</h1>
+
+    <p style="color:#6b7280;font-size:15px;line-height:1.6;margin:0 0 20px;text-align:center;">
+      Your <strong style="color:#111827;">${card}</strong> is about to expire.
+      To avoid any interruption to your service, please update your payment method before the expiration date.
+    </p>
+
+    <div style="text-align:center;">
+      <a href="${escapeHtml(portalLink)}" style="display:inline-block;background:#111827;color:#fff;font-weight:600;padding:12px 32px;border-radius:8px;text-decoration:none;font-size:14px;">
+        Update Payment Method
+      </a>
+    </div>
+
+    <p style="color:#9ca3af;font-size:13px;margin:24px 0 0;text-align:center;">
+      If you've already updated your card, no further action is needed.
+    </p>
+  `);
+}
+
+export function dunningPaymentUpdateHtml(data: DunningEmailData): string {
+  const amount = data.amountCents ? formatCentsAsDollars(data.amountCents) : "your subscription";
+  const portalLink = data.billingPortalUrl || data.platformDashboardUrl || "#";
+
+  return dunningBaseLayout("Action Required: Update Your Payment", `
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="display:inline-block;width:48px;height:48px;background:#eff6ff;border-radius:50%;line-height:48px;font-size:24px;">&#128274;</div>
+    </div>
+
+    <h1 style="color:#111827;font-size:22px;margin:0 0 12px;text-align:center;">Please update your payment method</h1>
+
+    <p style="color:#6b7280;font-size:15px;line-height:1.6;margin:0 0 20px;text-align:center;">
+      We're having trouble processing the payment for <strong style="color:#111827;">${amount}</strong>.
+      Your subscription may be interrupted if we can't collect payment.
+    </p>
+
+    <p style="color:#6b7280;font-size:15px;line-height:1.6;margin:0 0 24px;text-align:center;">
+      Please update your payment details to keep your account active:
+    </p>
+
+    <div style="text-align:center;">
+      <a href="${escapeHtml(portalLink)}" style="display:inline-block;background:#111827;color:#fff;font-weight:600;padding:12px 32px;border-radius:8px;text-decoration:none;font-size:14px;">
+        Update Payment Method
+      </a>
+    </div>
+
+    <p style="color:#9ca3af;font-size:13px;margin:24px 0 0;text-align:center;">
+      Questions? Reply to this email and we'll help.
+    </p>
+  `);
+}

@@ -44,6 +44,12 @@ export default function DashboardNav({
               Reports
             </Link>
             <Link
+              href="/dashboard/actions"
+              className="px-3 py-2 text-xs text-text-muted hover:text-white hover:bg-surface-light rounded-lg transition"
+            >
+              Actions
+            </Link>
+            <Link
               href="/dashboard/settings"
               className="px-3 py-2 text-xs text-text-muted hover:text-white hover:bg-surface-light rounded-lg transition"
             >
@@ -96,6 +102,12 @@ export default function DashboardNav({
                   className="block px-4 py-2.5 text-sm text-text-muted hover:text-white hover:bg-surface-light transition md:hidden"
                 >
                   Reports
+                </Link>
+                <Link
+                  href="/dashboard/actions"
+                  className="block px-4 py-2.5 text-sm text-text-muted hover:text-white hover:bg-surface-light transition md:hidden"
+                >
+                  Actions
                 </Link>
                 <Link
                   href="/dashboard/settings"

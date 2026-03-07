@@ -6,6 +6,9 @@ import type { BillingPlatform } from "@/lib/platforms/types";
 import { decrypt } from "@/lib/encryption";
 import { sendScanCompleteEmail } from "@/lib/email";
 import { calculateNextScan } from "@/lib/scan-utils";
+import { generateRecoveryActions } from "@/lib/recovery/action-generator";
+import { canUseRecoveryActions } from "@/lib/plan-limits";
+import type { PlanType } from "@/lib/plan-limits";
 
 export const maxDuration = 300; // 5 minutes for batch processing
 
@@ -42,7 +45,7 @@ export async function GET(req: NextRequest) {
   const now = new Date().toISOString();
   const { data: configs, error: fetchError } = await supabase
     .from("scan_configs")
-    .select("*, profiles!inner(email, is_disabled)")
+    .select("*, profiles!inner(email, is_disabled, plan)")
     .eq("is_active", true)
     .eq("profiles.is_disabled", false)
     .lte("next_scan_at", now);
@@ -74,9 +77,16 @@ export async function GET(req: NextRequest) {
       console.log(`[CRON] Running ${platform} scan for user ${config.user_id}`);
 
       // Run the scan — dispatch to correct scanner
-      const report = platform === "stripe"
-        ? await runFullScan(apiKey)
-        : await runPlatformScan(platform, apiKey);
+      let report;
+      let emailMap = new Map<string, string>();
+
+      if (platform === "stripe") {
+        report = await runFullScan(apiKey);
+      } else {
+        const result = await runPlatformScan(platform, apiKey);
+        report = result.report;
+        emailMap = result.emailMap;
+      }
 
       // Save report to database
       const isTestMode = platform === "stripe" ? apiKey.startsWith("rk_test_") : false;
@@ -96,6 +106,39 @@ export async function GET(req: NextRequest) {
         continue;
       }
 
+      // Generate recovery actions for Pro/Team users
+      const profileData = config.profiles as unknown as { email: string; plan?: string };
+      const userPlan = (profileData?.plan || "free") as PlanType;
+      if (canUseRecoveryActions(userPlan).allowed && report.leaks.length > 0) {
+        try {
+          const actions = generateRecoveryActions(report, emailMap, platform);
+          if (actions.length > 0) {
+            const rows = actions.map((a) => ({
+              user_id: config.user_id,
+              report_id: report.id,
+              leak_id: a.leak_id,
+              action_type: a.action_type as string,
+              platform: a.platform,
+              customer_email_encrypted: a.customer_email_encrypted,
+              customer_id: a.customer_id,
+              subscription_id: a.subscription_id,
+              action_data: JSON.parse(JSON.stringify(a.action_data)),
+              monthly_impact: a.monthly_impact,
+            }));
+            const { error: actionsErr } = await supabase
+              .from("recovery_actions")
+              .insert(rows);
+            if (actionsErr) {
+              console.error(`[CRON] Failed to insert recovery actions for ${config.user_id}:`, actionsErr.message);
+            } else {
+              console.log(`[CRON] Generated ${actions.length} recovery actions for ${config.user_id}`);
+            }
+          }
+        } catch (actionErr) {
+          console.error(`[CRON] Action generation error for ${config.user_id}:`, actionErr);
+        }
+      }
+
       // Calculate next scan time
       const nextScan = calculateNextScan(config.scan_frequency);
 
@@ -113,7 +156,6 @@ export async function GET(req: NextRequest) {
       );
 
       // Send scan completion email (fire-and-forget)
-      const profileData = config.profiles as unknown as { email: string };
       if (profileData?.email) {
         sendScanCompleteEmail(profileData.email, report.summary, report.id).catch(() => {});
       }

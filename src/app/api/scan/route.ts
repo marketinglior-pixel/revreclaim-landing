@@ -8,6 +8,8 @@ import { canRunScan } from "@/lib/plan-limits";
 import type { PlanType } from "@/lib/plan-limits";
 import { sendScanCompleteEmail, sendScanLimitReachedEmail } from "@/lib/email";
 import { trackEvent } from "@/lib/analytics";
+import { generateRecoveryActions } from "@/lib/recovery/action-generator";
+import { canUseRecoveryActions } from "@/lib/plan-limits";
 
 export const maxDuration = 60; // Allow up to 60s for large accounts
 
@@ -109,9 +111,16 @@ export async function POST(req: NextRequest) {
     }
 
     // Run the full scan — dispatch to correct platform scanner
-    const report = platform === "stripe"
-      ? await runFullScan(apiKey)
-      : await runPlatformScan(platform, apiKey);
+    let report;
+    let emailMap = new Map<string, string>();
+
+    if (platform === "stripe") {
+      report = await runFullScan(apiKey);
+    } else {
+      const result = await runPlatformScan(platform, apiKey);
+      report = result.report;
+      emailMap = result.emailMap;
+    }
 
     // Ensure platform field is set
     if (!report.platform) report.platform = platform;
@@ -181,16 +190,48 @@ export async function POST(req: NextRequest) {
           // Increment scan count (fire-and-forget)
           supabase
             .from("profiles")
-            .select("scan_count_this_period")
+            .select("scan_count_this_period, plan")
             .eq("id", userId)
             .single()
-            .then(({ data: p }) => {
+            .then(async ({ data: p }) => {
               if (p) {
                 supabase
                   .from("profiles")
                   .update({ scan_count_this_period: (p.scan_count_this_period ?? 0) + 1 })
                   .eq("id", userId)
                   .then(() => {});
+
+                // Generate recovery actions for Pro/Team users
+                const userPlan = (p.plan || "free") as PlanType;
+                if (canUseRecoveryActions(userPlan).allowed && report.leaks.length > 0) {
+                  try {
+                    const actions = generateRecoveryActions(report, emailMap, platform);
+                    if (actions.length > 0) {
+                      const rows = actions.map((a) => ({
+                        user_id: userId,
+                        report_id: report.id,
+                        leak_id: a.leak_id,
+                        action_type: a.action_type as string,
+                        platform: a.platform,
+                        customer_email_encrypted: a.customer_email_encrypted,
+                        customer_id: a.customer_id,
+                        subscription_id: a.subscription_id,
+                        action_data: JSON.parse(JSON.stringify(a.action_data)),
+                        monthly_impact: a.monthly_impact,
+                      }));
+                      const { error: actionsErr } = await supabase
+                        .from("recovery_actions")
+                        .insert(rows);
+                      if (actionsErr) {
+                        console.error("[SCAN] Failed to insert recovery actions:", actionsErr.message);
+                      } else {
+                        console.log(`[SCAN] Generated ${actions.length} recovery actions for user ${userId}`);
+                      }
+                    }
+                  } catch (actionErr) {
+                    console.error("[SCAN] Action generation error:", actionErr);
+                  }
+                }
               }
             });
         }

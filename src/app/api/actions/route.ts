@@ -1,0 +1,191 @@
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { canUseRecoveryActions } from "@/lib/plan-limits";
+import type { PlanType } from "@/lib/plan-limits";
+import { rateLimit, getClientIP } from "@/lib/rate-limit";
+
+/**
+ * GET /api/actions — Fetch user's recovery actions.
+ * Supports filters: ?status=pending&report_id=xxx
+ */
+export async function GET(req: NextRequest) {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Parse query params
+    const { searchParams } = new URL(req.url);
+    const status = searchParams.get("status");
+    const reportId = searchParams.get("report_id");
+    const limit = Math.min(parseInt(searchParams.get("limit") || "50"), 100);
+    const offset = parseInt(searchParams.get("offset") || "0");
+
+    // Build query
+    let query = supabase
+      .from("recovery_actions")
+      .select("*", { count: "exact" })
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    if (status) {
+      query = query.eq("status", status);
+    }
+    if (reportId) {
+      query = query.eq("report_id", reportId);
+    }
+
+    const { data: actions, error, count } = await query;
+
+    if (error) {
+      console.error("[ACTIONS] Fetch error:", error.message);
+      return NextResponse.json(
+        { error: "Failed to fetch actions" },
+        { status: 500 }
+      );
+    }
+
+    // Check plan for gating info
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("plan")
+      .eq("id", user.id)
+      .single();
+
+    const userPlan = (profile?.plan || "free") as PlanType;
+    const canUse = canUseRecoveryActions(userPlan);
+
+    return NextResponse.json({
+      actions: actions || [],
+      total: count || 0,
+      canApprove: canUse.allowed,
+      plan: userPlan,
+    });
+  } catch (error) {
+    console.error("[ACTIONS] Error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * POST /api/actions — Approve or dismiss actions.
+ * Body: { actionIds: string[], decision: "approve" | "dismiss" }
+ */
+export async function POST(req: NextRequest) {
+  try {
+    // Rate limit: 30 action updates per IP per hour
+    const ip = getClientIP(req);
+    const rl = rateLimit({ name: "actions", maxRequests: 30, windowSeconds: 3600 }, ip);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(rl.retryAfterSeconds) } }
+      );
+    }
+
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Plan enforcement
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("plan, is_disabled")
+      .eq("id", user.id)
+      .single();
+
+    if (profile?.is_disabled) {
+      return NextResponse.json(
+        { error: "Your account has been suspended." },
+        { status: 403 }
+      );
+    }
+
+    const userPlan = (profile?.plan || "free") as PlanType;
+    const canUse = canUseRecoveryActions(userPlan);
+    if (!canUse.allowed) {
+      return NextResponse.json(
+        { error: canUse.reason, errorType: "plan_limit" },
+        { status: 403 }
+      );
+    }
+
+    const body = await req.json();
+    const { actionIds, decision } = body;
+
+    if (
+      !actionIds ||
+      !Array.isArray(actionIds) ||
+      actionIds.length === 0 ||
+      actionIds.length > 50
+    ) {
+      return NextResponse.json(
+        { error: "Provide 1-50 action IDs." },
+        { status: 400 }
+      );
+    }
+
+    if (!["approve", "dismiss"].includes(decision)) {
+      return NextResponse.json(
+        { error: "Decision must be 'approve' or 'dismiss'." },
+        { status: 400 }
+      );
+    }
+
+    const newStatus = decision === "approve" ? "approved" : "dismissed";
+    const now = new Date().toISOString();
+
+    const updateData: Record<string, unknown> = {
+      status: newStatus,
+    };
+    if (decision === "approve") {
+      updateData.approved_at = now;
+    }
+
+    // Update only actions belonging to this user and in pending status
+    const { data: updated, error: updateError } = await supabase
+      .from("recovery_actions")
+      .update(updateData)
+      .eq("user_id", user.id)
+      .eq("status", "pending")
+      .in("id", actionIds)
+      .select("id, status");
+
+    if (updateError) {
+      console.error("[ACTIONS] Update error:", updateError.message);
+      return NextResponse.json(
+        { error: "Failed to update actions" },
+        { status: 500 }
+      );
+    }
+
+    console.log(
+      `[ACTIONS] User ${user.id} ${decision}d ${updated?.length || 0} actions`
+    );
+
+    return NextResponse.json({
+      updated: updated?.length || 0,
+      decision,
+    });
+  } catch (error) {
+    console.error("[ACTIONS] Error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}

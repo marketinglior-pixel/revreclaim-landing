@@ -204,6 +204,71 @@ export interface Database {
           },
         ];
       };
+      recovery_actions: {
+        Row: {
+          id: string;
+          user_id: string;
+          report_id: string;
+          leak_id: string;
+          action_type: string;
+          status: string;
+          platform: string;
+          customer_email_encrypted: string | null;
+          customer_id: string;
+          subscription_id: string | null;
+          action_data: Json;
+          monthly_impact: number;
+          error_message: string | null;
+          created_at: string;
+          approved_at: string | null;
+          executed_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          report_id: string;
+          leak_id: string;
+          action_type: string;
+          status?: string;
+          platform: string;
+          customer_email_encrypted?: string | null;
+          customer_id: string;
+          subscription_id?: string | null;
+          action_data?: Json;
+          monthly_impact?: number;
+          error_message?: string | null;
+          created_at?: string;
+          approved_at?: string | null;
+          executed_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          report_id?: string;
+          leak_id?: string;
+          action_type?: string;
+          status?: string;
+          platform?: string;
+          customer_email_encrypted?: string | null;
+          customer_id?: string;
+          subscription_id?: string | null;
+          action_data?: Json;
+          monthly_impact?: number;
+          error_message?: string | null;
+          created_at?: string;
+          approved_at?: string | null;
+          executed_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "recovery_actions_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       analytics_events: {
         Row: {
           id: string;

@@ -14,6 +14,12 @@ import {
   SEVERITY_ORDER,
 } from "../types";
 import { generateReportId, calculateHealthScore } from "../utils";
+import { buildEmailMap } from "../recovery/action-generator";
+
+export interface PlatformScanResult {
+  report: ScanReport;
+  emailMap: Map<string, string>;
+}
 
 // Import v2 scanners
 import { scanFailedPayments } from "../scanners-v2/failed-payments";
@@ -32,7 +38,7 @@ export async function runPlatformScan(
   platform: BillingPlatform,
   apiKey: string,
   onProgress?: (progress: ScanProgress) => void
-): Promise<ScanReport> {
+): Promise<PlatformScanResult> {
   const provider = getProvider(platform);
   const caps = PLATFORM_CAPABILITIES[platform];
 
@@ -120,7 +126,10 @@ export async function runPlatformScan(
 
   onProgress?.({ step: "Scan complete!", progress: 100 });
 
-  return report;
+  // Build email map for recovery actions (real, unmasked emails)
+  const emailMap = buildEmailMap(data);
+
+  return { report, emailMap };
 }
 
 function buildCategorySummaries(

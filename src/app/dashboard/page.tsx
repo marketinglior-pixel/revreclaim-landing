@@ -7,6 +7,7 @@ import DashboardStats from "@/components/dashboard/DashboardStats";
 import HeroRecoveryCard from "@/components/dashboard/HeroRecoveryCard";
 import MiniCategoryChart from "@/components/dashboard/MiniCategoryChart";
 import AutoScanBanner from "@/components/dashboard/AutoScanBanner";
+import RecoveryActionsBanner from "@/components/dashboard/RecoveryActionsBanner";
 import { ScanReport } from "@/lib/types";
 
 const PLAN_LABELS: Record<string, string> = {
@@ -111,6 +112,9 @@ export default async function DashboardPage() {
 
       {/* Stats from latest report */}
       {latestReport && <DashboardStats report={latestReport} />}
+
+      {/* Recovery actions banner */}
+      {latestReport && <RecoveryActionsBanner userId={user.id} />}
 
       {/* Category breakdown */}
       {latestReport && latestReport.categories.length > 0 && (

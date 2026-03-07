@@ -1,9 +1,9 @@
 export type PlanType = "free" | "pro" | "team";
 
 export const PLAN_LIMITS = {
-  free: { scansPerMonth: 1, autoScans: false, teamMembers: 0 },
-  pro: { scansPerMonth: Infinity, autoScans: true, teamMembers: 0 },
-  team: { scansPerMonth: Infinity, autoScans: true, teamMembers: 10 },
+  free: { scansPerMonth: 1, autoScans: false, teamMembers: 0, recoveryActions: false },
+  pro: { scansPerMonth: Infinity, autoScans: true, teamMembers: 0, recoveryActions: true },
+  team: { scansPerMonth: Infinity, autoScans: true, teamMembers: 10, recoveryActions: true },
 } as const;
 
 export const PLAN_DISPLAY_NAMES: Record<PlanType, string> = {
@@ -51,6 +51,23 @@ export function canEnableAutoScan(plan: PlanType): {
     return {
       allowed: false,
       reason: "Automated scans require a Pro or Team plan. Upgrade to unlock weekly scanning.",
+    };
+  }
+  return { allowed: true };
+}
+
+/**
+ * Check if a user can use recovery actions (dunning emails, auto-fixes).
+ */
+export function canUseRecoveryActions(plan: PlanType): {
+  allowed: boolean;
+  reason?: string;
+} {
+  if (!PLAN_LIMITS[plan].recoveryActions) {
+    return {
+      allowed: false,
+      reason:
+        "Recovery actions require a Pro or Team plan. Upgrade to send dunning emails and auto-fix leaks.",
     };
   }
   return { allowed: true };

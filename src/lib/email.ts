@@ -8,7 +8,12 @@ import {
   reminderEmailHtml,
   upgradeNudgeEmailHtml,
   teamInviteEmailHtml,
+  dunningFailedPaymentHtml,
+  dunningExpiringCardHtml,
+  dunningPaymentUpdateHtml,
+  type DunningEmailData,
 } from "./email-templates";
+import type { DunningTemplate } from "./recovery/types";
 
 let _resend: Resend | null = null;
 
@@ -171,4 +176,48 @@ export async function sendTeamInviteEmail(
   } catch (err) {
     console.error("[EMAIL] Failed to send team invite email:", err);
   }
+}
+
+// ============================================================
+// Dunning Emails — sent to SaaS end-customers on behalf of user
+// ============================================================
+
+const DUNNING_SUBJECTS: Record<DunningTemplate, string> = {
+  failed_payment: "Action Required: Your payment didn't go through",
+  expiring_card: "Heads up: Your card expires soon",
+  payment_update: "Action Required: Please update your payment method",
+};
+
+const DUNNING_TEMPLATE_RENDERERS: Record<
+  DunningTemplate,
+  (data: DunningEmailData) => string
+> = {
+  failed_payment: dunningFailedPaymentHtml,
+  expiring_card: dunningExpiringCardHtml,
+  payment_update: dunningPaymentUpdateHtml,
+};
+
+/**
+ * Send a dunning email to a SaaS customer (not to the RevReclaim user).
+ */
+export async function sendDunningEmail(
+  to: string,
+  template: DunningTemplate,
+  data: DunningEmailData
+): Promise<void> {
+  const subject = DUNNING_SUBJECTS[template];
+  const renderer = DUNNING_TEMPLATE_RENDERERS[template];
+
+  if (!renderer) {
+    throw new Error(`Unknown dunning template: ${template}`);
+  }
+
+  await getResend().emails.send({
+    from: FROM,
+    to,
+    subject,
+    html: renderer(data),
+  });
+
+  console.log(`[DUNNING] Sent ${template} email to ${to.split("@")[0]}***`);
 }
