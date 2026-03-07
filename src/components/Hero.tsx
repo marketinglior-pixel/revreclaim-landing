@@ -14,20 +14,9 @@ export function Hero() {
 
       <div className="relative mx-auto max-w-4xl px-6 text-center">
         {/* Live badge */}
-        <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand/10 px-4 py-2 text-sm font-medium text-brand animate-fade-in-up">
+        <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand/10 px-4 py-2 text-sm font-medium text-brand animate-fade-in-up">
           <span className="inline-block h-2 w-2 rounded-full bg-brand animate-pulse" />
           We&apos;re LIVE — Not a waitlist
-        </div>
-        <br />
-        {/* Audience badge — exclusionary positioning (Hormozi Hack #3) */}
-        <div className="mb-8 inline-flex flex-col items-center gap-1 animate-fade-in-up animate-delay-100">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm text-text-muted">
-            For SaaS founders doing $30K–$500K MRR
-          </div>
-          <span className="hidden sm:inline text-xs text-text-dim">
-            (Under $30K? This won&apos;t move the needle yet. Over $500K?{" "}
-            <a href="/contact" className="underline hover:text-text-muted">Email us</a> for enterprise.)
-          </span>
         </div>
 
         {/* Headline — concrete $ not % (Hormozi Hack #1) */}
@@ -39,24 +28,18 @@ export function Hero() {
           <br />
           It&apos;s already sitting in your billing data.
         </h1>
-        <p className="mb-2 text-lg text-text-muted italic animate-fade-in-up animate-delay-250">
-          (Unless you paste one key and see for yourself.)
-        </p>
-        <p className="mb-2 text-sm text-text-secondary animate-fade-in-up animate-delay-250">
-          This isn&apos;t dunning. This isn&apos;t webhook alerts.
-          This is the money your billing platform knows about but never tells you.
+        <p className="mb-2 text-lg text-text-muted animate-fade-in-up animate-delay-250">
+          We scan your Stripe account and show you every billing mistake
+          that&apos;s costing you money — in 90&nbsp;seconds.
         </p>
 
-        {/* Subheadline — Show Don't Tell: describe the moment (Hormozi Hack #6) */}
-        <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-text-muted md:text-xl lg:text-xl animate-fade-in-up animate-delay-300">
-          Here&apos;s what happens: you grab an API key (60 seconds).
-          You paste it here. We scan 7 categories of billing issues.
-          90 seconds later, you&apos;re looking at a list of customers, dollar amounts,
-          and one-click fixes. Most founders fix everything before lunch — and see
-          the recovered revenue hit their next billing cycle.
+        {/* Subheadline — concise value prop */}
+        <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-text-muted md:text-xl lg:text-xl animate-fade-in-up animate-delay-300 text-balance">
+          Paste one API key. Get a report with customer names, dollar amounts,
+          and one-click fixes.
           <br />
           <span className="text-text-secondary">
-            No sales call. No &ldquo;let us get back to you.&rdquo; Just money back in your account.
+            No sales call. No setup. Just answers in 90&nbsp;seconds.
           </span>
         </p>
 
