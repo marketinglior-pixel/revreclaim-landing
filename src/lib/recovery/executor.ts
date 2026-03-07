@@ -1,51 +1,58 @@
 // ============================================================
 // Recovery Agent — Action Executor
-// Executes approved recovery actions (dunning emails, etc.)
+// Executes approved recovery actions (dunning emails + platform write actions)
 // ============================================================
 
 import { decrypt } from "../encryption";
 import { sendDunningEmail } from "../email";
+import { executePlatformAction } from "./executors";
+import type { ExecutionResult } from "./executors/types";
 import type { RecoveryAction, DunningEmailActionData } from "./types";
+import type { BillingPlatform } from "../platforms/types";
 
-export interface ExecutionResult {
-  success: boolean;
-  error?: string;
-}
+export type { ExecutionResult };
 
 /**
  * Execute a single approved recovery action.
+ *
+ * @param action - The action to execute
+ * @param actionApiKey - Decrypted write-capable API key (required for platform actions)
  */
 export async function executeAction(
-  action: RecoveryAction
+  action: RecoveryAction,
+  actionApiKey?: string | null
 ): Promise<ExecutionResult> {
   switch (action.action_type) {
     case "send_dunning_email":
       return executeDunningEmail(action);
 
     case "retry_payment":
-      // Phase 2 — requires write API key
-      return {
-        success: false,
-        error: "Payment retry is not yet available. Coming soon.",
-      };
-
     case "remove_coupon":
-      // Phase 2 — requires write API key
-      return {
-        success: false,
-        error: "Coupon removal is not yet available. Coming soon.",
-      };
-
     case "cancel_subscription":
-      // Phase 2 — requires write API key
-      return {
-        success: false,
-        error: "Subscription cancellation is not yet available. Coming soon.",
-      };
+      return executePlatformWriteAction(action, actionApiKey);
 
     default:
       return { success: false, error: `Unknown action type: ${action.action_type}` };
   }
+}
+
+/**
+ * Execute a platform write action (retry payment, remove coupon, cancel sub).
+ * Requires a write-capable API key.
+ */
+async function executePlatformWriteAction(
+  action: RecoveryAction,
+  actionApiKey?: string | null
+): Promise<ExecutionResult> {
+  if (!actionApiKey) {
+    return {
+      success: false,
+      error: "No Action API Key configured. Go to Settings → Action API Key to add a write-capable key.",
+    };
+  }
+
+  const platform = action.platform as BillingPlatform;
+  return executePlatformAction(platform, actionApiKey, action);
 }
 
 async function executeDunningEmail(

@@ -114,6 +114,7 @@ export interface Database {
           id: string;
           user_id: string;
           encrypted_api_key: string;
+          action_api_key_encrypted: string | null;
           platform: string;
           scan_frequency: "weekly" | "daily" | "monthly";
           is_active: boolean;
@@ -126,6 +127,7 @@ export interface Database {
           id?: string;
           user_id: string;
           encrypted_api_key: string;
+          action_api_key_encrypted?: string | null;
           platform?: string;
           scan_frequency?: "weekly" | "daily" | "monthly";
           is_active?: boolean;
@@ -138,6 +140,7 @@ export interface Database {
           id?: string;
           user_id?: string;
           encrypted_api_key?: string;
+          action_api_key_encrypted?: string | null;
           platform?: string;
           scan_frequency?: "weekly" | "daily" | "monthly";
           is_active?: boolean;

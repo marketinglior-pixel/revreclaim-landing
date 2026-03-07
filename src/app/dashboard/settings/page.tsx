@@ -21,6 +21,13 @@ export default function SettingsPage() {
   const [userPlan, setUserPlan] = useState<string>("free");
   const [billingLoading, setBillingLoading] = useState(false);
 
+  // Action API Key state
+  const [actionApiKey, setActionApiKey] = useState("");
+  const [showActionKey, setShowActionKey] = useState(false);
+  const [hasExistingActionKey, setHasExistingActionKey] = useState(false);
+  const [actionKeySaving, setActionKeySaving] = useState(false);
+  const [actionKeyMessage, setActionKeyMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
   // Change Password state
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -61,7 +68,7 @@ export default function SettingsPage() {
 
     const { data } = await supabase
       .from("scan_configs")
-      .select("scan_frequency, is_active, platform")
+      .select("scan_frequency, is_active, platform, action_api_key_encrypted")
       .eq("user_id", user.id)
       .single();
 
@@ -71,6 +78,7 @@ export default function SettingsPage() {
       setIsActive(data.is_active);
       if (data.platform) setPlatform(data.platform as BillingPlatform);
       setApiKey("");
+      setHasExistingActionKey(!!data.action_api_key_encrypted);
     }
 
     setLoading(false);
@@ -101,6 +109,7 @@ export default function SettingsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           apiKey: apiKey || undefined,
+          actionApiKey: actionApiKey || undefined,
           platform,
           frequency,
           isActive,
@@ -118,6 +127,10 @@ export default function SettingsPage() {
       setMessage({ type: "success", text: data.message });
       setHasExistingConfig(true);
       setApiKey("");
+      if (actionApiKey) {
+        setHasExistingActionKey(true);
+        setActionApiKey("");
+      }
     } catch {
       setMessage({ type: "error", text: "Failed to save. Please try again." });
     }
@@ -146,6 +159,70 @@ export default function SettingsPage() {
       setMessage({ type: "error", text: "Failed to delete. Please try again." });
     }
     setSaving(false);
+  }
+
+  async function handleSaveActionKey(e: React.FormEvent) {
+    e.preventDefault();
+    setActionKeySaving(true);
+    setActionKeyMessage(null);
+
+    try {
+      const response = await fetch("/api/scan-config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          actionApiKey: actionApiKey,
+          platform,
+          frequency,
+          isActive,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setActionKeyMessage({ type: "error", text: data.error });
+        setActionKeySaving(false);
+        return;
+      }
+
+      setActionKeyMessage({ type: "success", text: "Action API Key saved successfully." });
+      setHasExistingActionKey(true);
+      setActionApiKey("");
+    } catch {
+      setActionKeyMessage({ type: "error", text: "Failed to save. Please try again." });
+    }
+
+    setActionKeySaving(false);
+  }
+
+  async function handleDeleteActionKey() {
+    if (!confirm("Are you sure? This will disable automated recovery actions (payment retries, coupon removals, etc.).")) {
+      return;
+    }
+
+    setActionKeySaving(true);
+    try {
+      const response = await fetch("/api/scan-config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          actionApiKey: "__DELETE__",
+          platform,
+          frequency,
+          isActive,
+        }),
+      });
+
+      if (response.ok) {
+        setHasExistingActionKey(false);
+        setActionApiKey("");
+        setActionKeyMessage({ type: "success", text: "Action API Key removed." });
+      }
+    } catch {
+      setActionKeyMessage({ type: "error", text: "Failed to delete. Please try again." });
+    }
+    setActionKeySaving(false);
   }
 
   async function handleChangePassword(e: React.FormEvent) {
@@ -467,15 +544,128 @@ export default function SettingsPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
           </svg>
           <div>
-            <p className="text-sm font-medium text-white">Your key is encrypted</p>
+            <p className="text-sm font-medium text-white">Your keys are encrypted</p>
             <p className="text-xs text-text-muted mt-1">
-              Your API key is encrypted with AES-256-GCM before storage.
-              We only perform read operations — we can never modify your billing data.
-              You can delete your key anytime from this page.
+              Your API keys are encrypted with AES-256-GCM before storage.
+              The scan key is read-only. The action key is used only for approved recovery actions.
+              You can delete your keys anytime from this page.
             </p>
           </div>
         </div>
       </div>
+
+      {/* Action API Key — for write operations */}
+      {userPlan !== "free" && hasExistingConfig && (
+        <div className="rounded-2xl border border-border bg-surface p-6">
+          <div className="flex items-center gap-3 mb-1">
+            <h2 className="text-lg font-bold text-white">Action API Key</h2>
+            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              Optional
+            </span>
+          </div>
+          <p className="text-sm text-text-muted mb-6">
+            Enable automated recovery actions (retry payments, remove expired coupons, cancel ghost subscriptions).
+            This key requires <strong className="text-white">write access</strong> to your billing platform.
+          </p>
+
+          {/* Platform-specific instructions */}
+          <div className="rounded-lg border border-border bg-surface-dim p-4 mb-5">
+            <p className="text-xs font-medium text-text-secondary mb-2">
+              How to create a {PLATFORM_LABELS[platform]} Action API Key:
+            </p>
+            {platform === "stripe" ? (
+              <ol className="text-xs text-text-muted space-y-1 list-decimal list-inside">
+                <li>Go to Stripe Dashboard → Developers → API Keys → Create restricted key</li>
+                <li>Grant <strong className="text-white">Write</strong> access to: Invoices, Subscriptions, Customers</li>
+                <li>Keep all other permissions as &quot;None&quot;</li>
+                <li>Copy the key (<code className="text-brand">rk_live_...</code>) and paste below</li>
+              </ol>
+            ) : platform === "polar" ? (
+              <ol className="text-xs text-text-muted space-y-1 list-decimal list-inside">
+                <li>Go to Polar Dashboard → Settings → Personal Access Tokens</li>
+                <li>Create a token with <strong className="text-white">subscriptions:write</strong> scope</li>
+                <li>Copy the token and paste below</li>
+              </ol>
+            ) : (
+              <ol className="text-xs text-text-muted space-y-1 list-decimal list-inside">
+                <li>Go to Paddle Dashboard → Developer Tools → Authentication</li>
+                <li>Create an API key with <strong className="text-white">write</strong> access to Subscriptions</li>
+                <li>Copy the key and paste below</li>
+              </ol>
+            )}
+          </div>
+
+          <form onSubmit={handleSaveActionKey} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+                {PLATFORM_LABELS[platform]} Write API Key
+                {hasExistingActionKey && (
+                  <span className="text-brand ml-2 font-normal">(key saved — enter new to update)</span>
+                )}
+              </label>
+              <div className="relative">
+                <input
+                  type={showActionKey ? "text" : "password"}
+                  value={actionApiKey}
+                  onChange={(e) => setActionApiKey(e.target.value)}
+                  placeholder={hasExistingActionKey ? "Enter new key to update..." : platform === "stripe" ? "rk_live_..." : "Your write API key..."}
+                  className="w-full px-4 py-3 pr-12 bg-surface-dim border border-border rounded-lg text-white placeholder-text-muted focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition font-mono text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowActionKey(!showActionKey)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition"
+                  aria-label={showActionKey ? "Hide API key" : "Show API key"}
+                >
+                  {showActionKey ? (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {actionKeyMessage && (
+              <div
+                className={`rounded-lg px-4 py-3 text-sm ${
+                  actionKeyMessage.type === "success"
+                    ? "bg-brand/10 border border-brand/20 text-brand"
+                    : "bg-danger/10 border border-danger/20 text-danger"
+                }`}
+              >
+                {actionKeyMessage.text}
+              </div>
+            )}
+
+            <div className="flex items-center gap-3">
+              <button
+                type="submit"
+                disabled={actionKeySaving || !actionApiKey}
+                className="px-6 py-2.5 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm"
+              >
+                {actionKeySaving ? "Saving..." : hasExistingActionKey ? "Update Action Key" : "Save Action Key"}
+              </button>
+
+              {hasExistingActionKey && (
+                <button
+                  type="button"
+                  onClick={handleDeleteActionKey}
+                  disabled={actionKeySaving}
+                  className="px-4 py-2.5 text-sm text-danger hover:bg-danger/10 rounded-lg transition disabled:opacity-50 cursor-pointer"
+                >
+                  Remove Key
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
+      )}
 
       {/* Change Password */}
       <div className="rounded-2xl border border-border bg-surface p-6">

@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { apiKey, platform, frequency, isActive } = body;
+    const { apiKey, actionApiKey, platform, frequency, isActive } = body;
 
     // Validate platform and frequency enums
     const validPlatforms = ["stripe", "polar", "paddle"];
@@ -100,6 +100,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Handle Action API Key (write-capable key for recovery actions)
+    let encryptedActionKey: string | null | undefined;
+    if (actionApiKey === "__DELETE__") {
+      encryptedActionKey = null; // Explicitly remove
+    } else if (actionApiKey) {
+      encryptedActionKey = encrypt(actionApiKey);
+    }
+
     // Calculate next scan time
     const nextScanAt = calculateNextScan(validFrequency);
 
@@ -112,6 +120,9 @@ export async function POST(req: NextRequest) {
       };
       if (encryptedKey) {
         updateData.encrypted_api_key = encryptedKey;
+      }
+      if (encryptedActionKey !== undefined) {
+        updateData.action_api_key_encrypted = encryptedActionKey;
       }
 
       const { error } = await supabase
@@ -126,14 +137,18 @@ export async function POST(req: NextRequest) {
       });
     } else {
       // Create new config
-      const { error } = await supabase.from("scan_configs").insert({
+      const insertData: Record<string, unknown> = {
         user_id: user.id,
         encrypted_api_key: encryptedKey!,
         platform: validPlatform,
         scan_frequency: validFrequency,
         is_active: isActive ?? true,
         next_scan_at: nextScanAt,
-      });
+      };
+      if (encryptedActionKey && encryptedActionKey !== null) {
+        insertData.action_api_key_encrypted = encryptedActionKey;
+      }
+      const { error } = await supabase.from("scan_configs").insert(insertData as Database["public"]["Tables"]["scan_configs"]["Insert"]);
 
       if (error) throw error;
 

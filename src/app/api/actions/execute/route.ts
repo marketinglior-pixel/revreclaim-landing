@@ -6,6 +6,7 @@ import { rateLimit, getClientIP } from "@/lib/rate-limit";
 import { executeAction } from "@/lib/recovery/executor";
 import type { RecoveryAction } from "@/lib/recovery/types";
 import { trackEvent } from "@/lib/analytics";
+import { decrypt } from "@/lib/encryption";
 
 /**
  * POST /api/actions/execute — Execute a single approved action.
@@ -91,8 +92,33 @@ export async function POST(req: NextRequest) {
       `[EXECUTE] Executing action ${actionId} (${action.action_type}) for user ${user.id}`
     );
 
+    // For platform write actions, fetch and decrypt the action API key
+    let actionApiKey: string | null = null;
+    const isWriteAction = ["retry_payment", "remove_coupon", "cancel_subscription"].includes(
+      action.action_type
+    );
+
+    if (isWriteAction) {
+      const { data: scanConfig } = await supabase
+        .from("scan_configs")
+        .select("action_api_key_encrypted")
+        .eq("user_id", user.id)
+        .single();
+
+      if (scanConfig?.action_api_key_encrypted) {
+        try {
+          actionApiKey = decrypt(scanConfig.action_api_key_encrypted);
+        } catch {
+          return NextResponse.json(
+            { error: "Failed to decrypt Action API Key. Please re-save it in Settings." },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
     // Execute the action
-    const result = await executeAction(action);
+    const result = await executeAction(action, actionApiKey);
 
     const now = new Date().toISOString();
 
