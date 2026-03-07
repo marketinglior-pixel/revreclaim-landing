@@ -13,7 +13,7 @@ export function Problem() {
         </div>
         {/* Headline — Show Don't Tell: specific moment (Hormozi Hack #6) */}
         <h2 className="mb-6 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
-          Right now, there&apos;s a customer in your Stripe who owes you $499.
+          Right now, there&apos;s a customer in your billing account who owes you $499.
           <br />
           <span className="text-text-muted">Their card failed 12 days ago. Nobody noticed.</span>
         </h2>
@@ -23,7 +23,7 @@ export function Problem() {
           <br />
           The average SaaS at your stage loses $2,500/month to billing blind spots.
           Not because your product is broken.{" "}
-          <span className="text-white">Because Stripe doesn&apos;t alert you.</span>
+          <span className="text-white">Because your billing platform doesn&apos;t alert you.</span>
         </p>
 
         {/* Revenue leak visualization */}

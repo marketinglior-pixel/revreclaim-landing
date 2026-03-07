@@ -32,7 +32,7 @@ const testimonials = [
 /* Implied authority stats (Hormozi Hack #9) */
 const stats = [
   { value: "$2.1M+", label: "Revenue recovered to date" },
-  { value: "847+", label: "Stripe accounts scanned" },
+  { value: "847+", label: "SaaS accounts scanned" },
   { value: "$2,340", label: "Avg. monthly recovery" },
   { value: "94%", label: "Had at least 1 leak" },
 ];
@@ -52,7 +52,7 @@ export function SocialProof() {
         </h2>
         {/* Status tie (Hormozi Hack #7) */}
         <p className="mx-auto mb-16 max-w-2xl text-center text-lg text-text-muted">
-          Same Stripe account. Same customers. Same product.
+          Same billing account. Same customers. Same product.
           They just stopped leaving money on the table.
           <br />
           <span className="text-white">The only difference? They ran a 90-second scan.</span>

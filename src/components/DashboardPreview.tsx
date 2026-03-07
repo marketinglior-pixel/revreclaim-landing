@@ -11,7 +11,7 @@ export function DashboardPreview() {
         <p className="mx-auto mb-12 max-w-2xl text-center text-lg text-text-muted">
           Not a sample report. Not demo data. This is what an actual RevReclaim scan
           looks like: real customer emails, real dollar amounts,
-          and the exact Stripe link to fix each one.
+          and a direct link to fix each one in your billing dashboard.
         </p>
 
         {/* Dashboard mockup */}

@@ -13,7 +13,7 @@ const leaks = [
   {
     title: "Legacy Pricing",
     description:
-      "You raised prices 6 months ago. 40% of your customers are still on the old rate. They're getting the same product for less money than your newest signup. Stripe won't migrate them.",
+      "You raised prices 6 months ago. 40% of your customers are still on the old rate. They're getting the same product for less money than your newest signup. Your billing platform won't migrate them automatically.",
     impact: "Found in 22% of scans",
     afterFix: "Migrate to current pricing. One email, instant revenue lift.",
     severity: "MEDIUM",
@@ -29,7 +29,7 @@ const leaks = [
   {
     title: "Ghost Subscriptions",
     description:
-      "14 subscriptions sitting in 'past_due' since November. They're not active. They're not canceled. They're in billing purgatory. Stripe won't fix this for you.",
+      "14 subscriptions sitting in 'past_due' since November. They're not active. They're not canceled. They're in billing purgatory. Nobody fixes this for you.",
     impact: "Found in 30% of accounts we scan",
     afterFix: "Cancel or reactivate each one. Clean billing = predictable MRR.",
     severity: "HIGH",
@@ -69,7 +69,7 @@ export function LeakTypes() {
         </div>
         {/* Headline with reason why (Hormozi Hack #4) */}
         <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
-          Seven revenue streams hiding in your Stripe.
+          Seven revenue streams hiding in your billing data.
         </h2>
         <p className="mb-12 text-lg text-text-muted italic">
           We find them in 90 seconds. You fix them before lunch.
