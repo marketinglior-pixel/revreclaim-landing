@@ -80,25 +80,6 @@ const PLATFORM_STEPS: Record<BillingPlatform, StepConfig[]> = {
       description: "Copy the token starting with polar_oat_",
     },
   ],
-  lemonsqueezy: [
-    {
-      number: "1",
-      title: "Open Lemon Squeezy Dashboard",
-      description: "Go to Settings \u2192 API",
-      link: "https://app.lemonsqueezy.com/settings/api",
-      linkLabel: "Open Lemon Squeezy API Settings \u2192",
-    },
-    {
-      number: "2",
-      title: "Generate API Key",
-      description: 'Click "+" to generate a new API key',
-    },
-    {
-      number: "3",
-      title: "Copy Your Key",
-      description: "Copy the full API key and paste it below. We only read your data and the key is never stored.",
-    },
-  ],
   paddle: [
     {
       number: "1",
@@ -224,7 +205,7 @@ export default function ApiKeyInstructions({
             </svg>
             <p className="text-xs text-text-muted">
               <span className="text-white font-medium">
-                {platform === "lemonsqueezy" ? "We only read your data" : "Read-only access"}
+                Read-only access
               </span>{" "}
               &mdash; We can&apos;t modify your {platformLabel} account.
               Your key is never stored.

@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     const { email, apiKey, platform: rawPlatform } = body;
 
     // Validate platform (default to stripe)
-    const validPlatforms: BillingPlatform[] = ["stripe", "polar", "lemonsqueezy", "paddle"];
+    const validPlatforms: BillingPlatform[] = ["stripe", "polar", "paddle"];
     const platform: BillingPlatform = validPlatforms.includes(rawPlatform) ? rawPlatform : "stripe";
 
     // Validate email

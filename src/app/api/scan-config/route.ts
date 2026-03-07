@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     const { apiKey, platform, frequency, isActive } = body;
 
     // Validate platform and frequency enums
-    const validPlatforms = ["stripe", "polar", "lemonsqueezy", "paddle"];
+    const validPlatforms = ["stripe", "polar", "paddle"];
     const validFrequencies = ["daily", "weekly", "monthly"];
     const validPlatform = platform || "stripe";
     const validFrequency = frequency || "weekly";

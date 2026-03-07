@@ -4,7 +4,7 @@ const steps = [
     number: "01",
     title: "Create an API Key",
     description:
-      "Open your billing dashboard (Stripe, Polar, Lemon Squeezy, or Paddle). Navigate to API Keys. Create an API key (read-only where supported). Copy it. Done.",
+      "Open your billing dashboard (Stripe, Polar, or Paddle). Navigate to API Keys. Create a read-only API key. Copy it. Done.",
     detail: "60 seconds. We show you exactly where to click.",
   },
   {

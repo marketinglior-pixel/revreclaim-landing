@@ -3,26 +3,23 @@
 // Normalized data structures that all scanners consume
 // ============================================================
 
-export type BillingPlatform = "stripe" | "polar" | "lemonsqueezy" | "paddle";
+export type BillingPlatform = "stripe" | "polar" | "paddle";
 
 export const PLATFORM_LABELS: Record<BillingPlatform, string> = {
   stripe: "Stripe",
   polar: "Polar",
-  lemonsqueezy: "Lemon Squeezy",
   paddle: "Paddle",
 };
 
 export const PLATFORM_COLORS: Record<BillingPlatform, string> = {
   stripe: "#635BFF",
   polar: "#0062FF",
-  lemonsqueezy: "#7C3AED",
   paddle: "#3B82F6",
 };
 
 export const PLATFORM_DASHBOARD_URLS: Record<BillingPlatform, string> = {
   stripe: "https://dashboard.stripe.com",
   polar: "https://polar.sh",
-  lemonsqueezy: "https://app.lemonsqueezy.com",
   paddle: "https://vendors.paddle.com",
 };
 
@@ -159,15 +156,6 @@ export const PLATFORM_CAPABILITIES: Record<
     failedPayments: true,
     ghostSubscriptions: true,
     expiringCards: false, // no card expiry data exposed
-    expiredCoupons: true,
-    neverExpiringDiscounts: true,
-    legacyPricing: true,
-    missingPaymentMethods: true,
-  },
-  lemonsqueezy: {
-    failedPayments: true,
-    ghostSubscriptions: true,
-    expiringCards: false, // has card_brand/last4 but no expiry date
     expiredCoupons: true,
     neverExpiringDiscounts: true,
     legacyPricing: true,

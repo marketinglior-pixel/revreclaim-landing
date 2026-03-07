@@ -6,13 +6,11 @@ import { registerProvider, getProvider, getAllProviders, isRegisteredPlatform } 
 import { stripeProvider } from "./stripe-provider";
 import { polarProvider } from "./polar-provider";
 import { paddleProvider } from "./paddle-provider";
-import { lemonSqueezyProvider } from "./lemonsqueezy-provider";
 
 // Register all providers
 registerProvider(stripeProvider);
 registerProvider(polarProvider);
 registerProvider(paddleProvider);
-registerProvider(lemonSqueezyProvider);
 
 // Re-exports
 export { getProvider, getAllProviders, isRegisteredPlatform };

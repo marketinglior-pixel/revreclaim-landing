@@ -63,7 +63,7 @@ export function welcomeEmailHtml(): string {
     <h1 style="color:white;font-size:24px;margin:0 0 16px;">Welcome to RevReclaim!</h1>
     <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
       You're all set up. RevReclaim scans your billing platform for revenue leaks — expired coupons,
-      failed payments, ghost subscriptions, and more. We support Stripe, Polar, Lemon Squeezy, and Paddle.
+      failed payments, ghost subscriptions, and more. We support Stripe, Polar, and Paddle.
     </p>
 
     <h2 style="color:white;font-size:16px;margin:0 0 12px;">Get started in 3 steps:</h2>

@@ -96,14 +96,6 @@ export function validateApiKey(
         };
       }
       break;
-    case "lemonsqueezy":
-      if (key.length < 30) {
-        return {
-          valid: false,
-          error: "Lemon Squeezy API key appears too short",
-        };
-      }
-      break;
     case "paddle":
       if (key.length < 20) {
         return {

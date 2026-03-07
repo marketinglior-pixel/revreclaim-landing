@@ -163,7 +163,7 @@ export function FinalCTA() {
           </p>
           <p className="mt-4 text-sm md:text-base text-text-muted leading-relaxed">
             <span className="font-semibold text-white">P.P.S.</span> — We scan
-            Stripe, Polar, Lemon Squeezy, and Paddle. If
+            Stripe, Polar, and Paddle. If
             your SaaS is doing $30K–$500K MRR, I&apos;d bet money
             (literally — that&apos;s our $1,000/mo guarantee) that you have leaks right now.
           </p>

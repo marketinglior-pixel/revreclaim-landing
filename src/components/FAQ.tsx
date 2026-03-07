@@ -6,11 +6,11 @@ import { useSectionView } from "@/hooks/useSectionView";
 const faqs = [
   {
     q: "Is my billing data safe?",
-    a: "Yes. We only read data — we cannot modify your billing, create charges, or access card numbers. Stripe, Polar, and Paddle support restricted read-only keys. Lemon Squeezy doesn't offer key restrictions, but it doesn't matter: your key is used only during the scan and is never stored or logged.",
+    a: "Yes. We only read data — we cannot modify your billing, create charges, or access card numbers. All supported platforms (Stripe, Polar, Paddle) support restricted read-only keys. Your key is used only during the scan and is never stored or logged.",
   },
   {
     q: "Which billing platforms do you support?",
-    a: "We support Stripe, Polar.sh, Lemon Squeezy, and Paddle. Select your platform on the scan page and we'll guide you through creating an API key. Each platform gets a tailored scan covering the leak types it supports.",
+    a: "We support Stripe, Polar.sh, and Paddle. Select your platform on the scan page and we'll guide you through creating an API key. Each platform gets a tailored scan covering the leak types it supports.",
   },
   {
     q: "What permissions does the API key need?",
@@ -48,7 +48,7 @@ const faqs = [
   /* Trust FAQ — damaging admission + transparency (Hormozi Hack #5) */
   {
     q: "Why should I trust you with my billing data?",
-    a: "Fair question. Here's the honest answer: you shouldn't blindly trust anyone with your billing data. That's why we designed RevReclaim to work with read-only API keys where supported (Stripe, Polar, Paddle). For all platforms, we only perform read operations, never modify your data, never see card numbers, and never store the key after the scan.",
+    a: "Fair question. Here's the honest answer: you shouldn't blindly trust anyone with your billing data. That's why we designed RevReclaim to work with restricted, read-only API keys — scoped to specific resources. We only perform read operations, never modify your data, never see card numbers, and never store the key after the scan.",
   },
 ];
 

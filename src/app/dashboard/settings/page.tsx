@@ -321,8 +321,8 @@ export default function SettingsPage() {
             <label className="block text-sm font-medium text-text-secondary mb-1.5">
               Billing Platform
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {(["stripe", "polar", "lemonsqueezy", "paddle"] as const).map((p) => (
+            <div className="grid grid-cols-3 gap-2">
+              {(["stripe", "polar", "paddle"] as const).map((p) => (
                 <button
                   key={p}
                   type="button"
