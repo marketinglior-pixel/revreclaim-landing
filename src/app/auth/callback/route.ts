@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
 
           // Redirect new users to scan instead of empty dashboard
           if (redirect === "/dashboard") {
-            return NextResponse.redirect(`${origin}/scan`);
+            return NextResponse.redirect(`${origin}/scan?welcome=true`);
           }
         }
       }

@@ -8,6 +8,8 @@ import ApiKeyInstructions from "./ApiKeyInstructions";
 import Link from "next/link";
 import type { BillingPlatform } from "@/lib/platforms/types";
 import { PLATFORM_LABELS } from "@/lib/platforms/types";
+import { trackScanStarted, trackScanCompleted } from "@/lib/conversion-tracking";
+import { getUTMParams } from "@/lib/utm";
 
 const SCAN_STEPS = [
   "Validating API key...",
@@ -57,7 +59,8 @@ export default function ScanForm() {
       return;
     }
 
-    // Start scan
+    // Start scan — fire conversion events
+    trackScanStarted(platform);
     setScanStatus({ status: "validating" });
     abortRef.current = new AbortController();
 
@@ -84,7 +87,7 @@ export default function ScanForm() {
       const response = await fetch("/api/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, apiKey, platform }),
+        body: JSON.stringify({ email, apiKey, platform, utm: getUTMParams() }),
         signal: abortRef.current.signal,
       });
 
@@ -101,6 +104,12 @@ export default function ScanForm() {
       }
 
       const report: ScanReport = data.report;
+
+      // Fire scan_completed conversion events (GA4 + Meta)
+      trackScanCompleted(
+        report.leaks?.length ?? 0,
+        report.summary?.mrrAtRisk ?? 0
+      );
 
       setScanStatus({
         status: "scanning",

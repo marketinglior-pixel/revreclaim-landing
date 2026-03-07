@@ -20,9 +20,9 @@ export async function POST(req: NextRequest) {
   if (guard) return guard;
 
   try {
-    // Rate limit: 5 scans per IP per hour
+    // Rate limit: 15 scans per IP per hour (higher limit for campaign traffic / shared IPs)
     const ip = getClientIP(req);
-    const rl = await rateLimit({ name: "scan", maxRequests: 5, windowSeconds: 3600 }, ip);
+    const rl = await rateLimit({ name: "scan", maxRequests: 15, windowSeconds: 3600 }, ip);
     if (!rl.allowed) {
       return NextResponse.json(
         { error: `Too many scans. Please try again in ${rl.retryAfterSeconds} seconds.` },

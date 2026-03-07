@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSectionView } from "@/hooks/useSectionView";
 import { trackEvent } from "@/lib/analytics";
+import { trackNewsletterSignup, trackCTAClick } from "@/lib/conversion-tracking";
 
 export function FinalCTA() {
   const [email, setEmail] = useState("");
@@ -24,6 +25,7 @@ export function FinalCTA() {
         setStatus("success");
         setEmail("");
         trackEvent("newsletter_signup", null, { location: "final_cta" }).catch(() => {});
+        trackNewsletterSignup();
       } else {
         setStatus("error");
       }

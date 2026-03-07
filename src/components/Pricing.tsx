@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { trackEvent } from "@/lib/analytics";
 import { useSectionView } from "@/hooks/useSectionView";
+import { trackCheckoutStarted, trackCTAClick } from "@/lib/conversion-tracking";
 
 /* Grand Slam Offer naming ($100M Offers) + value stacking */
 const plans = [
@@ -102,6 +103,7 @@ export function Pricing() {
 
       // Track checkout event (fire-and-forget)
       trackEvent("checkout_started", null, { plan: planId }).catch(() => {});
+      trackCheckoutStarted(planId, planId === "pro" ? 29 : 79);
 
       // Redirect to Polar Checkout
       window.location.href = data.url;

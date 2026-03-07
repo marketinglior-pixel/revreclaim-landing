@@ -3,6 +3,7 @@
 import { ScanCounter } from "./ScanCounter";
 import { useSectionView } from "@/hooks/useSectionView";
 import { trackEvent } from "@/lib/analytics";
+import { trackCTAClick } from "@/lib/conversion-tracking";
 
 export function Hero() {
   const sectionRef = useSectionView("hero");
@@ -59,6 +60,7 @@ export function Hero() {
             href="/scan"
             onClick={() => {
               trackEvent("cta_clicked", null, { location: "hero", action: "scan" }).catch(() => {});
+              trackCTAClick("hero", "scan");
             }}
             className="group flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black min-h-[52px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
           >
@@ -71,6 +73,7 @@ export function Hero() {
             href="/demo"
             onClick={() => {
               trackEvent("cta_clicked", null, { location: "hero", action: "demo" }).catch(() => {});
+              trackCTAClick("hero", "demo");
             }}
             className="group flex items-center gap-2 rounded-xl border border-border bg-surface/50 px-6 py-4 text-base font-semibold text-white min-h-[52px] transition-all hover:border-brand/30 hover:bg-surface"
           >

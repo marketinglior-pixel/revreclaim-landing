@@ -9,6 +9,7 @@ import MiniCategoryChart from "@/components/dashboard/MiniCategoryChart";
 import AutoScanBanner from "@/components/dashboard/AutoScanBanner";
 import RecoveryActionsBanner from "@/components/dashboard/RecoveryActionsBanner";
 import { ScanReport } from "@/lib/types";
+import ConversionTracker from "@/components/dashboard/ConversionTracker";
 
 const PLAN_LABELS: Record<string, string> = {
   free: "Revenue X-Ray",
@@ -65,6 +66,7 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <PageViewTracker page="dashboard" />
+      <ConversionTracker plan={plan} />
       {/* Page header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
