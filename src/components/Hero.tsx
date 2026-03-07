@@ -74,8 +74,20 @@ export function Hero() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </a>
-          <span className="text-sm text-text-muted">Free forever. No credit card. No sales call. Report in 90 seconds.</span>
+          <a
+            href="/demo"
+            onClick={() => {
+              trackEvent("cta_clicked", null, { location: "hero", action: "demo" }).catch(() => {});
+            }}
+            className="group flex items-center gap-2 rounded-xl border border-border bg-surface/50 px-6 py-4 text-base font-semibold text-white min-h-[52px] transition-all hover:border-brand/30 hover:bg-surface"
+          >
+            See a Demo Report
+            <svg className="h-5 w-5 text-text-muted transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
         </div>
+        <span className="mt-4 inline-block text-sm text-text-muted animate-fade-in-up animate-delay-400">Free forever. No credit card. No sales call. Report in 90 seconds.</span>
 
         {/* Guarantee badge — with "because" reason (Hormozi Hack #4) */}
         <div className="mt-8 inline-flex flex-col items-center gap-1">
