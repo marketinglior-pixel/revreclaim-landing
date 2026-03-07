@@ -125,7 +125,7 @@ export function Pricing() {
         <p className="mx-auto mb-16 max-w-2xl text-center text-lg text-text-muted">
           Average recovery: <span className="text-white font-semibold">$2,340/mo</span>.
           Pro plan: <span className="text-white font-semibold">$299/mo</span>.
-          That&apos;s an extra <span className="text-brand font-semibold">$24,492/year you keep</span> — from customers you already have.
+          That&apos;s an extra <span className="text-brand font-semibold">$24,492/year you keep</span>. From customers you already have.
           <br />
           If we don&apos;t find at least $1,000/mo in recoverable revenue, you pay nothing.
         </p>

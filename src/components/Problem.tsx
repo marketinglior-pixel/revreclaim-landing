@@ -36,7 +36,7 @@ export function Problem() {
           <div className="grid gap-4 md:grid-cols-2">
             {/* Leak labels rewritten as moments (Hormozi Hack #6) */}
             <LeakRow
-              label="Coupons your sales team gave out 8 months ago — still running"
+              label="Coupons your sales team gave out 8 months ago. Still running"
               amount="$900"
               percentage="1.8%"
               color="bg-danger"
@@ -50,14 +50,14 @@ export function Problem() {
               width="52%"
             />
             <LeakRow
-              label="Old customers on old prices — new signups pay 40% more"
+              label="Old customers on old prices. New signups pay 40% more"
               amount="$550"
               percentage="1.1%"
               color="bg-orange"
               width="44%"
             />
             <LeakRow
-              label="Subscriptions stuck in limbo — not active, not canceled"
+              label="Subscriptions stuck in limbo. Not active, not canceled"
               amount="$400"
               percentage="0.8%"
               color="bg-purple"

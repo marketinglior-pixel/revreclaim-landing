@@ -6,7 +6,7 @@ const leaks = [
     title: "Expired Coupons",
     description:
       "Your sales rep promised '3 months at 50% off.' That was 8 months ago. The coupon expired. The discount is still running. Nobody canceled it. Nobody noticed.",
-    impact: "Most common leak — 35% of all scans",
+    impact: "Most common leak. 35% of all scans",
     afterFix: "Remove the expired discount. Full-price billing starts next cycle.",
     severity: "HIGH",
   },

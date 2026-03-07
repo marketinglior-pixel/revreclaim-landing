@@ -141,7 +141,7 @@ export function FinalCTA() {
         {/* Mini testimonial */}
         <div className="mt-8 mx-auto max-w-lg rounded-xl border border-border bg-surface p-5">
           <p className="text-sm text-text-secondary italic leading-relaxed">
-            &ldquo;I pasted the key expecting nothing. 90 seconds later I&apos;m staring at a list of 23 expired coupons — $3,200/month we were just giving away.&rdquo;
+            &ldquo;I pasted the key expecting nothing. 90 seconds later I&apos;m staring at a list of 23 expired coupons. $3,200/month we were just giving away.&rdquo;
           </p>
           <div className="mt-3 flex items-center justify-center gap-2">
             <span className="text-xs font-semibold text-white">Sarah M.</span>
@@ -154,18 +154,18 @@ export function FinalCTA() {
         {/* P.S. section — second most-read element (Hormozi Hack #10) */}
         <div className="mt-16 mx-auto max-w-lg px-4 md:px-0 text-left">
           <p className="text-sm md:text-base text-text-muted leading-relaxed">
-            <span className="font-semibold text-white">P.S.</span> — Imagine opening your
+            <span className="font-semibold text-white">P.S.</span> Imagine opening your
             billing dashboard tomorrow knowing that every subscription is collecting, every
             coupon is correct, every card is current. That&apos;s what our founders tell us
-            after their first scan. Not &ldquo;wow, I had leaks&rdquo; — but &ldquo;I finally know my
+            after their first scan. Not &ldquo;wow, I had leaks&rdquo; but &ldquo;I finally know my
             revenue number is real.&rdquo; Run the free scan. 90 seconds. The worst case is you
             wasted 90 seconds. The best case is you just found your next raise.
           </p>
           <p className="mt-4 text-sm md:text-base text-text-muted leading-relaxed">
-            <span className="font-semibold text-white">P.P.S.</span> — We scan
+            <span className="font-semibold text-white">P.P.S.</span> We scan
             Stripe, Polar, and Paddle. If
             your SaaS is doing $30K–$500K MRR, I&apos;d bet money
-            (literally — that&apos;s our $1,000/mo guarantee) that you have leaks right now.
+            (literally, that&apos;s our $1,000/mo guarantee) that you have leaks right now.
           </p>
         </div>
       </div>

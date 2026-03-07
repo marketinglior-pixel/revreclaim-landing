@@ -6,7 +6,7 @@ import { useSectionView } from "@/hooks/useSectionView";
 const faqs = [
   {
     q: "Is my billing data safe?",
-    a: "Yes. We only read data — we cannot modify your billing, create charges, or access card numbers. All supported platforms (Stripe, Polar, Paddle) support restricted read-only keys. Your key is used only during the scan and is never stored or logged.",
+    a: "Yes. We only read data. We cannot modify your billing, create charges, or access card numbers. All supported platforms (Stripe, Polar, Paddle) support restricted read-only keys. Your key is used only during the scan and is never stored or logged.",
   },
   {
     q: "Which billing platforms do you support?",
@@ -26,7 +26,7 @@ const faqs = [
   },
   {
     q: "What do I do with the report?",
-    a: "Open the report. See the customer name. See the dollar amount. See the one-sentence fix. Click the link — it takes you straight to that customer in your billing dashboard. Fix it. That money hits your account next billing cycle.",
+    a: "Open the report. See the customer name. See the dollar amount. See the one-sentence fix. Click the link. It takes you straight to that customer in your billing dashboard. Fix it. That money hits your account next billing cycle.",
   },
   {
     q: "What if you don't find any leaks?",
@@ -43,12 +43,12 @@ const faqs = [
   /* Exclusionary FAQ (Hormozi Hack #3): explicitly say who it's NOT for */
   {
     q: "Is this worth it if I have fewer than 50 customers?",
-    a: "Probably not. Revenue leaks compound with scale. If you have 10 customers, you probably know each one by name and you'd catch these issues manually. RevReclaim is built for the stage where your billing account has grown past what one person can monitor — typically 100+ customers, $30K+ MRR.",
+    a: "Probably not. Revenue leaks compound with scale. If you have 10 customers, you probably know each one by name and you'd catch these issues manually. RevReclaim is built for the stage where your billing account has grown past what one person can monitor. Typically 100+ customers, $30K+ MRR.",
   },
   /* Trust FAQ — damaging admission + transparency (Hormozi Hack #5) */
   {
     q: "Why should I trust you with my billing data?",
-    a: "Fair question. Here's the honest answer: you shouldn't blindly trust anyone with your billing data. That's why we designed RevReclaim to work with restricted, read-only API keys — scoped to specific resources. We only perform read operations, never modify your data, never see card numbers, and never store the key after the scan.",
+    a: "Fair question. Here's the honest answer: you shouldn't blindly trust anyone with your billing data. That's why we designed RevReclaim to work with restricted, read-only API keys, scoped to specific resources. We only perform read operations, never modify your data, never see card numbers, and never store the key after the scan.",
   },
 ];
 

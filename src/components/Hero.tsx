@@ -16,7 +16,7 @@ export function Hero() {
         {/* Live badge */}
         <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand/10 px-4 py-2 text-sm font-medium text-brand animate-fade-in-up">
           <span className="inline-block h-2 w-2 rounded-full bg-brand animate-pulse" />
-          We&apos;re LIVE — Not a waitlist
+          We&apos;re LIVE. Not a waitlist
         </div>
 
         {/* Headline — concrete $ not % (Hormozi Hack #1) */}
@@ -28,10 +28,20 @@ export function Hero() {
           <br />
           It&apos;s already sitting in your billing data.
         </h1>
-        <p className="mb-2 text-lg text-text-muted animate-fade-in-up animate-delay-250">
-          We scan your Stripe account and show you every billing mistake
-          that&apos;s costing you money — in 90&nbsp;seconds.
+        <p className="mb-4 text-lg text-text-muted animate-fade-in-up animate-delay-250">
+          We scan your billing account and find every mistake
+          that&apos;s costing you money. Takes 90&nbsp;seconds.
         </p>
+
+        {/* Platform logos */}
+        <div className="mb-8 flex items-center justify-center gap-3 animate-fade-in-up animate-delay-250">
+          <span className="text-xs text-text-dim">Works with</span>
+          <div className="flex items-center gap-3">
+            <span className="rounded-full border border-border bg-surface/50 px-3 py-1 text-sm font-semibold text-text-muted">Stripe</span>
+            <span className="rounded-full border border-border bg-surface/50 px-3 py-1 text-sm font-semibold text-text-muted">Polar</span>
+            <span className="rounded-full border border-border bg-surface/50 px-3 py-1 text-sm font-semibold text-text-muted">Paddle</span>
+          </div>
+        </div>
 
         {/* Subheadline — concise value prop */}
         <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-text-muted md:text-xl lg:text-xl animate-fade-in-up animate-delay-300 text-balance">

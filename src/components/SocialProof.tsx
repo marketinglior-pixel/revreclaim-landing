@@ -2,7 +2,7 @@
 const testimonials = [
   {
     quote:
-      "I pasted the key expecting nothing. 90 seconds later I'm staring at a list of 23 expired coupons — $3,200/month we were just giving away. I fixed them all before lunch. That's $38K/year.",
+      "I pasted the key expecting nothing. 90 seconds later I'm staring at a list of 23 expired coupons. $3,200/month we were just giving away. I fixed them all before lunch. That's $38K/year.",
     name: "Sarah M.",
     role: "Co-founder",
     company: "CloudMetrics",

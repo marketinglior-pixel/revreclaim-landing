@@ -35,7 +35,7 @@ export function HowItWorks() {
         </h2>
         {/* Damaging admission (Hormozi Hack #5) */}
         <p className="mb-16 max-w-2xl text-lg text-text-muted">
-          We won&apos;t lie — there&apos;s no magic here. We&apos;re reading data that your
+          We won&apos;t lie. There&apos;s no magic here. We&apos;re reading data that your
           billing platform already has but doesn&apos;t surface to you. The magic is
           that nobody else built a tool to show you. So we did. And it takes 90 seconds.
         </p>
