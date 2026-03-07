@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/dashboard", "/report", "/api", "/demo"],
+        disallow: ["/dashboard", "/report", "/api"],
       },
     ],
     sitemap: "https://revreclaim.com/sitemap.xml",

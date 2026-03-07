@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Paste Your API Key → See Your Leaks | RevReclaim",
   description:
     "Paste an API key from Stripe, Polar, or Paddle. See every revenue leak in your account in 90 seconds. Real customer names. Real dollar amounts. Free forever.",
+  alternates: { canonical: "https://revreclaim.com/scan" },
 };
 
 export default function ScanPage() {
