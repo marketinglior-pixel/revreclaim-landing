@@ -32,16 +32,23 @@ export const polarProvider: BillingProvider = {
   },
 
   async validateConnection(apiKey: string) {
-    // Use /v1/organizations/ to validate OATs — the /v1/oauth2/userinfo
-    // endpoint only works with OAuth2 user tokens (polar_at_), NOT with
-    // Organization Access Tokens (polar_oat_).
-    const res = await fetch("https://api.polar.sh/v1/organizations/", {
+    // Validate by hitting /v1/products with limit=1 — this requires only
+    // the products:read scope which every scanner token should have.
+    // NOTE: /v1/oauth2/userinfo only works with OAuth2 user tokens (polar_at_)
+    // and /v1/organizations/ requires organizations:read scope which users
+    // may not grant. Using a data endpoint we need anyway is safest.
+    const res = await fetch("https://api.polar.sh/v1/products/?limit=1", {
       headers: { Authorization: `Bearer ${apiKey}` },
     });
     if (!res.ok) {
-      if (res.status === 401 || res.status === 403) {
+      if (res.status === 401) {
         throw new Error(
           "Invalid API token. Please check that you copied the full Organization Access Token from Polar."
+        );
+      }
+      if (res.status === 403) {
+        throw new Error(
+          "Token is missing required permissions. Please make sure your Polar token has at least: products:read, subscriptions:read, orders:read, and discounts:read."
         );
       }
       throw new Error(`Failed to connect to Polar: ${res.statusText}`);
