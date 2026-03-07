@@ -7,6 +7,7 @@ import LeakCategoryChart from "@/components/report/LeakCategoryChart";
 import LeakTable from "@/components/report/LeakTable";
 import ReportCTA from "@/components/report/ReportCTA";
 import RecoveryBanner from "@/components/report/RecoveryBanner";
+import AgentSimulation from "@/components/report/AgentSimulation";
 
 // ──────────────────────────────────────────────────────────────
 // DEMO SCENARIO: ScaleFlow — A B2B SaaS doing $187K MRR
@@ -551,6 +552,9 @@ export default function DemoReportPage() {
         <div id="leak-table">
           <LeakTable leaks={DEMO_REPORT.leaks} />
         </div>
+
+        {/* Recovery Agent Simulation */}
+        <AgentSimulation leaks={DEMO_REPORT.leaks} />
 
         {/* CTA */}
         <ReportCTA mrrAtRisk={DEMO_REPORT.summary.mrrAtRisk} />
