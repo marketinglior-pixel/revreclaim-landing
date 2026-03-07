@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { plan } = body;
+    const { plan, discountId } = body;
 
     if (!plan || !["pro", "team"].includes(plan)) {
       return NextResponse.json(
@@ -62,6 +62,7 @@ export async function POST(req: NextRequest) {
       email: user.email!,
       plan: plan as "pro" | "team",
       baseUrl,
+      ...(discountId && typeof discountId === "string" ? { discountId } : {}),
     });
 
     return NextResponse.json({ url });

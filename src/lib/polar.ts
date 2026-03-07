@@ -48,11 +48,13 @@ export async function createCheckout({
   email,
   plan,
   baseUrl,
+  discountId,
 }: {
   userId: string;
   email: string;
   plan: "pro" | "team";
   baseUrl: string;
+  discountId?: string;
 }): Promise<string> {
   const productId = PLAN_PRODUCT_MAP[plan];
   if (!productId) {
@@ -74,6 +76,8 @@ export async function createCheckout({
       product_id: productId,
       success_url: `${baseUrl}/dashboard?upgraded=true`,
       customer_email: email,
+      allow_discount_codes: true,
+      ...(discountId ? { discount_id: discountId } : {}),
       metadata: {
         user_id: userId,
         plan,
