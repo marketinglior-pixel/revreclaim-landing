@@ -294,6 +294,14 @@ export default function ScanForm() {
             Under 90 sec
           </span>
         </div>
+        <div className="text-center mt-2">
+          <Link
+            href="/security"
+            className="text-xs text-brand hover:text-brand-light underline underline-offset-2 transition"
+          >
+            How we protect your data &rarr;
+          </Link>
+        </div>
       </form>
 
       {/* Progress indicator */}

@@ -45,6 +45,7 @@ export function Header() {
           <a href="#how-it-works" className="text-sm text-text-muted transition-colors hover:text-white">How it works</a>
           <a href="#pricing" className="text-sm text-text-muted transition-colors hover:text-white">Pricing</a>
           <a href="#faq" className="text-sm text-text-muted transition-colors hover:text-white">FAQ</a>
+          <Link href="/security" className="text-sm text-text-muted transition-colors hover:text-white">Security</Link>
           <Link href="/blog" className="text-sm text-text-muted transition-colors hover:text-white">Blog</Link>
         </nav>
 
@@ -135,6 +136,13 @@ export function Header() {
               >
                 FAQ
               </a>
+              <Link
+                href="/security"
+                onClick={() => setMenuOpen(false)}
+                className="block rounded-lg px-4 py-3 text-sm text-text-muted hover:bg-surface hover:text-white transition"
+              >
+                Security
+              </Link>
               <Link
                 href="/blog"
                 onClick={() => setMenuOpen(false)}

@@ -58,6 +58,22 @@ export default function ScanPage() {
           </p>
         </div>
 
+        {/* Security trust banner */}
+        <div className="max-w-lg mx-auto mb-6">
+          <div className="flex items-center gap-3 rounded-lg border border-brand/20 bg-brand/5 px-4 py-3">
+            <svg className="h-5 w-5 text-brand flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+            </svg>
+            <p className="text-sm text-text-muted">
+              <span className="font-medium text-brand">Read-only access only.</span>{" "}
+              Your key is processed in memory and never stored.{" "}
+              <Link href="/security" className="text-brand underline underline-offset-2 hover:text-brand-light transition">
+                How we protect your data &rarr;
+              </Link>
+            </p>
+          </div>
+        </div>
+
         {/* Scan form */}
         <ScanForm />
 

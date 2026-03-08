@@ -2,17 +2,17 @@
 const steps = [
   {
     number: "01",
-    title: "Create an API Key",
+    title: "Create a Read-Only API Key",
     description:
-      "Open your billing dashboard (Stripe, Polar, or Paddle). Navigate to API Keys. Create a read-only API key. Copy it. Done.",
-    detail: "60 seconds. We show you exactly where to click.",
+      "Open your billing dashboard (Stripe, Polar, or Paddle). Navigate to API Keys. Create a restricted, read-only API key — it can only view data, never modify anything. This limitation is enforced by the platform itself. Copy it. Done.",
+    detail: "60 seconds. Read-only access only.",
   },
   {
     number: "02",
     title: "Paste It Here",
     description:
-      "Come back to RevReclaim. Select your platform. Paste the key into the box. Click 'Scan.' Watch the progress bar. We're reading every subscription, every invoice, every coupon, every payment method in your account.",
-    detail: "The scan runs in under 90 seconds.",
+      "Come back to RevReclaim. Select your platform. Paste the key into the box. Click 'Scan.' Watch the progress bar. We're reading every subscription, every invoice, every coupon, every payment method in your account. Your key is processed in memory — never stored, never logged.",
+    detail: "Under 90 seconds. Key deleted after scan.",
   },
   {
     number: "03",

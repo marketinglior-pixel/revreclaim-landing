@@ -9,6 +9,7 @@ import { LeakTypes } from "@/components/LeakTypes";
 import { SocialProof } from "@/components/SocialProof";
 import { Pricing } from "@/components/Pricing";
 import { FAQ } from "@/components/FAQ";
+import { SecuritySection } from "@/components/SecuritySection";
 import { FinalCTA } from "@/components/FinalCTA";
 import { Footer } from "@/components/Footer";
 
@@ -29,6 +30,7 @@ export default function Home() {
       <DashboardPreview />
       <LeakTypes />
       <HowItWorks />
+      <SecuritySection />
       <SocialProof />
       <Pricing />
       <FAQ />
