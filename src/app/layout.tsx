@@ -11,6 +11,9 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://revreclaim.com"),
+  verification: {
+    google: "llleqEOxKm_NMJMV1M6vUbe3XFLOE1X0mHOKFZpsJ4M",
+  },
   title: "RevReclaim | Your Stripe Has Revenue Leaks. We Prove It in 90 Seconds.",
   description:
     "Paste a read-only Stripe key. Get a report in 90 seconds showing every dollar you're losing to expired coupons, failed payments, and ghost subscriptions. Free. No credit card.",
