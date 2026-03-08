@@ -2,18 +2,15 @@
 title: "How to Find Failed Payments in Your Stripe Dashboard (Step-by-Step)"
 description: "A step-by-step guide to finding, analyzing, and recovering failed payments in Stripe. Learn how to reduce involuntary churn and recover thousands in lost SaaS revenue."
 date: "2026-03-04"
+lastModified: "2026-03-08"
 author: "RevReclaim Team"
 tags: ["Stripe", "failed payments", "dunning", "involuntary churn", "payment recovery"]
 canonical: "https://revreclaim.com/blog/find-failed-payments-stripe"
 ---
 
-Failed payments are the silent killer of SaaS revenue. A customer wants to pay you, their card declines, and if nobody notices — you lose that customer forever.
+A failed payment in Stripe occurs when a customer's card is declined during a subscription renewal or one-time charge. The average SaaS business has a 4-8% failed payment rate, meaning $1,200-$2,400 per month goes uncollected on $30K MRR. Most failed payments are recoverable through proper dunning configuration and customer notification. RevReclaim scans failed payments, categorizes them by decline reason, and provides a prioritized recovery list.
 
-The average SaaS business has a **4-8% failed payment rate**. On $30K MRR, that's $1,200 to $2,400 every month that didn't go through. And here's the thing: **most of it is recoverable**.
-
-This guide walks you through exactly how to find, analyze, and recover failed payments in your Stripe dashboard.
-
-## Step 1: Find Your Failed Payments
+## How Do You Find Failed Payments in Stripe?
 
 ### In the Stripe Dashboard
 
@@ -47,7 +44,7 @@ const failedCharges = await stripe.charges.list({
 });
 ```
 
-## Step 2: Understand Why Payments Fail
+## Why Do Payments Fail in Stripe?
 
 Not all failures are the same. Stripe provides specific decline codes that tell you why a payment failed. Here are the most common ones and what they mean:
 
@@ -78,7 +75,7 @@ If most of your failures are `expired_card` or `insufficient_funds`, you have a 
 2. Click into individual payments to see the decline code
 3. Or use the Stripe API to export all decline codes and group them
 
-## Step 3: Check Your Dunning Settings
+## How Should You Configure Stripe Dunning Settings?
 
 Dunning is the process of automatically retrying failed payments and notifying customers. Stripe has built-in dunning, but the default settings are not optimized.
 
@@ -107,7 +104,7 @@ Stripe's default configuration will retry 3-4 times and then either cancel the s
 
 **Enabling customer emails alone can recover 20-30% more failed payments** — because the customer finds out there's a problem and updates their card.
 
-## Step 4: Analyze Your Failed Payment Impact
+## How Much Revenue Do Failed Payments Cost?
 
 Now let's quantify the damage. Here's a simple formula:
 
@@ -134,7 +131,7 @@ That's nearly $30,000/year.
 
 Most founders are stuck at 15-25% because they never turned on customer emails.
 
-## Step 5: Set Up Proactive Alerts
+## How Do You Set Up Failed Payment Alerts in Stripe?
 
 Don't wait for month-end reviews. Set up alerts so you know about failed payments in real-time.
 
@@ -166,7 +163,7 @@ At minimum, add this to your weekly founder review:
 - Recovery rate (retried successfully / total failed)
 - Net revenue lost
 
-## Step 6: Recover Specific High-Value Failures
+## How Do You Recover High-Value Failed Payments?
 
 Not all failed payments are equal. A $499/mo enterprise customer is worth more recovery effort than a $9/mo individual plan.
 
@@ -204,9 +201,9 @@ Here's what actually works:
 
 Keep it short, personal, and make the fix easy.
 
-## The Faster Way
+## How Can RevReclaim Automate Failed Payment Recovery?
 
-Everything above works — but it takes hours of manual work. Exporting data, analyzing decline codes, cross-referencing recovery rates, following up on individual customers.
+Manual review works — but it takes hours of manual work. Exporting data, analyzing decline codes, cross-referencing recovery rates, following up on individual customers.
 
 RevReclaim does all of this automatically:
 
@@ -216,10 +213,22 @@ RevReclaim does all of this automatically:
 - **Gives you a prioritized action list** — which customers to contact first
 - **Tracks your recovery rate** over time
 
-One scan. 60 seconds. Read-only access.
+RevReclaim completes the scan in 60 seconds using read-only access.
 
 [See how much you're losing to failed payments →](/scan)
 
 ---
 
-*Failed payments are one of the most fixable billing leaks. For the full picture, check our [SaaS Billing Health Checklist](/blog/saas-billing-health-checklist) — 15 items that cover every type of revenue leak.*
+## Frequently Asked Questions
+
+### What is the average failed payment rate for SaaS businesses?
+The average SaaS business has a 4-8% failed payment rate. On $30K MRR, that means $1,200-$2,400 per month in charges that did not go through. RevReclaim scans billing accounts to calculate the exact failed payment rate and revenue impact.
+
+### What are the most common Stripe decline codes?
+The most common Stripe decline codes are card_declined (generic decline, 40-50% recovery), insufficient_funds (60-70% recovery), expired_card (70-80% recovery), and authentication_required (85%+ recovery). RevReclaim categorizes failed payments by decline code and recovery probability.
+
+### How much can dunning recover from failed payments?
+Stripe auto-retry alone recovers 15-25% of failed payments. Adding customer failure emails increases recovery to 35-45%. Combining auto-retry, customer emails, and manual follow-up recovers 50-65%. RevReclaim identifies the highest-recovery opportunities in each billing account.
+
+### Should you enable customer failure emails in Stripe?
+Yes. Enabling customer failure emails in Stripe recovers 20-30% more failed payments by notifying customers when their card is declined. This setting is off by default in Stripe and takes under 5 minutes to enable. It is the single highest-impact billing configuration change most SaaS founders can make.

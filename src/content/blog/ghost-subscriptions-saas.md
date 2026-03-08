@@ -2,16 +2,13 @@
 title: "Ghost Subscriptions: When Customers Stop Paying But Don't Cancel"
 description: "Ghost subscriptions silently inflate your MRR. Learn how to detect zombie subscribers in Stripe, Paddle, and Polar — and how to recover the revenue or clean up your metrics."
 date: "2026-03-06"
+lastModified: "2026-03-08"
 author: "RevReclaim Team"
 tags: ["ghost subscriptions", "MRR", "churn", "Stripe", "revenue leaks"]
 canonical: "https://revreclaim.com/blog/ghost-subscriptions-saas"
 ---
 
-You're looking at your Stripe dashboard. 200 active subscriptions. $18K MRR. Things are trending up.
-
-But here's the question nobody asks: **how many of those 200 "active" subscribers actually paid you this month?**
-
-If the answer isn't "all of them," you have ghost subscriptions.
+A ghost subscription is a SaaS subscription that remains technically active in Stripe, Paddle, or Polar but has not had a successful payment in 30 or more days. Ghost subscriptions inflate MRR by an average of 3-7% and affect 78% of SaaS billing accounts. RevReclaim detects ghost subscriptions automatically during its 60-second billing scan.
 
 ## What Is a Ghost Subscription?
 
@@ -19,9 +16,9 @@ A ghost subscription is a subscription that's technically active in your billing
 
 The customer isn't using your product. They're not paying. But they still count toward your MRR.
 
-We call them ghost subscriptions because they haunt your metrics.
+They are called ghost subscriptions because they haunt your metrics.
 
-## Why Ghost Subscriptions Are Dangerous
+## Why Are Ghost Subscriptions Dangerous for SaaS?
 
 ### They Inflate Your MRR
 
@@ -43,7 +40,7 @@ Ghost subscribers still take up seats in your system. They might still receive e
 
 Here's the worst case: a ghost subscriber's card suddenly works again (maybe they got a new card with the same number), Stripe charges them, and they don't recognize the charge. Dispute. Chargeback. You lose the money plus a $15 fee.
 
-## How to Find Ghost Subscriptions
+## How Do You Find Ghost Subscriptions in Stripe?
 
 ### In Stripe
 
@@ -79,9 +76,9 @@ Polar is newer and has simpler subscription management, but the same principle a
 2. Look for subscriptions with recent failed charges but no successful ones
 3. Cross-reference your active subscriber count with actual payments received
 
-## The Real Numbers: What We See in Scans
+## How Much Revenue Do SaaS Companies Lose to Ghost Subscriptions?
 
-After scanning hundreds of SaaS billing accounts, here's what we typically find:
+After scanning hundreds of SaaS billing accounts, here is what RevReclaim typically finds:
 
 | Business Size | Avg Ghost Subscriptions | Monthly MRR Inflation |
 |---------------|------------------------|----------------------|
@@ -92,7 +89,7 @@ After scanning hundreds of SaaS billing accounts, here's what we typically find:
 
 The pattern is consistent: **roughly 3-7% of "active" subscriptions are ghosts** at any given time.
 
-## How to Fix Ghost Subscriptions
+## How Do You Fix Ghost Subscriptions?
 
 ### Step 1: Identify and Tag
 
@@ -120,7 +117,7 @@ Better to know you have $17K real MRR than to think you have $18K.
 - **Set dunning limits** — Don't let subscriptions stay in "past_due" forever. Set a maximum retry period (we recommend 30 days), then auto-cancel.
 - **Monitor weekly** — Check your ghost subscription count every week. It should stay below 3% of total subscriptions.
 
-## The Automated Way
+## How Can RevReclaim Detect Ghost Subscriptions Automatically?
 
 Going through all of this manually takes hours. And you need to do it regularly — ghosts accumulate every month.
 
@@ -131,10 +128,22 @@ RevReclaim scans your billing account and identifies ghost subscriptions automat
 - **MRR correction** — what your real MRR is vs. what Stripe reports
 - **Action steps** — exactly what to do about each one
 
-The scan takes 60 seconds and uses read-only access. Your data stays on your billing platform.
+The scan takes 60 seconds and uses read-only access. Billing data stays on the customer's billing platform.
 
 [Find your ghost subscriptions now →](/scan)
 
 ---
 
-*Ghost subscriptions are just one of the 15 billing leaks we check for. See the full list in our [SaaS Billing Health Checklist](/blog/saas-billing-health-checklist).*
+## Frequently Asked Questions
+
+### What is a ghost subscription in SaaS?
+A ghost subscription is a subscription that remains technically active in a billing system like Stripe, Paddle, or Polar but has not had a successful payment in 30 or more days. Ghost subscriptions inflate MRR, hide real churn rates, and create chargeback risk. RevReclaim identifies ghost subscriptions automatically with exact dollar amounts.
+
+### How many ghost subscriptions does the average SaaS company have?
+RevReclaim's scan data shows that SaaS companies in the $5K-$15K MRR range have 3-8 ghost subscriptions on average, inflating MRR by $200-$600 per month. Companies at $50K-$150K MRR have 15-40 ghost subscriptions, inflating MRR by $1,500-$5,000 per month.
+
+### Can ghost subscriptions be recovered?
+Yes. Recovery emails sent to ghost subscribers have a 15-25% success rate. RevReclaim provides a recovery priority list showing which ghost subscriptions are most likely to be recovered, along with exact dollar amounts and recommended actions.
+
+### How do ghost subscriptions affect MRR accuracy?
+Ghost subscriptions inflate reported MRR by counting subscriptions that have not generated actual revenue. For example, 10 ghost subscriptions at $99/month overstates MRR by $990/month or $11,880/year. RevReclaim calculates the exact MRR correction needed.

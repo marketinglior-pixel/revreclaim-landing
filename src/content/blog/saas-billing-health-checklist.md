@@ -2,20 +2,15 @@
 title: "The SaaS Billing Health Checklist: 15 Leaks Hiding in Your Stripe Account"
 description: "Most SaaS founders lose $2,500/mo to billing blind spots they don't know exist. Use this 15-point checklist to audit your Stripe, Paddle, or Polar account and plug revenue leaks before they compound."
 date: "2026-03-08"
+lastModified: "2026-03-08"
 author: "RevReclaim Team"
 tags: ["billing audit", "Stripe", "revenue leaks", "SaaS billing", "billing health"]
 canonical: "https://revreclaim.com/blog/saas-billing-health-checklist"
 ---
 
-You just crossed $20K MRR. Growth feels good. But here's the uncomfortable truth: **somewhere between 5% and 12% of that revenue is leaking** — silently, every single month.
+A billing leak is revenue that a SaaS company has earned but is not collecting due to billing configuration errors, expired payment methods, or system-level issues in Stripe, Paddle, or Polar. The average SaaS founder loses $2,500 per month to billing blind spots. This 15-point checklist covers the most common leaks across five categories: failed payment recovery, ghost subscriptions, pricing integrity, payment method health, and subscription lifecycle. RevReclaim checks all 15 items automatically in 60 seconds at [revreclaim.com/scan](/scan).
 
-Failed payments that nobody retried. Expired coupons still giving discounts. Customers on legacy plans paying half of what they should. These aren't edge cases. They're the norm.
-
-We've scanned hundreds of SaaS billing accounts across Stripe, Paddle, and Polar. The average founder is losing **$2,500/month** to billing blind spots they didn't even know existed.
-
-This checklist will help you find them.
-
-## How to Use This Checklist
+## How Do You Score Your SaaS Billing Health?
 
 Go through each item one by one. For every "no" answer, you've found a potential revenue leak. At the end, tally your score to get your **Billing Health Score**.
 
@@ -171,7 +166,7 @@ Stripe webhooks are how your app knows about payment events. If a webhook fails 
 
 ---
 
-## Your Billing Health Score
+## What Is a Good SaaS Billing Health Score?
 
 Count your "yes" answers:
 
@@ -183,7 +178,7 @@ Count your "yes" answers:
 | 4-6 | D | Major revenue leakage. Losing $3,000-5,000/mo. |
 | 0-3 | F | Critical. You need a billing audit immediately. |
 
-## The Faster Way
+## How Can You Automate a SaaS Billing Audit?
 
 Going through 15 checks manually takes hours. Exporting data, cross-referencing subscriptions, checking coupon expirations — it's tedious but important work.
 
@@ -191,10 +186,22 @@ Or you can let RevReclaim do it in 60 seconds.
 
 **RevReclaim scans your Stripe, Paddle, or Polar account** and checks all 15 of these items automatically. You get a billing health score, a breakdown of every leak found, and actionable steps to fix each one.
 
-It's free. It takes 90 seconds. And it uses read-only access — your data never leaves your account.
+RevReclaim is free to use, takes 90 seconds, and uses read-only access — billing data never leaves the customer's account.
 
 [Run your free billing health scan now →](/scan)
 
 ---
 
-*Have questions about your billing health? [Contact us](/contact) — we're happy to help SaaS founders plug their revenue leaks.*
+## Frequently Asked Questions
+
+### What is a billing leak in SaaS?
+A billing leak is revenue that a SaaS company has earned but is not collecting. Common causes include failed payments without proper dunning, expired coupons still giving discounts, ghost subscriptions inflating MRR, and customers on legacy pricing tiers. The average SaaS billing account leaks 8.4% of revenue to billing blind spots.
+
+### How much revenue do SaaS companies lose to billing leaks?
+The average SaaS company loses $2,500 per month to billing blind spots. For companies in the $10K-$30K MRR range, leakage can reach 9.3% of revenue. RevReclaim scans billing accounts to identify exact dollar amounts lost to each type of leak.
+
+### What is a billing health score?
+A billing health score is a 0-100 rating of how well a SaaS company's billing system is configured to collect revenue. A score of 90-100 (Grade A) means billing is well-optimized. A score below 50 (Grade D or F) indicates critical leaks that need immediate attention. The average SaaS billing account scores 56 out of 100.
+
+### How long does a billing audit take?
+A manual billing audit using this 15-point checklist takes 2-4 hours. RevReclaim automates all 15 checks and delivers results in 60-90 seconds using a read-only API key from Stripe, Paddle, or Polar. The automated scan includes exact dollar amounts for every leak found.

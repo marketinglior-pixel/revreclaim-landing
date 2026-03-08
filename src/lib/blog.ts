@@ -12,6 +12,7 @@ export interface BlogPostMeta {
   title: string;
   description: string;
   date: string;
+  lastModified?: string;
   author: string;
   tags: string[];
   image?: string;
@@ -61,6 +62,7 @@ export function getPostMeta(slug: string): BlogPostMeta | null {
     title: data.title ?? slug,
     description: data.description ?? "",
     date: data.date ?? new Date().toISOString().split("T")[0],
+    lastModified: data.lastModified,
     author: data.author ?? "RevReclaim Team",
     tags: data.tags ?? [],
     image: data.image,
@@ -88,6 +90,7 @@ export async function getPost(slug: string): Promise<BlogPost | null> {
     title: data.title ?? slug,
     description: data.description ?? "",
     date: data.date ?? new Date().toISOString().split("T")[0],
+    lastModified: data.lastModified,
     author: data.author ?? "RevReclaim Team",
     tags: data.tags ?? [],
     image: data.image,

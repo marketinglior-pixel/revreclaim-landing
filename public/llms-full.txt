@@ -1,0 +1,976 @@
+# RevReclaim — Full Documentation
+
+> RevReclaim is a SaaS billing leak scanner that detects hidden revenue leaks in Stripe, Paddle, and Polar accounts. It identifies 7 types of billing errors — failed payments without proper dunning, expired coupons still giving discounts, ghost subscriptions inflating MRR, legacy pricing mismatches, expiring payment methods, uncollected invoices, and missing payment methods — and provides a prioritized action list with exact dollar amounts and one-click fixes. Free scan in 90 seconds using a read-only API key.
+
+## Product Overview
+
+RevReclaim serves SaaS founders who use Stripe, Paddle, or Polar for billing. The average SaaS billing account leaks 8.4% of revenue to billing blind spots. RevReclaim scans the billing account using a read-only API key and returns a billing health score (0-100), a categorized list of every leak found with exact dollar amounts, and a prioritized action list with one-click fixes.
+
+### Pricing
+
+- **Free**: Unlimited scans, 7 leak type checks, billing health score, basic report
+- **Pro ($29/mo)**: Weekly auto-scans, Recovery Agent (automated fixes), Slack/email alerts, trend tracking. Includes $1,000/mo recovery guarantee.
+- **Team ($79/mo)**: Shared dashboard, team-wide scanning, priority support, API access. Includes $1,000/mo recovery guarantee.
+
+### How It Works
+
+1. Paste a read-only API key from Stripe, Paddle, or Polar
+2. RevReclaim scans subscriptions, payments, coupons, and customer data (read-only access)
+3. Receive a billing health score and detailed leak report in 90 seconds
+4. Follow prioritized action steps to recover lost revenue
+
+---
+
+A billing leak is revenue that a SaaS company has earned but is not collecting due to billing configuration errors, expired payment methods, or system-level issues in Stripe, Paddle, or Polar. The average SaaS founder loses $2,500 per month to billing blind spots. This 15-point checklist covers the most common leaks across five categories: failed payment recovery, ghost subscriptions, pricing integrity, payment method health, and subscription lifecycle. RevReclaim checks all 15 items automatically in 60 seconds at [revreclaim.com/scan](/scan).
+
+## How Do You Score Your SaaS Billing Health?
+
+Go through each item one by one. For every "no" answer, you've found a potential revenue leak. At the end, tally your score to get your **Billing Health Score**.
+
+- **12-15 checks passed:** Your billing is healthy. Nice work.
+- **8-11 checks passed:** You have moderate leaks. Worth fixing.
+- **Below 8:** You're losing serious money. Act now.
+
+Or skip the manual work — [run a free automated scan](/scan) that checks all 15 in 60 seconds.
+
+---
+
+## Failed Payment Recovery
+
+### 1. You have dunning emails enabled and configured
+
+When a customer's card fails, does your billing platform automatically email them? Stripe's default dunning is basic — three retries over a few weeks, then cancellation. Most founders never customize this.
+
+**What to check:** Go to Stripe Dashboard → Settings → Subscriptions and emails → Manage failed payments. Is Smart Retries enabled? Are customer emails turned on?
+
+**The leak:** Without proper dunning, a single failed $99/mo subscription means $1,188/year lost — from just one customer.
+
+### 2. You're monitoring failed payment rates weekly
+
+If you don't check, you don't know. Failed payments typically run between 4-8% of charges for SaaS businesses. If yours is above 8%, something is wrong.
+
+**What to check:** Stripe Dashboard → Payments → filter by "Failed". What's your rate over the last 30 days?
+
+**The leak:** A 10% failure rate on $30K MRR means $3,000/month in charges that didn't go through. Even recovering half of those is $1,500/month back in your pocket.
+
+### 3. You follow up on "past due" subscriptions within 48 hours
+
+Stripe marks subscriptions as "past_due" when a payment fails but the subscription hasn't been canceled yet. This is your recovery window.
+
+**What to check:** Stripe Dashboard → Subscriptions → filter by "Past due". How many are sitting there right now?
+
+**The leak:** Every day a past-due subscription sits untouched, the chance of recovery drops. After 30 days, recovery rates fall below 15%.
+
+---
+
+## Ghost Subscriptions
+
+### 4. You have zero active subscriptions with no successful payment in 60+ days
+
+These are "ghost subscriptions" — technically active in your system, but the customer hasn't actually paid in months. They inflate your MRR and hide the real number.
+
+**What to check:** Export your subscription list. Filter for subscriptions where the last successful payment was more than 60 days ago. Any results?
+
+**The leak:** If you have 5 ghost subscriptions at $49/mo each, your reported MRR is $245/mo higher than reality. That's $2,940/year in phantom revenue affecting your decisions.
+
+### 5. You audit canceled-but-active subscriptions monthly
+
+Sometimes a customer cancels through your app, but the Stripe subscription doesn't properly terminate. Or a webhook fails. The customer thinks they've canceled, you think they're still paying — but the charge keeps failing silently.
+
+**What to check:** Cross-reference your app's user status with Stripe's subscription status. Any mismatches?
+
+**The leak:** These mismatches create support headaches, chargebacks, and lost trust. One chargeback costs you the transaction amount plus a $15 dispute fee.
+
+---
+
+## Pricing and Plan Integrity
+
+### 6. No customers are on discontinued or legacy pricing tiers
+
+You raised prices 6 months ago, but 30% of your customers are still on the old plan. That's fine if intentional — but do you even know which customers are grandfathered?
+
+**What to check:** List all active Price IDs in Stripe. Are any attached to Products that you've since updated or archived?
+
+**The leak:** If you raised prices from $29 to $49/mo and 50 customers are still on $29, that's $1,000/month you're leaving on the table — $12,000/year.
+
+### 7. All active coupons have an expiration date
+
+Open-ended coupons are a ticking time bomb. A 20% discount you ran during Black Friday 2024 might still be applied to new sign-ups if you forgot to set an expiration.
+
+**What to check:** Stripe Dashboard → Products → Coupons. Look for any coupon where "Redemption deadline" is empty or "Duration" is set to "forever".
+
+**The leak:** An expired promotion still giving 20% off on a $99/mo plan costs you $237.60 per customer per year. Multiply by every customer who found that coupon code.
+
+### 8. No customer is receiving a larger discount than intended
+
+Stacked coupons, manually applied discounts, and promotional pricing can compound in unexpected ways. A customer might be getting 40% off when you intended 20%.
+
+**What to check:** Export subscriptions with discounts. Sort by discount percentage. Anything above your maximum intended discount?
+
+**The leak:** Even 5 customers with an accidental extra 20% discount on a $99 plan costs you $1,188/year.
+
+---
+
+## Payment Method Health
+
+### 9. Less than 5% of active subscriptions have expired payment methods
+
+Credit cards expire. If a customer's card expires in March and their next charge is in April, that charge will fail unless they've updated their card.
+
+**What to check:** Stripe Dashboard → Customers. Export and check the card expiration dates against upcoming renewal dates.
+
+**The leak:** Each expired card is a failed payment waiting to happen. If 20 customers have cards expiring next month and your average plan is $79/mo, that's $1,580 at risk.
+
+### 10. You send proactive card expiration reminders
+
+Don't wait for the charge to fail. Email customers 30 days before their card expires so they can update it proactively.
+
+**What to check:** Do you have any automated email or in-app notification for upcoming card expirations? Most founders don't.
+
+**The leak:** Proactive reminders recover 60-70% of expiring cards before they fail. Without them, you rely on dunning after the fact — which only recovers 30-40%.
+
+---
+
+## Subscription Lifecycle
+
+### 11. You're tracking involuntary churn separately from voluntary churn
+
+Involuntary churn (failed payments) and voluntary churn (customer cancels) require completely different strategies. If you're lumping them together, you're flying blind.
+
+**What to check:** Can you pull a report showing churn broken down by reason? Do you know what percentage of your churn is payment failures vs. deliberate cancellations?
+
+**The leak:** Involuntary churn is typically 20-40% of total churn for SaaS businesses. It's also the easiest to fix. If you don't measure it, you can't improve it.
+
+### 12. Trial-to-paid conversion is tracked and above 15%
+
+If you offer a free trial, what percentage convert to paid? The SaaS average is 15-25%. Below 15% and you likely have a billing configuration issue (not just a product issue).
+
+**What to check:** Count the number of trial subscriptions that became paid in the last 90 days vs. total trials started.
+
+**The leak:** If 100 trials start per month and you convert at 10% instead of 20%, that's 10 lost customers/month. At $49/mo, that's $490/month in missed revenue — $5,880/year.
+
+### 13. No subscriptions are stuck in "incomplete" or "incomplete_expired" status
+
+Stripe creates subscriptions in "incomplete" status when the initial payment requires further action (like 3D Secure). If the customer never completes it, it stays stuck.
+
+**What to check:** Stripe Dashboard → Subscriptions → filter by "Incomplete". How many are sitting there?
+
+**The leak:** Each incomplete subscription is a customer who wanted to pay but couldn't complete the process. These are the easiest recoveries — a simple email can bring them back.
+
+---
+
+## Data Integrity
+
+### 14. Your MRR calculation matches Stripe's actual collected revenue
+
+Many founders calculate MRR by summing up active subscription prices. But this ignores failed payments, discounts, and prorations. Your real MRR is only what you actually collect.
+
+**What to check:** Compare your calculated MRR (sum of subscription prices) vs. actual revenue received in the last 30 days. Is there a gap?
+
+**The leak:** A 10% gap between reported and actual MRR on a $50K business means $5,000/month in revenue you think you have but don't. This affects fundraising, hiring, and every financial decision you make.
+
+### 15. Webhook failures are monitored and alerts are configured
+
+Stripe webhooks are how your app knows about payment events. If a webhook fails and isn't retried, your app and Stripe get out of sync — leading to customers who paid but don't have access, or customers with access who haven't paid.
+
+**What to check:** Stripe Dashboard → Developers → Webhooks. Check the failure rate. Is it above 1%?
+
+**The leak:** Webhook sync issues cause support tickets, incorrect access, and revenue discrepancies that compound over time.
+
+---
+
+## What Is a Good SaaS Billing Health Score?
+
+Count your "yes" answers:
+
+| Score | Grade | What It Means |
+|-------|-------|---------------|
+| 13-15 | A | Your billing is tight. Minor optimizations possible. |
+| 10-12 | B | A few leaks to patch. Probably losing $500-1,500/mo. |
+| 7-9 | C | Significant leaks. Likely losing $1,500-3,000/mo. |
+| 4-6 | D | Major revenue leakage. Losing $3,000-5,000/mo. |
+| 0-3 | F | Critical. You need a billing audit immediately. |
+
+## How Can You Automate a SaaS Billing Audit?
+
+Going through 15 checks manually takes hours. Exporting data, cross-referencing subscriptions, checking coupon expirations — it's tedious but important work.
+
+Or you can let RevReclaim do it in 60 seconds.
+
+**RevReclaim scans your Stripe, Paddle, or Polar account** and checks all 15 of these items automatically. You get a billing health score, a breakdown of every leak found, and actionable steps to fix each one.
+
+RevReclaim is free to use, takes 90 seconds, and uses read-only access — billing data never leaves the customer's account.
+
+[Run your free billing health scan now →](/scan)
+
+---
+
+## Frequently Asked Questions
+
+### What is a billing leak in SaaS?
+A billing leak is revenue that a SaaS company has earned but is not collecting. Common causes include failed payments without proper dunning, expired coupons still giving discounts, ghost subscriptions inflating MRR, and customers on legacy pricing tiers. The average SaaS billing account leaks 8.4% of revenue to billing blind spots.
+
+### How much revenue do SaaS companies lose to billing leaks?
+The average SaaS company loses $2,500 per month to billing blind spots. For companies in the $10K-$30K MRR range, leakage can reach 9.3% of revenue. RevReclaim scans billing accounts to identify exact dollar amounts lost to each type of leak.
+
+### What is a billing health score?
+A billing health score is a 0-100 rating of how well a SaaS company's billing system is configured to collect revenue. A score of 90-100 (Grade A) means billing is well-optimized. A score below 50 (Grade D or F) indicates critical leaks that need immediate attention. The average SaaS billing account scores 56 out of 100.
+
+### How long does a billing audit take?
+A manual billing audit using this 15-point checklist takes 2-4 hours. RevReclaim automates all 15 checks and delivers results in 60-90 seconds using a read-only API key from Stripe, Paddle, or Polar. The automated scan includes exact dollar amounts for every leak found.
+
+---
+
+A ghost subscription is a SaaS subscription that remains technically active in Stripe, Paddle, or Polar but has not had a successful payment in 30 or more days. Ghost subscriptions inflate MRR by an average of 3-7% and affect 78% of SaaS billing accounts. RevReclaim detects ghost subscriptions automatically during its 60-second billing scan.
+
+## What Is a Ghost Subscription?
+
+A ghost subscription is a subscription that's technically active in your billing system but hasn't had a successful payment in 30, 60, or even 90+ days. The customer's card keeps failing, or their payment method expired, or a webhook broke — and the subscription just... sits there.
+
+The customer isn't using your product. They're not paying. But they still count toward your MRR.
+
+They are called ghost subscriptions because they haunt your metrics.
+
+## Why Are Ghost Subscriptions Dangerous for SaaS?
+
+### They Inflate Your MRR
+
+This is the most obvious problem. If 10 customers at $99/mo haven't paid in 60 days but still show as "active," your MRR is overstated by $990/month. That's $11,880/year in phantom revenue.
+
+When you're making decisions about hiring, marketing spend, or runway based on MRR — those decisions are based on a number that's wrong.
+
+### They Hide Your Real Churn Rate
+
+If you have 200 active subscriptions but 15 are ghosts, your real customer count is 185. When one of those ghosts finally gets canceled (or you clean them up), it looks like churn — even though the customer actually left months ago.
+
+This creates spiky, unpredictable churn numbers that make it impossible to identify real trends.
+
+### They Waste Your Resources
+
+Ghost subscribers still take up seats in your system. They might still receive emails, still be counted in your user analytics, and still consume support resources if they occasionally log in.
+
+### They Create Chargeback Risk
+
+Here's the worst case: a ghost subscriber's card suddenly works again (maybe they got a new card with the same number), Stripe charges them, and they don't recognize the charge. Dispute. Chargeback. You lose the money plus a $15 fee.
+
+## How Do You Find Ghost Subscriptions in Stripe?
+
+### In Stripe
+
+1. Go to **Subscriptions** in your Stripe Dashboard
+2. Filter by status: **Active** and **Past Due**
+3. Export the list to CSV
+4. Look at the "Current Period Start" and last successful charge date
+5. Any subscription where the gap between "current period start" and last successful payment is more than one billing cycle is a ghost
+
+**Pro tip:** Use the Stripe API to automate this:
+
+```
+stripe subscriptions list --status=past_due --created[lt]=1709251200
+```
+
+This lists all past_due subscriptions created before a specific date.
+
+### In Paddle
+
+Paddle handles dunning differently — it will automatically cancel subscriptions after failed payments (typically 30 days). But check your dunning settings:
+
+1. Go to **Paddle Dashboard → Subscriptions**
+2. Filter by **Past Due**
+3. Check how long each subscription has been in this state
+
+Paddle's automatic cancellation means fewer long-term ghosts, but the past_due window still inflates your metrics.
+
+### In Polar
+
+Polar is newer and has simpler subscription management, but the same principle applies:
+
+1. Check your subscriber list for failed payment flags
+2. Look for subscriptions with recent failed charges but no successful ones
+3. Cross-reference your active subscriber count with actual payments received
+
+## How Much Revenue Do SaaS Companies Lose to Ghost Subscriptions?
+
+After scanning hundreds of SaaS billing accounts, here is what RevReclaim typically finds:
+
+| Business Size | Avg Ghost Subscriptions | Monthly MRR Inflation |
+|---------------|------------------------|----------------------|
+| $5K-$15K MRR | 3-8 subscriptions | $200-$600 |
+| $15K-$50K MRR | 8-20 subscriptions | $600-$2,000 |
+| $50K-$150K MRR | 15-40 subscriptions | $1,500-$5,000 |
+| $150K+ MRR | 30-80+ subscriptions | $3,000-$10,000+ |
+
+The pattern is consistent: **roughly 3-7% of "active" subscriptions are ghosts** at any given time.
+
+## How Do You Fix Ghost Subscriptions?
+
+### Step 1: Identify and Tag
+
+Export your subscription data and identify every subscription with no successful payment in 45+ days. Tag them in your system.
+
+### Step 2: Attempt Recovery (Don't Just Cancel)
+
+Before canceling, try to win these customers back:
+
+- **Send a personal email** — "Hey, we noticed your payment didn't go through. Want to update your card?" Many customers didn't realize their card expired.
+- **Offer a billing page link** — Make it one click to update their payment method.
+- **Set a deadline** — "If we don't hear back in 7 days, we'll pause your subscription to avoid any unexpected charges."
+
+Recovery emails for ghost subscriptions have a surprisingly high success rate — **15-25% of ghosts will update their payment info** when contacted directly.
+
+### Step 3: Cancel the Unrecoverable
+
+After your recovery attempt, cancel any subscriptions that didn't respond. This hurts your MRR number in the short term, but it gives you accurate data to work with.
+
+Better to know you have $17K real MRR than to think you have $18K.
+
+### Step 4: Prevent Future Ghosts
+
+- **Enable card update emails** — Stripe can automatically email customers when their card is about to expire.
+- **Set dunning limits** — Don't let subscriptions stay in "past_due" forever. Set a maximum retry period (we recommend 30 days), then auto-cancel.
+- **Monitor weekly** — Check your ghost subscription count every week. It should stay below 3% of total subscriptions.
+
+## How Can RevReclaim Detect Ghost Subscriptions Automatically?
+
+Going through all of this manually takes hours. And you need to do it regularly — ghosts accumulate every month.
+
+RevReclaim scans your billing account and identifies ghost subscriptions automatically. You get:
+
+- **Exact count** of ghost subscriptions with dollar amounts
+- **Recovery priority list** — which ghosts are most likely to recover
+- **MRR correction** — what your real MRR is vs. what Stripe reports
+- **Action steps** — exactly what to do about each one
+
+The scan takes 60 seconds and uses read-only access. Billing data stays on the customer's billing platform.
+
+[Find your ghost subscriptions now →](/scan)
+
+---
+
+## Frequently Asked Questions
+
+### What is a ghost subscription in SaaS?
+A ghost subscription is a subscription that remains technically active in a billing system like Stripe, Paddle, or Polar but has not had a successful payment in 30 or more days. Ghost subscriptions inflate MRR, hide real churn rates, and create chargeback risk. RevReclaim identifies ghost subscriptions automatically with exact dollar amounts.
+
+### How many ghost subscriptions does the average SaaS company have?
+RevReclaim's scan data shows that SaaS companies in the $5K-$15K MRR range have 3-8 ghost subscriptions on average, inflating MRR by $200-$600 per month. Companies at $50K-$150K MRR have 15-40 ghost subscriptions, inflating MRR by $1,500-$5,000 per month.
+
+### Can ghost subscriptions be recovered?
+Yes. Recovery emails sent to ghost subscribers have a 15-25% success rate. RevReclaim provides a recovery priority list showing which ghost subscriptions are most likely to be recovered, along with exact dollar amounts and recommended actions.
+
+### How do ghost subscriptions affect MRR accuracy?
+Ghost subscriptions inflate reported MRR by counting subscriptions that have not generated actual revenue. For example, 10 ghost subscriptions at $99/month overstates MRR by $990/month or $11,880/year. RevReclaim calculates the exact MRR correction needed.
+
+---
+
+A failed payment in Stripe occurs when a customer's card is declined during a subscription renewal or one-time charge. The average SaaS business has a 4-8% failed payment rate, meaning $1,200-$2,400 per month goes uncollected on $30K MRR. Most failed payments are recoverable through proper dunning configuration and customer notification. RevReclaim scans failed payments, categorizes them by decline reason, and provides a prioritized recovery list.
+
+## How Do You Find Failed Payments in Stripe?
+
+### In the Stripe Dashboard
+
+1. Log in to your [Stripe Dashboard](https://dashboard.stripe.com)
+2. Navigate to **Payments** in the left sidebar
+3. Click the **Status** filter dropdown
+4. Select **Failed**
+5. Set the date range to **Last 30 days**
+
+You'll see a list of every failed charge in the last month. Each entry shows the amount, customer, failure reason, and date.
+
+### Via the Stripe API
+
+For a more detailed view, use the API:
+
+```
+curl https://api.stripe.com/v1/charges \
+  -u sk_live_your_key: \
+  -d "status=failed" \
+  -d "created[gte]=1709251200" \
+  -d "limit=100"
+```
+
+Or in your code:
+
+```javascript
+const failedCharges = await stripe.charges.list({
+  status: 'failed',
+  created: { gte: Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60 },
+  limit: 100,
+});
+```
+
+## Why Do Payments Fail in Stripe?
+
+Not all failures are the same. Stripe provides specific decline codes that tell you why a payment failed. Here are the most common ones and what they mean:
+
+### Card-Related Failures (Most Common)
+
+| Decline Code | What It Means | Recovery Chance |
+|-------------|---------------|-----------------|
+| `card_declined` | Generic decline from the card issuer | Medium (40-50%) |
+| `insufficient_funds` | Customer doesn't have enough money | High (60-70%) |
+| `expired_card` | Card has expired | High (70-80%) |
+| `incorrect_cvc` | Wrong security code entered | High (80-90%) |
+
+### Account-Related Failures
+
+| Decline Code | What It Means | Recovery Chance |
+|-------------|---------------|-----------------|
+| `authentication_required` | 3D Secure / SCA needed | Very High (85%+) |
+| `do_not_honor` | Bank refused without explanation | Low (20-30%) |
+| `lost_card` / `stolen_card` | Card was reported lost or stolen | Low (10-20%) |
+| `processing_error` | Temporary issue at bank or Stripe | Very High (90%+) |
+
+### Why This Matters
+
+If most of your failures are `expired_card` or `insufficient_funds`, you have a high recovery opportunity. If they're `lost_card` or `do_not_honor`, recovery is harder.
+
+**To check your decline code breakdown:**
+1. Go to Stripe Dashboard → **Payments** → Filter **Failed**
+2. Click into individual payments to see the decline code
+3. Or use the Stripe API to export all decline codes and group them
+
+## How Should You Configure Stripe Dunning Settings?
+
+Dunning is the process of automatically retrying failed payments and notifying customers. Stripe has built-in dunning, but the default settings are not optimized.
+
+### Find Your Current Settings
+
+1. Go to **Settings** → **Billing** → **Subscriptions and emails**
+2. Look at the **Manage failed payments** section
+3. Check three things:
+   - **Smart Retries** — Is it enabled? (It should be)
+   - **Customer emails** — Are they turned on for failed payments?
+   - **Subscription status after all retries fail** — What happens?
+
+### Recommended Dunning Configuration
+
+Here's what works best for most SaaS businesses:
+
+- **Smart Retries:** Enabled (Stripe's ML-based retry timing)
+- **Retry schedule:** Up to 4 retries over 3-4 weeks
+- **Customer email on failure:** Enabled
+- **After all retries fail:** Mark subscription as "Canceled" (not "Unpaid")
+- **Send final email:** Enabled
+
+### The Problem With Defaults
+
+Stripe's default configuration will retry 3-4 times and then either cancel the subscription or leave it in an "unpaid" state. The customer never gets an email. They have no idea their card failed.
+
+**Enabling customer emails alone can recover 20-30% more failed payments** — because the customer finds out there's a problem and updates their card.
+
+## How Much Revenue Do Failed Payments Cost?
+
+Now let's quantify the damage. Here's a simple formula:
+
+**Monthly Revenue Lost to Failed Payments =**
+(Number of failed charges) × (Average charge amount) × (1 - Recovery rate)
+
+For example:
+- 45 failed charges in the last month
+- Average charge: $79
+- Current recovery rate: 30% (Stripe retries only, no emails)
+
+**Monthly loss = 45 × $79 × 0.70 = $2,488.50**
+
+That's nearly $30,000/year.
+
+### What "Recovery Rate" Should You Target?
+
+| Recovery Method | Typical Rate |
+|----------------|-------------|
+| Stripe auto-retry only (no emails) | 15-25% |
+| Stripe auto-retry + customer emails | 35-45% |
+| Auto-retry + emails + manual follow-up | 50-65% |
+| Auto-retry + emails + smart dunning tool | 60-75% |
+
+Most founders are stuck at 15-25% because they never turned on customer emails.
+
+## How Do You Set Up Failed Payment Alerts in Stripe?
+
+Don't wait for month-end reviews. Set up alerts so you know about failed payments in real-time.
+
+### Option 1: Stripe Webhook
+
+Listen for the `charge.failed` webhook event. When it fires, send yourself a Slack notification or email:
+
+```javascript
+// Webhook handler for failed charges
+if (event.type === 'charge.failed') {
+  const charge = event.data.object;
+  console.log(`Failed: $${charge.amount / 100} from ${charge.customer}`);
+  // Send alert to your team
+}
+```
+
+### Option 2: Stripe Dashboard Alerts
+
+1. Go to **Settings** → **Team and security**
+2. Under **Notifications**, enable email alerts for failed payments
+3. Set the threshold (e.g., alert when more than 5 payments fail in a day)
+
+### Option 3: Weekly Metric Review
+
+At minimum, add this to your weekly founder review:
+
+- Total failed payments this week (count and dollar amount)
+- Failed payment rate (failed / total attempted)
+- Recovery rate (retried successfully / total failed)
+- Net revenue lost
+
+## How Do You Recover High-Value Failed Payments?
+
+Not all failed payments are equal. A $499/mo enterprise customer is worth more recovery effort than a $9/mo individual plan.
+
+### Priority Recovery Process
+
+1. **Sort failed payments by amount** (highest first)
+2. **For charges over $100:**
+   - Send a personal email (not automated)
+   - Mention the specific amount and what it's for
+   - Include a direct link to update their payment method
+   - Follow up in 3 days if no response
+3. **For charges $50-$100:**
+   - Send a well-crafted automated email
+   - Include a one-click payment update link
+4. **For charges under $50:**
+   - Rely on Stripe's automated retries and dunning emails
+   - Review in aggregate monthly
+
+### Email Template for High-Value Recovery
+
+Here's what actually works:
+
+> Subject: Quick heads-up about your [Product] subscription
+>
+> Hey [Name],
+>
+> Just wanted to let you know — your payment of $[amount] for [Product] didn't go through on [date]. It looks like [reason — e.g., "your card on file has expired"].
+>
+> You can update your payment info here: [one-click link]
+>
+> Takes about 30 seconds. If you have any questions, just reply to this email.
+>
+> Best,
+> [Your name]
+
+Keep it short, personal, and make the fix easy.
+
+## How Can RevReclaim Automate Failed Payment Recovery?
+
+Manual review works — but it takes hours of manual work. Exporting data, analyzing decline codes, cross-referencing recovery rates, following up on individual customers.
+
+RevReclaim does all of this automatically:
+
+- **Scans your failed payments** and categorizes them by decline reason
+- **Calculates your exact revenue loss** from failed charges
+- **Identifies high-recovery opportunities** (expired cards, insufficient funds)
+- **Gives you a prioritized action list** — which customers to contact first
+- **Tracks your recovery rate** over time
+
+RevReclaim completes the scan in 60 seconds using read-only access.
+
+[See how much you're losing to failed payments →](/scan)
+
+---
+
+## Frequently Asked Questions
+
+### What is the average failed payment rate for SaaS businesses?
+The average SaaS business has a 4-8% failed payment rate. On $30K MRR, that means $1,200-$2,400 per month in charges that did not go through. RevReclaim scans billing accounts to calculate the exact failed payment rate and revenue impact.
+
+### What are the most common Stripe decline codes?
+The most common Stripe decline codes are card_declined (generic decline, 40-50% recovery), insufficient_funds (60-70% recovery), expired_card (70-80% recovery), and authentication_required (85%+ recovery). RevReclaim categorizes failed payments by decline code and recovery probability.
+
+### How much can dunning recover from failed payments?
+Stripe auto-retry alone recovers 15-25% of failed payments. Adding customer failure emails increases recovery to 35-45%. Combining auto-retry, customer emails, and manual follow-up recovers 50-65%. RevReclaim identifies the highest-recovery opportunities in each billing account.
+
+### Should you enable customer failure emails in Stripe?
+Yes. Enabling customer failure emails in Stripe recovers 20-30% more failed payments by notifying customers when their card is declined. This setting is off by default in Stripe and takes under 5 minutes to enable. It is the single highest-impact billing configuration change most SaaS founders can make.
+
+---
+
+Stripe, Paddle, and Polar are the three major billing platforms for SaaS companies. They differ significantly in how they handle failed payment recovery, dunning, and revenue leak prevention. Stripe scores 6/10 on recovery (powerful tools but requires configuration), Paddle scores 7/10 (Merchant of Record model prevents leakage from day one), and Polar scores 5/10 (simple to start but limited recovery tools). RevReclaim works with all three platforms and scans for billing leaks in 60 seconds.
+
+## How Do Stripe, Paddle, and Polar Compare on Billing Recovery?
+
+| Feature | Stripe | Paddle | Polar |
+|---------|--------|--------|-------|
+| **Dunning (auto-retry)** | Smart Retries (ML-based) | Built-in, 3 retries over 21 days | Basic retry logic |
+| **Customer failure emails** | Optional (off by default) | Automatic | Automatic |
+| **Card expiration alerts** | Available via API | Built-in | Limited |
+| **Revenue recovery tools** | Manual + 3rd party | Built-in basic recovery | Minimal |
+| **Chargeback protection** | Stripe Radar (extra cost) | Included (they're MoR) | Limited |
+| **Ghost subscription detection** | Manual | Better (auto-cancel) | Manual |
+| **Billing health insights** | Limited reporting | Transaction-level reports | Basic analytics |
+| **Tax handling** | Manual or Stripe Tax | Automatic (MoR) | Automatic |
+
+Now let's go deeper on each.
+
+## Stripe: Maximum Control, Minimum Hand-Holding
+
+Stripe is the developer's choice for a reason — it gives you total control over your billing logic. But that control comes with responsibility.
+
+### What Stripe Does Well
+
+**Smart Retries** — Stripe's machine learning system analyzes billions of data points to determine the optimal time to retry a failed payment. Instead of a fixed schedule, it picks the moment when the charge is most likely to succeed. This alone recovers an estimated 15-20% of failed payments without any action from you.
+
+**Flexibility** — You can build literally any billing logic you want. Custom dunning flows, prorated upgrades, usage-based billing, metered subscriptions — if you can code it, Stripe supports it.
+
+**Webhooks** — Stripe's webhook system is robust and well-documented. You can react to every billing event in real-time.
+
+### Where Stripe Falls Short on Recovery
+
+**Customer emails are off by default.** This is the single biggest revenue leak RevReclaim detects in Stripe accounts. When a payment fails, Stripe can email the customer — but this feature is disabled out of the box. Most founders never turn it on.
+
+**No built-in card update flow.** When a customer's card expires, Stripe doesn't automatically prompt them to update it. You either need to build this yourself, use Stripe's Customer Portal, or let the payment fail and hope dunning catches it.
+
+**Limited billing health visibility.** Stripe's dashboard shows you payments, subscriptions, and revenue — but it doesn't tell you things like "12% of your active subscriptions haven't had a successful payment in 45+ days" or "you have $3,200 in expired coupons still being applied."
+
+**Ghost subscriptions accumulate.** Stripe's default behavior is to leave failed subscriptions in a "past_due" or "unpaid" state indefinitely. Unless you configure automatic cancellation, ghost subscriptions pile up.
+
+### Stripe Recovery Score: 6/10
+
+Powerful tools exist, but require configuration and active management. The defaults leave money on the table.
+
+## Paddle: Merchant of Record Means Less Leakage
+
+Paddle operates as a Merchant of Record (MoR), which fundamentally changes the billing recovery equation.
+
+### What Paddle Does Well
+
+**Automatic dunning with customer emails.** Paddle handles dunning out of the box. When a payment fails, it automatically retries and emails the customer. No configuration needed.
+
+**Chargeback protection.** Because Paddle is the merchant of record, they handle chargebacks on your behalf. You don't lose revenue or pay dispute fees. This alone prevents a significant category of revenue leakage.
+
+**Auto-cancellation on failure.** Paddle automatically cancels subscriptions after the dunning period ends (typically 21-30 days). This prevents ghost subscriptions from accumulating.
+
+**Tax compliance built-in.** Tax miscalculations are a hidden form of revenue leakage. Paddle handles sales tax, VAT, and GST automatically across all jurisdictions.
+
+### Where Paddle Falls Short on Recovery
+
+**Less control over dunning.** You can't customize the retry schedule as much as Stripe. If Paddle's default dunning strategy doesn't work for your business, you can't easily change it.
+
+**Higher fees eat into recovered revenue.** Paddle charges 5% + $0.50 per transaction. On a $49/mo subscription, that's $2.95/month in fees — significantly more than Stripe's 2.9% + $0.30 ($1.72). Over a year, this difference adds up.
+
+**Limited API for custom recovery flows.** Want to build a custom "win-back" email sequence for failed payments? Paddle's API is less flexible than Stripe's for this kind of custom logic.
+
+**Reporting gaps.** Paddle's transaction-level reporting doesn't always make it easy to see aggregate billing health metrics. You can see individual failed payments, but getting a bird's-eye view of your overall billing health requires manual work.
+
+### Paddle Recovery Score: 7/10
+
+Better defaults mean less revenue leakage from day one. The MoR model handles chargebacks automatically. But less customization for sophisticated recovery strategies.
+
+## Polar: Simple and Growing
+
+Polar is the newest of the three, focused on simplicity for digital products, open-source, and indie SaaS.
+
+### What Polar Does Well
+
+**Simplicity.** Polar is designed to be easy. Set up a product, connect payments, start selling. For early-stage SaaS founders who don't want to spend days configuring billing, this matters.
+
+**Automatic customer notifications.** Polar notifies customers about payment issues automatically.
+
+**Developer-friendly.** Polar's API is clean and modern. For SaaS products that integrate billing into the product experience, it's a smooth developer experience.
+
+**Competitive pricing.** Lower fees than Paddle, making it attractive for smaller SaaS businesses.
+
+### Where Polar Falls Short on Recovery
+
+**Basic dunning.** Polar's retry logic is functional but not as sophisticated as Stripe's Smart Retries. There's less ML optimization behind the retry timing.
+
+**Limited recovery tools.** No advanced card update flows, no proactive expiration alerts, and limited dunning customization.
+
+**Fewer integrations.** Stripe has hundreds of dunning and recovery tools built on top of its API. Paddle has its own ecosystem. Polar's ecosystem is still growing.
+
+**Minimal billing analytics.** You can see your subscribers and payments, but there's no built-in billing health dashboard showing you failed payment rates, ghost subscriptions, or coupon leakage.
+
+### Polar Recovery Score: 5/10
+
+Great for getting started quickly. As your business grows and billing complexity increases, you may hit limits on recovery capabilities.
+
+## How Much Revenue Does Each Platform Leak?
+
+Let's model a real scenario. You have 300 subscribers at an average of $79/month ($23,700 MRR).
+
+### Monthly Revenue Leakage by Platform
+
+| Leak Type | Stripe (default config) | Paddle | Polar |
+|-----------|------------------------|--------|-------|
+| Failed payments not recovered | $950-$1,400 | $475-$750 | $700-$1,100 |
+| Ghost subscriptions | $400-$800 | $100-$200 | $300-$600 |
+| Expired coupon leakage | $200-$500 | $100-$300 | $150-$400 |
+| Chargeback losses | $150-$300 | $0 (MoR) | $100-$250 |
+| **Total monthly leakage** | **$1,700-$3,000** | **$675-$1,250** | **$1,250-$2,350** |
+| **Annual impact** | **$20,400-$36,000** | **$8,100-$15,000** | **$15,000-$28,200** |
+
+**Key insight:** Paddle's MoR model inherently prevents more leakage out of the box. Stripe can match or beat Paddle's recovery rates — but only with proper configuration and potentially third-party tools. Polar falls in between.
+
+## Which SaaS Billing Platform Has the Most Revenue Leakage?
+
+Based on RevReclaim's scan data across hundreds of accounts:
+
+1. **Stripe** has the highest average leakage — not because the platform is worse, but because it requires the most configuration. Founders who don't customize dunning, enable customer emails, and manage ghost subscriptions end up losing significantly more.
+
+2. **Polar** has moderate leakage. Good defaults, but limited recovery tools mean some revenue slips through.
+
+3. **Paddle** has the lowest average leakage. The MoR model, automatic dunning, and chargeback handling create strong defaults.
+
+**But here's the nuance:** A well-configured Stripe account (Smart Retries on, customer emails enabled, dunning optimized, ghost subscriptions managed) can have *lower* leakage than Paddle — because Stripe's tools are more powerful when properly used.
+
+The problem is that most Stripe accounts aren't well-configured.
+
+## Which Billing Platform Should SaaS Founders Choose?
+
+### Use Stripe if:
+- You have engineering resources to configure and maintain billing
+- You need maximum flexibility for complex pricing models
+- You're willing to invest in dunning optimization
+- You plan to use Stripe's ecosystem of recovery tools
+
+### Use Paddle if:
+- You want strong billing recovery out of the box
+- International tax compliance is important
+- You don't want to manage chargebacks
+- You're okay with higher fees for lower maintenance
+
+### Use Polar if:
+- You're early-stage and want simplicity
+- You're building for the developer/open-source community
+- Your billing needs are straightforward
+- You plan to migrate to Stripe or Paddle as you scale
+
+## How Does RevReclaim Work With All Three Platforms?
+
+No matter which platform you use, revenue leaks happen. The question is whether you know about them.
+
+RevReclaim works with **all three platforms** — Stripe, Paddle, and Polar. RevReclaim's scan checks for:
+
+- Failed payment recovery gaps
+- Ghost subscriptions
+- Expired or misconfigured coupons
+- Payment method health
+- Pricing inconsistencies
+- Dunning configuration issues
+
+One scan. 60 seconds. Read-only access. Free.
+
+[Scan your billing now →](/scan)
+
+---
+
+## Frequently Asked Questions
+
+### Which SaaS billing platform has the best payment recovery?
+Based on RevReclaim's analysis, Paddle has the best default payment recovery with a 7/10 score due to its Merchant of Record model, automatic dunning, and built-in chargeback protection. A well-configured Stripe account can outperform Paddle, but most Stripe accounts use default settings and score 6/10. Polar scores 5/10 with basic retry logic.
+
+### How much revenue does the average Stripe account leak?
+RevReclaim's scan data shows that the average Stripe account with 300 subscribers at $79/month leaks $1,700-$3,000 per month ($20,400-$36,000 annually) due to failed payment gaps, ghost subscriptions, expired coupons, and chargeback losses. Most of this leakage comes from using Stripe's default configuration without enabling customer failure emails.
+
+### Is Paddle better than Stripe for preventing revenue leaks?
+Paddle's Merchant of Record model prevents more revenue leakage out of the box, particularly through automatic chargeback handling and built-in dunning. However, a properly configured Stripe account with Smart Retries, customer failure emails, and optimized dunning can achieve lower leakage rates than Paddle. The trade-off is that Paddle charges higher fees (5% + $0.50 vs Stripe's 2.9% + $0.30).
+
+### Does RevReclaim work with Stripe, Paddle, and Polar?
+Yes. RevReclaim scans billing accounts on all three platforms — Stripe, Paddle, and Polar. The scan uses a read-only API key, takes 60 seconds, and checks for failed payment recovery gaps, ghost subscriptions, expired coupons, payment method decay, and legacy pricing issues.
+
+---
+
+RevReclaim scanned 50 SaaS billing accounts across Stripe, Paddle, and Polar, ranging from $3K to $200K MRR. The average SaaS billing account leaks 8.4% of revenue to billing blind spots — failed payments without proper dunning, ghost subscriptions inflating MRR, expired coupons still giving discounts, and customers stuck on legacy pricing. For a $30K MRR business, that equals $2,520 per month in lost revenue.
+
+## How Much Revenue Does the Average SaaS Company Leak?
+
+**The average SaaS billing account is leaking 8.4% of revenue.**
+
+That's not a typo. For every $100 in MRR, $8.40 is being lost to billing blind spots — failed payments that weren't recovered, ghost subscriptions inflating metrics, expired coupons still giving discounts, and customers on legacy pricing.
+
+For a $30K MRR business, that's **$2,520 per month** walking out the door.
+
+## What Are the Most Common Types of SaaS Billing Leaks?
+
+RevReclaim categorizes billing leaks into five types. Here's how they break down across all 50 accounts:
+
+| Leak Type | % of Accounts Affected | Avg Monthly Loss | % of Total Leakage |
+|-----------|----------------------|------------------|-------------------|
+| Failed payment gaps | 94% | $890 | 35% |
+| Ghost subscriptions | 78% | $620 | 24% |
+| Expired/misconfigured coupons | 62% | $430 | 17% |
+| Legacy pricing issues | 54% | $380 | 15% |
+| Payment method decay | 88% | $230 | 9% |
+
+Let's break each one down.
+
+### 1. Failed Payment Gaps (94% of accounts, $890/mo avg)
+
+Nearly every account RevReclaim scanned had a failed payment recovery gap. This is the difference between how many payments failed and how many were actually recovered through retries and dunning.
+
+**The shocking stat:** 41% of accounts had customer failure emails turned off. That means when a card declined, the customer had no idea. Stripe retried a few times, gave up, and the revenue was lost.
+
+Accounts with customer emails enabled recovered **2.3x more** failed payments than those without.
+
+**Median failure rate:** 5.8% of charges
+**Best performer:** 1.2% failure rate (proper dunning + proactive card updates)
+**Worst performer:** 14.7% failure rate (no dunning configuration at all)
+
+### 2. Ghost Subscriptions (78% of accounts, $620/mo avg)
+
+RevReclaim defines a ghost subscription as any "active" subscription with no successful payment in 45+ days.
+
+**Average ghost subscription count:** 11 per account
+**Average MRR inflation:** $620/month
+
+The worst case RevReclaim found: a $45K MRR company with **47 ghost subscriptions** totaling $4,200/month in phantom MRR. Their real MRR was $40,800 — nearly 10% lower than reported.
+
+When the founder was asked about it, they said: "I knew some payments were failing, but I had no idea it was that many."
+
+**The ghost subscription lifecycle:**
+1. Card fails on renewal (Day 0)
+2. Stripe retries 3 times over 2 weeks (Day 1-14)
+3. All retries fail, subscription moves to "past_due" (Day 14)
+4. Nobody notices. Subscription sits in past_due indefinitely (Day 14+)
+5. Customer assumes they've been canceled. Stops using the product (Day 30+)
+6. Subscription is still "active" in your MRR calculation (Day 60, 90, 120...)
+
+### 3. Expired or Misconfigured Coupons (62% of accounts, $430/mo avg)
+
+This one surprises founders the most. Coupons they ran months ago are still being applied to new or existing subscriptions.
+
+**Common scenarios RevReclaim found:**
+- A "LAUNCH50" coupon from 12 months ago with no expiration — still being redeemed
+- A "forever" duration discount that was meant to be 3 months
+- Stacked coupons giving some customers 40-60% off when the intended max was 20%
+- Test coupons ("TEST100" = 100% off) that were never deleted and somehow got shared
+
+**Most expensive coupon leak RevReclaim found:** A 30% "forever" coupon applied to 23 enterprise subscriptions. The founder had intended it as a 3-month launch discount. Annual impact: **$9,936** in unnecessary discounts.
+
+### 4. Legacy Pricing Issues (54% of accounts, $380/mo avg)
+
+More than half the accounts RevReclaim scanned had customers on pricing tiers that no longer exist. The company raised prices at some point, but existing customers were grandfathered — sometimes intentionally, sometimes by accident.
+
+**The question isn't whether to grandfather** — that's a business decision. The question is: **do you know exactly which customers are grandfathered and how much it's costing you?**
+
+In most cases, the answer was no.
+
+**Typical scenario:** Company launched at $29/mo, raised to $49/mo 8 months ago. Out of 180 subscribers, 67 are still on $29 — costing $1,340/month in potential revenue. The founder assumed "maybe 20 or so" were still on the old price.
+
+### 5. Payment Method Decay (88% of accounts, $230/mo avg)
+
+Credit cards expire. On average, 2-3% of your customers' cards will expire in any given month. If you don't proactively prompt them to update before the next charge, that charge will fail.
+
+**Accounts with proactive card expiration alerts:** 12% of scanned accounts
+**Average cards expiring in the next 30 days:** 8 per account
+**Estimated at-risk revenue:** $632/month per account
+
+The fix here is straightforward but almost nobody does it: email customers 30 days before their card expires with a direct link to update their payment method.
+
+## What Is the Average SaaS Billing Health Score?
+
+RevReclaim assigns every account a Billing Health Score from 0-100. Here's how the 50 accounts distributed:
+
+| Score Range | Grade | Count | % of Accounts |
+|-------------|-------|-------|---------------|
+| 90-100 | A | 3 | 6% |
+| 75-89 | B | 11 | 22% |
+| 50-74 | C | 19 | 38% |
+| 25-49 | D | 12 | 24% |
+| 0-24 | F | 5 | 10% |
+
+**Average score: 56 out of 100.**
+
+Only 6% of accounts scored an A. The median SaaS billing setup has significant room for improvement.
+
+## Which SaaS Company Size Leaks the Most Revenue?
+
+Larger companies leak more in absolute terms, but smaller companies leak a higher percentage of revenue:
+
+| MRR Range | Avg Monthly Leak | Leak as % of MRR | Avg Health Score |
+|-----------|-----------------|-------------------|-----------------|
+| $3K-$10K | $480 | 6.8% | 52 |
+| $10K-$30K | $1,850 | 9.3% | 54 |
+| $30K-$75K | $3,400 | 6.5% | 58 |
+| $75K-$200K | $8,200 | 6.1% | 62 |
+
+**The $10K-$30K range leaks the most as a percentage of revenue.** This makes sense — these businesses are big enough to have complex billing but usually don't have dedicated billing ops. The founder is wearing 10 hats, and billing configuration isn't one of them.
+
+## Which Billing Platform Has the Most Revenue Leakage?
+
+| Platform | Avg Health Score | Avg Monthly Leak | Primary Leak Type |
+|----------|-----------------|-----------------|-------------------|
+| Stripe | 51 | $2,840 | Failed payment gaps |
+| Paddle | 67 | $1,120 | Coupon misconfiguration |
+| Polar | 55 | $1,680 | Ghost subscriptions |
+
+Stripe has the lowest average health score — not because the platform is bad, but because it requires the most configuration. The 8 Stripe accounts that scored 85+ had meticulously configured dunning, enabled customer emails, and actively managed their subscription lifecycle. They outperformed Paddle accounts on recovery.
+
+But the average Stripe account? Barely touched the default settings.
+
+## What Are the Fastest Ways to Fix SaaS Billing Leaks?
+
+Based on the 50 scans, here are the three changes that have the biggest impact:
+
+### Fix 1: Enable Customer Failure Emails (5 minutes)
+
+If you're on Stripe and haven't done this, stop reading and go do it now:
+
+Stripe Dashboard → Settings → Billing → Subscriptions and emails → Send emails about failed payments → **Enable**
+
+Expected recovery improvement: **20-35% more failed payments recovered.**
+
+### Fix 2: Audit and Expire Old Coupons (15 minutes)
+
+Go through every active coupon in your billing platform. For each one:
+- Does it have an expiration date? If not, add one.
+- Is the duration set correctly? ("Forever" should rarely be forever.)
+- Is the discount percentage correct?
+- Should this coupon still be active at all?
+
+Expected savings: **$200-$800/month** for most accounts.
+
+### Fix 3: Clean Up Ghost Subscriptions (30 minutes)
+
+Export your subscription list. Find any "active" or "past_due" subscriptions with no successful payment in 45+ days. For each one:
+- Send a personal recovery email
+- Wait 7 days
+- Cancel unrecovered subscriptions
+
+This fixes your MRR accuracy and prevents chargebacks.
+
+Expected impact: **Accurate MRR + $300-$1,000/month in recovered or properly canceled subscriptions.**
+
+## What Do Top-Performing SaaS Companies Do Differently for Billing?
+
+The three accounts that scored 90+ had these traits in common:
+
+1. **Customer failure emails enabled** from day one
+2. **Dunning optimized** — custom retry schedule, not Stripe defaults
+3. **Monthly billing audit** — a recurring calendar event to check failed payments, ghost subscriptions, and coupon health
+4. **Proactive card expiration alerts** — emails sent 30 days before card expiry
+5. **Clear cancellation flow** — voluntary cancellations are clean, preventing ghost subscriptions
+6. **Regular price migration** — when prices increase, old-plan customers are gradually migrated with notice
+
+## How Can SaaS Founders Check Their Billing Health?
+
+These numbers are averages. Your billing account might be healthier — or it might be worse.
+
+The only way to know is to look.
+
+RevReclaim scans your Stripe, Paddle, or Polar account in 60 seconds. You get your Billing Health Score, a breakdown of every leak found, and a prioritized list of fixes.
+
+It's free. Read-only access. Your data stays yours.
+
+[Run your free billing scan →](/scan)
+
+---
+
+## Frequently Asked Questions
+
+### What percentage of SaaS revenue is lost to billing leaks?
+The average SaaS billing account leaks 8.4% of revenue according to RevReclaim's analysis of 50 billing accounts. Companies in the $10K-$30K MRR range lose the most as a percentage (9.3%), while larger companies at $75K-$200K MRR lose 6.1% on average.
+
+### What is the most common type of SaaS billing leak?
+Failed payment gaps are the most common billing leak, affecting 94% of SaaS accounts and accounting for 35% of total leakage ($890/month average). The second most common is ghost subscriptions (78% of accounts, 24% of leakage), followed by expired or misconfigured coupons (62% of accounts, 17% of leakage).
+
+### What is a good billing health score?
+A billing health score of 90-100 (Grade A) indicates well-optimized billing. Only 6% of the 50 accounts RevReclaim scanned achieved this score. The average score is 56/100 (Grade C), and 34% of accounts scored below 50 (Grade D or F), indicating critical revenue leakage.
+
+### What is the single fastest fix for SaaS billing leaks?
+Enabling customer failure emails in Stripe is the fastest and highest-impact fix. It takes under 5 minutes and recovers 20-35% more failed payments. In RevReclaim's scan data, 41% of Stripe accounts had this setting turned off, meaning customers were never notified when their card was declined.

@@ -46,26 +46,48 @@ export default async function BlogPostPage({ params }: Props) {
   const post = await getPost(slug);
   if (!post) notFound();
 
-  // Article JSON-LD
+  // Blog post JSON-LD — @graph with TechArticle + BreadcrumbList
   const articleJsonLd = {
     "@context": "https://schema.org",
-    "@type": "Article",
-    headline: post.title,
-    description: post.description,
-    datePublished: post.date,
-    author: {
-      "@type": "Organization",
-      name: post.author,
-      url: "https://revreclaim.com",
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "RevReclaim",
-      url: "https://revreclaim.com",
-      logo: "https://revreclaim.com/icon.svg",
-    },
-    mainEntityOfPage: `https://revreclaim.com/blog/${slug}`,
-    ...(post.image && { image: post.image }),
+    "@graph": [
+      {
+        "@type": "TechArticle",
+        headline: post.title,
+        description: post.description,
+        datePublished: post.date,
+        ...(post.lastModified && { dateModified: post.lastModified }),
+        author: { "@id": "https://revreclaim.com/#organization" },
+        publisher: { "@id": "https://revreclaim.com/#organization" },
+        isPartOf: { "@id": "https://revreclaim.com/#website" },
+        mainEntityOfPage: `https://revreclaim.com/blog/${slug}`,
+        ...(post.image && { image: post.image }),
+        proficiencyLevel: "Beginner",
+        dependencies: "Stripe, Paddle, or Polar billing account",
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: "https://revreclaim.com",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Blog",
+            item: "https://revreclaim.com/blog",
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: post.title,
+            item: `https://revreclaim.com/blog/${slug}`,
+          },
+        ],
+      },
+    ],
   };
 
   return (

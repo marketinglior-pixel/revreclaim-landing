@@ -1,0 +1,26 @@
+# RevReclaim
+
+> RevReclaim is a SaaS billing leak scanner that detects hidden revenue leaks in Stripe, Paddle, and Polar accounts. It identifies 7 types of billing errors — failed payments without proper dunning, expired coupons still giving discounts, ghost subscriptions inflating MRR, legacy pricing mismatches, expiring payment methods, uncollected invoices, and missing payment methods — and provides a prioritized action list with exact dollar amounts and one-click fixes. Free scan in 90 seconds using a read-only API key.
+
+## Product
+
+- [Free Billing Scan](https://revreclaim.com/scan): Run a free billing health scan by pasting a read-only API key. Supports Stripe, Paddle, and Polar. Returns a billing health score, leak count, and dollar-amount breakdown in 90 seconds.
+- [Pricing](https://revreclaim.com/#pricing): Free tier (unlimited scans, 7 leak checks), Pro at $29/mo (weekly auto-scans, Recovery Agent, Slack alerts), Team at $79/mo (shared dashboard, team-wide scanning, priority support). $1,000/mo recovery guarantee on paid plans.
+- [Demo Report](https://revreclaim.com/demo): Interactive sample billing leak report showing what a real RevReclaim scan finds — leak categories, dollar amounts, and recommended fixes.
+
+## Guides
+
+- [SaaS Billing Health Checklist: 15 Leaks Hiding in Your Stripe Account](https://revreclaim.com/blog/saas-billing-health-checklist): A 15-point audit checklist for SaaS founders to assess billing health across failed payment recovery, ghost subscriptions, pricing integrity, payment method health, and subscription lifecycle. Includes scoring system and benchmarks.
+- [How to Find Failed Payments in Your Stripe Dashboard (Step-by-Step)](https://revreclaim.com/blog/find-failed-payments-stripe): Step-by-step guide to finding, analyzing, and recovering failed payments in Stripe. Covers decline codes, dunning configuration, recovery rate benchmarks, proactive alerts, and high-value recovery email templates.
+- [Ghost Subscriptions: When Customers Stop Paying But Don't Cancel](https://revreclaim.com/blog/ghost-subscriptions-saas): Explains what ghost subscriptions are, why they inflate MRR and hide real churn, how to detect them in Stripe/Paddle/Polar, and how to recover or clean them up. Includes data showing 3-7% of active subscriptions are ghosts.
+- [Stripe vs Paddle vs Polar: Billing Recovery Features Compared](https://revreclaim.com/blog/stripe-vs-paddle-vs-polar-billing-recovery): Side-by-side comparison of billing recovery capabilities across Stripe, Paddle, and Polar — covering dunning, chargeback protection, ghost subscription handling, and revenue leakage benchmarks by platform.
+- [We Scanned 50 SaaS Billing Accounts — Here's What We Found](https://revreclaim.com/blog/saas-billing-leak-statistics): Data report from 50 real SaaS billing scans showing average 8.4% revenue leakage, leak breakdown by type, billing health score distribution, and leakage by company size and platform.
+
+## About
+
+- [Contact](https://revreclaim.com/contact): Contact the RevReclaim team for support, enterprise inquiries, or partnerships.
+
+## Optional
+
+- [Privacy Policy](https://revreclaim.com/privacy): RevReclaim's data handling, security practices, and read-only access guarantees.
+- [Terms of Service](https://revreclaim.com/terms): Service agreement and usage terms.

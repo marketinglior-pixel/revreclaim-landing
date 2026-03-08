@@ -2,18 +2,15 @@
 title: "We Scanned 50 SaaS Billing Accounts — Here's What We Found"
 description: "Data from 50 real SaaS billing scans reveals the most common revenue leaks, average losses by company size, and the fastest fixes. See how your billing stack compares."
 date: "2026-02-28"
+lastModified: "2026-03-08"
 author: "RevReclaim Team"
 tags: ["billing data", "SaaS metrics", "revenue leakage", "billing health", "case study"]
 canonical: "https://revreclaim.com/blog/saas-billing-leak-statistics"
 ---
 
-We built RevReclaim to help SaaS founders find hidden revenue leaks in their billing. But even we were surprised by what we found when we looked at the aggregate data.
+RevReclaim scanned 50 SaaS billing accounts across Stripe, Paddle, and Polar, ranging from $3K to $200K MRR. The average SaaS billing account leaks 8.4% of revenue to billing blind spots — failed payments without proper dunning, ghost subscriptions inflating MRR, expired coupons still giving discounts, and customers stuck on legacy pricing. For a $30K MRR business, that equals $2,520 per month in lost revenue.
 
-Over the past few months, we scanned 50 SaaS billing accounts across Stripe, Paddle, and Polar. The companies ranged from $3K MRR bootstrapped startups to $200K MRR funded businesses.
-
-Here's what the data revealed.
-
-## The Headline Number
+## How Much Revenue Does the Average SaaS Company Leak?
 
 **The average SaaS billing account is leaking 8.4% of revenue.**
 
@@ -21,9 +18,9 @@ That's not a typo. For every $100 in MRR, $8.40 is being lost to billing blind s
 
 For a $30K MRR business, that's **$2,520 per month** walking out the door.
 
-## Leak Breakdown by Type
+## What Are the Most Common Types of SaaS Billing Leaks?
 
-We categorize billing leaks into five types. Here's how they break down across all 50 accounts:
+RevReclaim categorizes billing leaks into five types. Here's how they break down across all 50 accounts:
 
 | Leak Type | % of Accounts Affected | Avg Monthly Loss | % of Total Leakage |
 |-----------|----------------------|------------------|-------------------|
@@ -37,7 +34,7 @@ Let's break each one down.
 
 ### 1. Failed Payment Gaps (94% of accounts, $890/mo avg)
 
-Nearly every account we scanned had a failed payment recovery gap. This is the difference between how many payments failed and how many were actually recovered through retries and dunning.
+Nearly every account RevReclaim scanned had a failed payment recovery gap. This is the difference between how many payments failed and how many were actually recovered through retries and dunning.
 
 **The shocking stat:** 41% of accounts had customer failure emails turned off. That means when a card declined, the customer had no idea. Stripe retried a few times, gave up, and the revenue was lost.
 
@@ -49,14 +46,14 @@ Accounts with customer emails enabled recovered **2.3x more** failed payments th
 
 ### 2. Ghost Subscriptions (78% of accounts, $620/mo avg)
 
-We defined a ghost subscription as any "active" subscription with no successful payment in 45+ days.
+RevReclaim defines a ghost subscription as any "active" subscription with no successful payment in 45+ days.
 
 **Average ghost subscription count:** 11 per account
 **Average MRR inflation:** $620/month
 
-The worst case we found: a $45K MRR company with **47 ghost subscriptions** totaling $4,200/month in phantom MRR. Their real MRR was $40,800 — nearly 10% lower than reported.
+The worst case RevReclaim found: a $45K MRR company with **47 ghost subscriptions** totaling $4,200/month in phantom MRR. Their real MRR was $40,800 — nearly 10% lower than reported.
 
-When we asked the founder about it, they said: "I knew some payments were failing, but I had no idea it was that many."
+When the founder was asked about it, they said: "I knew some payments were failing, but I had no idea it was that many."
 
 **The ghost subscription lifecycle:**
 1. Card fails on renewal (Day 0)
@@ -70,17 +67,17 @@ When we asked the founder about it, they said: "I knew some payments were failin
 
 This one surprises founders the most. Coupons they ran months ago are still being applied to new or existing subscriptions.
 
-**Common scenarios we found:**
+**Common scenarios RevReclaim found:**
 - A "LAUNCH50" coupon from 12 months ago with no expiration — still being redeemed
 - A "forever" duration discount that was meant to be 3 months
 - Stacked coupons giving some customers 40-60% off when the intended max was 20%
 - Test coupons ("TEST100" = 100% off) that were never deleted and somehow got shared
 
-**Most expensive coupon leak we found:** A 30% "forever" coupon applied to 23 enterprise subscriptions. The founder had intended it as a 3-month launch discount. Annual impact: **$9,936** in unnecessary discounts.
+**Most expensive coupon leak RevReclaim found:** A 30% "forever" coupon applied to 23 enterprise subscriptions. The founder had intended it as a 3-month launch discount. Annual impact: **$9,936** in unnecessary discounts.
 
 ### 4. Legacy Pricing Issues (54% of accounts, $380/mo avg)
 
-More than half the accounts we scanned had customers on pricing tiers that no longer exist. The company raised prices at some point, but existing customers were grandfathered — sometimes intentionally, sometimes by accident.
+More than half the accounts RevReclaim scanned had customers on pricing tiers that no longer exist. The company raised prices at some point, but existing customers were grandfathered — sometimes intentionally, sometimes by accident.
 
 **The question isn't whether to grandfather** — that's a business decision. The question is: **do you know exactly which customers are grandfathered and how much it's costing you?**
 
@@ -98,9 +95,9 @@ Credit cards expire. On average, 2-3% of your customers' cards will expire in an
 
 The fix here is straightforward but almost nobody does it: email customers 30 days before their card expires with a direct link to update their payment method.
 
-## Billing Health Score Distribution
+## What Is the Average SaaS Billing Health Score?
 
-We assign every account a Billing Health Score from 0-100. Here's how the 50 accounts distributed:
+RevReclaim assigns every account a Billing Health Score from 0-100. Here's how the 50 accounts distributed:
 
 | Score Range | Grade | Count | % of Accounts |
 |-------------|-------|-------|---------------|
@@ -114,7 +111,7 @@ We assign every account a Billing Health Score from 0-100. Here's how the 50 acc
 
 Only 6% of accounts scored an A. The median SaaS billing setup has significant room for improvement.
 
-## Leakage by Company Size
+## Which SaaS Company Size Leaks the Most Revenue?
 
 Larger companies leak more in absolute terms, but smaller companies leak a higher percentage of revenue:
 
@@ -127,7 +124,7 @@ Larger companies leak more in absolute terms, but smaller companies leak a highe
 
 **The $10K-$30K range leaks the most as a percentage of revenue.** This makes sense — these businesses are big enough to have complex billing but usually don't have dedicated billing ops. The founder is wearing 10 hats, and billing configuration isn't one of them.
 
-## Leakage by Platform
+## Which Billing Platform Has the Most Revenue Leakage?
 
 | Platform | Avg Health Score | Avg Monthly Leak | Primary Leak Type |
 |----------|-----------------|-----------------|-------------------|
@@ -139,7 +136,7 @@ Stripe has the lowest average health score — not because the platform is bad, 
 
 But the average Stripe account? Barely touched the default settings.
 
-## The Fastest Fixes
+## What Are the Fastest Ways to Fix SaaS Billing Leaks?
 
 Based on the 50 scans, here are the three changes that have the biggest impact:
 
@@ -172,7 +169,7 @@ This fixes your MRR accuracy and prevents chargebacks.
 
 Expected impact: **Accurate MRR + $300-$1,000/month in recovered or properly canceled subscriptions.**
 
-## What the Top 6% Do Differently
+## What Do Top-Performing SaaS Companies Do Differently for Billing?
 
 The three accounts that scored 90+ had these traits in common:
 
@@ -183,7 +180,7 @@ The three accounts that scored 90+ had these traits in common:
 5. **Clear cancellation flow** — voluntary cancellations are clean, preventing ghost subscriptions
 6. **Regular price migration** — when prices increase, old-plan customers are gradually migrated with notice
 
-## See Where You Stand
+## How Can SaaS Founders Check Their Billing Health?
 
 These numbers are averages. Your billing account might be healthier — or it might be worse.
 
@@ -197,4 +194,16 @@ It's free. Read-only access. Your data stays yours.
 
 ---
 
-*Want to do a manual audit first? Use our [15-point SaaS Billing Health Checklist](/blog/saas-billing-health-checklist) to check your billing health one item at a time.*
+## Frequently Asked Questions
+
+### What percentage of SaaS revenue is lost to billing leaks?
+The average SaaS billing account leaks 8.4% of revenue according to RevReclaim's analysis of 50 billing accounts. Companies in the $10K-$30K MRR range lose the most as a percentage (9.3%), while larger companies at $75K-$200K MRR lose 6.1% on average.
+
+### What is the most common type of SaaS billing leak?
+Failed payment gaps are the most common billing leak, affecting 94% of SaaS accounts and accounting for 35% of total leakage ($890/month average). The second most common is ghost subscriptions (78% of accounts, 24% of leakage), followed by expired or misconfigured coupons (62% of accounts, 17% of leakage).
+
+### What is a good billing health score?
+A billing health score of 90-100 (Grade A) indicates well-optimized billing. Only 6% of the 50 accounts RevReclaim scanned achieved this score. The average score is 56/100 (Grade C), and 34% of accounts scored below 50 (Grade D or F), indicating critical revenue leakage.
+
+### What is the single fastest fix for SaaS billing leaks?
+Enabling customer failure emails in Stripe is the fastest and highest-impact fix. It takes under 5 minutes and recovers 20-35% more failed payments. In RevReclaim's scan data, 41% of Stripe accounts had this setting turned off, meaning customers were never notified when their card was declined.

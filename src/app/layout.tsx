@@ -55,11 +55,16 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
+      "@id": "https://revreclaim.com/#organization",
       name: "RevReclaim",
       url: "https://revreclaim.com",
       logo: "https://revreclaim.com/icon.svg",
       description:
         "RevReclaim scans your Stripe, Polar, or Paddle account and finds hidden revenue leaks — expired coupons, failed payments, ghost subscriptions, and more.",
+      sameAs: [
+        "https://x.com/revreclaim",
+        "https://github.com/revreclaim",
+      ],
       contactPoint: {
         "@type": "ContactPoint",
         contactType: "customer support",
@@ -67,13 +72,23 @@ const jsonLd = {
       },
     },
     {
+      "@type": "WebSite",
+      "@id": "https://revreclaim.com/#website",
+      url: "https://revreclaim.com",
+      name: "RevReclaim",
+      publisher: { "@id": "https://revreclaim.com/#organization" },
+    },
+    {
       "@type": "SoftwareApplication",
+      "@id": "https://revreclaim.com/#software",
       name: "RevReclaim",
       applicationCategory: "BusinessApplication",
       operatingSystem: "Web",
       url: "https://revreclaim.com",
       description:
         "Revenue leak detection for SaaS. Scans Stripe, Polar, and Paddle billing data in 90 seconds to find failed payments, expired coupons, ghost subscriptions, and more.",
+      disambiguatingDescription:
+        "A SaaS billing leak detection tool that scans Stripe, Paddle, and Polar accounts using read-only API keys to find revenue leaks like expired coupons, ghost subscriptions, and failed payments. Distinct from chargeback recovery services or dunning automation platforms.",
       offers: [
         {
           "@type": "Offer",
