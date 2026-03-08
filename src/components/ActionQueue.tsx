@@ -17,7 +17,7 @@ export function ActionQueue({ plan }: ActionQueueProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [canApprove, setCanApprove] = useState(false);
-  const [executedCount, setExecutedCount] = useState(0);
+  const [, setExecutedCount] = useState(0);
   const [remaining, setRemaining] = useState<number | undefined>(undefined);
 
   // Filters
@@ -30,6 +30,8 @@ export function ActionQueue({ plan }: ActionQueueProps) {
   // Executing state
   const [executingId, setExecutingId] = useState<string | null>(null);
   const [bulkProcessing, setBulkProcessing] = useState(false);
+  const [bulkExecuting, setBulkExecuting] = useState(false);
+  const [bulkExecuteProgress, setBulkExecuteProgress] = useState({ done: 0, total: 0, failed: 0 });
 
   // Confirmation dialog for destructive actions
   const [confirmAction, setConfirmAction] = useState<ActionCardData | null>(null);
@@ -209,6 +211,43 @@ export function ActionQueue({ plan }: ActionQueueProps) {
     }
   }
 
+  async function handleBulkExecute() {
+    const approvedActions = filteredActions.filter((a) => a.status === "approved");
+    if (approvedActions.length === 0) return;
+
+    setBulkExecuting(true);
+    setBulkExecuteProgress({ done: 0, total: approvedActions.length, failed: 0 });
+
+    let failCount = 0;
+    for (let i = 0; i < approvedActions.length; i++) {
+      const action = approvedActions[i];
+      setExecutingId(action.id);
+
+      try {
+        const res = await fetch("/api/actions/execute", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ actionId: action.id }),
+        });
+
+        if (!res.ok) failCount++;
+      } catch {
+        failCount++;
+      }
+
+      setBulkExecuteProgress({ done: i + 1, total: approvedActions.length, failed: failCount });
+    }
+
+    setExecutingId(null);
+    setBulkExecuting(false);
+
+    if (failCount > 0) {
+      setError(`${failCount} of ${approvedActions.length} actions failed. Check the Failed tab for details.`);
+    }
+
+    await fetchActions();
+  }
+
   // Status filter tabs
   const statusTabs: { value: FilterStatus; label: string }[] = [
     { value: "pending", label: "Pending" },
@@ -229,6 +268,9 @@ export function ActionQueue({ plan }: ActionQueueProps) {
 
   const pendingCount = filteredActions.filter(
     (a) => a.status === "pending"
+  ).length;
+  const approvedCount = filteredActions.filter(
+    (a) => a.status === "approved"
   ).length;
 
   const isFreeUser = plan === "free";
@@ -341,7 +383,48 @@ export function ActionQueue({ plan }: ActionQueueProps) {
               )}
             </div>
           )}
+
+          {/* Execute All Approved (only for approved tab) */}
+          {statusFilter === "approved" && approvedCount > 0 && !bulkExecuting && (
+            <button
+              onClick={handleBulkExecute}
+              disabled={freeActionUsed}
+              className="rounded-lg bg-brand px-4 py-1.5 text-xs font-bold text-black hover:bg-brand-dark transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+              </svg>
+              Execute All ({approvedCount})
+            </button>
+          )}
         </div>
+
+        {/* Bulk execution progress bar */}
+        {bulkExecuting && (
+          <div className="rounded-lg bg-surface-dim border border-border p-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 border-2 border-brand/30 border-t-brand rounded-full animate-spin" />
+                <span className="text-xs font-medium text-white">
+                  Executing {bulkExecuteProgress.done}/{bulkExecuteProgress.total}…
+                </span>
+              </div>
+              {bulkExecuteProgress.failed > 0 && (
+                <span className="text-xs text-danger">
+                  {bulkExecuteProgress.failed} failed
+                </span>
+              )}
+            </div>
+            <div className="w-full h-1.5 bg-surface-lighter rounded-full overflow-hidden">
+              <div
+                className="h-full bg-brand rounded-full transition-all duration-300 ease-out"
+                style={{
+                  width: `${bulkExecuteProgress.total > 0 ? (bulkExecuteProgress.done / bulkExecuteProgress.total) * 100 : 0}%`,
+                }}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Content */}

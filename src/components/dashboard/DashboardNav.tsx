@@ -63,6 +63,14 @@ export default function DashboardNav({
                 Team
               </Link>
             )}
+            {plan === "team" && (
+              <Link
+                href="/dashboard/audit"
+                className="px-3 py-2 text-xs text-text-muted hover:text-white hover:bg-surface-light rounded-lg transition"
+              >
+                Audit Log
+              </Link>
+            )}
             <Link
               href="/scan"
               className="px-3 py-2 text-xs text-brand hover:text-brand-light hover:bg-brand/10 rounded-lg transition font-medium"
@@ -121,6 +129,14 @@ export default function DashboardNav({
                     className="block px-4 py-2.5 text-sm text-text-muted hover:text-white hover:bg-surface-light transition"
                   >
                     Team
+                  </Link>
+                )}
+                {plan === "team" && (
+                  <Link
+                    href="/dashboard/audit"
+                    className="block px-4 py-2.5 text-sm text-text-muted hover:text-white hover:bg-surface-light transition"
+                  >
+                    Audit Log
                   </Link>
                 )}
                 {plan !== "free" && (

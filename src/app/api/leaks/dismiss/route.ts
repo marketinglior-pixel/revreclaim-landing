@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
 import { guardMutation } from "@/lib/api-security";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("DISMISS");
 
 /**
  * GET /api/leaks/dismiss — Fetch user's leak dismissals.
@@ -18,10 +21,7 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // leak_dismissals table may not exist in generated types yet
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sb = supabase as any;
-    const { data: dismissals, error } = await sb
+    const { data: dismissals, error } = await supabase
       .from("leak_dismissals")
       .select("customer_id, product_id, leak_type, reason, created_at")
       .eq("user_id", user.id);
@@ -31,7 +31,7 @@ export async function GET() {
       if (error.code === "42P01") {
         return NextResponse.json({ dismissals: [] });
       }
-      console.error("[DISMISS] Fetch error:", error.message);
+      log.error("Fetch error:", error.message);
       return NextResponse.json(
         { error: "Failed to fetch dismissals" },
         { status: 500 }
@@ -40,7 +40,7 @@ export async function GET() {
 
     return NextResponse.json({ dismissals: dismissals || [] });
   } catch (err) {
-    console.error("[DISMISS] Unexpected error:", err);
+    log.error("Unexpected error:", err);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -85,9 +85,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sb = supabase as any;
-    const { error } = await sb.from("leak_dismissals").upsert(
+    const { error } = await supabase.from("leak_dismissals").upsert(
       {
         user_id: user.id,
         customer_id: customerId,
@@ -99,7 +97,7 @@ export async function POST(req: NextRequest) {
     );
 
     if (error) {
-      console.error("[DISMISS] Insert error:", error.message);
+      log.error("Insert error:", error.message);
       return NextResponse.json(
         { error: "Failed to save dismissal" },
         { status: 500 }
@@ -108,7 +106,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("[DISMISS] Unexpected error:", err);
+    log.error("Unexpected error:", err);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -144,9 +142,7 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sb = supabase as any;
-    const { error } = await sb
+    const { error } = await supabase
       .from("leak_dismissals")
       .delete()
       .eq("user_id", user.id)
@@ -154,7 +150,7 @@ export async function DELETE(req: NextRequest) {
       .eq("leak_type", leakType);
 
     if (error) {
-      console.error("[DISMISS] Delete error:", error.message);
+      log.error("Delete error:", error.message);
       return NextResponse.json(
         { error: "Failed to remove dismissal" },
         { status: 500 }
@@ -163,7 +159,7 @@ export async function DELETE(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("[DISMISS] Unexpected error:", err);
+    log.error("Unexpected error:", err);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

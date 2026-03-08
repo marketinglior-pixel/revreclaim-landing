@@ -5,12 +5,18 @@ import { runPlatformScan } from "@/lib/platforms";
 import type { BillingPlatform } from "@/lib/platforms/types";
 import { decrypt } from "@/lib/encryption";
 import { sendScanCompleteEmail } from "@/lib/email";
+import {
+  sendSlackScanNotification,
+} from "@/lib/notifications/slack";
 import { calculateNextScan } from "@/lib/scan-utils";
 import { generateRecoveryActions } from "@/lib/recovery/action-generator";
 import { canUseRecoveryActions } from "@/lib/plan-limits";
 import type { PlanType } from "@/lib/plan-limits";
 import { verifyCronSecret } from "@/lib/api-security";
 import { fireAndForget } from "@/lib/fire-and-forget";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("CRON");
 
 export const maxDuration = 300; // 5 minutes for batch processing
 
@@ -26,7 +32,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  console.log("[CRON] Weekly scan job started");
+  log.info("Weekly scan job started");
 
   // Use service role client to bypass RLS
   const supabase = createServerClient(
@@ -50,7 +56,7 @@ export async function GET(req: NextRequest) {
     .lte("next_scan_at", now);
 
   if (fetchError) {
-    console.error("[CRON] Failed to fetch configs:", fetchError.message);
+    log.error("Failed to fetch configs:", fetchError.message);
     return NextResponse.json(
       { error: "Failed to fetch scan configs" },
       { status: 500 }
@@ -58,11 +64,11 @@ export async function GET(req: NextRequest) {
   }
 
   if (!configs || configs.length === 0) {
-    console.log("[CRON] No scans due at this time");
+    log.info("No scans due at this time");
     return NextResponse.json({ message: "No scans due", processed: 0 });
   }
 
-  console.log(`[CRON] Found ${configs.length} scan(s) to process`);
+  log.info(`Found ${configs.length} scan(s) to process`);
 
   let successCount = 0;
   let errorCount = 0;
@@ -73,7 +79,7 @@ export async function GET(req: NextRequest) {
       const apiKey = decrypt(config.encrypted_api_key);
       const platform: BillingPlatform = (config.platform as BillingPlatform) || "stripe";
 
-      console.log(`[CRON] Running ${platform} scan for user ${config.user_id}`);
+      log.info(`Running ${platform} scan for user ${config.user_id}`);
 
       // Run the scan — dispatch to correct scanner
       let report;
@@ -102,7 +108,7 @@ export async function GET(req: NextRequest) {
       });
 
       if (insertError) {
-        console.error(`[CRON] Failed to save report for ${config.user_id}:`, insertError.message);
+        log.error(`Failed to save report for ${config.user_id}:`, insertError.message);
         errorCount++;
         continue;
       }
@@ -130,13 +136,13 @@ export async function GET(req: NextRequest) {
               .from("recovery_actions")
               .insert(rows);
             if (actionsErr) {
-              console.error(`[CRON] Failed to insert recovery actions for ${config.user_id}:`, actionsErr.message);
+              log.error(`Failed to insert recovery actions for ${config.user_id}:`, actionsErr.message);
             } else {
-              console.log(`[CRON] Generated ${actions.length} recovery actions for ${config.user_id}`);
+              log.info(`Generated ${actions.length} recovery actions for ${config.user_id}`);
             }
           }
         } catch (actionErr) {
-          console.error(`[CRON] Action generation error for ${config.user_id}:`, actionErr);
+          log.error(`Action generation error for ${config.user_id}:`, actionErr);
         }
       }
 
@@ -152,8 +158,8 @@ export async function GET(req: NextRequest) {
         })
         .eq("id", config.id);
 
-      console.log(
-        `[CRON] Scan complete for ${config.user_id}: ${report.summary.leaksFound} leaks, $${(report.summary.mrrAtRisk / 100).toFixed(0)}/mo at risk`
+      log.info(
+        `Scan complete for ${config.user_id}: ${report.summary.leaksFound} leaks, $${(report.summary.mrrAtRisk / 100).toFixed(0)}/mo at risk`
       );
 
       // Send scan completion email (fire-and-forget)
@@ -161,10 +167,26 @@ export async function GET(req: NextRequest) {
         fireAndForget(sendScanCompleteEmail(profileData.email, report.summary, report.id), "CRON_SCAN_COMPLETE_EMAIL");
       }
 
+      // Send Slack notification if configured (fire-and-forget)
+      if (config.slack_webhook_url) {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://revreclaim.com";
+        fireAndForget(
+          sendSlackScanNotification(config.slack_webhook_url, {
+            leaksFound: report.summary.leaksFound,
+            mrrAtRisk: report.summary.mrrAtRisk,
+            healthScore: report.summary.healthScore,
+            recoveryPotential: report.summary.recoveryPotential,
+            reportId: report.id,
+            baseUrl,
+          }),
+          "CRON_SLACK_NOTIFICATION"
+        );
+      }
+
       successCount++;
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
-      console.error(`[CRON] Scan failed for ${config.user_id}:`, message);
+      log.error(`Scan failed for ${config.user_id}:`, message);
 
       // If API key is invalid, deactivate the config
       const lm = message.toLowerCase();
@@ -173,7 +195,7 @@ export async function GET(req: NextRequest) {
           .from("scan_configs")
           .update({ is_active: false })
           .eq("id", config.id);
-        console.log(`[CRON] Deactivated config for ${config.user_id} due to API key issue`);
+        log.info(`Deactivated config for ${config.user_id} due to API key issue`);
       }
 
       errorCount++;
@@ -181,7 +203,7 @@ export async function GET(req: NextRequest) {
   }
 
   const summary = `Processed ${configs.length} scans: ${successCount} succeeded, ${errorCount} failed`;
-  console.log(`[CRON] ${summary}`);
+  log.info(`${summary}`);
 
   return NextResponse.json({
     message: summary,

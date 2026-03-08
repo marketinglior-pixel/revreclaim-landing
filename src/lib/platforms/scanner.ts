@@ -5,6 +5,9 @@
 
 import { getProvider, ScanProgress } from "./provider";
 import { BillingPlatform, PLATFORM_CAPABILITIES } from "./types";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("SCANNER");
 import {
   Leak,
   LeakType,
@@ -59,7 +62,7 @@ export async function runPlatformScan(
     try {
       allLeaks.push(...fn());
     } catch (err) {
-      console.error(`[SCANNER] ${name} failed for ${platform}:`, err);
+      log.error(`${name} failed for ${platform}:`, err);
     }
   }
 

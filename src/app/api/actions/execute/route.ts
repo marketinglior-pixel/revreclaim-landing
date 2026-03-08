@@ -9,6 +9,10 @@ import { trackEvent } from "@/lib/analytics";
 import { decrypt } from "@/lib/encryption";
 import { guardMutation } from "@/lib/api-security";
 import { fireAndForget } from "@/lib/fire-and-forget";
+import { createLogger } from "@/lib/logger";
+import { logAudit } from "@/lib/audit-log";
+
+const log = createLogger("EXECUTE");
 
 /**
  * POST /api/actions/execute — Execute a single approved action.
@@ -126,8 +130,8 @@ export async function POST(req: NextRequest) {
     // Cast to our typed interface
     const action = claimedRows[0] as unknown as RecoveryAction;
 
-    console.log(
-      `[EXECUTE] Executing action ${actionId} (${action.action_type}) for user ${user.id}`
+    log.info(
+      `Executing action ${actionId} (${action.action_type}) for user ${user.id}`
     );
 
     // For platform write actions, fetch and decrypt the action API key
@@ -170,14 +174,21 @@ export async function POST(req: NextRequest) {
         })
         .eq("id", actionId);
 
-      console.log(`[EXECUTE] Action ${actionId} executed successfully`);
+      log.info(`Action ${actionId} executed successfully`);
 
-      // Track event (fire-and-forget)
+      // Track event + audit log (fire-and-forget)
       fireAndForget(trackEvent("action_executed", user.id, {
         actionId,
         actionType: action.action_type,
         monthlyImpact: action.monthly_impact,
       }), "ACTION_EXECUTED_TRACKING");
+      fireAndForget(logAudit({
+        userId: user.id,
+        action: "action_executed",
+        resource: "action",
+        resourceId: actionId,
+        metadata: { actionType: action.action_type, monthlyImpact: action.monthly_impact },
+      }), "ACTION_EXECUTED_AUDIT");
 
       return NextResponse.json({
         success: true,
@@ -194,13 +205,20 @@ export async function POST(req: NextRequest) {
         })
         .eq("id", actionId);
 
-      console.error(`[EXECUTE] Action ${actionId} failed: ${result.error}`);
+      log.error(`Action ${actionId} failed: ${result.error}`);
 
       fireAndForget(trackEvent("action_failed", user.id, {
         actionId,
         actionType: action.action_type,
         error: result.error,
       }), "ACTION_FAILED_TRACKING");
+      fireAndForget(logAudit({
+        userId: user.id,
+        action: "action_failed",
+        resource: "action",
+        resourceId: actionId,
+        metadata: { actionType: action.action_type, error: result.error },
+      }), "ACTION_FAILED_AUDIT");
 
       return NextResponse.json({
         success: false,
@@ -211,7 +229,7 @@ export async function POST(req: NextRequest) {
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : "Execution failed";
-    console.error(`[EXECUTE] Error: ${message}`);
+    log.error(`Error: ${message}`);
     return NextResponse.json(
       { error: message },
       { status: 500 }

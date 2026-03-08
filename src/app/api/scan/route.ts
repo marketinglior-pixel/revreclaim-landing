@@ -2,16 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { runFullScan } from "@/lib/stripe-scanner";
 import { runPlatformScan, type BillingPlatform } from "@/lib/platforms";
 import { validateApiKey, validateEmail } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/server";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
-import { canRunScan } from "@/lib/plan-limits";
-import type { PlanType } from "@/lib/plan-limits";
-import { sendScanCompleteEmail, sendScanLimitReachedEmail } from "@/lib/email";
-import { trackEvent } from "@/lib/analytics";
-import { generateRecoveryActions } from "@/lib/recovery/action-generator";
-import { canUseRecoveryActions } from "@/lib/plan-limits";
 import { guardMutation } from "@/lib/api-security";
-import { fireAndForget } from "@/lib/fire-and-forget";
+import { authenticateAndCheckPlan } from "@/lib/scan/authenticate";
+import { notifyScanStarted, notifyScanCompleted } from "@/lib/scan/notify";
+import { persistScanResults } from "@/lib/scan/persist";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("SCAN");
 
 export const maxDuration = 60; // Allow up to 60s for large accounts
 
@@ -20,13 +18,21 @@ export async function POST(req: NextRequest) {
   if (guard) return guard;
 
   try {
-    // Rate limit: 15 scans per IP per hour (higher limit for campaign traffic / shared IPs)
+    // Rate limit: 15 scans per IP per hour
     const ip = getClientIP(req);
-    const rl = await rateLimit({ name: "scan", maxRequests: 15, windowSeconds: 3600 }, ip);
+    const rl = await rateLimit(
+      { name: "scan", maxRequests: 15, windowSeconds: 3600 },
+      ip
+    );
     if (!rl.allowed) {
       return NextResponse.json(
-        { error: `Too many scans. Please try again in ${rl.retryAfterSeconds} seconds.` },
-        { status: 429, headers: { "Retry-After": String(rl.retryAfterSeconds) } }
+        {
+          error: `Too many scans. Please try again in ${rl.retryAfterSeconds} seconds.`,
+        },
+        {
+          status: 429,
+          headers: { "Retry-After": String(rl.retryAfterSeconds) },
+        }
       );
     }
 
@@ -35,17 +41,17 @@ export async function POST(req: NextRequest) {
 
     // Validate platform (default to stripe)
     const validPlatforms: BillingPlatform[] = ["stripe", "polar", "paddle"];
-    const platform: BillingPlatform = validPlatforms.includes(rawPlatform) ? rawPlatform : "stripe";
+    const platform: BillingPlatform = validPlatforms.includes(rawPlatform)
+      ? rawPlatform
+      : "stripe";
 
-    // Validate email
+    // Validate inputs
     if (!email || !validateEmail(email)) {
       return NextResponse.json(
         { error: "Please enter a valid email address." },
         { status: 400 }
       );
     }
-
-    // Validate API key format (platform-aware)
     const keyValidation = validateApiKey(apiKey, platform);
     if (!keyValidation.valid) {
       return NextResponse.json(
@@ -54,68 +60,26 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Plan enforcement: check if authenticated user can run a scan
-    let authenticatedUserId: string | null = null;
-    try {
-      const supabaseCheck = await createClient();
-      const { data: { user: authUser } } = await supabaseCheck.auth.getUser();
-      if (authUser) {
-        authenticatedUserId = authUser.id;
-        const { data: profile } = await supabaseCheck
-          .from("profiles")
-          .select("plan, scan_count_this_period, is_disabled")
-          .eq("id", authUser.id)
-          .single();
-
-        if (profile) {
-          // Kill switch: block disabled users instantly
-          if (profile.is_disabled) {
-            return NextResponse.json(
-              { error: "Your account has been suspended. Please contact support." },
-              { status: 403 }
-            );
-          }
-
-          const plan = (profile.plan || "free") as PlanType;
-          const scanCount = profile.scan_count_this_period ?? 0;
-          const scanCheck = canRunScan(plan, scanCount);
-          if (!scanCheck.allowed) {
-            fireAndForget(sendScanLimitReachedEmail(email), "SCAN_LIMIT_EMAIL");
-            return NextResponse.json(
-              { error: scanCheck.reason, errorType: "plan_limit" },
-              { status: 403 }
-            );
-          }
-        }
-      }
-    } catch {
-      // Plan check is non-blocking for unauthenticated users
+    // Authenticate + plan enforcement
+    const auth = await authenticateAndCheckPlan(email);
+    if (auth.blockResponse) {
+      return NextResponse.json(
+        {
+          error: auth.blockResponse.error,
+          ...(auth.blockResponse.errorType && {
+            errorType: auth.blockResponse.errorType,
+          }),
+        },
+        { status: auth.blockResponse.status }
+      );
     }
 
-    // Track scan started event
-    fireAndForget(trackEvent("scan_started", authenticatedUserId, { email }), "SCAN_STARTED_TRACKING");
-
-    // Log the scan attempt (NOT the API key or email)
-    console.log(
-      `[SCAN] Started for user=${authenticatedUserId || "anon"} platform=${platform} at ${new Date().toISOString()}`
+    log.info(
+      `Started for user=${auth.userId || "anon"} platform=${platform}`
     );
+    notifyScanStarted(auth.userId, email);
 
-    // Log to Google Sheets webhook
-    const webhookUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
-    if (webhookUrl) {
-      fireAndForget(fetch(webhookUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          source: "revreclaim-scan",
-          action: "scan_started",
-          timestamp: new Date().toISOString(),
-        }),
-      }), "SCAN_STARTED_WEBHOOK");
-    }
-
-    // Run the full scan — dispatch to correct platform scanner
+    // Run the scan
     let report;
     let emailMap = new Map<string, string>();
 
@@ -129,9 +93,8 @@ export async function POST(req: NextRequest) {
       emailMap = result.emailMap;
     }
 
-    // Ensure platform field is set
+    // Normalize platform fields
     if (!report.platform) report.platform = platform;
-    // Set platformUrl aliases for Stripe reports
     if (platform === "stripe") {
       for (const leak of report.leaks) {
         if (leak.stripeUrl && !leak.platformUrl) {
@@ -140,133 +103,46 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    console.log(
-      `[SCAN] Complete for user=${authenticatedUserId || "anon"}: ${report.summary.leaksFound} leaks found, $${(report.summary.mrrAtRisk / 100).toFixed(0)}/mo at risk`
+    log.info(
+      `Complete for user=${auth.userId || "anon"}: ${report.summary.leaksFound} leaks, $${(report.summary.mrrAtRisk / 100).toFixed(0)}/mo at risk`
     );
 
-    // Log completion to webhook
-    if (webhookUrl) {
-      fireAndForget(fetch(webhookUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          source: "revreclaim-scan",
-          action: "scan_completed",
-          leaksFound: report.summary.leaksFound,
-          mrrAtRisk: report.summary.mrrAtRisk,
-          healthScore: report.summary.healthScore,
-          timestamp: new Date().toISOString(),
-        }),
-      }), "SCAN_COMPLETED_WEBHOOK");
-    }
-
-    // If user is authenticated, save report to database and increment scan count
-    try {
-      const supabase = await createClient();
-      const userId = authenticatedUserId;
-
-      if (userId) {
-        const isTestMode = platform === "stripe"
-          ? apiKey.startsWith("rk_test_")
-          : false;
-        const { error: dbError } = await supabase.from("reports").insert({
-          id: report.id,
-          user_id: userId,
-          platform,
-          summary: JSON.parse(JSON.stringify(report.summary)),
-          categories: JSON.parse(JSON.stringify(report.categories)),
-          leaks: JSON.parse(JSON.stringify(report.leaks)),
-          is_test_mode: isTestMode,
-        });
-
-        if (dbError) {
-          console.error("[SCAN] Failed to save report to DB:", dbError.message);
-        } else {
-          console.log(`[SCAN] Report ${report.id} saved to DB for user ${userId}`);
-
-          // Track scan completed + send email (fire-and-forget)
-          fireAndForget(trackEvent("scan_completed", userId, {
-            reportId: report.id,
-            leaksFound: report.summary.leaksFound,
-            mrrAtRisk: report.summary.mrrAtRisk,
-            healthScore: report.summary.healthScore,
-          }), "SCAN_COMPLETED_TRACKING");
-          fireAndForget(sendScanCompleteEmail(email, report.summary, report.id), "SCAN_COMPLETE_EMAIL");
-
-          // Increment scan count (fire-and-forget)
-          supabase
-            .from("profiles")
-            .select("scan_count_this_period, plan")
-            .eq("id", userId)
-            .single()
-            .then(async ({ data: p }) => {
-              if (p) {
-                supabase
-                  .from("profiles")
-                  .update({ scan_count_this_period: (p.scan_count_this_period ?? 0) + 1 })
-                  .eq("id", userId)
-                  .then(() => {});
-
-                // Generate recovery actions for Pro/Team users
-                const userPlan = (p.plan || "free") as PlanType;
-                if (canUseRecoveryActions(userPlan).allowed && report.leaks.length > 0) {
-                  try {
-                    const actions = generateRecoveryActions(report, emailMap, platform);
-                    if (actions.length > 0) {
-                      const rows = actions.map((a) => ({
-                        user_id: userId,
-                        report_id: report.id,
-                        leak_id: a.leak_id,
-                        action_type: a.action_type as string,
-                        platform: a.platform,
-                        customer_email_encrypted: a.customer_email_encrypted,
-                        customer_id: a.customer_id,
-                        subscription_id: a.subscription_id,
-                        action_data: JSON.parse(JSON.stringify(a.action_data)),
-                        monthly_impact: a.monthly_impact,
-                      }));
-                      const { error: actionsErr } = await supabase
-                        .from("recovery_actions")
-                        .insert(rows);
-                      if (actionsErr) {
-                        console.error("[SCAN] Failed to insert recovery actions:", actionsErr.message);
-                      } else {
-                        console.log(`[SCAN] Generated ${actions.length} recovery actions for user ${userId}`);
-                      }
-                    }
-                  } catch (actionErr) {
-                    console.error("[SCAN] Action generation error:", actionErr);
-                  }
-                }
-              }
-            });
-        }
-      }
-    } catch (dbErr) {
-      // DB save is non-critical — log and continue
-      console.error("[SCAN] DB save error:", dbErr);
+    // Persist + generate recovery actions + detect impact (non-blocking for anon)
+    if (auth.userId) {
+      notifyScanCompleted(auth.userId, email, report);
+      // Don't await — DB save is non-critical
+      persistScanResults({
+        userId: auth.userId,
+        report,
+        platform,
+        apiKey,
+        emailMap,
+      }).catch((err) => log.error("Persist error:", err));
     }
 
     return NextResponse.json({ report });
   } catch (error) {
     const message =
-      error instanceof Error ? error.message : "Scan failed. Please try again.";
+      error instanceof Error
+        ? error.message
+        : "Scan failed. Please try again.";
 
-    console.error(`[SCAN ERROR] ${message}`);
+    log.error(`${message}`);
 
-    // Determine error type for the client
     let errorType = "scan_failed";
-    const lowerMessage = message.toLowerCase();
+    const lower = message.toLowerCase();
     if (
-      lowerMessage.includes("invalid api key") ||
-      lowerMessage.includes("invalid api token") ||
-      lowerMessage.includes("unauthorized") ||
-      lowerMessage.includes("authentication") ||
-      lowerMessage.includes("401")
+      lower.includes("invalid api key") ||
+      lower.includes("invalid api token") ||
+      lower.includes("unauthorized") ||
+      lower.includes("authentication") ||
+      lower.includes("401")
     ) {
       errorType = "invalid_key";
-    } else if (lowerMessage.includes("permissions") || lowerMessage.includes("forbidden")) {
+    } else if (
+      lower.includes("permissions") ||
+      lower.includes("forbidden")
+    ) {
       errorType = "insufficient_permissions";
     }
 

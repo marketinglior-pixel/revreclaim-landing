@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { guardMutation } from "@/lib/api-security";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("BILLING_PORTAL");
 
 export async function POST(req: NextRequest) {
   const guard = guardMutation(req);
@@ -49,7 +52,7 @@ export async function POST(req: NextRequest) {
       url: "https://polar.sh/purchases/subscriptions",
     });
   } catch (error) {
-    console.error("[BILLING PORTAL ERROR]", error);
+    log.error("Error:", error);
     return NextResponse.json(
       { error: "Failed to access billing portal" },
       { status: 500 }

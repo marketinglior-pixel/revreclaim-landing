@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
 import { guardMutation } from "@/lib/api-security";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("SUBSCRIBE");
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -37,7 +40,7 @@ export async function POST(req: NextRequest) {
         });
       } catch (err) {
         // Log but don't fail — Google Sheet fallback still works
-        console.error("[SUBSCRIBE] Resend audience error:", err);
+        log.error("Resend audience error:", err);
       }
     }
 
@@ -57,7 +60,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Log signup event (no PII in logs)
-    console.log(`[SIGNUP] New subscriber (plan: ${plan || "general"}) at ${new Date().toISOString()}`);
+    log.info(`New subscriber (plan: ${plan || "general"}) at ${new Date().toISOString()}`);
 
     return NextResponse.json({ success: true });
   } catch {

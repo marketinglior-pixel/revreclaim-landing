@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { ACTION_TYPE_LABELS, ACTION_TYPE_DESCRIPTIONS } from "@/lib/recovery/types";
 import type { ActionType, ActionStatus } from "@/lib/recovery/types";
 
@@ -84,6 +85,47 @@ function maskCustomerId(id: string): string {
   return id.slice(0, 4) + "•••" + id.slice(-4);
 }
 
+/** Extract human-readable preview details from action_data */
+function getPreviewDetails(action: ActionCardData): { label: string; value: string }[] {
+  const details: { label: string; value: string }[] = [];
+  const data = action.action_data;
+
+  switch (action.action_type) {
+    case "send_dunning_email": {
+      const templateNames: Record<string, string> = {
+        failed_payment: "Failed Payment Reminder",
+        expiring_card: "Expiring Card Warning",
+        payment_update: "Payment Method Update Request",
+      };
+      if (data.template) details.push({ label: "Email Template", value: templateNames[data.template as string] || String(data.template) });
+      if (data.customerName) details.push({ label: "Customer Name", value: String(data.customerName) });
+      if (data.amountCents) details.push({ label: "Amount Due", value: `$${(Number(data.amountCents) / 100).toFixed(2)}` });
+      if (data.invoiceId) details.push({ label: "Invoice", value: maskCustomerId(String(data.invoiceId)) });
+      if (data.cardLast4) details.push({ label: "Card", value: `${data.cardBrand || "Card"} ••••${data.cardLast4}` });
+      if (data.expMonth && data.expYear) details.push({ label: "Card Expires", value: `${data.expMonth}/${data.expYear}` });
+      break;
+    }
+    case "retry_payment": {
+      if (data.invoiceId) details.push({ label: "Invoice", value: maskCustomerId(String(data.invoiceId)) });
+      if (data.amountCents) details.push({ label: "Amount", value: `$${(Number(data.amountCents) / 100).toFixed(2)}` });
+      break;
+    }
+    case "remove_coupon": {
+      if (data.couponName) details.push({ label: "Coupon", value: String(data.couponName) });
+      else if (data.couponId) details.push({ label: "Coupon ID", value: maskCustomerId(String(data.couponId)) });
+      if (data.subscriptionId) details.push({ label: "Subscription", value: maskCustomerId(String(data.subscriptionId)) });
+      break;
+    }
+    case "cancel_subscription": {
+      if (data.subscriptionId) details.push({ label: "Subscription", value: maskCustomerId(String(data.subscriptionId)) });
+      if (data.reason) details.push({ label: "Reason", value: String(data.reason) });
+      break;
+    }
+  }
+
+  return details;
+}
+
 export function ActionCard({
   action,
   selected,
@@ -94,8 +136,8 @@ export function ActionCard({
   onRetry,
   canApprove,
   executing,
-  remaining,
 }: ActionCardProps) {
+  const [showPreview, setShowPreview] = useState(false);
   const badge = STATUS_BADGE[action.status];
   const label = ACTION_TYPE_LABELS[action.action_type] || action.action_type;
   const description =
@@ -106,6 +148,7 @@ export function ActionCard({
     month: "short",
     day: "numeric",
   });
+  const previewDetails = getPreviewDetails(action);
 
   return (
     <div
@@ -168,6 +211,32 @@ export function ActionCard({
           {action.status === "failed" && action.error_message && (
             <div className="mt-2 rounded-lg bg-danger/10 border border-danger/20 px-3 py-2 text-xs text-danger">
               {action.error_message}
+            </div>
+          )}
+
+          {/* Preview toggle */}
+          {previewDetails.length > 0 && (
+            <button
+              onClick={() => setShowPreview(!showPreview)}
+              className="mt-2 flex items-center gap-1 text-[11px] text-text-dim hover:text-text-muted transition"
+            >
+              <svg className={`h-3 w-3 transition-transform ${showPreview ? "rotate-90" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+              {showPreview ? "Hide details" : "Preview details"}
+            </button>
+          )}
+
+          {/* Expandable preview */}
+          {showPreview && previewDetails.length > 0 && (
+            <div className="mt-2 rounded-lg bg-surface-dim border border-border px-3 py-2.5 space-y-1.5">
+              <p className="text-[10px] uppercase tracking-wider text-text-dim font-medium mb-1.5">What this action will do</p>
+              {previewDetails.map((detail) => (
+                <div key={detail.label} className="flex justify-between text-xs">
+                  <span className="text-text-muted">{detail.label}</span>
+                  <span className="text-white font-mono text-[11px]">{detail.value}</span>
+                </div>
+              ))}
             </div>
           )}
         </div>

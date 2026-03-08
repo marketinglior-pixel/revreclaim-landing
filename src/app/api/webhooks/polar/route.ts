@@ -12,6 +12,9 @@ import {
 } from "@/lib/email";
 import { trackEvent } from "@/lib/analytics";
 import { fireAndForget } from "@/lib/fire-and-forget";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("POLAR_WEBHOOK");
 
 export const dynamic = "force-dynamic";
 
@@ -40,7 +43,7 @@ export async function POST(req: NextRequest) {
         webhookSignature
       )
     ) {
-      console.error("[POLAR WEBHOOK] Signature verification failed");
+      log.error("Signature verification failed");
       return NextResponse.json(
         { error: "Invalid signature" },
         { status: 400 }
@@ -51,7 +54,7 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     const message =
       err instanceof Error ? err.message : "Webhook verification failed";
-    console.error("[POLAR WEBHOOK] Error:", message);
+    log.error("Error:", message);
     return NextResponse.json({ error: message }, { status: 400 });
   }
 
@@ -67,28 +70,24 @@ export async function POST(req: NextRequest) {
       // ---------------------------------------------------------------
       case "subscription.created": {
         if (!userId) {
-          console.error(
-            "[POLAR WEBHOOK] Missing user_id in subscription.created"
-          );
+          log.error("Missing user_id in subscription.created");
           break;
         }
 
         const productId = subscriptionData.product_id;
         if (!productId) {
-          console.error("[POLAR WEBHOOK] Missing product_id");
+          log.error("Missing product_id");
           break;
         }
 
         const plan = getPlanFromProductId(productId);
         if (!plan) {
-          console.error(
-            `[POLAR WEBHOOK] Unknown product_id: ${productId}`
-          );
+          log.error(`Unknown product_id: ${productId}`);
           break;
         }
 
-        console.log(
-          `[POLAR WEBHOOK] Subscription created: user=${userId}, plan=${plan}`
+        log.info(
+          `Subscription created: user=${userId}, plan=${plan}`
         );
 
         await supabase
@@ -156,15 +155,13 @@ export async function POST(req: NextRequest) {
                   })
                   .eq("id", userId);
 
-                console.log(
-                  `[POLAR WEBHOOK] Subscription updated via metadata: user=${userId}, plan=${plan}`
+                log.info(
+                  `Subscription updated via metadata: user=${userId}, plan=${plan}`
                 );
               }
             }
           } else {
-            console.error(
-              `[POLAR WEBHOOK] No profile found for subscription: ${subscriptionId}`
-            );
+            log.error(`No profile found for subscription: ${subscriptionId}`);
           }
           break;
         }
@@ -178,8 +175,8 @@ export async function POST(req: NextRequest) {
           );
           if (newPlan && newPlan !== profile.plan) {
             updates.plan = newPlan;
-            console.log(
-              `[POLAR WEBHOOK] Plan changed: user=${profile.id}, ${profile.plan} -> ${newPlan}`
+            log.info(
+              `Plan changed: user=${profile.id}, ${profile.plan} -> ${newPlan}`
             );
           }
         }
@@ -200,8 +197,8 @@ export async function POST(req: NextRequest) {
           updates.plan = "free";
           updates.payment_subscription_id = null;
           updates.scan_count_this_period = 0;
-          console.log(
-            `[POLAR WEBHOOK] Subscription ${status}: user=${profile.id}, reverted to free`
+          log.info(
+            `Subscription ${status}: user=${profile.id}, reverted to free`
           );
           fireAndForget(trackEvent("plan_cancelled", profile.id, {
             reason: status,
@@ -243,8 +240,8 @@ export async function POST(req: NextRequest) {
             })
             .eq("id", profile.id);
 
-          console.log(
-            `[POLAR WEBHOOK] Subscription active: user=${profile.id}, period reset`
+          log.info(
+            `Subscription active: user=${profile.id}, period reset`
           );
         }
 
@@ -266,8 +263,8 @@ export async function POST(req: NextRequest) {
         if (profile) {
           // If cancel_at_period_end, don't downgrade yet
           if (subscriptionData.cancel_at_period_end) {
-            console.log(
-              `[POLAR WEBHOOK] Subscription will cancel at period end: user=${profile.id}`
+            log.info(
+              `Subscription will cancel at period end: user=${profile.id}`
             );
           } else {
             await supabase
@@ -279,8 +276,8 @@ export async function POST(req: NextRequest) {
               })
               .eq("id", profile.id);
 
-            console.log(
-              `[POLAR WEBHOOK] Subscription canceled immediately: user=${profile.id}`
+            log.info(
+              `Subscription canceled immediately: user=${profile.id}`
             );
           }
 
@@ -305,8 +302,8 @@ export async function POST(req: NextRequest) {
           .single();
 
         if (profile) {
-          console.log(
-            `[POLAR WEBHOOK] Subscription reactivated: user=${profile.id}`
+          log.info(
+            `Subscription reactivated: user=${profile.id}`
           );
           fireAndForget(trackEvent("plan_reactivated", profile.id, {}), "WEBHOOK_PLAN_REACTIVATED_TRACKING");
         }
@@ -340,8 +337,8 @@ export async function POST(req: NextRequest) {
             fireAndForget(sendPaymentFailedEmail(profile.email), "WEBHOOK_PAYMENT_FAILED_EMAIL");
           }
 
-          console.log(
-            `[POLAR WEBHOOK] Subscription revoked: user=${profile.id}`
+          log.info(
+            `Subscription revoked: user=${profile.id}`
           );
         }
 
@@ -349,13 +346,10 @@ export async function POST(req: NextRequest) {
       }
 
       default:
-        console.log(`[POLAR WEBHOOK] Unhandled event: ${eventType}`);
+        log.info(`Unhandled event: ${eventType}`);
     }
   } catch (error) {
-    console.error(
-      `[POLAR WEBHOOK] Error handling ${eventType}:`,
-      error
-    );
+    log.error(`Error handling ${eventType}:`, error);
     Sentry.captureException(error, {
       tags: { webhook: "polar", eventType },
     });

@@ -17,6 +17,23 @@ const DESTRUCTIVE_WARNINGS: Partial<Record<ActionType, string>> = {
     "This will remove the discount from the subscription. The customer will be charged full price starting with their next billing cycle.",
 };
 
+/** Extract action-specific preview details for the confirmation dialog */
+function getConfirmDetails(action: ActionCardData): { label: string; value: string }[] {
+  const details: { label: string; value: string }[] = [];
+  const data = action.action_data;
+
+  if (action.action_type === "remove_coupon") {
+    if (data.couponName) details.push({ label: "Coupon", value: String(data.couponName) });
+    else if (data.couponId) details.push({ label: "Coupon ID", value: String(data.couponId) });
+  }
+
+  if (action.action_type === "cancel_subscription") {
+    if (data.reason) details.push({ label: "Reason", value: String(data.reason) });
+  }
+
+  return details;
+}
+
 interface ConfirmActionDialogProps {
   action: ActionCardData | null;
   onConfirm: () => void;
@@ -40,6 +57,7 @@ export function ConfirmActionDialog({
     action.monthly_impact > 0
       ? `$${(action.monthly_impact / 100).toFixed(0)}/mo`
       : null;
+  const confirmDetails = getConfirmDetails(action);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -116,6 +134,12 @@ export function ConfirmActionDialog({
               <span className="text-text-muted">Platform</span>
               <span className="text-white capitalize">{action.platform}</span>
             </div>
+            {confirmDetails.map((detail) => (
+              <div key={detail.label} className="flex justify-between">
+                <span className="text-text-muted">{detail.label}</span>
+                <span className="text-white">{detail.value}</span>
+              </div>
+            ))}
           </div>
         </div>
 

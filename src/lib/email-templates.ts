@@ -236,6 +236,75 @@ export function upgradeNudgeEmailHtml(mrrAtRisk: number): string {
   `);
 }
 
+export function socialProofEmailHtml(): string {
+  return baseLayout("Here's what other founders found", `
+    <h1 style="color:white;font-size:24px;margin:0 0 16px;">SaaS founders are recovering thousands</h1>
+    <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
+      Did you know? The average SaaS company has 5-8% of MRR leaking through billing gaps.
+      Here's what real founders found with RevReclaim:
+    </p>
+
+    <!-- Social proof stats -->
+    <div style="margin-bottom:24px;">
+      <div style="padding:16px;background:#0A0A0A;border:1px solid #2A2A2A;border-radius:12px;margin-bottom:12px;">
+        <div style="color:${BRAND_COLOR};font-size:20px;font-weight:bold;margin-bottom:4px;">$4,200/mo</div>
+        <div style="color:#CCC;font-size:14px;">Average MRR at risk found per scan</div>
+      </div>
+      <div style="padding:16px;background:#0A0A0A;border:1px solid #2A2A2A;border-radius:12px;margin-bottom:12px;">
+        <div style="color:${BRAND_COLOR};font-size:20px;font-weight:bold;margin-bottom:4px;">12 leaks</div>
+        <div style="color:#CCC;font-size:14px;">Average number of billing leaks per account</div>
+      </div>
+      <div style="padding:16px;background:#0A0A0A;border:1px solid #2A2A2A;border-radius:12px;">
+        <div style="color:${BRAND_COLOR};font-size:20px;font-weight:bold;margin-bottom:4px;">Under 2 min</div>
+        <div style="color:#CCC;font-size:14px;">Time to run a complete billing health scan</div>
+      </div>
+    </div>
+
+    <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
+      Your scan is free and read-only. We never store your API key.
+    </p>
+
+    <a href="${BASE_URL}/scan" style="display:inline-block;background:${BRAND_COLOR};color:#000;font-weight:bold;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;">
+      Find Your Leaks Now
+    </a>
+  `);
+}
+
+export function lastChanceEmailHtml(mrrAtRisk: number): string {
+  const amount = mrrAtRisk > 0 ? formatCentsAsDollars(mrrAtRisk) : "$2,000+";
+
+  return baseLayout("Your leaks are growing", `
+    <h1 style="color:white;font-size:24px;margin:0 0 16px;">Two weeks of unchecked billing leaks</h1>
+    <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 16px;">
+      It's been 14 days since you found <strong style="color:#EF4444;">${amount}/month</strong> in revenue leaks.
+      Without automated monitoring, new leaks appear every week — failed payments, expired cards,
+      ghost subscriptions.
+    </p>
+
+    <div style="background:#0A0A0A;border:1px solid #EF444430;border-radius:12px;padding:20px;margin-bottom:24px;">
+      <div style="color:#EF4444;font-weight:bold;font-size:18px;margin-bottom:4px;">
+        ~${formatCentsAsDollars(mrrAtRisk * 12)} lost per year
+      </div>
+      <div style="color:#999;font-size:14px;">
+        That's how much your billing leaks cost if left unchecked
+      </div>
+    </div>
+
+    <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
+      RevReclaim Pro runs automated weekly scans and alerts you instantly when new leaks appear.
+      Most founders recover their subscription cost within the first scan.
+    </p>
+
+    <a href="${BASE_URL}/#pricing" style="display:inline-block;background:${BRAND_COLOR};color:#000;font-weight:bold;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;">
+      Start Recovering Revenue — $299/mo
+    </a>
+
+    <p style="color:#666;font-size:13px;margin-top:16px;">
+      Or <a href="${BASE_URL}/scan" style="color:${BRAND_COLOR};">run another free scan</a> to see what changed.
+    </p>
+  `);
+}
+
 export function teamInviteEmailHtml(inviterEmail: string): string {
   return baseLayout("You've been invited to RevReclaim", `
     <h1 style="color:white;font-size:24px;margin:0 0 16px;">Team invite</h1>

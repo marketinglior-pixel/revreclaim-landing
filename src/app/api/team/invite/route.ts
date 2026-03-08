@@ -7,6 +7,9 @@ import { trackEvent } from "@/lib/analytics";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
 import { guardMutation } from "@/lib/api-security";
 import { fireAndForget } from "@/lib/fire-and-forget";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("TEAM_INVITE");
 
 export async function POST(req: NextRequest) {
   const guard = guardMutation(req);
@@ -112,7 +115,7 @@ export async function POST(req: NextRequest) {
       });
 
     if (insertError) {
-      console.error("[TEAM INVITE] Insert error:", insertError);
+      log.error("Insert error:", insertError);
       return NextResponse.json(
         { error: "Failed to create invite." },
         { status: 500 }
@@ -129,7 +132,7 @@ export async function POST(req: NextRequest) {
         : "Invite sent! They'll join your team when they sign up.",
     });
   } catch (error) {
-    console.error("[TEAM INVITE ERROR]", error);
+    log.error("Error:", error);
     return NextResponse.json(
       { error: "Failed to send invite." },
       { status: 500 }

@@ -12,6 +12,9 @@
 
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("RATE_LIMIT");
 
 // ---------------------------------------------------------------------------
 // Types (unchanged — all callers use these)
@@ -158,8 +161,8 @@ export async function rateLimit(
       };
     } catch (err) {
       // Redis failure — fall back to in-memory so we never block legitimate users
-      console.error(
-        "[RATE_LIMIT] Redis error, falling back to in-memory:",
+      log.error(
+        "Redis error, falling back to in-memory:",
         err instanceof Error ? err.message : String(err)
       );
     }

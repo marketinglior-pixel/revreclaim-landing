@@ -3,6 +3,9 @@ import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
 import { guardMutation } from "@/lib/api-security";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("ACCOUNT");
 
 /**
  * DELETE /api/account
@@ -80,18 +83,18 @@ export async function DELETE(req: NextRequest) {
     // 4. Delete the auth user
     const { error: deleteError } = await adminClient.auth.admin.deleteUser(userId);
     if (deleteError) {
-      console.error("[ACCOUNT] Error deleting auth user:", deleteError.message);
+      log.error("Error deleting auth user:", deleteError.message);
       return NextResponse.json(
         { error: "Failed to delete account. Please contact support." },
         { status: 500 }
       );
     }
 
-    console.log(`[ACCOUNT] Deleted user ${userId}`);
+    log.info(`Deleted user ${userId}`);
 
     return NextResponse.json({ message: "Account deleted successfully." });
   } catch (err) {
-    console.error("[ACCOUNT] Unexpected error:", err);
+    log.error("Unexpected error:", err);
     return NextResponse.json(
       { error: "Something went wrong. Please try again." },
       { status: 500 }

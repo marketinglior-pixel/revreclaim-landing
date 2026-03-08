@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("STATS");
 
 /**
  * Public stats endpoint — returns total scan count for social proof.
@@ -29,7 +32,7 @@ export async function GET() {
       .select("*", { count: "exact", head: true });
 
     if (error) {
-      console.error("[STATS] Error fetching count:", error.message);
+      log.error("Error fetching count:", error.message);
       return NextResponse.json(
         { totalScans: 0 },
         {
@@ -49,7 +52,7 @@ export async function GET() {
       }
     );
   } catch (err) {
-    console.error("[STATS] Unexpected error:", err);
+    log.error("Unexpected error:", err);
     return NextResponse.json(
       { totalScans: 0 },
       {

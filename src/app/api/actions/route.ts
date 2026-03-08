@@ -4,6 +4,11 @@ import { canUseRecoveryActions } from "@/lib/plan-limits";
 import type { PlanType } from "@/lib/plan-limits";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
 import { guardMutation } from "@/lib/api-security";
+import { createLogger } from "@/lib/logger";
+import { logAudit } from "@/lib/audit-log";
+import { fireAndForget } from "@/lib/fire-and-forget";
+
+const log = createLogger("ACTIONS");
 
 /**
  * GET /api/actions — Fetch user's recovery actions.
@@ -45,7 +50,7 @@ export async function GET(req: NextRequest) {
     const { data: actions, error, count } = await query;
 
     if (error) {
-      console.error("[ACTIONS] Fetch error:", error.message);
+      log.error("Fetch error:", error.message);
       return NextResponse.json(
         { error: "Failed to fetch actions" },
         { status: 500 }
@@ -79,7 +84,7 @@ export async function GET(req: NextRequest) {
       remaining: canUse.remaining,
     });
   } catch (error) {
-    console.error("[ACTIONS] Error:", error);
+    log.error("Error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -201,23 +206,38 @@ export async function POST(req: NextRequest) {
       .select("id, status");
 
     if (updateError) {
-      console.error("[ACTIONS] Update error:", updateError.message);
+      log.error("Update error:", updateError.message);
       return NextResponse.json(
         { error: "Failed to update actions" },
         { status: 500 }
       );
     }
 
-    console.log(
-      `[ACTIONS] User ${user.id} ${decision}d ${updated?.length || 0} actions`
+    log.info(
+      `User ${user.id} ${decision}d ${updated?.length || 0} actions`
     );
+
+    // Audit log each updated action
+    const auditAction = decision === "approve" ? "action_approved" as const : "action_dismissed" as const;
+    for (const item of updated || []) {
+      fireAndForget(
+        logAudit({
+          userId: user.id,
+          action: decision === "retry" ? "action_approved" : auditAction,
+          resource: "action",
+          resourceId: item.id,
+          metadata: { decision },
+        }),
+        "ACTION_DECISION_AUDIT"
+      );
+    }
 
     return NextResponse.json({
       updated: updated?.length || 0,
       decision,
     });
   } catch (error) {
-    console.error("[ACTIONS] Error:", error);
+    log.error("Error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

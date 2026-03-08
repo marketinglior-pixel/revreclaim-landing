@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("TEAM_ACCEPT");
 
 /**
  * GET /api/team/accept — Accept a team invite (called when a user logs in).
@@ -24,7 +27,7 @@ export async function GET() {
       .eq("invite_status", "pending");
 
     if (fetchError) {
-      console.error("[TEAM ACCEPT] Fetch error:", fetchError);
+      log.error("Fetch error:", fetchError);
       return NextResponse.json(
         { error: "Failed to check invites." },
         { status: 500 }
@@ -47,7 +50,7 @@ export async function GET() {
       .eq("invite_status", "pending");
 
     if (updateError) {
-      console.error("[TEAM ACCEPT] Update error:", updateError);
+      log.error("Update error:", updateError);
       return NextResponse.json(
         { error: "Failed to accept invites." },
         { status: 500 }
@@ -59,7 +62,7 @@ export async function GET() {
       accepted: pendingInvites.length,
     });
   } catch (error) {
-    console.error("[TEAM ACCEPT ERROR]", error);
+    log.error("Error:", error);
     return NextResponse.json(
       { error: "Failed to accept invites." },
       { status: 500 }

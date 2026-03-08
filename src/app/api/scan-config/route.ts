@@ -10,6 +10,9 @@ import { guardMutation } from "@/lib/api-security";
 import { fireAndForget } from "@/lib/fire-and-forget";
 import { calculateNextScan } from "@/lib/scan-utils";
 import type { Database } from "@/lib/supabase/types";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("SCAN_CONFIG");
 
 type ScanConfigUpdate = Database["public"]["Tables"]["scan_configs"]["Update"];
 
@@ -165,7 +168,7 @@ export async function POST(req: NextRequest) {
       });
     }
   } catch (error) {
-    console.error("[SCAN-CONFIG ERROR]", error);
+    log.error("Error:", error);
     return NextResponse.json(
       { error: "Failed to save configuration" },
       { status: 500 }
@@ -192,7 +195,7 @@ export async function GET() {
 
     return NextResponse.json(data || null);
   } catch (error) {
-    console.error("[SCAN-CONFIG GET ERROR]", error);
+    log.error("GET error:", error);
     return NextResponse.json(
       { error: "Failed to load configuration" },
       { status: 500 }
@@ -223,7 +226,7 @@ export async function DELETE(req: NextRequest) {
 
     return NextResponse.json({ message: "Configuration deleted." });
   } catch (error) {
-    console.error("[SCAN-CONFIG DELETE ERROR]", error);
+    log.error("DELETE error:", error);
     return NextResponse.json(
       { error: "Failed to delete configuration" },
       { status: 500 }

@@ -22,6 +22,7 @@ export interface Database {
           plan_period_end: string | null;
           scan_count_this_period: number;
           is_disabled: boolean;
+          notification_preferences: Json | null;
           created_at: string;
           updated_at: string;
         };
@@ -37,6 +38,7 @@ export interface Database {
           plan_period_end?: string | null;
           scan_count_this_period?: number;
           is_disabled?: boolean;
+          notification_preferences?: Json | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -52,6 +54,7 @@ export interface Database {
           plan_period_end?: string | null;
           scan_count_this_period?: number;
           is_disabled?: boolean;
+          notification_preferences?: Json | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -120,6 +123,7 @@ export interface Database {
           is_active: boolean;
           last_scan_at: string | null;
           next_scan_at: string | null;
+          slack_webhook_url: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -133,6 +137,7 @@ export interface Database {
           is_active?: boolean;
           last_scan_at?: string | null;
           next_scan_at?: string | null;
+          slack_webhook_url?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -146,6 +151,7 @@ export interface Database {
           is_active?: boolean;
           last_scan_at?: string | null;
           next_scan_at?: string | null;
+          slack_webhook_url?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -272,6 +278,44 @@ export interface Database {
           },
         ];
       };
+      leak_dismissals: {
+        Row: {
+          id: string;
+          user_id: string;
+          customer_id: string;
+          product_id: string | null;
+          leak_type: string;
+          reason: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          customer_id: string;
+          product_id?: string | null;
+          leak_type: string;
+          reason?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          customer_id?: string;
+          product_id?: string | null;
+          leak_type?: string;
+          reason?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "leak_dismissals_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       analytics_events: {
         Row: {
           id: string;
@@ -297,6 +341,44 @@ export interface Database {
         Relationships: [
           {
             foreignKeyName: "analytics_events_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      audit_log: {
+        Row: {
+          id: string;
+          user_id: string;
+          action: string;
+          resource: string | null;
+          resource_id: string | null;
+          metadata: Json | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          action: string;
+          resource?: string | null;
+          resource_id?: string | null;
+          metadata?: Json | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          action?: string;
+          resource?: string | null;
+          resource_id?: string | null;
+          metadata?: Json | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "audit_log_user_id_fkey";
             columns: ["user_id"];
             isOneToOne: false;
             referencedRelation: "profiles";

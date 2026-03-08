@@ -10,6 +10,8 @@ import AutoScanBanner from "@/components/dashboard/AutoScanBanner";
 import RecoveryActionsBanner from "@/components/dashboard/RecoveryActionsBanner";
 import { ScanReport } from "@/lib/types";
 import ConversionTracker from "@/components/dashboard/ConversionTracker";
+import TrendChart from "@/components/dashboard/TrendChart";
+import { extractTrends } from "@/lib/report-trends";
 
 const PLAN_LABELS: Record<string, string> = {
   free: "Revenue X-Ray",
@@ -124,6 +126,11 @@ export default async function DashboardPage() {
           categories={latestReport.categories}
           reportId={latestReport.id}
         />
+      )}
+
+      {/* Trend chart — show when user has 2+ reports */}
+      {reports.length >= 2 && (
+        <TrendChart points={extractTrends(reports)} />
       )}
 
       {/* Empty state — Hormozi-style compelling CTA */}

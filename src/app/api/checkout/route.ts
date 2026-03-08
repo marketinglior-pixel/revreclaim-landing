@@ -3,6 +3,11 @@ import { createClient } from "@/lib/supabase/server";
 import { createCheckout } from "@/lib/polar";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
 import { guardMutation } from "@/lib/api-security";
+import { createLogger } from "@/lib/logger";
+import { logAudit } from "@/lib/audit-log";
+import { fireAndForget } from "@/lib/fire-and-forget";
+
+const log = createLogger("CHECKOUT");
 
 export async function POST(req: NextRequest) {
   const guard = guardMutation(req);
@@ -32,7 +37,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { plan, discountId } = body;
+    const { plan, discountId, billing } = body;
 
     if (!plan || !["pro", "team"].includes(plan)) {
       return NextResponse.json(
@@ -40,6 +45,9 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    const billingInterval =
+      billing === "annual" ? "annual" : "monthly";
 
     // Check if user is already on this plan
     const { data: profile } = await supabase
@@ -66,12 +74,23 @@ export async function POST(req: NextRequest) {
       email: user.email!,
       plan: plan as "pro" | "team",
       baseUrl,
+      billing: billingInterval as "monthly" | "annual",
       ...(discountId && typeof discountId === "string" ? { discountId } : {}),
     });
 
+    fireAndForget(
+      logAudit({
+        userId: user.id,
+        action: "plan_upgraded",
+        resource: "subscription",
+        metadata: { plan, fromPlan: profile?.plan || "free" },
+      }),
+      "CHECKOUT_AUDIT"
+    );
+
     return NextResponse.json({ url });
   } catch (error) {
-    console.error("[CHECKOUT ERROR]", error);
+    log.error("Error:", error);
     return NextResponse.json(
       { error: "Failed to create checkout session. Please try again." },
       { status: 500 }

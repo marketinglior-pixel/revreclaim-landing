@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { BillingPlatform } from "@/lib/platforms/types";
 import { PLATFORM_LABELS } from "@/lib/platforms/types";
+import { CancelSubscriptionDialog } from "@/components/dashboard/CancelSubscriptionDialog";
+import NotificationPreferences from "@/components/dashboard/NotificationPreferences";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -40,49 +42,65 @@ export default function SettingsPage() {
   const [emailMessage, setEmailMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [currentEmail, setCurrentEmail] = useState("");
 
+  // Cancel Subscription state
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [cancelLoading, setCancelLoading] = useState(false);
+
+  // Slack Webhook state
+  const [slackWebhookUrl, setSlackWebhookUrl] = useState("");
+  const [hasExistingWebhook, setHasExistingWebhook] = useState(false);
+  const [slackSaving, setSlackSaving] = useState(false);
+  const [slackMessage, setSlackMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
   // Delete Account state
   const [deleting, setDeleting] = useState(false);
   const [deleteMessage, setDeleteMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+    async function loadConfig() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || cancelled) return;
+
+      setCurrentEmail(user.email || "");
+
+      // Fetch plan
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("plan")
+        .eq("id", user.id)
+        .single();
+
+      if (cancelled) return;
+      if (profile) {
+        setUserPlan((profile as Record<string, unknown>).plan as string || "free");
+      }
+
+      const { data } = await supabase
+        .from("scan_configs")
+        .select("scan_frequency, is_active, platform, action_api_key_encrypted, slack_webhook_url")
+        .eq("user_id", user.id)
+        .single();
+
+      if (cancelled) return;
+      if (data) {
+        setHasExistingConfig(true);
+        setFrequency(data.scan_frequency || "weekly");
+        setIsActive(data.is_active);
+        if (data.platform) setPlatform(data.platform as BillingPlatform);
+        setApiKey("");
+        setHasExistingActionKey(!!data.action_api_key_encrypted);
+        if (data.slack_webhook_url) {
+          setHasExistingWebhook(true);
+        }
+      }
+
+      setLoading(false);
+    }
     loadConfig();
+    return () => { cancelled = true; };
   }, []);
-
-  async function loadConfig() {
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    setCurrentEmail(user.email || "");
-
-    // Fetch plan
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("plan")
-      .eq("id", user.id)
-      .single();
-
-    if (profile) {
-      setUserPlan((profile as Record<string, unknown>).plan as string || "free");
-    }
-
-    const { data } = await supabase
-      .from("scan_configs")
-      .select("scan_frequency, is_active, platform, action_api_key_encrypted")
-      .eq("user_id", user.id)
-      .single();
-
-    if (data) {
-      setHasExistingConfig(true);
-      setFrequency(data.scan_frequency || "weekly");
-      setIsActive(data.is_active);
-      if (data.platform) setPlatform(data.platform as BillingPlatform);
-      setApiKey("");
-      setHasExistingActionKey(!!data.action_api_key_encrypted);
-    }
-
-    setLoading(false);
-  }
 
   async function handleManageBilling() {
     setBillingLoading(true);
@@ -292,6 +310,127 @@ export default function SettingsPage() {
     setEmailSaving(false);
   }
 
+  async function handleCancelSubscription() {
+    setCancelLoading(true);
+    try {
+      // Redirect to Polar billing portal for cancellation
+      const res = await fetch("/api/billing-portal", { method: "POST" });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch {
+      setCancelLoading(false);
+      setShowCancelDialog(false);
+    }
+  }
+
+  async function handleSaveSlackWebhook(e: React.FormEvent) {
+    e.preventDefault();
+    setSlackSaving(true);
+    setSlackMessage(null);
+
+    // Validate URL format
+    try {
+      const parsed = new URL(slackWebhookUrl);
+      if (parsed.hostname !== "hooks.slack.com" || !parsed.pathname.startsWith("/services/")) {
+        setSlackMessage({ type: "error", text: "Please enter a valid Slack webhook URL (https://hooks.slack.com/services/...)" });
+        setSlackSaving(false);
+        return;
+      }
+    } catch {
+      setSlackMessage({ type: "error", text: "Please enter a valid URL." });
+      setSlackSaving(false);
+      return;
+    }
+
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase
+        .from("scan_configs")
+        .update({ slack_webhook_url: slackWebhookUrl })
+        .eq("user_id", user.id);
+
+      if (error) {
+        setSlackMessage({ type: "error", text: "Failed to save webhook URL." });
+      } else {
+        setSlackMessage({ type: "success", text: "Slack webhook saved. You'll receive notifications after each scan." });
+        setHasExistingWebhook(true);
+        setSlackWebhookUrl("");
+      }
+    } catch {
+      setSlackMessage({ type: "error", text: "Failed to save. Please try again." });
+    }
+
+    setSlackSaving(false);
+  }
+
+  async function handleRemoveSlackWebhook() {
+    setSlackSaving(true);
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      await supabase
+        .from("scan_configs")
+        .update({ slack_webhook_url: null })
+        .eq("user_id", user.id);
+
+      setHasExistingWebhook(false);
+      setSlackWebhookUrl("");
+      setSlackMessage({ type: "success", text: "Slack webhook removed." });
+    } catch {
+      setSlackMessage({ type: "error", text: "Failed to remove. Please try again." });
+    }
+    setSlackSaving(false);
+  }
+
+  async function handleTestSlackWebhook() {
+    setSlackSaving(true);
+    setSlackMessage(null);
+
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: config } = await supabase
+        .from("scan_configs")
+        .select("slack_webhook_url")
+        .eq("user_id", user.id)
+        .single();
+
+      if (!config?.slack_webhook_url) {
+        setSlackMessage({ type: "error", text: "No webhook URL configured." });
+        setSlackSaving(false);
+        return;
+      }
+
+      // Send test message
+      const res = await fetch(config.slack_webhook_url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: "✅ *RevReclaim connected!*\nYou'll receive scan notifications in this channel.",
+        }),
+      });
+
+      if (res.ok) {
+        setSlackMessage({ type: "success", text: "Test message sent! Check your Slack channel." });
+      } else {
+        setSlackMessage({ type: "error", text: "Failed to send test message. Please check your webhook URL." });
+      }
+    } catch {
+      setSlackMessage({ type: "error", text: "Failed to send test message." });
+    }
+
+    setSlackSaving(false);
+  }
+
   async function handleDeleteAccount() {
     if (!confirm("Are you sure you want to delete your account? This action is permanent and cannot be undone. All your data, reports, and settings will be permanently deleted.")) {
       return;
@@ -351,15 +490,33 @@ export default function SettingsPage() {
                 Manage your subscription, update payment method, or change plans.
               </p>
             </div>
-            <button
-              onClick={handleManageBilling}
-              disabled={billingLoading}
-              className="px-5 py-2.5 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition disabled:opacity-50 cursor-pointer text-sm shrink-0"
-            >
-              {billingLoading ? "Loading..." : "Manage Billing"}
-            </button>
+            <div className="flex flex-col gap-2 shrink-0">
+              <button
+                onClick={handleManageBilling}
+                disabled={billingLoading}
+                className="px-5 py-2.5 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition disabled:opacity-50 cursor-pointer text-sm"
+              >
+                {billingLoading ? "Loading..." : "Manage Billing"}
+              </button>
+              <button
+                onClick={() => setShowCancelDialog(true)}
+                className="px-5 py-2 text-xs text-text-dim hover:text-danger transition cursor-pointer"
+              >
+                Cancel plan
+              </button>
+            </div>
           </div>
         </div>
+      )}
+
+      {/* Cancel subscription dialog */}
+      {showCancelDialog && (
+        <CancelSubscriptionDialog
+          plan={userPlan}
+          onCancel={() => setShowCancelDialog(false)}
+          onConfirm={handleCancelSubscription}
+          loading={cancelLoading}
+        />
       )}
 
       {/* Auto-scan config */}
@@ -553,6 +710,94 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+
+      {/* Notification Preferences */}
+      <NotificationPreferences />
+
+      {/* Slack Notifications */}
+      {userPlan !== "free" && hasExistingConfig && (
+        <div className="rounded-2xl border border-border bg-surface p-6">
+          <div className="flex items-center gap-3 mb-1">
+            <h2 className="text-lg font-bold text-white">Slack Notifications</h2>
+            <svg className="w-5 h-5 text-text-dim" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z" />
+            </svg>
+          </div>
+          <p className="text-sm text-text-muted mb-6">
+            Get scan results delivered to a Slack channel. Create an{" "}
+            <a
+              href="https://api.slack.com/messaging/webhooks"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand hover:underline"
+            >
+              incoming webhook
+            </a>{" "}
+            in your Slack workspace and paste the URL below.
+          </p>
+
+          <form onSubmit={handleSaveSlackWebhook} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+                Webhook URL
+                {hasExistingWebhook && (
+                  <span className="text-brand ml-2 font-normal">(connected — enter new to update)</span>
+                )}
+              </label>
+              <input
+                type="url"
+                value={slackWebhookUrl}
+                onChange={(e) => setSlackWebhookUrl(e.target.value)}
+                placeholder={hasExistingWebhook ? "Enter new URL to update..." : "https://hooks.slack.com/services/T.../B.../..."}
+                className="w-full px-4 py-3 bg-surface-dim border border-border rounded-lg text-white placeholder-text-muted focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition font-mono text-sm"
+              />
+            </div>
+
+            {slackMessage && (
+              <div
+                className={`rounded-lg px-4 py-3 text-sm ${
+                  slackMessage.type === "success"
+                    ? "bg-brand/10 border border-brand/20 text-brand"
+                    : "bg-danger/10 border border-danger/20 text-danger"
+                }`}
+              >
+                {slackMessage.text}
+              </div>
+            )}
+
+            <div className="flex items-center gap-3">
+              <button
+                type="submit"
+                disabled={slackSaving || !slackWebhookUrl}
+                className="px-6 py-2.5 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm"
+              >
+                {slackSaving ? "Saving..." : hasExistingWebhook ? "Update Webhook" : "Connect Slack"}
+              </button>
+
+              {hasExistingWebhook && (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleTestSlackWebhook}
+                    disabled={slackSaving}
+                    className="px-4 py-2.5 text-sm text-brand hover:bg-brand/10 rounded-lg transition disabled:opacity-50 cursor-pointer"
+                  >
+                    Send Test
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRemoveSlackWebhook}
+                    disabled={slackSaving}
+                    className="px-4 py-2.5 text-sm text-danger hover:bg-danger/10 rounded-lg transition disabled:opacity-50 cursor-pointer"
+                  >
+                    Disconnect
+                  </button>
+                </>
+              )}
+            </div>
+          </form>
+        </div>
+      )}
 
       {/* Action API Key — for write operations */}
       {userPlan !== "free" && hasExistingConfig && (

@@ -1,6 +1,9 @@
 import crypto from "crypto";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./supabase/types";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("POLAR");
 
 // Service-role Supabase client for admin operations
 function getServiceClient() {
@@ -18,9 +21,15 @@ function getServiceClient() {
  * Map plan names to Polar product IDs.
  * Set these in your environment variables after creating products in Polar dashboard.
  */
-export const PLAN_PRODUCT_MAP: Record<string, string | undefined> = {
-  pro: process.env.POLAR_PRO_PRODUCT_ID,
-  team: process.env.POLAR_TEAM_PRODUCT_ID,
+export const PLAN_PRODUCT_MAP: Record<string, Record<string, string | undefined>> = {
+  pro: {
+    monthly: process.env.POLAR_PRO_PRODUCT_ID,
+    annual: process.env.POLAR_PRO_ANNUAL_PRODUCT_ID,
+  },
+  team: {
+    monthly: process.env.POLAR_TEAM_PRODUCT_ID,
+    annual: process.env.POLAR_TEAM_ANNUAL_PRODUCT_ID,
+  },
 };
 
 /**
@@ -29,8 +38,16 @@ export const PLAN_PRODUCT_MAP: Record<string, string | undefined> = {
 export function getPlanFromProductId(
   productId: string
 ): "pro" | "team" | null {
-  if (productId === process.env.POLAR_PRO_PRODUCT_ID) return "pro";
-  if (productId === process.env.POLAR_TEAM_PRODUCT_ID) return "team";
+  if (
+    productId === process.env.POLAR_PRO_PRODUCT_ID ||
+    productId === process.env.POLAR_PRO_ANNUAL_PRODUCT_ID
+  )
+    return "pro";
+  if (
+    productId === process.env.POLAR_TEAM_PRODUCT_ID ||
+    productId === process.env.POLAR_TEAM_ANNUAL_PRODUCT_ID
+  )
+    return "team";
   return null;
 }
 
@@ -49,16 +66,18 @@ export async function createCheckout({
   plan,
   baseUrl,
   discountId,
+  billing = "monthly",
 }: {
   userId: string;
   email: string;
   plan: "pro" | "team";
   baseUrl: string;
   discountId?: string;
+  billing?: "monthly" | "annual";
 }): Promise<string> {
-  const productId = PLAN_PRODUCT_MAP[plan];
+  const productId = PLAN_PRODUCT_MAP[plan]?.[billing];
   if (!productId) {
-    throw new Error(`No Polar product configured for plan: ${plan}`);
+    throw new Error(`No Polar product configured for plan: ${plan} (${billing})`);
   }
 
   const accessToken = process.env.POLAR_ACCESS_TOKEN;
@@ -66,14 +85,14 @@ export async function createCheckout({
     throw new Error("POLAR_ACCESS_TOKEN is not configured");
   }
 
-  const res = await fetch("https://api.polar.sh/v1/checkouts/custom", {
+  const res = await fetch("https://api.polar.sh/v1/checkouts/", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      product_id: productId,
+      products: [productId],
       success_url: `${baseUrl}/dashboard?upgraded=true`,
       customer_email: email,
       allow_discount_codes: true,
@@ -87,7 +106,7 @@ export async function createCheckout({
 
   if (!res.ok) {
     const errorText = await res.text();
-    console.error("[POLAR CHECKOUT] API error:", errorText);
+    log.error("Checkout API error:", errorText);
     throw new Error(`Failed to create checkout: ${res.status}`);
   }
 

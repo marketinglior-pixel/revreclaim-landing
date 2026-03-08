@@ -1,5 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/lib/supabase/types";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("ANALYTICS");
 
 /**
  * Analytics event tracking — fire-and-forget server-side analytics.
@@ -40,7 +43,7 @@ export async function trackEvent(
 ): Promise<void> {
   try {
     if (!supabaseUrl || !serviceRoleKey) {
-      console.warn("[ANALYTICS] Missing Supabase credentials, skipping event:", eventName);
+      log.warn("Missing Supabase credentials, skipping event:", eventName);
       return;
     }
 
@@ -52,9 +55,9 @@ export async function trackEvent(
     });
 
     if (error) {
-      console.error("[ANALYTICS] Failed to track event:", eventName, error.message);
+      log.error("Failed to track event:", eventName, error.message);
     }
   } catch (err) {
-    console.error("[ANALYTICS] Unexpected error tracking event:", eventName, err);
+    log.error("Unexpected error tracking event:", eventName, err);
   }
 }

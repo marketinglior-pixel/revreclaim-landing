@@ -3,6 +3,7 @@ import {
   canRunScan,
   canEnableAutoScan,
   canInviteTeamMember,
+  canUseRecoveryActions,
   PLAN_LIMITS,
 } from "../plan-limits";
 
@@ -70,6 +71,43 @@ describe("canInviteTeamMember", () => {
   });
 });
 
+describe("canUseRecoveryActions", () => {
+  it("allows free plan user with 0 executed actions", () => {
+    const result = canUseRecoveryActions("free", 0);
+    expect(result.allowed).toBe(true);
+    expect(result.remaining).toBe(1);
+  });
+
+  it("blocks free plan user who used their 1 free action", () => {
+    const result = canUseRecoveryActions("free", 1);
+    expect(result.allowed).toBe(false);
+    expect(result.remaining).toBe(0);
+    expect(result.reason).toContain("Upgrade to Pro");
+  });
+
+  it("blocks free plan user with more than 1 executed action", () => {
+    const result = canUseRecoveryActions("free", 5);
+    expect(result.allowed).toBe(false);
+    expect(result.remaining).toBe(0);
+  });
+
+  it("allows pro plan user with any executed count", () => {
+    expect(canUseRecoveryActions("pro", 0)).toEqual({ allowed: true });
+    expect(canUseRecoveryActions("pro", 100)).toEqual({ allowed: true });
+  });
+
+  it("allows team plan user with any executed count", () => {
+    expect(canUseRecoveryActions("team", 0)).toEqual({ allowed: true });
+    expect(canUseRecoveryActions("team", 500)).toEqual({ allowed: true });
+  });
+
+  it("defaults executedCount to 0 when not provided", () => {
+    const result = canUseRecoveryActions("free");
+    expect(result.allowed).toBe(true);
+    expect(result.remaining).toBe(1);
+  });
+});
+
 describe("PLAN_LIMITS", () => {
   it("has correct structure for all plans", () => {
     const plans = ["free", "pro", "team"] as const;
@@ -84,17 +122,20 @@ describe("PLAN_LIMITS", () => {
     expect(PLAN_LIMITS.free.scansPerMonth).toBe(1);
     expect(PLAN_LIMITS.free.autoScans).toBe(false);
     expect(PLAN_LIMITS.free.teamMembers).toBe(0);
+    expect(PLAN_LIMITS.free.recoveryActions).toBe(1);
   });
 
   it("pro plan has unlimited scans but no team", () => {
     expect(PLAN_LIMITS.pro.scansPerMonth).toBe(Infinity);
     expect(PLAN_LIMITS.pro.autoScans).toBe(true);
     expect(PLAN_LIMITS.pro.teamMembers).toBe(0);
+    expect(PLAN_LIMITS.pro.recoveryActions).toBe(true);
   });
 
   it("team plan has all features", () => {
     expect(PLAN_LIMITS.team.scansPerMonth).toBe(Infinity);
     expect(PLAN_LIMITS.team.autoScans).toBe(true);
     expect(PLAN_LIMITS.team.teamMembers).toBe(10);
+    expect(PLAN_LIMITS.team.recoveryActions).toBe(true);
   });
 });

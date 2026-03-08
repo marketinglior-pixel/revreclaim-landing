@@ -33,6 +33,12 @@ export default function ReportHeader({ scannedAt, isLoggedIn = false, report }: 
     exportReportCSV(report);
   }
 
+  async function handleExportJSON() {
+    if (!report) return;
+    const { exportReportJSON } = await import("@/lib/export-json");
+    exportReportJSON(report);
+  }
+
   return (
     <header className="border-b border-border bg-surface-dim/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -81,6 +87,16 @@ export default function ReportHeader({ scannedAt, isLoggedIn = false, report }: 
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
                 CSV
+              </button>
+              <button
+                onClick={handleExportJSON}
+                className="px-3 py-2 text-xs font-medium text-text-muted border border-border rounded-lg min-h-[36px] hover:text-white hover:border-brand/30 transition cursor-pointer hidden sm:flex items-center gap-1"
+                aria-label="Export as JSON"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
+                JSON
               </button>
             </>
           )}

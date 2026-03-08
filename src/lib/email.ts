@@ -7,6 +7,8 @@ import {
   paymentFailedEmailHtml,
   reminderEmailHtml,
   upgradeNudgeEmailHtml,
+  socialProofEmailHtml,
+  lastChanceEmailHtml,
   teamInviteEmailHtml,
   dunningFailedPaymentHtml,
   dunningExpiringCardHtml,
@@ -14,6 +16,11 @@ import {
   type DunningEmailData,
 } from "./email-templates";
 import type { DunningTemplate } from "./recovery/types";
+import { createClient } from "@supabase/supabase-js";
+import type { Database } from "./supabase/types";
+import { createLogger } from "./logger";
+
+const log = createLogger("EMAIL");
 
 let _resend: Resend | null = null;
 
@@ -30,6 +37,42 @@ function getResend(): Resend {
 
 const FROM = process.env.EMAIL_FROM || "RevReclaim <noreply@revreclaim.com>";
 
+type NotificationCategory =
+  | "scan_complete"
+  | "weekly_summary"
+  | "onboarding_drip"
+  | "marketing_tips";
+
+/**
+ * Check if a user has opted out of a specific notification category.
+ * Returns true if the email should be sent (default behavior: all enabled).
+ */
+export async function shouldSendEmail(
+  userId: string,
+  category: NotificationCategory
+): Promise<boolean> {
+  try {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!url || !key) return true;
+
+    const supabase = createClient<Database>(url, key);
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("notification_preferences")
+      .eq("id", userId)
+      .single();
+
+    if (!profile?.notification_preferences) return true;
+
+    const prefs = profile.notification_preferences as unknown as Record<string, boolean>;
+    return prefs[category] !== false;
+  } catch {
+    // Default to sending if preference check fails
+    return true;
+  }
+}
+
 /**
  * Send welcome email to new users.
  */
@@ -42,7 +85,7 @@ export async function sendWelcomeEmail(to: string): Promise<void> {
       html: welcomeEmailHtml(),
     });
   } catch (err) {
-    console.error("[EMAIL] Failed to send welcome email:", err);
+    log.error("Failed to send welcome email:", err);
   }
 }
 
@@ -68,7 +111,7 @@ export async function sendScanCompleteEmail(
       html: scanCompleteEmailHtml({ ...summary, reportId }),
     });
   } catch (err) {
-    console.error("[EMAIL] Failed to send scan complete email:", err);
+    log.error("Failed to send scan complete email:", err);
   }
 }
 
@@ -88,7 +131,7 @@ export async function sendUpgradeConfirmationEmail(
       html: upgradeConfirmationEmailHtml(plan),
     });
   } catch (err) {
-    console.error("[EMAIL] Failed to send upgrade confirmation email:", err);
+    log.error("Failed to send upgrade confirmation email:", err);
   }
 }
 
@@ -104,7 +147,7 @@ export async function sendScanLimitReachedEmail(to: string): Promise<void> {
       html: scanLimitReachedEmailHtml(),
     });
   } catch (err) {
-    console.error("[EMAIL] Failed to send scan limit email:", err);
+    log.error("Failed to send scan limit email:", err);
   }
 }
 
@@ -120,7 +163,7 @@ export async function sendPaymentFailedEmail(to: string): Promise<void> {
       html: paymentFailedEmailHtml(),
     });
   } catch (err) {
-    console.error("[EMAIL] Failed to send payment failed email:", err);
+    log.error("Failed to send payment failed email:", err);
   }
 }
 
@@ -136,7 +179,7 @@ export async function sendReminderEmail(to: string): Promise<void> {
       html: reminderEmailHtml(),
     });
   } catch (err) {
-    console.error("[EMAIL] Failed to send reminder email:", err);
+    log.error("Failed to send reminder email:", err);
   }
 }
 
@@ -155,7 +198,42 @@ export async function sendUpgradeNudgeEmail(
       html: upgradeNudgeEmailHtml(mrrAtRisk),
     });
   } catch (err) {
-    console.error("[EMAIL] Failed to send upgrade nudge email:", err);
+    log.error("Failed to send upgrade nudge email:", err);
+  }
+}
+
+/**
+ * Send social proof email (Day 3 drip) to users who haven't scanned yet.
+ */
+export async function sendSocialProofEmail(to: string): Promise<void> {
+  try {
+    await getResend().emails.send({
+      from: FROM,
+      to,
+      subject: "Here's what other SaaS founders found",
+      html: socialProofEmailHtml(),
+    });
+  } catch (err) {
+    log.error("Failed to send social proof email:", err);
+  }
+}
+
+/**
+ * Send last chance email (Day 14 drip) to free users with open leaks.
+ */
+export async function sendLastChanceEmail(
+  to: string,
+  mrrAtRisk: number
+): Promise<void> {
+  try {
+    await getResend().emails.send({
+      from: FROM,
+      to,
+      subject: "Your revenue leaks are growing",
+      html: lastChanceEmailHtml(mrrAtRisk),
+    });
+  } catch (err) {
+    log.error("Failed to send last chance email:", err);
   }
 }
 
@@ -174,7 +252,7 @@ export async function sendTeamInviteEmail(
       html: teamInviteEmailHtml(inviterEmail),
     });
   } catch (err) {
-    console.error("[EMAIL] Failed to send team invite email:", err);
+    log.error("Failed to send team invite email:", err);
   }
 }
 
@@ -219,5 +297,5 @@ export async function sendDunningEmail(
     html: renderer(data),
   });
 
-  console.log(`[DUNNING] Sent ${template} email to ${to.split("@")[0]}***`);
+  log.info(`Sent ${template} email to ${to.split("@")[0]}***`);
 }

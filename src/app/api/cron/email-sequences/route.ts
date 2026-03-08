@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-import { sendReminderEmail, sendUpgradeNudgeEmail } from "@/lib/email";
+import {
+  sendReminderEmail,
+  sendSocialProofEmail,
+  sendUpgradeNudgeEmail,
+  sendLastChanceEmail,
+  shouldSendEmail,
+} from "@/lib/email";
 import { verifyCronSecret } from "@/lib/api-security";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("EMAIL_CRON");
 
 export const maxDuration = 60;
 
@@ -18,7 +27,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  console.log("[EMAIL CRON] Daily email sequences started");
+  log.info("Daily email sequences started");
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -32,7 +41,9 @@ export async function GET(req: NextRequest) {
   );
 
   let remindersSent = 0;
+  let socialProofSent = 0;
   let nudgesSent = 0;
+  let lastChanceSent = 0;
 
   // 1. Remind users who signed up ~24h ago but never scanned
   try {
@@ -57,17 +68,54 @@ export async function GET(req: NextRequest) {
           .eq("user_id", user.id);
 
         if (!count || count === 0) {
-          await sendReminderEmail(user.email);
-          remindersSent++;
-          console.log(`[EMAIL CRON] Reminder sent to ${user.email}`);
+          if (await shouldSendEmail(user.id, "onboarding_drip")) {
+            await sendReminderEmail(user.email);
+            remindersSent++;
+            log.info(`Reminder sent to ${user.email}`);
+          }
         }
       }
     }
   } catch (err) {
-    console.error("[EMAIL CRON] Error sending reminders:", err);
+    log.error("Error sending reminders:", err);
   }
 
-  // 2. Nudge free users to upgrade 7 days after first scan
+  // 2. Social proof email to users who signed up ~3 days ago but never scanned
+  try {
+    const threeDaysAgoStart = new Date();
+    threeDaysAgoStart.setHours(threeDaysAgoStart.getHours() - 76); // 76h ago
+    const threeDaysAgoEnd = new Date();
+    threeDaysAgoEnd.setHours(threeDaysAgoEnd.getHours() - 68); // 68h ago
+
+    const { data: day3Users } = await supabase
+      .from("profiles")
+      .select("id, email")
+      .eq("plan", "free")
+      .gte("created_at", threeDaysAgoStart.toISOString())
+      .lte("created_at", threeDaysAgoEnd.toISOString());
+
+    if (day3Users && day3Users.length > 0) {
+      for (const user of day3Users) {
+        // Only send if they still haven't scanned
+        const { count } = await supabase
+          .from("reports")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id);
+
+        if (!count || count === 0) {
+          if (await shouldSendEmail(user.id, "onboarding_drip")) {
+            await sendSocialProofEmail(user.email);
+            socialProofSent++;
+            log.info(`Social proof email sent to ${user.email}`);
+          }
+        }
+      }
+    }
+  } catch (err) {
+    log.error("Error sending social proof emails:", err);
+  }
+
+  // 3. Nudge free users to upgrade 7 days after first scan
   try {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 8);
@@ -95,24 +143,74 @@ export async function GET(req: NextRequest) {
           if (firstScanDate >= sevenDaysAgo && firstScanDate <= sixDaysAgo) {
             const summary = reports[0].summary as unknown as { mrrAtRisk: number };
             if (summary?.mrrAtRisk > 0) {
-              await sendUpgradeNudgeEmail(user.email, summary.mrrAtRisk);
-              nudgesSent++;
-              console.log(`[EMAIL CRON] Upgrade nudge sent to ${user.email}`);
+              if (await shouldSendEmail(user.id, "marketing_tips")) {
+                await sendUpgradeNudgeEmail(user.email, summary.mrrAtRisk);
+                nudgesSent++;
+                log.info(`Upgrade nudge sent to ${user.email}`);
+              }
             }
           }
         }
       }
     }
   } catch (err) {
-    console.error("[EMAIL CRON] Error sending upgrade nudges:", err);
+    log.error("Error sending upgrade nudges:", err);
   }
 
-  const summary = `Email sequences: ${remindersSent} reminders, ${nudgesSent} upgrade nudges`;
-  console.log(`[EMAIL CRON] ${summary}`);
+  // 4. Last chance email to free users 14 days after first scan (still haven't upgraded)
+  try {
+    const fourteenDaysAgoStart = new Date();
+    fourteenDaysAgoStart.setDate(fourteenDaysAgoStart.getDate() - 15);
+    const fourteenDaysAgoEnd = new Date();
+    fourteenDaysAgoEnd.setDate(fourteenDaysAgoEnd.getDate() - 13);
+
+    const { data: lapsedUsers } = await supabase
+      .from("profiles")
+      .select("id, email")
+      .eq("plan", "free")
+      .limit(500);
+
+    if (lapsedUsers) {
+      for (const user of lapsedUsers) {
+        const { data: reports } = await supabase
+          .from("reports")
+          .select("created_at, summary")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: true })
+          .limit(1);
+
+        if (reports && reports.length > 0) {
+          const firstScanDate = new Date(reports[0].created_at);
+          if (
+            firstScanDate >= fourteenDaysAgoStart &&
+            firstScanDate <= fourteenDaysAgoEnd
+          ) {
+            const summary = reports[0].summary as unknown as {
+              mrrAtRisk: number;
+            };
+            if (summary?.mrrAtRisk > 0) {
+              if (await shouldSendEmail(user.id, "marketing_tips")) {
+                await sendLastChanceEmail(user.email, summary.mrrAtRisk);
+                lastChanceSent++;
+                log.info(`Last chance email sent to ${user.email}`);
+              }
+            }
+          }
+        }
+      }
+    }
+  } catch (err) {
+    log.error("Error sending last chance emails:", err);
+  }
+
+  const summary = `Email sequences: ${remindersSent} reminders, ${socialProofSent} social proof, ${nudgesSent} upgrade nudges, ${lastChanceSent} last chance`;
+  log.info(summary);
 
   return NextResponse.json({
     message: summary,
     reminders: remindersSent,
+    socialProof: socialProofSent,
     nudges: nudgesSent,
+    lastChance: lastChanceSent,
   });
 }

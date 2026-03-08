@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { guardMutation } from "@/lib/api-security";
 import { fireAndForget } from "@/lib/fire-and-forget";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("CONTACT");
 
 const CONTACT_EMAIL = "revreclaim@gmail.com";
 
@@ -145,7 +148,7 @@ export async function POST(req: NextRequest) {
         `,
       });
     } else {
-      console.error("[CONTACT] RESEND_API_KEY not configured — email not sent");
+      log.error("RESEND_API_KEY not configured — email not sent");
     }
 
     // Also log to Google Sheets webhook (fire-and-forget)
@@ -167,7 +170,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("[CONTACT] Error:", error);
+    log.error("Error:", error);
     return NextResponse.json(
       { error: "Failed to send message. Please try again." },
       { status: 500 }
