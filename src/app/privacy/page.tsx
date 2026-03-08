@@ -29,7 +29,7 @@ export default function PrivacyPage() {
       {/* Content */}
       <main className="max-w-4xl mx-auto px-6 py-16">
         <h1 className="text-4xl font-bold text-white mb-2">Privacy Policy</h1>
-        <p className="text-text-muted mb-12">Last updated: March 5, 2026</p>
+        <p className="text-text-muted mb-12">Last updated: March 8, 2026</p>
 
         <div className="space-y-10 text-text-secondary leading-relaxed">
           <section>
@@ -37,20 +37,20 @@ export default function PrivacyPage() {
             <p className="mb-3">When you use RevReclaim, we collect the following information:</p>
             <ul className="list-disc list-inside space-y-2 text-text-muted">
               <li><span className="text-text-secondary">Account information:</span> Email address, name, and password (hashed) when you create an account.</li>
-              <li><span className="text-text-secondary">Stripe API keys:</span> Read-only restricted keys you provide for scanning. One-time scan keys are never stored. Auto-scan keys are encrypted with AES-256-GCM before storage.</li>
-              <li><span className="text-text-secondary">Scan results:</span> Revenue leak reports generated from your Stripe data, stored in your account for future reference.</li>
+              <li><span className="text-text-secondary">Billing platform API keys:</span> Read-only restricted keys you provide for scanning (Stripe, Paddle, or Polar). One-time scan keys are processed in memory and never stored. Auto-scan keys are encrypted with AES-256-GCM before storage.</li>
+              <li><span className="text-text-secondary">Scan results:</span> Revenue leak reports generated from your billing data, stored in your account for future reference.</li>
               <li><span className="text-text-secondary">Usage data:</span> Basic analytics like page views and feature usage to improve the product.</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white mb-3">2. How We Handle Your Stripe Data</h2>
-            <p className="mb-3">Your Stripe security is our top priority:</p>
+            <h2 className="text-xl font-semibold text-white mb-3">2. How We Handle Your Billing Data</h2>
+            <p className="mb-3">Your billing data security is our top priority:</p>
             <ul className="list-disc list-inside space-y-2 text-text-muted">
-              <li><span className="text-text-secondary">Read-only access:</span> We only request read-only Stripe API keys. We cannot modify your Stripe account, create charges, or change subscriptions.</li>
-              <li><span className="text-text-secondary">One-time scans:</span> API keys used for manual scans are processed in memory and never stored on any server or database.</li>
-              <li><span className="text-text-secondary">Auto-scan keys:</span> If you enable automated weekly scans, your API key is encrypted using AES-256-GCM with a derived key before storage. The encryption key is stored separately from the database.</li>
-              <li><span className="text-text-secondary">Data minimization:</span> We only fetch the Stripe data needed for leak detection (subscriptions, invoices, customers). We do not access payment method details, bank accounts, or personal identity documents.</li>
+              <li><span className="text-text-secondary">Read-only access:</span> We only request read-only API keys from Stripe, Paddle, or Polar. We cannot modify your billing account, create charges, or change subscriptions. This is enforced at the platform level.</li>
+              <li><span className="text-text-secondary">One-time scans:</span> API keys used for manual scans are processed in memory and never stored on any server or database. The key exists for approximately 90 seconds during the scan.</li>
+              <li><span className="text-text-secondary">Auto-scan keys:</span> If you enable automated weekly scans, your API key is encrypted using AES-256-GCM with a derived key before storage. The encryption key is stored separately from the database. You can delete it at any time from your settings.</li>
+              <li><span className="text-text-secondary">Data minimization:</span> We only fetch the billing data needed for leak detection (subscriptions, invoices, customers, coupons, prices). We do not access full credit card numbers, bank accounts, or personal identity documents.</li>
             </ul>
           </section>
 
@@ -76,12 +76,39 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white mb-3">5. Data Sharing</h2>
-            <p className="mb-3">We do not sell, rent, or share your personal data or Stripe data with third parties, except:</p>
-            <ul className="list-disc list-inside space-y-2 text-text-muted">
-              <li><span className="text-text-secondary">Infrastructure providers:</span> Vercel (hosting), Supabase (database) — under strict data processing agreements.</li>
-              <li><span className="text-text-secondary">Legal requirements:</span> If required by law, court order, or government request.</li>
-            </ul>
+            <h2 className="text-xl font-semibold text-white mb-3">5. Data Sharing & Sub-processors</h2>
+            <p className="mb-3">We do not sell, rent, or share your personal data or billing data with third parties, except for the sub-processors listed below that are essential to providing the Service:</p>
+            <div className="overflow-x-auto mb-4">
+              <table className="w-full text-sm text-text-muted">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-2 pr-4 text-text-secondary font-semibold">Provider</th>
+                    <th className="text-left py-2 pr-4 text-text-secondary font-semibold">Purpose</th>
+                    <th className="text-left py-2 text-text-secondary font-semibold">Data Accessed</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/50">
+                  <tr>
+                    <td className="py-2 pr-4">Vercel</td>
+                    <td className="py-2 pr-4">Application hosting</td>
+                    <td className="py-2">Request logs, server-side code execution</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 pr-4">Supabase</td>
+                    <td className="py-2 pr-4">Database &amp; authentication</td>
+                    <td className="py-2">User accounts, encrypted API keys, scan reports</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 pr-4">Polar</td>
+                    <td className="py-2 pr-4">Payment processing</td>
+                    <td className="py-2">Billing email, subscription status</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="text-text-muted">
+              All sub-processors are bound by data processing agreements. We will notify registered users via email at least 14 days before adding new sub-processors. We may also share data if required by law, court order, or government request.
+            </p>
           </section>
 
           <section>
@@ -96,14 +123,38 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white mb-3">7. Cookies</h2>
+            <h2 className="text-xl font-semibold text-white mb-3">7. Breach Notification</h2>
+            <p className="mb-3 text-text-muted">
+              In the event of a confirmed data breach affecting your personal data or API keys, we will:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-text-muted">
+              <li>Notify affected users via email within <span className="text-text-secondary">72 hours</span> of confirming the breach, in compliance with GDPR requirements.</li>
+              <li>Provide details about the nature of the breach, the categories of data affected, and the approximate number of users impacted.</li>
+              <li>Describe the measures taken to address and mitigate the breach.</li>
+              <li>Report to relevant supervisory authorities as required by applicable law.</li>
+              <li>Provide guidance on protective steps, including instructions for revoking API keys on your billing platform.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold text-white mb-3">8. International Data Processing</h2>
+            <p className="text-text-muted mb-3">
+              RevReclaim is operated from Israel. Our sub-processors may process data in the United States and the European Union. If you are located in the European Economic Area (EEA) or the United Kingdom, your data may be transferred to and processed in countries outside your jurisdiction.
+            </p>
+            <p className="text-text-muted">
+              We rely on Standard Contractual Clauses (SCCs) and our sub-processors&apos; certifications (including SOC 2) to ensure that your data is protected to the standards required by GDPR. If you are subject to GDPR and require a Data Processing Agreement (DPA), please contact us at the email below and we will provide one.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold text-white mb-3">9. Cookies</h2>
             <p className="text-text-muted">
               We use essential cookies only — for authentication sessions and security. We do not use advertising cookies or third-party tracking cookies.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white mb-3">8. Your Rights</h2>
+            <h2 className="text-xl font-semibold text-white mb-3">10. Your Rights</h2>
             <p className="mb-3">You have the right to:</p>
             <ul className="list-disc list-inside space-y-2 text-text-muted">
               <li>Access your stored data</li>
@@ -114,14 +165,14 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white mb-3">9. Changes</h2>
+            <h2 className="text-xl font-semibold text-white mb-3">11. Changes</h2>
             <p className="text-text-muted">
               We may update this policy from time to time. Material changes will be communicated via email to registered users. Continued use of the service after changes constitutes acceptance.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white mb-3">10. Contact</h2>
+            <h2 className="text-xl font-semibold text-white mb-3">12. Contact</h2>
             <p className="text-text-muted">
               For privacy-related questions or data deletion requests, contact us at{" "}
               <a href="mailto:revreclaim@gmail.com" className="text-brand hover:text-brand-light transition">
