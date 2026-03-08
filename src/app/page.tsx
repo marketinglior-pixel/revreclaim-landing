@@ -13,9 +13,9 @@ import { FinalCTA } from "@/components/FinalCTA";
 import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "RevReclaim | Find Hidden Revenue Leaks in Your Stripe, Polar & Paddle",
+  title: "RevReclaim | Free SaaS Billing Leak Scanner for Stripe, Paddle & Polar",
   description:
-    "SaaS founders lose $2,500/mo to billing blind spots. RevReclaim scans your Stripe, Polar, or Paddle account in 90 seconds and shows every leak with one-click fixes. Free forever.",
+    "SaaS founders lose $2,500/mo to billing blind spots. RevReclaim scans your Stripe, Paddle, or Polar account in 90 seconds and finds failed payments, ghost subscriptions, and expired coupons. Free billing health score.",
   alternates: { canonical: "https://revreclaim.com" },
 };
 

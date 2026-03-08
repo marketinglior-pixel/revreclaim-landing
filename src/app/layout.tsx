@@ -106,7 +106,7 @@ const jsonLd = {
           name: "Is my billing data safe?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Yes. We only read data — we cannot modify your billing, create charges, or access card numbers. Your key is used only during the scan and is never stored or logged.",
+            text: "Yes. We only read data — we cannot modify your billing, create charges, or access card numbers. All supported platforms (Stripe, Polar, Paddle) support restricted read-only keys. Your key is used only during the scan and is never stored or logged.",
           },
         },
         {
@@ -114,7 +114,15 @@ const jsonLd = {
           name: "Which billing platforms do you support?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "We support Stripe, Polar.sh, and Paddle. Select your platform on the scan page and we'll guide you through creating an API key.",
+            text: "We support Stripe, Polar.sh, and Paddle. Select your platform on the scan page and we'll guide you through creating an API key. Each platform gets a tailored scan covering the leak types it supports.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What permissions does the API key need?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Read access for: Customers, Subscriptions, Invoices, Products, Prices, Coupons, and Payment Methods (exact names vary by platform). We provide step-by-step instructions on the scan page. It takes about 60 seconds to create.",
           },
         },
         {
@@ -122,7 +130,7 @@ const jsonLd = {
           name: "How long does the scan take?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Under 90 seconds for most accounts. Larger accounts (1,000+ customers) may take up to 3 minutes.",
+            text: "Under 90 seconds for most accounts. Larger accounts (1,000+ customers) may take up to 3 minutes. You'll see real-time progress as we scan each category.",
           },
         },
         {
@@ -130,7 +138,15 @@ const jsonLd = {
           name: "What exactly do you scan for?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "We run 7 automated checks: failed payments, ghost subscriptions, expiring cards, expired coupons, forever discounts, legacy pricing, and missing payment methods.",
+            text: "We run 7 automated checks: (1) Expired coupons still discounting, (2) Legacy pricing below current rates, (3) Forever discounts with no end date, (4) Ghost subscriptions stuck in bad states, (5) Expiring cards within 90 days, (6) Uncollected revenue with open invoices, (7) Missing payment methods on active subscriptions.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What do I do with the report?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Open the report. See the customer name. See the dollar amount. See the one-sentence fix. Click the link — it takes you straight to that customer in your billing dashboard. Fix it. That money hits your account next billing cycle.",
           },
         },
         {
@@ -138,7 +154,39 @@ const jsonLd = {
           name: "What if you don't find any leaks?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Then your billing is in better shape than 94% of accounts we've scanned. If you're on a paid plan and we find less than $1,000/mo, you pay nothing.",
+            text: "Then your billing is in better shape than 94% of the SaaS accounts we've scanned. You'll get a perfect health score and genuine peace of mind. The free scan costs you nothing either way. If you're on a paid plan and we find less than $1,000/mo, you pay nothing.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Is this the same as chargeback recovery?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "No. Chargeback tools handle disputed payments. We find revenue you earned but aren't collecting: expired discounts still running, subscriptions stuck in failed states, cards about to expire, and outdated pricing that was never updated. Different problem, different fix.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Can I cancel the monthly plan anytime?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes. No contracts, no lock-in. Cancel anytime from your dashboard. Your data is deleted within 30 days of cancellation.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Is this worth it if I have fewer than 50 customers?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Probably not. Revenue leaks compound with scale. If you have 10 customers, you probably know each one by name. RevReclaim is built for the stage where your billing account has grown past what one person can monitor — typically 100+ customers, $30K+ MRR.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Why should I trust you with my billing data?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Fair question. We designed RevReclaim to work with restricted, read-only API keys scoped to specific resources. We only perform read operations, never modify your data, never see card numbers, and never store the key after the scan.",
           },
         },
       ],
