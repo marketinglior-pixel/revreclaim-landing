@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import { Leak, LeakSeverity, LeakType, LEAK_TYPE_LABELS } from "@/lib/types";
+import { isActionableLeak } from "@/lib/leak-categories";
 import LeakCard from "./LeakCard";
 
 interface LeakTableProps {
   leaks: Leak[];
+  isLoggedIn?: boolean;
+  onDismiss?: (customerId: string, leakType: string) => void;
 }
 
 const SEVERITY_FILTERS: { label: string; value: LeakSeverity | "all" }[] = [
@@ -16,27 +19,80 @@ const SEVERITY_FILTERS: { label: string; value: LeakSeverity | "all" }[] = [
   { label: "Low", value: "low" },
 ];
 
-export default function LeakTable({ leaks }: LeakTableProps) {
+type ActionFilter = "action" | "review" | "all";
+
+export default function LeakTable({ leaks, isLoggedIn, onDismiss }: LeakTableProps) {
   const [severityFilter, setSeverityFilter] = useState<
     LeakSeverity | "all"
   >("all");
   const [typeFilter, setTypeFilter] = useState<LeakType | "all">("all");
+  const [actionFilter, setActionFilter] = useState<ActionFilter>("action");
+
+  const actionableCount = leaks.filter((l) => isActionableLeak(l.type)).length;
+  const reviewCount = leaks.filter((l) => !isActionableLeak(l.type)).length;
 
   const filteredLeaks = leaks.filter((leak) => {
+    if (actionFilter === "action" && !isActionableLeak(leak.type)) return false;
+    if (actionFilter === "review" && isActionableLeak(leak.type)) return false;
     if (severityFilter !== "all" && leak.severity !== severityFilter)
       return false;
     if (typeFilter !== "all" && leak.type !== typeFilter) return false;
     return true;
   });
 
-  // Get unique types that exist in leaks
-  const existingTypes = Array.from(new Set(leaks.map((l) => l.type)));
+  // Get unique types that exist in currently filtered leaks (by action filter)
+  const visibleLeaks = leaks.filter((leak) => {
+    if (actionFilter === "action" && !isActionableLeak(leak.type)) return false;
+    if (actionFilter === "review" && isActionableLeak(leak.type)) return false;
+    return true;
+  });
+  const existingTypes = Array.from(new Set(visibleLeaks.map((l) => l.type)));
+
+  const ACTION_TABS: { label: string; value: ActionFilter; count: number; icon: string }[] = [
+    { label: "Needs Action", value: "action", count: actionableCount, icon: "🔴" },
+    { label: "For Review", value: "review", count: reviewCount, icon: "📋" },
+    { label: "All Leaks", value: "all", count: leaks.length, icon: "" },
+  ];
 
   return (
     <div>
+      {/* Action / Review tabs */}
+      {reviewCount > 0 && (
+        <div className="flex gap-1 bg-surface border border-border rounded-lg p-1 mb-4">
+          {ACTION_TABS.map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => {
+                setActionFilter(tab.value);
+                setTypeFilter("all");
+              }}
+              className={`flex items-center gap-1.5 px-3 py-2 text-sm rounded-md transition cursor-pointer ${
+                actionFilter === tab.value
+                  ? "bg-surface-lighter text-white font-medium"
+                  : "text-text-muted hover:text-white"
+              }`}
+            >
+              {tab.icon && <span className="text-xs">{tab.icon}</span>}
+              {tab.label}
+              <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                actionFilter === tab.value
+                  ? "bg-brand/20 text-brand"
+                  : "bg-surface-light text-text-muted"
+              }`}>
+                {tab.count}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
         <h3 className="text-lg font-semibold text-white">
-          All Leaks ({filteredLeaks.length})
+          {actionFilter === "action"
+            ? `Needs Action (${filteredLeaks.length})`
+            : actionFilter === "review"
+              ? `For Review (${filteredLeaks.length})`
+              : `All Leaks (${filteredLeaks.length})`}
         </h3>
 
         <div className="flex flex-wrap gap-2">
@@ -81,14 +137,18 @@ export default function LeakTable({ leaks }: LeakTableProps) {
       <div className="space-y-2">
         {filteredLeaks.length > 0 ? (
           filteredLeaks.map((leak) => (
-            <LeakCard key={leak.id} leak={leak} />
+            <LeakCard key={leak.id} leak={leak} isLoggedIn={isLoggedIn} onDismiss={onDismiss} />
           ))
         ) : (
           <div className="text-center py-12 bg-surface border border-border rounded-xl">
             <p className="text-text-muted">
               {leaks.length === 0
                 ? "No revenue leaks found! Your billing is clean. 🎉"
-                : "No leaks match the current filters."}
+                : actionFilter === "action"
+                  ? "No actionable leaks found. Check the 'For Review' tab for items to review."
+                  : actionFilter === "review"
+                    ? "No items for review."
+                    : "No leaks match the current filters."}
             </p>
           </div>
         )}

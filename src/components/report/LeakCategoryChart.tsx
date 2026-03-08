@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { LeakCategorySummary } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
+import { isActionableLeak } from "@/lib/leak-categories";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 interface LeakCategoryChartProps {
@@ -66,6 +67,11 @@ export default function LeakCategoryChart({
                   <span className="text-sm text-text-secondary">
                     {category.label}
                   </span>
+                  {!isActionableLeak(category.type) && (
+                    <span className="text-[10px] text-info bg-info/10 border border-info/20 px-1.5 py-0.5 rounded font-medium">
+                      For Review
+                    </span>
+                  )}
                   <span className="text-xs text-text-muted bg-surface-light px-1.5 py-0.5 rounded">
                     {category.count}
                   </span>

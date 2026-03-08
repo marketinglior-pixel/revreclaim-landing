@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams } from "next/navigation";
-import { ScanReport } from "@/lib/types";
+import { Leak, ScanReport } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
 import ReportHeader from "@/components/report/ReportHeader";
 import ReportSummary from "@/components/report/ReportSummary";
@@ -12,6 +12,11 @@ import ReportCTA from "@/components/report/ReportCTA";
 import RecoveryBanner from "@/components/report/RecoveryBanner";
 import Link from "next/link";
 
+/** Key used to deduplicate dismissals */
+function dismissKey(customerId: string, leakType: string) {
+  return `${customerId}::${leakType}`;
+}
+
 export default function ReportPage() {
   const params = useParams();
   const reportId = params.id as string;
@@ -20,14 +25,19 @@ export default function ReportPage() {
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showSaveBanner, setShowSaveBanner] = useState(true);
+  const [dismissedKeys, setDismissedKeys] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     async function loadReport() {
       // 1. Try loading from database first (RLS-protected, preferred for auth users)
+      let userLoggedIn = false;
       try {
         const supabase = createClient();
         const { data: { user } } = await supabase.auth.getUser();
-        if (user) setIsLoggedIn(true);
+        if (user) {
+          setIsLoggedIn(true);
+          userLoggedIn = true;
+        }
         const { data: row, error } = await supabase
           .from("reports")
           .select("id, created_at, platform, summary, categories, leaks")
@@ -48,6 +58,11 @@ export default function ReportPage() {
           // Clear sessionStorage copy now that we loaded from DB (reduce PII exposure)
           try { sessionStorage.removeItem(`report_${reportId}`); } catch { /* ignore */ }
           setLoading(false);
+
+          // Load dismissals for logged-in users
+          if (userLoggedIn) {
+            loadDismissals();
+          }
           return;
         }
       } catch {
@@ -71,8 +86,60 @@ export default function ReportPage() {
       setLoading(false);
     }
 
+    async function loadDismissals() {
+      try {
+        const res = await fetch("/api/leaks/dismiss");
+        if (res.ok) {
+          const { dismissals } = await res.json();
+          if (dismissals && dismissals.length > 0) {
+            const keys = new Set<string>(
+              dismissals.map((d: { customer_id: string; leak_type: string }) =>
+                dismissKey(d.customer_id, d.leak_type)
+              )
+            );
+            setDismissedKeys(keys);
+          }
+        }
+      } catch {
+        // Non-critical — dismissals just won't be filtered
+      }
+    }
+
     loadReport();
   }, [reportId]);
+
+  /** Called when user dismisses a leak from LeakCard */
+  const handleDismiss = useCallback((customerId: string, leakType: string) => {
+    setDismissedKeys((prev) => {
+      const next = new Set(prev);
+      next.add(dismissKey(customerId, leakType));
+      return next;
+    });
+  }, []);
+
+  /** Filter out dismissed leaks */
+  const visibleLeaks: Leak[] = useMemo(() => {
+    if (!report || dismissedKeys.size === 0) return report?.leaks ?? [];
+    return report.leaks.filter(
+      (l) => !dismissedKeys.has(dismissKey(l.customerId, l.type))
+    );
+  }, [report, dismissedKeys]);
+
+  /** Recompute summary without dismissed leaks */
+  const adjustedSummary = useMemo(() => {
+    if (!report) return undefined;
+    if (dismissedKeys.size === 0) return report.summary;
+    const mrrAtRisk = visibleLeaks.reduce((sum, l) => sum + l.monthlyImpact, 0);
+    const recoveryPotential = visibleLeaks.reduce((sum, l) => sum + l.annualImpact, 0);
+    return {
+      ...report.summary,
+      mrrAtRisk,
+      recoveryPotential,
+      leaksFound: visibleLeaks.length,
+    };
+  }, [report, dismissedKeys, visibleLeaks]);
+
+  const dismissedCount = report ? report.leaks.length - visibleLeaks.length : 0;
 
   if (loading) {
     return (
@@ -151,10 +218,23 @@ export default function ReportPage() {
 
       <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
         {/* Recovery Banner */}
-        <RecoveryBanner recoveryPotential={report.summary.recoveryPotential} />
+        <RecoveryBanner recoveryPotential={adjustedSummary?.recoveryPotential ?? report.summary.recoveryPotential} />
+
+        {/* Dismissed leaks indicator */}
+        {dismissedCount > 0 && (
+          <div className="flex items-center gap-2 px-4 py-2.5 bg-surface border border-border rounded-lg">
+            <svg className="w-4 h-4 text-success flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <p className="text-sm text-text-muted">
+              <span className="font-medium text-white">{dismissedCount} leak{dismissedCount !== 1 ? "s" : ""}</span> hidden (marked as intentional).{" "}
+              <span className="text-text-dim">These won&apos;t appear in future scans.</span>
+            </p>
+          </div>
+        )}
 
         {/* Summary Cards + Health Score */}
-        <ReportSummary summary={report.summary} />
+        <ReportSummary summary={adjustedSummary ?? report.summary} leaks={visibleLeaks} />
 
         {/* Category Breakdown Chart */}
         {report.categories.length > 0 && (
@@ -163,11 +243,11 @@ export default function ReportPage() {
 
         {/* All Leaks Table */}
         <div id="leak-table">
-          <LeakTable leaks={report.leaks} />
+          <LeakTable leaks={visibleLeaks} isLoggedIn={isLoggedIn} onDismiss={handleDismiss} />
         </div>
 
         {/* CTA */}
-        <ReportCTA mrrAtRisk={report.summary.mrrAtRisk} />
+        <ReportCTA mrrAtRisk={adjustedSummary?.mrrAtRisk ?? report.summary.mrrAtRisk} />
       </main>
     </div>
   );

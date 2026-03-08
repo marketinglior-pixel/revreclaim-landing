@@ -17,6 +17,8 @@ export function ActionQueue({ plan }: ActionQueueProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [canApprove, setCanApprove] = useState(false);
+  const [executedCount, setExecutedCount] = useState(0);
+  const [remaining, setRemaining] = useState<number | undefined>(undefined);
 
   // Filters
   const [statusFilter, setStatusFilter] = useState<FilterStatus>("pending");
@@ -52,6 +54,8 @@ export function ActionQueue({ plan }: ActionQueueProps) {
 
       setActions(data.actions || []);
       setCanApprove(data.canApprove);
+      setExecutedCount(data.executedCount ?? 0);
+      setRemaining(data.remaining);
     } catch {
       setError("Failed to load actions. Please try again.");
     } finally {
@@ -227,8 +231,44 @@ export function ActionQueue({ plan }: ActionQueueProps) {
     (a) => a.status === "pending"
   ).length;
 
+  const isFreeUser = plan === "free";
+  const freeActionUsed = isFreeUser && remaining === 0;
+  const freeActionAvailable = isFreeUser && remaining !== undefined && remaining > 0;
+
   return (
     <div className="rounded-2xl border border-border bg-surface">
+      {/* Free user banner */}
+      {freeActionAvailable && (
+        <div className="border-b border-brand/20 bg-brand/5 px-4 py-3">
+          <div className="flex items-center gap-2">
+            <span className="text-base">🎁</span>
+            <p className="text-sm text-brand font-medium">
+              You have {remaining} free recovery action{remaining !== 1 ? "s" : ""}. Use it on your most impactful leak.
+            </p>
+          </div>
+        </div>
+      )}
+      {freeActionUsed && (
+        <div className="border-b border-brand/20 bg-brand/5 px-4 py-3">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <svg className="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <p className="text-sm text-brand font-medium">
+                Free action used! Upgrade to Pro for unlimited recovery actions.
+              </p>
+            </div>
+            <a
+              href="/pricing"
+              className="flex-shrink-0 rounded-lg bg-brand px-3 py-1.5 text-xs font-bold text-black hover:bg-brand-dark transition"
+            >
+              Upgrade →
+            </a>
+          </div>
+        </div>
+      )}
+
       {/* Toolbar */}
       <div className="border-b border-border p-4 space-y-3">
         {/* Status tabs */}
@@ -377,6 +417,7 @@ export function ActionQueue({ plan }: ActionQueueProps) {
                 onRetry={handleRetry}
                 canApprove={canApprove}
                 executing={executingId === action.id}
+                remaining={remaining}
               />
             ))}
           </div>

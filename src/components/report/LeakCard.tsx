@@ -1,19 +1,65 @@
 "use client";
 
-import { Leak, LeakType, LEAK_TYPE_LABELS } from "@/lib/types";
+import { Leak, LEAK_TYPE_LABELS } from "@/lib/types";
 import { formatCurrency, getSeverityColor } from "@/lib/utils";
+import { REVIEW_ONLY_LEAK_TYPES } from "@/lib/leak-categories";
 import { useState } from "react";
-
-// Leak types that have no automated recovery action — require human judgment
-const ADVISORY_LEAK_TYPES: Set<LeakType> = new Set(["legacy_pricing"]);
 
 interface LeakCardProps {
   leak: Leak;
+  isLoggedIn?: boolean;
+  onDismiss?: (customerId: string, leakType: string) => void;
 }
 
-export default function LeakCard({ leak }: LeakCardProps) {
+export default function LeakCard({ leak, isLoggedIn, onDismiss }: LeakCardProps) {
   const [expanded, setExpanded] = useState(false);
+  const [dismissState, setDismissState] = useState<"idle" | "loading" | "dismissed">("idle");
+  const [undoLoading, setUndoLoading] = useState(false);
   const severityColor = getSeverityColor(leak.severity);
+
+  async function handleDismiss() {
+    setDismissState("loading");
+    try {
+      const res = await fetch("/api/leaks/dismiss", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerId: leak.customerId,
+          productId: (leak.metadata?.productId as string) || null,
+          leakType: leak.type,
+          reason: "intentional",
+        }),
+      });
+      if (res.ok) {
+        setDismissState("dismissed");
+        onDismiss?.(leak.customerId, leak.type);
+      } else {
+        setDismissState("idle");
+      }
+    } catch {
+      setDismissState("idle");
+    }
+  }
+
+  async function handleUndo() {
+    setUndoLoading(true);
+    try {
+      const res = await fetch("/api/leaks/dismiss", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerId: leak.customerId,
+          leakType: leak.type,
+        }),
+      });
+      if (res.ok) {
+        setDismissState("idle");
+      }
+    } catch {
+      // ignore
+    }
+    setUndoLoading(false);
+  }
 
   return (
     <div
@@ -53,7 +99,7 @@ export default function LeakCard({ leak }: LeakCardProps) {
               <span className="text-xs text-text-muted">
                 {LEAK_TYPE_LABELS[leak.type]}
               </span>
-              {ADVISORY_LEAK_TYPES.has(leak.type) && (
+              {REVIEW_ONLY_LEAK_TYPES.has(leak.type) && (
                 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-info bg-info/10 border border-info/20 rounded">
                   Manual Review
                 </span>
@@ -160,7 +206,7 @@ export default function LeakCard({ leak }: LeakCardProps) {
             </div>
 
             {/* Advisory callout for leak types without automated recovery */}
-            {ADVISORY_LEAK_TYPES.has(leak.type) && (
+            {REVIEW_ONLY_LEAK_TYPES.has(leak.type) && (
               <div className="bg-info/5 border border-info/20 rounded-lg p-3">
                 <div className="flex items-start gap-2">
                   <svg
@@ -187,6 +233,42 @@ export default function LeakCard({ leak }: LeakCardProps) {
                     </p>
                   </div>
                 </div>
+
+                {/* Mark as Intentional */}
+                {isLoggedIn && dismissState === "idle" && (
+                  <button
+                    onClick={handleDismiss}
+                    className="mt-3 w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-text-muted hover:text-white bg-surface border border-border hover:border-brand/40 rounded-lg transition cursor-pointer"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    This is intentional — Don&apos;t flag in future scans
+                  </button>
+                )}
+                {isLoggedIn && dismissState === "loading" && (
+                  <div className="mt-3 flex items-center justify-center gap-2 px-3 py-2 text-xs text-text-muted">
+                    <div className="w-3.5 h-3.5 border-2 border-brand border-t-transparent rounded-full animate-spin" />
+                    Saving...
+                  </div>
+                )}
+                {isLoggedIn && dismissState === "dismissed" && (
+                  <div className="mt-3 flex items-center justify-between px-3 py-2 bg-success/10 border border-success/20 rounded-lg">
+                    <span className="flex items-center gap-2 text-xs font-medium text-success">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Marked as intentional ✓
+                    </span>
+                    <button
+                      onClick={handleUndo}
+                      disabled={undoLoading}
+                      className="text-xs text-text-muted hover:text-white underline underline-offset-2 transition cursor-pointer disabled:opacity-50"
+                    >
+                      {undoLoading ? "Undoing..." : "Undo"}
+                    </button>
+                  </div>
+                )}
               </div>
             )}
             </div>

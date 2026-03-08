@@ -1,10 +1,15 @@
 export type PlanType = "free" | "pro" | "team";
 
-export const PLAN_LIMITS = {
-  free: { scansPerMonth: 1, autoScans: false, teamMembers: 0, recoveryActions: false },
+export const PLAN_LIMITS: Record<PlanType, {
+  scansPerMonth: number;
+  autoScans: boolean;
+  teamMembers: number;
+  recoveryActions: boolean | number; // number = limited free actions, true = unlimited, false = none
+}> = {
+  free: { scansPerMonth: 1, autoScans: false, teamMembers: 0, recoveryActions: 1 },
   pro: { scansPerMonth: Infinity, autoScans: true, teamMembers: 0, recoveryActions: true },
   team: { scansPerMonth: Infinity, autoScans: true, teamMembers: 10, recoveryActions: true },
-} as const;
+};
 
 export const PLAN_DISPLAY_NAMES: Record<PlanType, string> = {
   free: "Free",
@@ -58,19 +63,40 @@ export function canEnableAutoScan(plan: PlanType): {
 
 /**
  * Check if a user can use recovery actions (dunning emails, auto-fixes).
+ * Free users get a limited number of free actions (e.g. 1) to experience value.
  */
-export function canUseRecoveryActions(plan: PlanType): {
+export function canUseRecoveryActions(
+  plan: PlanType,
+  executedCount: number = 0
+): {
   allowed: boolean;
   reason?: string;
+  remaining?: number;
 } {
-  if (!PLAN_LIMITS[plan].recoveryActions) {
+  const limit = PLAN_LIMITS[plan].recoveryActions;
+
+  if (limit === false) {
     return {
       allowed: false,
       reason:
         "Recovery actions require a Pro or Team plan. Upgrade to send dunning emails and auto-fix leaks.",
     };
   }
-  return { allowed: true };
+
+  if (limit === true) {
+    return { allowed: true };
+  }
+
+  // Numeric limit (free plan)
+  if (executedCount >= limit) {
+    return {
+      allowed: false,
+      remaining: 0,
+      reason: `You've used your ${limit} free recovery action${limit !== 1 ? "s" : ""}. Upgrade to Pro for unlimited actions.`,
+    };
+  }
+
+  return { allowed: true, remaining: limit - executedCount };
 }
 
 /**

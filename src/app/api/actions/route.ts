@@ -60,13 +60,23 @@ export async function GET(req: NextRequest) {
       .single();
 
     const userPlan = (profile?.plan || "free") as PlanType;
-    const canUse = canUseRecoveryActions(userPlan);
+
+    // Count executed actions for plan limit enforcement
+    const { count: executedCount } = await supabase
+      .from("recovery_actions")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("status", "executed");
+
+    const canUse = canUseRecoveryActions(userPlan, executedCount ?? 0);
 
     return NextResponse.json({
       actions: actions || [],
       total: count || 0,
       canApprove: canUse.allowed,
       plan: userPlan,
+      executedCount: executedCount ?? 0,
+      remaining: canUse.remaining,
     });
   } catch (error) {
     console.error("[ACTIONS] Error:", error);
@@ -120,7 +130,15 @@ export async function POST(req: NextRequest) {
     }
 
     const userPlan = (profile?.plan || "free") as PlanType;
-    const canUse = canUseRecoveryActions(userPlan);
+
+    // Count executed actions for plan limit enforcement
+    const { count: executedCount } = await supabase
+      .from("recovery_actions")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("status", "executed");
+
+    const canUse = canUseRecoveryActions(userPlan, executedCount ?? 0);
     if (!canUse.allowed) {
       return NextResponse.json(
         { error: canUse.reason, errorType: "plan_limit" },

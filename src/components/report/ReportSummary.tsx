@@ -1,14 +1,24 @@
 "use client";
 
-import { ScanSummary } from "@/lib/types";
+import { Leak, ScanSummary } from "@/lib/types";
 import { useAnimatedNumber } from "@/lib/useAnimatedNumber";
+import { isActionableLeak } from "@/lib/leak-categories";
+import { formatCurrency } from "@/lib/utils";
 import HealthScore from "./HealthScore";
 
 interface ReportSummaryProps {
   summary: ScanSummary;
+  leaks?: Leak[];
 }
 
-export default function ReportSummary({ summary }: ReportSummaryProps) {
+export default function ReportSummary({ summary, leaks }: ReportSummaryProps) {
+  // Compute split metrics if leaks are provided
+  const actionableLeaks = leaks?.filter((l) => isActionableLeak(l.type)) ?? [];
+  const reviewLeaks = leaks?.filter((l) => !isActionableLeak(l.type)) ?? [];
+  const mrrActionable = actionableLeaks.reduce((sum, l) => sum + l.monthlyImpact, 0);
+  const mrrReview = reviewLeaks.reduce((sum, l) => sum + l.monthlyImpact, 0);
+  const hasReviewLeaks = leaks && reviewLeaks.length > 0;
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
       {/* Health Score - spans 1 col */}
@@ -19,19 +29,32 @@ export default function ReportSummary({ summary }: ReportSummaryProps) {
       {/* Stats grid - spans 4 cols */}
       <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-4 gap-4">
         <AnimatedStatCard
-          label="MRR at Risk"
-          cents={summary.mrrAtRisk}
+          label={hasReviewLeaks ? "Actionable MRR at Risk" : "MRR at Risk"}
+          cents={hasReviewLeaks ? mrrActionable : summary.mrrAtRisk}
           suffix="/mo"
           color="#EF4444"
-          description={`${Math.min((summary.mrrAtRisk / Math.max(summary.totalMRR, 1)) * 100, 100).toFixed(1)}% of your MRR`}
+          description={
+            hasReviewLeaks
+              ? `${actionableLeaks.length} leak${actionableLeaks.length !== 1 ? "s" : ""} needing action`
+              : `${Math.min((summary.mrrAtRisk / Math.max(summary.totalMRR, 1)) * 100, 100).toFixed(1)}% of your MRR`
+          }
+          footnote={
+            hasReviewLeaks && mrrReview > 0
+              ? `Plus ${formatCurrency(mrrReview)}/mo in ${reviewLeaks.length} item${reviewLeaks.length !== 1 ? "s" : ""} to review`
+              : undefined
+          }
           delay={100}
           glow={summary.mrrAtRisk > 0}
         />
         <AnimatedStatCard
           label="Leaks Found"
-          rawValue={summary.leaksFound}
+          rawValue={hasReviewLeaks ? actionableLeaks.length : summary.leaksFound}
           color={summary.leaksFound > 0 ? "#F59E0B" : "#10B981"}
-          description={`Across ${summary.totalSubscriptions} subscriptions`}
+          description={
+            hasReviewLeaks
+              ? `+ ${reviewLeaks.length} for review`
+              : `Across ${summary.totalSubscriptions} subscriptions`
+          }
           delay={200}
         />
         <AnimatedStatCard
@@ -62,6 +85,7 @@ function AnimatedStatCard({
   suffix,
   color,
   description,
+  footnote,
   delay,
   glow,
 }: {
@@ -71,6 +95,7 @@ function AnimatedStatCard({
   suffix?: string;
   color: string;
   description: string;
+  footnote?: string;
   delay: number;
   glow?: boolean;
 }) {
@@ -102,6 +127,9 @@ function AnimatedStatCard({
         )}
       </p>
       <p className="text-xs text-text-muted mt-1">{description}</p>
+      {footnote && (
+        <p className="text-[10px] text-text-dim mt-1">{footnote}</p>
+      )}
     </div>
   );
 }

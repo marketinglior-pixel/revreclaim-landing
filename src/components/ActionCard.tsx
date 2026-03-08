@@ -27,6 +27,7 @@ interface ActionCardProps {
   onRetry: (id: string) => void;
   canApprove: boolean;
   executing: boolean;
+  remaining?: number;
 }
 
 const STATUS_BADGE: Record<
@@ -93,6 +94,7 @@ export function ActionCard({
   onRetry,
   canApprove,
   executing,
+  remaining,
 }: ActionCardProps) {
   const badge = STATUS_BADGE[action.status];
   const label = ACTION_TYPE_LABELS[action.action_type] || action.action_type;
@@ -226,13 +228,13 @@ export function ActionCard({
             </button>
           )}
 
-          {/* Upgrade gate for free users */}
+          {/* Upgrade gate for free users who exhausted their free action */}
           {action.status === "pending" && !canApprove && (
             <a
               href="/pricing"
               className="rounded-lg bg-brand/10 px-2.5 py-1.5 text-xs font-medium text-brand hover:bg-brand/20 transition"
             >
-              Upgrade to unlock
+              Free action used. Upgrade →
             </a>
           )}
         </div>
