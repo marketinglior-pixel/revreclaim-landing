@@ -31,7 +31,9 @@ export type AnalyticsEvent =
   | "cta_clicked"
   | "newsletter_signup"
   | "action_executed"
-  | "action_failed";
+  | "action_failed"
+  | "post_scan_survey"
+  | "feature_interest";
 
 /**
  * Track an analytics event. Fire-and-forget — errors are logged but never thrown.

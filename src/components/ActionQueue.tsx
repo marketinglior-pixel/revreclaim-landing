@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { ActionCard, type ActionCardData } from "./ActionCard";
 import type { ActionStatus, ActionType } from "@/lib/recovery/types";
 import { ConfirmActionDialog, DESTRUCTIVE_ACTIONS } from "./ConfirmActionDialog";
+import { trackRecoveryExecuted } from "@/lib/conversion-tracking";
 
 interface ActionQueueProps {
   plan: "free" | "pro" | "team";
@@ -191,6 +192,7 @@ export function ActionQueue({ plan, privacyMode }: ActionQueueProps) {
 
   async function executeActionDirectly(id: string) {
     setExecutingId(id);
+    const action = actions.find((a) => a.id === id);
     try {
       const res = await fetch("/api/actions/execute", {
         method: "POST",
@@ -199,6 +201,10 @@ export function ActionQueue({ plan, privacyMode }: ActionQueueProps) {
       });
 
       if (res.ok) {
+        // Fire client-side conversion tracking to ad platforms (GA4/LinkedIn/Meta)
+        if (action) {
+          trackRecoveryExecuted(action.action_type, action.monthly_impact);
+        }
         await fetchActions();
       } else {
         const data = await res.json();

@@ -131,3 +131,27 @@ export function trackNewsletterSignup() {
   linkedInConversion(LI_CONV_LEAD);
   metaEvent("Lead", { content_name: "newsletter" });
 }
+
+/**
+ * Recovery action executed successfully — the deepest conversion signal.
+ * This tells ad platforms "this user actually recovered real money."
+ * Use this as the optimization target for campaigns (Singular Optimization Point).
+ */
+export function trackRecoveryExecuted(
+  actionType: string,
+  amountCents: number
+) {
+  const value = amountCents / 100;
+  ga4Event("recovery_executed", {
+    action_type: actionType,
+    value,
+    currency: "USD",
+  });
+  // Reuse purchase conversion ID — recovery is the true purchase moment
+  linkedInConversion(LI_CONV_PURCHASE);
+  metaEvent("Purchase", {
+    content_name: `recovery_${actionType}`,
+    value,
+    currency: "USD",
+  });
+}
