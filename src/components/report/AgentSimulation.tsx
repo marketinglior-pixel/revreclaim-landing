@@ -43,7 +43,7 @@ function buildSimEvents(leaks: Leak[]): SimEvent[] {
       id: `sim-${idx}`,
       actionType: plan.actionType,
       label: ACTION_TYPE_LABELS[plan.actionType],
-      customerEmail: leak.customerEmail || "unknown",
+      customerEmail: leak.customerEmail || "customer@masked.com",
       monthlyImpact: leak.monthlyImpact,
       status: "pending" as SimStatus,
     };
@@ -186,9 +186,10 @@ export default function AgentSimulation({ leaks }: { leaks: Leak[] }) {
   const [recoveredCents, setRecoveredCents] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
 
-  const allSimEvents = useRef(buildSimEvents(leaks));
+  const simEvents = buildSimEvents(leaks);
+  const allSimEvents = useRef(simEvents);
   const totalRecovery = useRef(
-    allSimEvents.current.reduce((sum, e) => sum + e.monthlyImpact, 0)
+    simEvents.reduce((sum, e) => sum + e.monthlyImpact, 0)
   );
 
   // Reduced motion: show final state immediately

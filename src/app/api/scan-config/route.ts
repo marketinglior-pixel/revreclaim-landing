@@ -9,6 +9,7 @@ import { trackEvent } from "@/lib/analytics";
 import { guardMutation } from "@/lib/api-security";
 import { fireAndForget } from "@/lib/fire-and-forget";
 import { calculateNextScan } from "@/lib/scan-utils";
+import { isValidWebhookUrl, generateWebhookSecret } from "@/lib/notifications/webhook";
 import type { Database } from "@/lib/supabase/types";
 import { createLogger } from "@/lib/logger";
 
@@ -65,7 +66,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { apiKey, actionApiKey, platform, frequency, isActive } = body;
+    const { apiKey, actionApiKey, platform, frequency, isActive, preDunningEnabled, webhookUrl, privacyMode } = body;
 
     // Validate platform and frequency enums
     const validPlatforms = ["stripe", "polar", "paddle"];
@@ -116,6 +117,14 @@ export async function POST(req: NextRequest) {
       encryptedActionKey = encrypt(actionApiKey);
     }
 
+    // Validate webhook URL if provided
+    if (webhookUrl && webhookUrl !== "__DELETE__" && !isValidWebhookUrl(webhookUrl)) {
+      return NextResponse.json(
+        { error: "Invalid webhook URL. Must be an HTTPS URL." },
+        { status: 400 }
+      );
+    }
+
     // Calculate next scan time
     const nextScanAt = calculateNextScan(validFrequency);
 
@@ -131,6 +140,30 @@ export async function POST(req: NextRequest) {
       }
       if (encryptedActionKey !== undefined) {
         updateData.action_api_key_encrypted = encryptedActionKey;
+      }
+      // Pre-dunning
+      if (preDunningEnabled !== undefined) {
+        updateData.pre_dunning_enabled = !!preDunningEnabled;
+      }
+      // Privacy mode
+      if (privacyMode !== undefined) {
+        updateData.privacy_mode = !!privacyMode;
+      }
+      // Webhook URL
+      if (webhookUrl === "__DELETE__") {
+        updateData.webhook_url = null;
+        updateData.webhook_secret = null;
+      } else if (webhookUrl) {
+        updateData.webhook_url = webhookUrl;
+        // Generate secret if not already present
+        const { data: currentConfig } = await supabase
+          .from("scan_configs")
+          .select("webhook_secret")
+          .eq("user_id", user.id)
+          .single();
+        if (!currentConfig?.webhook_secret) {
+          updateData.webhook_secret = generateWebhookSecret();
+        }
       }
 
       const { error } = await supabase
@@ -152,9 +185,15 @@ export async function POST(req: NextRequest) {
         scan_frequency: validFrequency,
         is_active: isActive ?? true,
         next_scan_at: nextScanAt,
+        pre_dunning_enabled: !!preDunningEnabled,
+        privacy_mode: !!privacyMode,
       };
       if (encryptedActionKey && encryptedActionKey !== null) {
         insertData.action_api_key_encrypted = encryptedActionKey;
+      }
+      if (webhookUrl && webhookUrl !== "__DELETE__") {
+        insertData.webhook_url = webhookUrl;
+        insertData.webhook_secret = generateWebhookSecret();
       }
       const { error } = await supabase.from("scan_configs").insert(insertData as Database["public"]["Tables"]["scan_configs"]["Insert"]);
 
@@ -189,7 +228,7 @@ export async function GET() {
 
     const { data } = await supabase
       .from("scan_configs")
-      .select("is_active, next_scan_at, scan_frequency, platform")
+      .select("is_active, next_scan_at, scan_frequency, platform, pre_dunning_enabled, webhook_url, webhook_secret, privacy_mode")
       .eq("user_id", user.id)
       .single();
 

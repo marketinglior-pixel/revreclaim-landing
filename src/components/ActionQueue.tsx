@@ -7,12 +7,13 @@ import { ConfirmActionDialog, DESTRUCTIVE_ACTIONS } from "./ConfirmActionDialog"
 
 interface ActionQueueProps {
   plan: "free" | "pro" | "team";
+  privacyMode?: boolean;
 }
 
 type FilterStatus = "all" | ActionStatus;
 type FilterType = "all" | ActionType;
 
-export function ActionQueue({ plan }: ActionQueueProps) {
+export function ActionQueue({ plan, privacyMode }: ActionQueueProps) {
   const [actions, setActions] = useState<ActionCardData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -501,6 +502,7 @@ export function ActionQueue({ plan }: ActionQueueProps) {
                 canApprove={canApprove}
                 executing={executingId === action.id}
                 remaining={remaining}
+                privacyMode={privacyMode}
               />
             ))}
           </div>

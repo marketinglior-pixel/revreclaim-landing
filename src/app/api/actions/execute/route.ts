@@ -9,6 +9,7 @@ import { trackEvent } from "@/lib/analytics";
 import { decrypt } from "@/lib/encryption";
 import { guardMutation } from "@/lib/api-security";
 import { fireAndForget } from "@/lib/fire-and-forget";
+import { getWebhookConfig, sendWebhookNotification } from "@/lib/notifications/webhook";
 import { createLogger } from "@/lib/logger";
 import { logAudit } from "@/lib/audit-log";
 
@@ -190,6 +191,23 @@ export async function POST(req: NextRequest) {
         metadata: { actionType: action.action_type, monthlyImpact: action.monthly_impact },
       }), "ACTION_EXECUTED_AUDIT");
 
+      // Send webhook notification (fire-and-forget)
+      fireAndForget(
+        (async () => {
+          const webhookConfig = await getWebhookConfig(user.id);
+          if (webhookConfig) {
+            await sendWebhookNotification(webhookConfig.url, webhookConfig.secret, "action_executed", {
+              actionId,
+              actionType: action.action_type,
+              customerId: action.customer_id,
+              monthlyImpact: action.monthly_impact,
+              status: "executed",
+            });
+          }
+        })(),
+        "ACTION_EXECUTED_WEBHOOK"
+      );
+
       return NextResponse.json({
         success: true,
         actionId,
@@ -219,6 +237,24 @@ export async function POST(req: NextRequest) {
         resourceId: actionId,
         metadata: { actionType: action.action_type, error: result.error },
       }), "ACTION_FAILED_AUDIT");
+
+      // Send webhook notification for failure (fire-and-forget)
+      fireAndForget(
+        (async () => {
+          const webhookConfig = await getWebhookConfig(user.id);
+          if (webhookConfig) {
+            await sendWebhookNotification(webhookConfig.url, webhookConfig.secret, "action_failed", {
+              actionId,
+              actionType: action.action_type,
+              customerId: action.customer_id,
+              monthlyImpact: action.monthly_impact,
+              status: "failed",
+              error: result.error,
+            });
+          }
+        })(),
+        "ACTION_FAILED_WEBHOOK"
+      );
 
       return NextResponse.json({
         success: false,

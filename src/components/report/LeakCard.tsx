@@ -11,9 +11,10 @@ interface LeakCardProps {
   leak: Leak;
   isLoggedIn?: boolean;
   onDismiss?: (customerId: string, leakType: string) => void;
+  privacyMode?: boolean;
 }
 
-export default function LeakCard({ leak, isLoggedIn, onDismiss }: LeakCardProps) {
+export default function LeakCard({ leak, isLoggedIn, onDismiss, privacyMode }: LeakCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [dismissState, setDismissState] = useState<"idle" | "loading" | "dismissed">("idle");
   const [undoLoading, setUndoLoading] = useState(false);
@@ -114,7 +115,7 @@ export default function LeakCard({ leak, isLoggedIn, onDismiss }: LeakCardProps)
                   Auto-Fix Available
                 </span>
               )}
-              {leak.customerEmail && (
+              {!privacyMode && leak.customerEmail && (
                 <>
                   <span className="text-xs text-text-muted">·</span>
                   <span className="text-xs text-text-muted font-mono">

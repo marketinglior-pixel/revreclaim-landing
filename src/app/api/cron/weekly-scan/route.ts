@@ -10,10 +10,13 @@ import {
 } from "@/lib/notifications/slack";
 import { calculateNextScan } from "@/lib/scan-utils";
 import { generateRecoveryActions } from "@/lib/recovery/action-generator";
+import { executeAction } from "@/lib/recovery/executor";
+import type { RecoveryAction, DunningEmailActionData } from "@/lib/recovery/types";
 import { canUseRecoveryActions } from "@/lib/plan-limits";
 import type { PlanType } from "@/lib/plan-limits";
 import { verifyCronSecret } from "@/lib/api-security";
 import { fireAndForget } from "@/lib/fire-and-forget";
+import { sendWebhookNotification } from "@/lib/notifications/webhook";
 import { createLogger } from "@/lib/logger";
 
 const log = createLogger("CRON");
@@ -140,6 +143,78 @@ export async function GET(req: NextRequest) {
             } else {
               log.info(`Generated ${actions.length} recovery actions for ${config.user_id}`);
             }
+
+            // Pre-dunning: auto-execute expiring card reminders
+            if (config.pre_dunning_enabled && !actionsErr) {
+              try {
+                const preDunningActions = actions.filter(
+                  (a) =>
+                    a.action_type === "send_dunning_email" &&
+                    (a.action_data as unknown as DunningEmailActionData).template === "expiring_card"
+                );
+
+                let preDunningSent = 0;
+                for (const pdAction of preDunningActions) {
+                  // Dedup check: don't send if we already sent for this customer+leak
+                  const { count: existingCount } = await supabase
+                    .from("recovery_actions")
+                    .select("*", { count: "exact", head: true })
+                    .eq("user_id", config.user_id)
+                    .eq("customer_id", pdAction.customer_id)
+                    .eq("action_type", "send_dunning_email")
+                    .eq("status", "executed")
+                    .neq("report_id", report.id);
+
+                  if (existingCount && existingCount > 0) {
+                    continue; // Already sent a pre-dunning email for this customer
+                  }
+
+                  // Find the inserted action row to auto-approve and execute
+                  const { data: insertedAction } = await supabase
+                    .from("recovery_actions")
+                    .select("*")
+                    .eq("user_id", config.user_id)
+                    .eq("report_id", report.id)
+                    .eq("leak_id", pdAction.leak_id)
+                    .eq("action_type", "send_dunning_email")
+                    .eq("status", "pending")
+                    .single();
+
+                  if (insertedAction) {
+                    // Auto-approve
+                    await supabase
+                      .from("recovery_actions")
+                      .update({ status: "approved", approved_at: new Date().toISOString() })
+                      .eq("id", insertedAction.id);
+
+                    // Execute the dunning email
+                    const result = await executeAction(
+                      insertedAction as unknown as RecoveryAction
+                    );
+
+                    if (result.success) {
+                      await supabase
+                        .from("recovery_actions")
+                        .update({ status: "executed", executed_at: new Date().toISOString() })
+                        .eq("id", insertedAction.id);
+                      preDunningSent++;
+                    } else {
+                      await supabase
+                        .from("recovery_actions")
+                        .update({ status: "failed", error_message: result.error || "Pre-dunning failed" })
+                        .eq("id", insertedAction.id);
+                      log.error(`Pre-dunning failed for cus_••••${(pdAction.customer_id || "").slice(-4)}: ${result.error}`);
+                    }
+                  }
+                }
+
+                if (preDunningSent > 0) {
+                  log.info(`Pre-dunning: sent ${preDunningSent} card expiry reminders for ${config.user_id}`);
+                }
+              } catch (pdErr) {
+                log.error(`Pre-dunning error for ${config.user_id}:`, pdErr);
+              }
+            }
           }
         } catch (actionErr) {
           log.error(`Action generation error for ${config.user_id}:`, actionErr);
@@ -180,6 +255,21 @@ export async function GET(req: NextRequest) {
             baseUrl,
           }),
           "CRON_SLACK_NOTIFICATION"
+        );
+      }
+
+      // Send custom webhook notification if configured (fire-and-forget)
+      if (config.webhook_url && config.webhook_secret) {
+        fireAndForget(
+          sendWebhookNotification(config.webhook_url, config.webhook_secret, "scan_complete", {
+            reportId: report.id,
+            platform,
+            leaksFound: report.summary.leaksFound,
+            mrrAtRisk: report.summary.mrrAtRisk,
+            healthScore: report.summary.healthScore,
+            recoveryPotential: report.summary.recoveryPotential,
+          }),
+          "CRON_WEBHOOK"
         );
       }
 

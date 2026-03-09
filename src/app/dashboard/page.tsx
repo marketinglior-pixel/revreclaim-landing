@@ -8,6 +8,7 @@ import HeroRecoveryCard from "@/components/dashboard/HeroRecoveryCard";
 import MiniCategoryChart from "@/components/dashboard/MiniCategoryChart";
 import AutoScanBanner from "@/components/dashboard/AutoScanBanner";
 import RecoveryActionsBanner from "@/components/dashboard/RecoveryActionsBanner";
+import RecoveryImpactCard from "@/components/dashboard/RecoveryImpactCard";
 import { ScanReport } from "@/lib/types";
 import ConversionTracker from "@/components/dashboard/ConversionTracker";
 import TrendChart from "@/components/dashboard/TrendChart";
@@ -113,6 +114,9 @@ export default async function DashboardPage() {
 
       {/* Hero recovery card */}
       {latestReport && <HeroRecoveryCard report={latestReport} />}
+
+      {/* Recovery impact — shows actual recovered revenue (Pro/Team only) */}
+      {plan !== "free" && latestReport && <RecoveryImpactCard />}
 
       {/* Stats from latest report */}
       {latestReport && <DashboardStats report={latestReport} />}

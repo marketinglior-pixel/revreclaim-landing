@@ -6,7 +6,7 @@ import { formatCurrency } from "./utils";
 /**
  * Export a scan report as a PDF file download.
  */
-export function exportReportPDF(report: ScanReport): void {
+export function exportReportPDF(report: ScanReport, options?: { privacyMode?: boolean }): void {
   const doc = new jsPDF();
   const date = new Date(report.scannedAt);
   const formattedDate = date.toLocaleDateString("en-US", {
@@ -56,11 +56,13 @@ export function exportReportPDF(report: ScanReport): void {
   doc.setFont("helvetica", "bold");
   doc.text(`Revenue Leaks (${report.leaks.length})`, 14, y);
 
-  const tableData = report.leaks.map((leak) => [
+  const tableData = report.leaks.map((leak, index) => [
     LEAK_TYPE_LABELS[leak.type],
     leak.severity.toUpperCase(),
     leak.title.length > 50 ? leak.title.substring(0, 47) + "..." : leak.title,
-    leak.customerEmail || leak.customerId.substring(0, 15) + "...",
+    options?.privacyMode
+      ? `Customer #${index + 1}`
+      : (leak.customerEmail || leak.customerId.substring(0, 15) + "..."),
     formatCurrency(leak.monthlyImpact) + "/mo",
     leak.fixSuggestion.length > 60
       ? leak.fixSuggestion.substring(0, 57) + "..."

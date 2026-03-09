@@ -7,9 +7,10 @@ interface ReportHeaderProps {
   scannedAt: string;
   isLoggedIn?: boolean;
   report?: ScanReport;
+  privacyMode?: boolean;
 }
 
-export default function ReportHeader({ scannedAt, isLoggedIn = false, report }: ReportHeaderProps) {
+export default function ReportHeader({ scannedAt, isLoggedIn = false, report, privacyMode }: ReportHeaderProps) {
   const date = new Date(scannedAt);
   const formattedDate = date.toLocaleDateString("en-US", {
     month: "long",
@@ -24,19 +25,19 @@ export default function ReportHeader({ scannedAt, isLoggedIn = false, report }: 
   async function handleExportPDF() {
     if (!report) return;
     const { exportReportPDF } = await import("@/lib/export-pdf");
-    exportReportPDF(report);
+    exportReportPDF(report, { privacyMode: !!privacyMode });
   }
 
   async function handleExportCSV() {
     if (!report) return;
     const { exportReportCSV } = await import("@/lib/export-csv");
-    exportReportCSV(report);
+    exportReportCSV(report, { privacyMode: !!privacyMode });
   }
 
   async function handleExportJSON() {
     if (!report) return;
     const { exportReportJSON } = await import("@/lib/export-json");
-    exportReportJSON(report);
+    exportReportJSON(report, { privacyMode: !!privacyMode });
   }
 
   return (
@@ -58,6 +59,14 @@ export default function ReportHeader({ scannedAt, isLoggedIn = false, report }: 
           <span className="hidden sm:block text-sm text-text-muted">
             Revenue Leak Report
           </span>
+          {privacyMode && (
+            <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium text-info bg-info/10 border border-info/20 rounded-full">
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+              </svg>
+              Privacy
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-2 min-h-[44px]">

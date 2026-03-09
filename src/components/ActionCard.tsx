@@ -29,6 +29,7 @@ interface ActionCardProps {
   canApprove: boolean;
   executing: boolean;
   remaining?: number;
+  privacyMode?: boolean;
 }
 
 const STATUS_BADGE: Record<
@@ -86,7 +87,7 @@ function maskCustomerId(id: string): string {
 }
 
 /** Extract human-readable preview details from action_data */
-function getPreviewDetails(action: ActionCardData): { label: string; value: string }[] {
+function getPreviewDetails(action: ActionCardData, privacyMode?: boolean): { label: string; value: string }[] {
   const details: { label: string; value: string }[] = [];
   const data = action.action_data;
 
@@ -98,7 +99,7 @@ function getPreviewDetails(action: ActionCardData): { label: string; value: stri
         payment_update: "Payment Method Update Request",
       };
       if (data.template) details.push({ label: "Email Template", value: templateNames[data.template as string] || String(data.template) });
-      if (data.customerName) details.push({ label: "Customer Name", value: String(data.customerName) });
+      if (data.customerName && !privacyMode) details.push({ label: "Customer Name", value: String(data.customerName) });
       if (data.amountCents) details.push({ label: "Amount Due", value: `$${(Number(data.amountCents) / 100).toFixed(2)}` });
       if (data.invoiceId) details.push({ label: "Invoice", value: maskCustomerId(String(data.invoiceId)) });
       if (data.cardLast4) details.push({ label: "Card", value: `${data.cardBrand || "Card"} ••••${data.cardLast4}` });
@@ -136,6 +137,7 @@ export function ActionCard({
   onRetry,
   canApprove,
   executing,
+  privacyMode,
 }: ActionCardProps) {
   const [showPreview, setShowPreview] = useState(false);
   const badge = STATUS_BADGE[action.status];
@@ -148,7 +150,7 @@ export function ActionCard({
     month: "short",
     day: "numeric",
   });
-  const previewDetails = getPreviewDetails(action);
+  const previewDetails = getPreviewDetails(action, privacyMode);
 
   return (
     <div
@@ -196,7 +198,7 @@ export function ActionCard({
               <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
               </svg>
-              {maskCustomerId(action.customer_id)}
+              {privacyMode ? `Customer #${action.id.slice(0, 4)}` : maskCustomerId(action.customer_id)}
             </span>
             <span className="flex items-center gap-1 capitalize">
               <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

@@ -4,7 +4,7 @@ import { formatCurrency } from "./utils";
 /**
  * Export a scan report's leaks as a CSV file download.
  */
-export function exportReportCSV(report: ScanReport): void {
+export function exportReportCSV(report: ScanReport, options?: { privacyMode?: boolean }): void {
   const headers = [
     "Type",
     "Severity",
@@ -15,11 +15,13 @@ export function exportReportCSV(report: ScanReport): void {
     "Fix Suggestion",
   ];
 
-  const rows = report.leaks.map((leak) => [
+  const rows = report.leaks.map((leak, index) => [
     escapeCsvField(LEAK_TYPE_LABELS[leak.type]),
     leak.severity.toUpperCase(),
     escapeCsvField(leak.title),
-    escapeCsvField(leak.customerEmail || leak.customerId),
+    options?.privacyMode
+      ? `Customer #${index + 1}`
+      : escapeCsvField(leak.customerEmail || leak.customerId),
     formatCurrency(leak.monthlyImpact),
     formatCurrency(leak.annualImpact),
     escapeCsvField(leak.fixSuggestion),

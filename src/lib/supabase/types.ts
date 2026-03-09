@@ -276,10 +276,14 @@ export type Database = {
           last_scan_at: string | null
           next_scan_at: string | null
           platform: string
+          pre_dunning_enabled: boolean
+          privacy_mode: boolean
           scan_frequency: string
           slack_webhook_url: string | null
           updated_at: string
           user_id: string
+          webhook_secret: string | null
+          webhook_url: string | null
         }
         Insert: {
           action_api_key_encrypted?: string | null
@@ -290,10 +294,14 @@ export type Database = {
           last_scan_at?: string | null
           next_scan_at?: string | null
           platform?: string
+          pre_dunning_enabled?: boolean
+          privacy_mode?: boolean
           scan_frequency?: string
           slack_webhook_url?: string | null
           updated_at?: string
           user_id: string
+          webhook_secret?: string | null
+          webhook_url?: string | null
         }
         Update: {
           action_api_key_encrypted?: string | null
@@ -304,10 +312,14 @@ export type Database = {
           last_scan_at?: string | null
           next_scan_at?: string | null
           platform?: string
+          pre_dunning_enabled?: boolean
+          privacy_mode?: boolean
           scan_frequency?: string
           slack_webhook_url?: string | null
           updated_at?: string
           user_id?: string
+          webhook_secret?: string | null
+          webhook_url?: string | null
         }
         Relationships: [
           {

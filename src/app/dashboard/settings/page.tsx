@@ -46,11 +46,29 @@ export default function SettingsPage() {
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
 
+  // Privacy Mode state
+  const [privacyMode, setPrivacyMode] = useState(false);
+  const [privacySaving, setPrivacySaving] = useState(false);
+  const [privacyMessage, setPrivacyMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Pre-Dunning state
+  const [preDunningEnabled, setPreDunningEnabled] = useState(false);
+  const [preDunningSaving, setPreDunningSaving] = useState(false);
+  const [preDunningMessage, setPreDunningMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
   // Slack Webhook state
   const [slackWebhookUrl, setSlackWebhookUrl] = useState("");
   const [hasExistingWebhook, setHasExistingWebhook] = useState(false);
   const [slackSaving, setSlackSaving] = useState(false);
   const [slackMessage, setSlackMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Custom Webhook state
+  const [webhookUrl, setWebhookUrl] = useState("");
+  const [hasExistingCustomWebhook, setHasExistingCustomWebhook] = useState(false);
+  const [webhookSecret, setWebhookSecret] = useState<string | null>(null);
+  const [webhookSaving, setWebhookSaving] = useState(false);
+  const [webhookMessage, setWebhookMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [showWebhookSecret, setShowWebhookSecret] = useState(false);
 
   // Delete Account state
   const [deleting, setDeleting] = useState(false);
@@ -79,7 +97,7 @@ export default function SettingsPage() {
 
       const { data } = await supabase
         .from("scan_configs")
-        .select("scan_frequency, is_active, platform, action_api_key_encrypted, slack_webhook_url")
+        .select("scan_frequency, is_active, platform, action_api_key_encrypted, slack_webhook_url, pre_dunning_enabled, webhook_url, webhook_secret, privacy_mode")
         .eq("user_id", user.id)
         .single();
 
@@ -93,6 +111,12 @@ export default function SettingsPage() {
         setHasExistingActionKey(!!data.action_api_key_encrypted);
         if (data.slack_webhook_url) {
           setHasExistingWebhook(true);
+        }
+        setPreDunningEnabled(!!data.pre_dunning_enabled);
+        setPrivacyMode(!!data.privacy_mode);
+        if (data.webhook_url) {
+          setHasExistingCustomWebhook(true);
+          setWebhookSecret(data.webhook_secret || null);
         }
       }
 
@@ -429,6 +453,178 @@ export default function SettingsPage() {
     }
 
     setSlackSaving(false);
+  }
+
+  async function handleTogglePrivacyMode() {
+    setPrivacySaving(true);
+    setPrivacyMessage(null);
+
+    const newValue = !privacyMode;
+
+    try {
+      const response = await fetch("/api/scan-config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          privacyMode: newValue,
+          platform,
+          frequency,
+          isActive,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setPrivacyMessage({ type: "error", text: data.error });
+      } else {
+        setPrivacyMode(newValue);
+        setPrivacyMessage({
+          type: "success",
+          text: newValue
+            ? "Privacy Mode enabled. Customer data is now hidden from the dashboard and exports."
+            : "Privacy Mode disabled.",
+        });
+      }
+    } catch {
+      setPrivacyMessage({ type: "error", text: "Failed to save. Please try again." });
+    }
+
+    setPrivacySaving(false);
+  }
+
+  async function handleTogglePreDunning() {
+    setPreDunningSaving(true);
+    setPreDunningMessage(null);
+
+    const newValue = !preDunningEnabled;
+
+    try {
+      const response = await fetch("/api/scan-config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          preDunningEnabled: newValue,
+          platform,
+          frequency,
+          isActive,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setPreDunningMessage({ type: "error", text: data.error });
+      } else {
+        setPreDunningEnabled(newValue);
+        setPreDunningMessage({
+          type: "success",
+          text: newValue
+            ? "Pre-dunning enabled. Customers will be emailed 30 days before card expiry."
+            : "Pre-dunning disabled.",
+        });
+      }
+    } catch {
+      setPreDunningMessage({ type: "error", text: "Failed to save. Please try again." });
+    }
+
+    setPreDunningSaving(false);
+  }
+
+  async function handleSaveWebhook(e: React.FormEvent) {
+    e.preventDefault();
+    setWebhookSaving(true);
+    setWebhookMessage(null);
+
+    try {
+      const response = await fetch("/api/scan-config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          webhookUrl,
+          platform,
+          frequency,
+          isActive,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setWebhookMessage({ type: "error", text: data.error });
+      } else {
+        setWebhookMessage({ type: "success", text: "Webhook saved successfully." });
+        setHasExistingCustomWebhook(true);
+        setWebhookUrl("");
+        // Re-fetch to get the generated secret
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: configData } = await supabase
+            .from("scan_configs")
+            .select("webhook_secret")
+            .eq("user_id", user.id)
+            .single();
+          if (configData?.webhook_secret) {
+            setWebhookSecret(configData.webhook_secret);
+            setShowWebhookSecret(true);
+          }
+        }
+      }
+    } catch {
+      setWebhookMessage({ type: "error", text: "Failed to save. Please try again." });
+    }
+
+    setWebhookSaving(false);
+  }
+
+  async function handleRemoveWebhook() {
+    setWebhookSaving(true);
+    try {
+      const response = await fetch("/api/scan-config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          webhookUrl: "__DELETE__",
+          platform,
+          frequency,
+          isActive,
+        }),
+      });
+
+      if (response.ok) {
+        setHasExistingCustomWebhook(false);
+        setWebhookUrl("");
+        setWebhookSecret(null);
+        setWebhookMessage({ type: "success", text: "Webhook removed." });
+      }
+    } catch {
+      setWebhookMessage({ type: "error", text: "Failed to remove. Please try again." });
+    }
+    setWebhookSaving(false);
+  }
+
+  async function handleTestWebhook() {
+    setWebhookSaving(true);
+    setWebhookMessage(null);
+
+    try {
+      const response = await fetch("/api/webhook-test", {
+        method: "POST",
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setWebhookMessage({ type: "success", text: "Test event sent! Check your webhook endpoint." });
+      } else {
+        setWebhookMessage({ type: "error", text: data.error || "Failed to send test." });
+      }
+    } catch {
+      setWebhookMessage({ type: "error", text: "Failed to send test." });
+    }
+
+    setWebhookSaving(false);
   }
 
   async function handleDeleteAccount() {
@@ -791,6 +987,295 @@ export default function SettingsPage() {
                     className="px-4 py-2.5 text-sm text-danger hover:bg-danger/10 rounded-lg transition disabled:opacity-50 cursor-pointer"
                   >
                     Disconnect
+                  </button>
+                </>
+              )}
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Privacy Mode */}
+      {userPlan !== "free" && hasExistingConfig && (
+        <div className="rounded-2xl border border-border bg-surface p-6">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-info/15">
+              <svg className="h-4 w-4 text-info" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+              </svg>
+            </div>
+            <h2 className="text-lg font-bold text-white">Privacy Mode</h2>
+            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand/10 text-brand border border-brand/20">
+              New
+            </span>
+          </div>
+          <p className="text-sm text-text-muted mb-6">
+            Hide customer emails and identifiers from the dashboard, reports, and exports.
+            Recovery actions still work normally — customer data stays encrypted and is only used server-side.
+          </p>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-white">Enable Privacy Mode</p>
+              <p className="text-xs text-text-muted">
+                Customer emails hidden from reports, IDs anonymized in dashboard and exports
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleTogglePrivacyMode}
+              disabled={privacySaving}
+              role="switch"
+              aria-checked={privacyMode}
+              aria-label="Enable privacy mode"
+              className={`w-11 h-6 rounded-full transition-colors cursor-pointer disabled:opacity-50 ${
+                privacyMode ? "bg-brand" : "bg-border"
+              }`}
+            >
+              <div
+                className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                  privacyMode ? "translate-x-5.5" : "translate-x-0.5"
+                }`}
+              />
+            </button>
+          </div>
+
+          {privacyMode && (
+            <div className="mt-4 rounded-lg border border-info/20 bg-info/5 px-4 py-3">
+              <p className="text-xs text-info font-medium mb-1.5">What&apos;s hidden when Privacy Mode is on:</p>
+              <ul className="space-y-1 text-xs text-text-muted">
+                <li className="flex items-center gap-2">
+                  <svg className="w-3 h-3 text-info flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  Customer emails hidden from leak reports
+                </li>
+                <li className="flex items-center gap-2">
+                  <svg className="w-3 h-3 text-info flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  Customer IDs anonymized in action cards
+                </li>
+                <li className="flex items-center gap-2">
+                  <svg className="w-3 h-3 text-info flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  CSV, JSON, and PDF exports anonymized
+                </li>
+                <li className="flex items-center gap-2">
+                  <svg className="w-3 h-3 text-brand flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-text-secondary">Dunning emails &amp; recovery actions still work</span>
+                </li>
+              </ul>
+            </div>
+          )}
+
+          {privacyMessage && (
+            <div
+              className={`mt-4 rounded-lg px-4 py-3 text-sm ${
+                privacyMessage.type === "success"
+                  ? "bg-brand/10 border border-brand/20 text-brand"
+                  : "bg-danger/10 border border-danger/20 text-danger"
+              }`}
+            >
+              {privacyMessage.text}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Pre-Dunning Emails */}
+      {userPlan !== "free" && hasExistingConfig && (
+        <div className="rounded-2xl border border-border bg-surface p-6">
+          <div className="flex items-center gap-3 mb-1">
+            <h2 className="text-lg font-bold text-white">Pre-Dunning Emails</h2>
+            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand/10 text-brand border border-brand/20">
+              New
+            </span>
+          </div>
+          <p className="text-sm text-text-muted mb-6">
+            Proactively email customers <strong className="text-white">30 days before</strong> their card expires.
+            This prevents failed payments before they happen — recovering up to 14% more revenue.
+          </p>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-white">Auto-send card expiry reminders</p>
+              <p className="text-xs text-text-muted">
+                Emails are sent automatically after each scan — no approval needed
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleTogglePreDunning}
+              disabled={preDunningSaving}
+              role="switch"
+              aria-checked={preDunningEnabled}
+              aria-label="Enable pre-dunning emails"
+              className={`w-11 h-6 rounded-full transition-colors cursor-pointer disabled:opacity-50 ${
+                preDunningEnabled ? "bg-brand" : "bg-border"
+              }`}
+            >
+              <div
+                className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                  preDunningEnabled ? "translate-x-5.5" : "translate-x-0.5"
+                }`}
+              />
+            </button>
+          </div>
+
+          {preDunningMessage && (
+            <div
+              className={`mt-4 rounded-lg px-4 py-3 text-sm ${
+                preDunningMessage.type === "success"
+                  ? "bg-brand/10 border border-brand/20 text-brand"
+                  : "bg-danger/10 border border-danger/20 text-danger"
+              }`}
+            >
+              {preDunningMessage.text}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Custom Webhook */}
+      {userPlan !== "free" && hasExistingConfig && (
+        <div className="rounded-2xl border border-border bg-surface p-6">
+          <div className="flex items-center gap-3 mb-1">
+            <h2 className="text-lg font-bold text-white">Webhook Integration</h2>
+            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand/10 text-brand border border-brand/20">
+              New
+            </span>
+          </div>
+          <p className="text-sm text-text-muted mb-4">
+            Receive real-time JSON payloads on key events. Works with Zapier, n8n, custom dashboards, and any webhook-compatible tool.
+          </p>
+
+          {/* Event types list */}
+          <div className="rounded-lg border border-border bg-surface-dim p-4 mb-5">
+            <p className="text-xs font-medium text-text-secondary mb-2">Events fired:</p>
+            <div className="space-y-1.5 text-xs text-text-muted">
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand" />
+                <code className="text-brand">scan_complete</code> — After each automated scan finishes
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand" />
+                <code className="text-brand">action_executed</code> — When a recovery action succeeds
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-danger" />
+                <code className="text-danger">action_failed</code> — When a recovery action fails
+              </div>
+            </div>
+          </div>
+
+          <form onSubmit={handleSaveWebhook} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+                Webhook URL (HTTPS)
+                {hasExistingCustomWebhook && (
+                  <span className="text-brand ml-2 font-normal">(connected — enter new to update)</span>
+                )}
+              </label>
+              <input
+                type="url"
+                value={webhookUrl}
+                onChange={(e) => setWebhookUrl(e.target.value)}
+                placeholder={hasExistingCustomWebhook ? "Enter new URL to update..." : "https://your-server.com/webhooks/revreclaim"}
+                className="w-full px-4 py-3 bg-surface-dim border border-border rounded-lg text-white placeholder-text-muted focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition font-mono text-sm"
+              />
+            </div>
+
+            {/* Webhook Secret */}
+            {hasExistingCustomWebhook && webhookSecret && (
+              <div>
+                <label className="block text-sm font-medium text-text-secondary mb-1.5">
+                  Webhook Secret (for HMAC-SHA256 verification)
+                </label>
+                <div className="relative">
+                  <input
+                    type={showWebhookSecret ? "text" : "password"}
+                    value={webhookSecret}
+                    readOnly
+                    className="w-full px-4 py-3 pr-20 bg-surface-dim border border-border rounded-lg text-white font-mono text-sm"
+                  />
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setShowWebhookSecret(!showWebhookSecret)}
+                      className="p-1.5 text-text-muted hover:text-white transition"
+                      aria-label={showWebhookSecret ? "Hide secret" : "Show secret"}
+                    >
+                      {showWebhookSecret ? (
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                        </svg>
+                      ) : (
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { navigator.clipboard.writeText(webhookSecret); setWebhookMessage({ type: "success", text: "Secret copied!" }); }}
+                      className="p-1.5 text-text-muted hover:text-white transition"
+                      aria-label="Copy secret"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9.75a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <p className="mt-1 text-xs text-text-dim">
+                  Use this secret to verify webhook signatures. The signature is sent in the <code className="text-text-muted">X-RevReclaim-Signature</code> header.
+                </p>
+              </div>
+            )}
+
+            {webhookMessage && (
+              <div
+                className={`rounded-lg px-4 py-3 text-sm ${
+                  webhookMessage.type === "success"
+                    ? "bg-brand/10 border border-brand/20 text-brand"
+                    : "bg-danger/10 border border-danger/20 text-danger"
+                }`}
+              >
+                {webhookMessage.text}
+              </div>
+            )}
+
+            <div className="flex items-center gap-3">
+              <button
+                type="submit"
+                disabled={webhookSaving || !webhookUrl}
+                className="px-6 py-2.5 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm"
+              >
+                {webhookSaving ? "Saving..." : hasExistingCustomWebhook ? "Update Webhook" : "Save Webhook"}
+              </button>
+
+              {hasExistingCustomWebhook && (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleTestWebhook}
+                    disabled={webhookSaving}
+                    className="px-4 py-2.5 text-sm text-brand hover:bg-brand/10 rounded-lg transition disabled:opacity-50 cursor-pointer"
+                  >
+                    Send Test
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRemoveWebhook}
+                    disabled={webhookSaving}
+                    className="px-4 py-2.5 text-sm text-danger hover:bg-danger/10 rounded-lg transition disabled:opacity-50 cursor-pointer"
+                  >
+                    Remove
                   </button>
                 </>
               )}

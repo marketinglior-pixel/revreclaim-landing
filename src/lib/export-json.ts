@@ -5,7 +5,7 @@ import { formatCurrency } from "./utils";
  * Export a scan report as a structured JSON file download.
  * Designed for developers who want to integrate with their own tooling.
  */
-export function exportReportJSON(report: ScanReport): void {
+export function exportReportJSON(report: ScanReport, options?: { privacyMode?: boolean }): void {
   const exportData = {
     meta: {
       generator: "RevReclaim",
@@ -43,9 +43,9 @@ export function exportReportJSON(report: ScanReport): void {
         severity: leak.severity,
         title: leak.title,
         description: leak.description,
-        customerId: leak.customerId,
-        customerEmail: leak.customerEmail,
-        subscriptionId: leak.subscriptionId,
+        customerId: options?.privacyMode ? `anon_${leak.id.slice(0, 8)}` : leak.customerId,
+        customerEmail: options?.privacyMode ? null : leak.customerEmail,
+        subscriptionId: options?.privacyMode ? null : leak.subscriptionId,
         monthlyImpact: leak.monthlyImpact,
         monthlyImpactFormatted: formatCurrency(leak.monthlyImpact),
         annualImpact: leak.annualImpact,

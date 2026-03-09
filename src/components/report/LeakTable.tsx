@@ -9,6 +9,7 @@ interface LeakTableProps {
   leaks: Leak[];
   isLoggedIn?: boolean;
   onDismiss?: (customerId: string, leakType: string) => void;
+  privacyMode?: boolean;
 }
 
 const SEVERITY_FILTERS: { label: string; value: LeakSeverity | "all" }[] = [
@@ -21,7 +22,7 @@ const SEVERITY_FILTERS: { label: string; value: LeakSeverity | "all" }[] = [
 
 type ActionFilter = "action" | "review" | "all";
 
-export default function LeakTable({ leaks, isLoggedIn, onDismiss }: LeakTableProps) {
+export default function LeakTable({ leaks, isLoggedIn, onDismiss, privacyMode }: LeakTableProps) {
   const [severityFilter, setSeverityFilter] = useState<
     LeakSeverity | "all"
   >("all");
@@ -137,7 +138,7 @@ export default function LeakTable({ leaks, isLoggedIn, onDismiss }: LeakTablePro
       <div className="space-y-2">
         {filteredLeaks.length > 0 ? (
           filteredLeaks.map((leak) => (
-            <LeakCard key={leak.id} leak={leak} isLoggedIn={isLoggedIn} onDismiss={onDismiss} />
+            <LeakCard key={leak.id} leak={leak} isLoggedIn={isLoggedIn} onDismiss={onDismiss} privacyMode={privacyMode} />
           ))
         ) : (
           <div className="text-center py-12 bg-surface border border-border rounded-xl">

@@ -26,6 +26,14 @@ export default async function ActionsPage() {
 
   const plan = (profile?.plan || "free") as "free" | "pro" | "team";
 
+  // Fetch privacy mode setting
+  const { data: scanConfig } = await supabase
+    .from("scan_configs")
+    .select("privacy_mode")
+    .eq("user_id", user.id)
+    .single();
+  const privacyMode = !!scanConfig?.privacy_mode;
+
   // Fetch summary stats for the header
   const { count: pendingCount } = await supabase
     .from("recovery_actions")
@@ -51,6 +59,18 @@ export default async function ActionsPage() {
     0
   );
 
+  // Sum recovered MRR (executed actions)
+  const { data: executedActions } = await supabase
+    .from("recovery_actions")
+    .select("monthly_impact")
+    .eq("user_id", user.id)
+    .eq("status", "executed");
+
+  const totalRecovered = (executedActions || []).reduce(
+    (sum, a) => sum + (a.monthly_impact || 0),
+    0
+  );
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -65,7 +85,7 @@ export default async function ActionsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 animate-fade-in-up animate-delay-100">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4 animate-fade-in-up animate-delay-100">
         {/* Pending */}
         <div className="rounded-xl border-t-2 border-t-warning border border-warning/20 bg-warning/5 backdrop-blur-sm p-5">
           <div className="mb-1 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-text-muted">
@@ -120,7 +140,7 @@ export default async function ActionsPage() {
         </div>
 
         {/* Executed */}
-        <div className="col-span-2 md:col-span-1 rounded-xl border-t-2 border-t-info border border-info/20 bg-info/5 backdrop-blur-sm p-5">
+        <div className="rounded-xl border-t-2 border-t-info border border-info/20 bg-info/5 backdrop-blur-sm p-5">
           <div className="mb-1 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-text-muted">
             <svg
               className="h-3.5 w-3.5 text-info"
@@ -144,11 +164,40 @@ export default async function ActionsPage() {
             Actions completed so far
           </p>
         </div>
+
+        {/* Recovered */}
+        <div className="rounded-xl border-t-2 border-t-brand border border-brand/30 bg-gradient-to-br from-brand/10 to-brand/5 backdrop-blur-sm p-5">
+          <div className="mb-1 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-text-muted">
+            <svg
+              className="h-3.5 w-3.5 text-brand"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"
+              />
+            </svg>
+            Recovered
+          </div>
+          <div className="flex items-baseline gap-1">
+            <span className="text-3xl font-bold text-brand">
+              ${(totalRecovered / 100).toLocaleString()}
+            </span>
+            <span className="text-sm text-text-muted">/mo</span>
+          </div>
+          <p className="mt-1 text-xs text-text-muted">
+            Revenue saved so far
+          </p>
+        </div>
       </div>
 
       {/* Action Queue */}
       <div className="animate-fade-in-up animate-delay-200">
-        <ActionQueue plan={plan} />
+        <ActionQueue plan={plan} privacyMode={privacyMode} />
       </div>
     </div>
   );

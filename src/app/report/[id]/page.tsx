@@ -27,6 +27,7 @@ export default function ReportPage() {
   const [showSaveBanner, setShowSaveBanner] = useState(true);
   const [dismissedKeys, setDismissedKeys] = useState<Set<string>>(new Set());
   const [pendingActionsCount, setPendingActionsCount] = useState(0);
+  const [privacyMode, setPrivacyMode] = useState(false);
 
   useEffect(() => {
     async function loadReport() {
@@ -60,10 +61,19 @@ export default function ReportPage() {
           try { sessionStorage.removeItem(`report_${reportId}`); } catch { /* ignore */ }
           setLoading(false);
 
-          // Load dismissals + pending actions for logged-in users
+          // Load dismissals + pending actions + privacy mode for logged-in users
           if (userLoggedIn) {
             loadDismissals();
             loadPendingActions();
+            // Fetch privacy mode setting
+            supabase
+              .from("scan_configs")
+              .select("privacy_mode")
+              .eq("user_id", user!.id)
+              .single()
+              .then(({ data: scanConfig }) => {
+                if (scanConfig?.privacy_mode) setPrivacyMode(true);
+              });
           }
           return;
         }
@@ -201,7 +211,7 @@ export default function ReportPage() {
 
   return (
     <div className="min-h-screen bg-surface-dim">
-      <ReportHeader scannedAt={report.scannedAt} isLoggedIn={isLoggedIn} report={report} />
+      <ReportHeader scannedAt={report.scannedAt} isLoggedIn={isLoggedIn} report={report} privacyMode={privacyMode} />
 
       {/* Guest save banner */}
       {!isLoggedIn && showSaveBanner && (
@@ -291,7 +301,7 @@ export default function ReportPage() {
 
         {/* All Leaks Table */}
         <div id="leak-table">
-          <LeakTable leaks={visibleLeaks} isLoggedIn={isLoggedIn} onDismiss={handleDismiss} />
+          <LeakTable leaks={visibleLeaks} isLoggedIn={isLoggedIn} onDismiss={handleDismiss} privacyMode={privacyMode} />
         </div>
 
         {/* CTA */}
