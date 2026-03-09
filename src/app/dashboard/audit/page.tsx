@@ -141,11 +141,11 @@ export default async function AuditLogPage() {
             {entries.map(
               (entry: {
                 id: string;
-                user_id: string;
+                user_id: string | null;
                 action: string;
                 resource: string | null;
                 resource_id: string | null;
-                metadata: Json | null;
+                metadata: Json;
                 created_at: string;
               }) => {
                 const label =
@@ -154,7 +154,7 @@ export default async function AuditLogPage() {
                   ACTION_ICONS[entry.action] ||
                   ACTION_ICONS["settings_updated"];
                 const actorEmail =
-                  emailMap.get(entry.user_id) || "Unknown";
+                  (entry.user_id && emailMap.get(entry.user_id)) || "Unknown";
                 const meta = entry.metadata as Record<
                   string,
                   unknown

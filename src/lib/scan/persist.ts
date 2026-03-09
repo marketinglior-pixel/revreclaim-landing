@@ -179,7 +179,13 @@ async function detectAndTrackImpact(
 
     if (!executedActions || executedActions.length === 0) return;
 
-    const impact = detectRecoveries(executedActions, report);
+    const validActions = executedActions
+      .filter((a): a is typeof a & { customer_id: string; monthly_impact: number } =>
+        a.customer_id !== null && a.monthly_impact !== null
+      );
+    if (validActions.length === 0) return;
+
+    const impact = detectRecoveries(validActions, report);
     if (impact.recoveredActions.length > 0) {
       log.info(
         `Recovery impact: $${(impact.totalRecovered / 100).toFixed(0)}/mo recovered from ${impact.recoveredActions.length} actions`

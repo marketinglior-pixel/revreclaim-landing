@@ -86,7 +86,7 @@ export default function SettingsPage() {
       if (cancelled) return;
       if (data) {
         setHasExistingConfig(true);
-        setFrequency(data.scan_frequency || "weekly");
+        setFrequency((data.scan_frequency || "weekly") as "weekly" | "daily" | "monthly");
         setIsActive(data.is_active);
         if (data.platform) setPlatform(data.platform as BillingPlatform);
         setApiKey("");

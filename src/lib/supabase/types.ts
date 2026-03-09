@@ -4,392 +4,504 @@ export type Json =
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Json[];
+  | Json[]
 
-export interface Database {
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.1"
+  }
   public: {
     Tables: {
-      profiles: {
-        Row: {
-          id: string;
-          email: string;
-          full_name: string | null;
-          plan: "free" | "pro" | "team";
-          payment_customer_id: string | null;
-          payment_subscription_id: string | null;
-          payment_portal_url: string | null;
-          plan_period_start: string | null;
-          plan_period_end: string | null;
-          scan_count_this_period: number;
-          is_disabled: boolean;
-          notification_preferences: Json | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id: string;
-          email: string;
-          full_name?: string | null;
-          plan?: "free" | "pro" | "team";
-          payment_customer_id?: string | null;
-          payment_subscription_id?: string | null;
-          payment_portal_url?: string | null;
-          plan_period_start?: string | null;
-          plan_period_end?: string | null;
-          scan_count_this_period?: number;
-          is_disabled?: boolean;
-          notification_preferences?: Json | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          email?: string;
-          full_name?: string | null;
-          plan?: "free" | "pro" | "team";
-          payment_customer_id?: string | null;
-          payment_subscription_id?: string | null;
-          payment_portal_url?: string | null;
-          plan_period_start?: string | null;
-          plan_period_end?: string | null;
-          scan_count_this_period?: number;
-          is_disabled?: boolean;
-          notification_preferences?: Json | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "profiles_id_fkey";
-            columns: ["id"];
-            isOneToOne: true;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      reports: {
-        Row: {
-          id: string;
-          user_id: string;
-          created_at: string;
-          summary: Json;
-          categories: Json;
-          leaks: Json;
-          stripe_account_id: string | null;
-          is_test_mode: boolean;
-          platform: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          created_at?: string;
-          summary: Json;
-          categories: Json;
-          leaks: Json;
-          stripe_account_id?: string | null;
-          is_test_mode?: boolean;
-          platform?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string;
-          created_at?: string;
-          summary?: Json;
-          categories?: Json;
-          leaks?: Json;
-          stripe_account_id?: string | null;
-          is_test_mode?: boolean;
-          platform?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "reports_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      scan_configs: {
-        Row: {
-          id: string;
-          user_id: string;
-          encrypted_api_key: string;
-          action_api_key_encrypted: string | null;
-          platform: string;
-          scan_frequency: "weekly" | "daily" | "monthly";
-          is_active: boolean;
-          last_scan_at: string | null;
-          next_scan_at: string | null;
-          slack_webhook_url: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          encrypted_api_key: string;
-          action_api_key_encrypted?: string | null;
-          platform?: string;
-          scan_frequency?: "weekly" | "daily" | "monthly";
-          is_active?: boolean;
-          last_scan_at?: string | null;
-          next_scan_at?: string | null;
-          slack_webhook_url?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string;
-          encrypted_api_key?: string;
-          action_api_key_encrypted?: string | null;
-          platform?: string;
-          scan_frequency?: "weekly" | "daily" | "monthly";
-          is_active?: boolean;
-          last_scan_at?: string | null;
-          next_scan_at?: string | null;
-          slack_webhook_url?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "scan_configs_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: true;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      team_members: {
-        Row: {
-          id: string;
-          team_owner_id: string;
-          member_id: string | null;
-          member_email: string;
-          role: "admin" | "member";
-          invite_status: "pending" | "accepted";
-          invited_at: string;
-          accepted_at: string | null;
-        };
-        Insert: {
-          id?: string;
-          team_owner_id: string;
-          member_id?: string | null;
-          member_email: string;
-          role?: "admin" | "member";
-          invite_status?: "pending" | "accepted";
-          invited_at?: string;
-          accepted_at?: string | null;
-        };
-        Update: {
-          id?: string;
-          team_owner_id?: string;
-          member_id?: string | null;
-          member_email?: string;
-          role?: "admin" | "member";
-          invite_status?: "pending" | "accepted";
-          invited_at?: string;
-          accepted_at?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "team_members_team_owner_id_fkey";
-            columns: ["team_owner_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "team_members_member_id_fkey";
-            columns: ["member_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      recovery_actions: {
-        Row: {
-          id: string;
-          user_id: string;
-          report_id: string;
-          leak_id: string;
-          action_type: string;
-          status: string;
-          platform: string;
-          customer_email_encrypted: string | null;
-          customer_id: string;
-          subscription_id: string | null;
-          action_data: Json;
-          monthly_impact: number;
-          error_message: string | null;
-          created_at: string;
-          approved_at: string | null;
-          executed_at: string | null;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          report_id: string;
-          leak_id: string;
-          action_type: string;
-          status?: string;
-          platform: string;
-          customer_email_encrypted?: string | null;
-          customer_id: string;
-          subscription_id?: string | null;
-          action_data?: Json;
-          monthly_impact?: number;
-          error_message?: string | null;
-          created_at?: string;
-          approved_at?: string | null;
-          executed_at?: string | null;
-        };
-        Update: {
-          id?: string;
-          user_id?: string;
-          report_id?: string;
-          leak_id?: string;
-          action_type?: string;
-          status?: string;
-          platform?: string;
-          customer_email_encrypted?: string | null;
-          customer_id?: string;
-          subscription_id?: string | null;
-          action_data?: Json;
-          monthly_impact?: number;
-          error_message?: string | null;
-          created_at?: string;
-          approved_at?: string | null;
-          executed_at?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "recovery_actions_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      leak_dismissals: {
-        Row: {
-          id: string;
-          user_id: string;
-          customer_id: string;
-          product_id: string | null;
-          leak_type: string;
-          reason: string;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          customer_id: string;
-          product_id?: string | null;
-          leak_type: string;
-          reason?: string;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string;
-          customer_id?: string;
-          product_id?: string | null;
-          leak_type?: string;
-          reason?: string;
-          created_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "leak_dismissals_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
       analytics_events: {
         Row: {
-          id: string;
-          user_id: string | null;
-          event_name: string;
-          event_data: Json | null;
-          created_at: string;
-        };
+          created_at: string
+          event_data: Json | null
+          event_name: string
+          id: string
+          user_id: string | null
+        }
         Insert: {
-          id?: string;
-          user_id?: string | null;
-          event_name: string;
-          event_data?: Json | null;
-          created_at?: string;
-        };
+          created_at?: string
+          event_data?: Json | null
+          event_name: string
+          id?: string
+          user_id?: string | null
+        }
         Update: {
-          id?: string;
-          user_id?: string | null;
-          event_name?: string;
-          event_data?: Json | null;
-          created_at?: string;
-        };
+          created_at?: string
+          event_data?: Json | null
+          event_name?: string
+          id?: string
+          user_id?: string | null
+        }
         Relationships: [
           {
-            foreignKeyName: "analytics_events_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
+            foreignKeyName: "analytics_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       audit_log: {
         Row: {
-          id: string;
-          user_id: string;
-          action: string;
-          resource: string | null;
-          resource_id: string | null;
-          metadata: Json | null;
-          created_at: string;
-        };
+          action: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          resource: string | null
+          resource_id: string | null
+          user_id: string | null
+        }
         Insert: {
-          id?: string;
-          user_id: string;
-          action: string;
-          resource?: string | null;
-          resource_id?: string | null;
-          metadata?: Json | null;
-          created_at?: string;
-        };
+          action: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          resource?: string | null
+          resource_id?: string | null
+          user_id?: string | null
+        }
         Update: {
-          id?: string;
-          user_id?: string;
-          action?: string;
-          resource?: string | null;
-          resource_id?: string | null;
-          metadata?: Json | null;
-          created_at?: string;
-        };
+          action?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          resource?: string | null
+          resource_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      leak_dismissals: {
+        Row: {
+          created_at: string | null
+          customer_id: string
+          id: string
+          leak_type: string
+          product_id: string | null
+          reason: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          customer_id: string
+          id?: string
+          leak_type: string
+          product_id?: string | null
+          reason?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          customer_id?: string
+          id?: string
+          leak_type?: string
+          product_id?: string | null
+          reason?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          is_disabled: boolean | null
+          notification_preferences: Json | null
+          payment_customer_id: string | null
+          payment_portal_url: string | null
+          payment_subscription_id: string | null
+          plan: string
+          plan_period_end: string | null
+          plan_period_start: string | null
+          scan_count_this_period: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id: string
+          is_disabled?: boolean | null
+          notification_preferences?: Json | null
+          payment_customer_id?: string | null
+          payment_portal_url?: string | null
+          payment_subscription_id?: string | null
+          plan?: string
+          plan_period_end?: string | null
+          plan_period_start?: string | null
+          scan_count_this_period?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          is_disabled?: boolean | null
+          notification_preferences?: Json | null
+          payment_customer_id?: string | null
+          payment_portal_url?: string | null
+          payment_subscription_id?: string | null
+          plan?: string
+          plan_period_end?: string | null
+          plan_period_start?: string | null
+          scan_count_this_period?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      recovery_actions: {
+        Row: {
+          action_data: Json
+          action_type: string
+          approved_at: string | null
+          created_at: string | null
+          customer_email_encrypted: string | null
+          customer_id: string
+          error_message: string | null
+          executed_at: string | null
+          id: string
+          leak_id: string
+          monthly_impact: number | null
+          platform: string
+          report_id: string
+          status: string
+          subscription_id: string | null
+          user_id: string
+        }
+        Insert: {
+          action_data?: Json
+          action_type: string
+          approved_at?: string | null
+          created_at?: string | null
+          customer_email_encrypted?: string | null
+          customer_id: string
+          error_message?: string | null
+          executed_at?: string | null
+          id?: string
+          leak_id: string
+          monthly_impact?: number | null
+          platform: string
+          report_id: string
+          status?: string
+          subscription_id?: string | null
+          user_id: string
+        }
+        Update: {
+          action_data?: Json
+          action_type?: string
+          approved_at?: string | null
+          created_at?: string | null
+          customer_email_encrypted?: string | null
+          customer_id?: string
+          error_message?: string | null
+          executed_at?: string | null
+          id?: string
+          leak_id?: string
+          monthly_impact?: number | null
+          platform?: string
+          report_id?: string
+          status?: string
+          subscription_id?: string | null
+          user_id?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "audit_log_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
+            foreignKeyName: "recovery_actions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
-        ];
-      };
-    };
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
-    Enums: Record<string, never>;
-    CompositeTypes: Record<string, never>;
-  };
+        ]
+      }
+      reports: {
+        Row: {
+          categories: Json
+          created_at: string
+          id: string
+          is_test_mode: boolean
+          leaks: Json
+          platform: string
+          stripe_account_id: string | null
+          summary: Json
+          user_id: string
+        }
+        Insert: {
+          categories: Json
+          created_at?: string
+          id?: string
+          is_test_mode?: boolean
+          leaks: Json
+          platform?: string
+          stripe_account_id?: string | null
+          summary: Json
+          user_id: string
+        }
+        Update: {
+          categories?: Json
+          created_at?: string
+          id?: string
+          is_test_mode?: boolean
+          leaks?: Json
+          platform?: string
+          stripe_account_id?: string | null
+          summary?: Json
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scan_configs: {
+        Row: {
+          action_api_key_encrypted: string | null
+          created_at: string
+          encrypted_api_key: string
+          id: string
+          is_active: boolean
+          last_scan_at: string | null
+          next_scan_at: string | null
+          platform: string
+          scan_frequency: string
+          slack_webhook_url: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          action_api_key_encrypted?: string | null
+          created_at?: string
+          encrypted_api_key: string
+          id?: string
+          is_active?: boolean
+          last_scan_at?: string | null
+          next_scan_at?: string | null
+          platform?: string
+          scan_frequency?: string
+          slack_webhook_url?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          action_api_key_encrypted?: string | null
+          created_at?: string
+          encrypted_api_key?: string
+          id?: string
+          is_active?: boolean
+          last_scan_at?: string | null
+          next_scan_at?: string | null
+          platform?: string
+          scan_frequency?: string
+          slack_webhook_url?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scan_configs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_members: {
+        Row: {
+          accepted_at: string | null
+          id: string
+          invite_status: string
+          invited_at: string
+          member_email: string
+          member_id: string | null
+          role: string
+          team_owner_id: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          id?: string
+          invite_status?: string
+          invited_at?: string
+          member_email: string
+          member_id?: string | null
+          role?: string
+          team_owner_id: string
+        }
+        Update: {
+          accepted_at?: string | null
+          id?: string
+          invite_status?: string
+          invited_at?: string
+          member_email?: string
+          member_id?: string | null
+          role?: string
+          team_owner_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_members_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_members_team_owner_id_fkey"
+            columns: ["team_owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
 }
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const
