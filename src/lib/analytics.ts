@@ -33,6 +33,9 @@ export type AnalyticsEvent =
   | "action_executed"
   | "action_failed"
   | "post_scan_survey"
+  | "post_fix_survey"
+  | "nps_survey"
+  | "feedback_widget"
   | "feature_interest";
 
 /**

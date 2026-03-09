@@ -4,6 +4,7 @@ import "./globals.css";
 import ExternalAnalytics from "@/components/ExternalAnalytics";
 import UTMCapture from "@/components/UTMCapture";
 import PostHogProvider from "@/components/PostHogProvider";
+import { FeedbackWidget } from "@/components/FeedbackWidget";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -231,6 +232,7 @@ export default function RootLayout({
           <ExternalAnalytics />
           <UTMCapture />
           {children}
+          <FeedbackWidget />
         </PostHogProvider>
       </body>
     </html>

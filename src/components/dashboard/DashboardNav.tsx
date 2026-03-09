@@ -9,9 +9,11 @@ import { trackEvent } from "@/lib/analytics";
 export default function DashboardNav({
   email,
   plan,
+  isAdmin = false,
 }: {
   email: string;
   plan: string;
+  isAdmin?: boolean;
 }) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -69,6 +71,14 @@ export default function DashboardNav({
                 className="px-3 py-2 text-xs text-text-muted hover:text-white hover:bg-surface-light rounded-lg transition"
               >
                 Audit Log
+              </Link>
+            )}
+            {isAdmin && (
+              <Link
+                href="/dashboard/feedback"
+                className="px-3 py-2 text-xs text-text-muted hover:text-white hover:bg-surface-light rounded-lg transition"
+              >
+                Feedback
               </Link>
             )}
             <Link
@@ -137,6 +147,14 @@ export default function DashboardNav({
                     className="block px-4 py-2.5 text-sm text-text-muted hover:text-white hover:bg-surface-light transition"
                   >
                     Audit Log
+                  </Link>
+                )}
+                {isAdmin && (
+                  <Link
+                    href="/dashboard/feedback"
+                    className="block px-4 py-2.5 text-sm text-text-muted hover:text-white hover:bg-surface-light transition"
+                  >
+                    Feedback
                   </Link>
                 )}
                 {plan !== "free" && (

@@ -28,11 +28,15 @@ export default async function DashboardLayout({
     .eq("id", user.id)
     .single();
 
+  const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
+  const isAdmin = adminEmails.includes(user.email?.toLowerCase() || "");
+
   return (
     <div className="min-h-screen bg-surface-dim">
       <DashboardNav
         email={user.email || ""}
         plan={(profile?.plan as string) || "free"}
+        isAdmin={isAdmin}
       />
       <main className="max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 py-8">{children}</main>
     </div>

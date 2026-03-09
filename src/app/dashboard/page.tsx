@@ -9,6 +9,7 @@ import MiniCategoryChart from "@/components/dashboard/MiniCategoryChart";
 import AutoScanBanner from "@/components/dashboard/AutoScanBanner";
 import RecoveryActionsBanner from "@/components/dashboard/RecoveryActionsBanner";
 import RecoveryImpactCard from "@/components/dashboard/RecoveryImpactCard";
+import { NPSSurvey } from "@/components/dashboard/NPSSurvey";
 import { ScanReport } from "@/lib/types";
 import ConversionTracker from "@/components/dashboard/ConversionTracker";
 import TrendChart from "@/components/dashboard/TrendChart";
@@ -65,6 +66,7 @@ export default async function DashboardPage() {
     .single();
 
   const latestReport = reports[0] || null;
+  const firstScanDate = reports.length > 0 ? reports[reports.length - 1].scannedAt : null;
 
   return (
     <div className="space-y-8">
@@ -123,6 +125,9 @@ export default async function DashboardPage() {
 
       {/* Recovery actions banner */}
       {latestReport && <RecoveryActionsBanner userId={user.id} />}
+
+      {/* NPS Survey — shows 7+ days after first scan, max once per 90 days */}
+      <NPSSurvey firstScanDate={firstScanDate} />
 
       {/* Category breakdown */}
       {latestReport && latestReport.categories.length > 0 && (

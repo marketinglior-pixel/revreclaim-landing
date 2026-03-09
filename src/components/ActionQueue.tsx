@@ -5,6 +5,7 @@ import { ActionCard, type ActionCardData } from "./ActionCard";
 import type { ActionStatus, ActionType } from "@/lib/recovery/types";
 import { ConfirmActionDialog, DESTRUCTIVE_ACTIONS } from "./ConfirmActionDialog";
 import { trackRecoveryExecuted } from "@/lib/conversion-tracking";
+import { PostFixSurvey } from "./dashboard/PostFixSurvey";
 
 interface ActionQueueProps {
   plan: "free" | "pro" | "team";
@@ -37,6 +38,10 @@ export function ActionQueue({ plan, privacyMode }: ActionQueueProps) {
 
   // Confirmation dialog for destructive actions
   const [confirmAction, setConfirmAction] = useState<ActionCardData | null>(null);
+
+  // Post-fix survey state
+  const [fixSurveyActionId, setFixSurveyActionId] = useState<string | null>(null);
+  const [fixSurveyActionType, setFixSurveyActionType] = useState<string>("");
 
   const fetchActions = useCallback(async () => {
     setLoading(true);
@@ -204,6 +209,9 @@ export function ActionQueue({ plan, privacyMode }: ActionQueueProps) {
         // Fire client-side conversion tracking to ad platforms (GA4/LinkedIn/Meta)
         if (action) {
           trackRecoveryExecuted(action.action_type, action.monthly_impact);
+          // Trigger post-fix survey for this action
+          setFixSurveyActionId(action.id);
+          setFixSurveyActionType(action.action_type);
         }
         await fetchActions();
       } else {
@@ -496,20 +504,28 @@ export function ActionQueue({ plan, privacyMode }: ActionQueueProps) {
         {!loading && filteredActions.length > 0 && (
           <div className="space-y-2">
             {filteredActions.map((action) => (
-              <ActionCard
-                key={action.id}
-                action={action}
-                selected={selectedIds.has(action.id)}
-                onToggleSelect={toggleSelect}
-                onApprove={handleSingleApprove}
-                onDismiss={handleSingleDismiss}
-                onExecute={handleExecute}
-                onRetry={handleRetry}
-                canApprove={canApprove}
-                executing={executingId === action.id}
-                remaining={remaining}
-                privacyMode={privacyMode}
-              />
+              <div key={action.id}>
+                <ActionCard
+                  action={action}
+                  selected={selectedIds.has(action.id)}
+                  onToggleSelect={toggleSelect}
+                  onApprove={handleSingleApprove}
+                  onDismiss={handleSingleDismiss}
+                  onExecute={handleExecute}
+                  onRetry={handleRetry}
+                  canApprove={canApprove}
+                  executing={executingId === action.id}
+                  remaining={remaining}
+                  privacyMode={privacyMode}
+                />
+                {fixSurveyActionId === action.id && (
+                  <PostFixSurvey
+                    actionId={action.id}
+                    actionType={fixSurveyActionType}
+                    onDismiss={() => setFixSurveyActionId(null)}
+                  />
+                )}
+              </div>
             ))}
           </div>
         )}

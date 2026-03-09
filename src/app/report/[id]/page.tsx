@@ -30,7 +30,6 @@ export default function ReportPage() {
   const [dismissedKeys, setDismissedKeys] = useState<Set<string>>(new Set());
   const [pendingActionsCount, setPendingActionsCount] = useState(0);
   const [privacyMode, setPrivacyMode] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadReport() {
@@ -41,7 +40,6 @@ export default function ReportPage() {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           setIsLoggedIn(true);
-          setUserId(user.id);
           userLoggedIn = true;
         }
         const { data: row, error } = await supabase
@@ -321,7 +319,7 @@ export default function ReportPage() {
         />
 
         {/* Post-Scan Survey — shown once, collects MRR range + leak awareness */}
-        <PostScanSurvey userId={userId} />
+        <PostScanSurvey />
       </main>
     </div>
   );

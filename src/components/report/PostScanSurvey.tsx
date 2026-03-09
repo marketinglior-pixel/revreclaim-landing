@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { trackEvent } from "@/lib/analytics";
+import { trackSurvey } from "@/lib/track-survey";
 
 const MRR_OPTIONS = [
   { value: "under_10k", label: "Under $10K" },
@@ -17,26 +17,42 @@ const AWARENESS_OPTIONS = [
   { value: "suspected", label: "I suspected but wasn't sure" },
 ];
 
+const SURPRISE_OPTIONS = [
+  { value: "leak_amounts", label: "The dollar amounts" },
+  { value: "leak_count", label: "How many leaks" },
+  { value: "nothing_surprised", label: "Nothing surprised me" },
+];
+
+const NPS_SCALE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
 const STORAGE_KEY = "rr_post_scan_survey_done";
+
+function pillClass(selected: boolean) {
+  return `rounded-lg px-3 py-1.5 text-xs font-medium border transition cursor-pointer ${
+    selected
+      ? "border-brand bg-brand/15 text-brand"
+      : "border-border bg-surface text-text-muted hover:border-border hover:text-white"
+  }`;
+}
 
 /**
  * PostScanSurvey — shown once per user after their first scan report.
- * Collects MRR range + leak awareness for proprietary segmentation data.
- * Fires analytics event with responses for downstream enrichment.
+ * Collects MRR range, leak awareness, surprise factor, and NPS score
+ * for proprietary segmentation data. Fires analytics event with responses.
  */
-export function PostScanSurvey({ userId }: { userId: string | null }) {
+export function PostScanSurvey() {
   const [visible, setVisible] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [mrrRange, setMrrRange] = useState("");
   const [awareness, setAwareness] = useState("");
+  const [surprise, setSurprise] = useState("");
+  const [npsScore, setNpsScore] = useState<number | null>(null);
   const [feedback, setFeedback] = useState("");
 
   useEffect(() => {
-    // Only show once — check localStorage
     try {
       const done = localStorage.getItem(STORAGE_KEY);
       if (!done) {
-        // Small delay so the report renders first
         const timer = setTimeout(() => setVisible(true), 3000);
         return () => clearTimeout(timer);
       }
@@ -51,14 +67,14 @@ export function PostScanSurvey({ userId }: { userId: string | null }) {
     setSubmitted(true);
     localStorage.setItem(STORAGE_KEY, "1");
 
-    // Track survey response (fire-and-forget)
-    trackEvent("post_scan_survey" as Parameters<typeof trackEvent>[0], userId, {
+    trackSurvey("post_scan_survey", {
       mrr_range: mrrRange,
       leak_awareness: awareness,
+      surprise: surprise || null,
+      nps_score: npsScore,
       feedback: feedback.trim() || null,
-    }).catch(() => {});
+    });
 
-    // Auto-dismiss after 2 seconds
     setTimeout(() => setVisible(false), 2000);
   }
 
@@ -90,7 +106,7 @@ export function PostScanSurvey({ userId }: { userId: string | null }) {
                 Quick question — help us help you
               </h3>
               <p className="text-xs text-text-muted">
-                2 questions, 10 seconds. Helps us tailor recovery insights to your stage.
+                4 quick questions. Helps us tailor recovery insights to your stage.
               </p>
             </div>
             <button
@@ -115,11 +131,7 @@ export function PostScanSurvey({ userId }: { userId: string | null }) {
                   <button
                     key={opt.value}
                     onClick={() => setMrrRange(opt.value)}
-                    className={`rounded-lg px-3 py-1.5 text-xs font-medium border transition cursor-pointer ${
-                      mrrRange === opt.value
-                        ? "border-brand bg-brand/15 text-brand"
-                        : "border-border bg-surface text-text-muted hover:border-border hover:text-white"
-                    }`}
+                    className={pillClass(mrrRange === opt.value)}
                   >
                     {opt.label}
                   </button>
@@ -137,15 +149,59 @@ export function PostScanSurvey({ userId }: { userId: string | null }) {
                   <button
                     key={opt.value}
                     onClick={() => setAwareness(opt.value)}
-                    className={`rounded-lg px-3 py-1.5 text-xs font-medium border transition cursor-pointer ${
-                      awareness === opt.value
-                        ? "border-brand bg-brand/15 text-brand"
-                        : "border-border bg-surface text-text-muted hover:border-border hover:text-white"
-                    }`}
+                    className={pillClass(awareness === opt.value)}
                   >
                     {opt.label}
                   </button>
                 ))}
+              </div>
+            </div>
+
+            {/* Surprise factor */}
+            <div>
+              <label className="block text-xs font-medium text-text-secondary mb-2">
+                What surprised you most? <span className="text-text-dim">(optional)</span>
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {SURPRISE_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => setSurprise(surprise === opt.value ? "" : opt.value)}
+                    className={pillClass(surprise === opt.value)}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* NPS */}
+            <div>
+              <label className="block text-xs font-medium text-text-secondary mb-2">
+                How likely are you to recommend RevReclaim? <span className="text-text-dim">(optional)</span>
+              </label>
+              <div className="flex gap-1">
+                {NPS_SCALE.map((n) => (
+                  <button
+                    key={n}
+                    onClick={() => setNpsScore(npsScore === n ? null : n)}
+                    className={`w-8 h-8 rounded-lg text-xs font-bold border transition cursor-pointer ${
+                      npsScore === n
+                        ? n <= 6
+                          ? "border-danger bg-danger/15 text-danger"
+                          : n <= 8
+                            ? "border-yellow-500 bg-yellow-500/15 text-yellow-400"
+                            : "border-brand bg-brand/15 text-brand"
+                        : "border-border bg-surface text-text-dim hover:text-white"
+                    }`}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
+              <div className="flex justify-between mt-1">
+                <span className="text-[10px] text-text-dim">Not likely</span>
+                <span className="text-[10px] text-text-dim">Very likely</span>
               </div>
             </div>
 
