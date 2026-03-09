@@ -18,7 +18,7 @@ const steps = [
     number: "03",
     title: "See It. Fix It. Recover.",
     description:
-      "A report appears. Customer names on the left. Dollar amounts on the right. One-click auto-fix for every recoverable leak — payment reminders, retry failed charges, remove expired coupons. We handle it. You keep the revenue.",
+      "A report appears. Customer names on the left. Dollar amounts on the right. AI recovery agents handle the rest — dunning emails, payment retries, coupon removal. Approve each action or let pre-dunning run automatically. You keep the revenue.",
     detail: "Average recovery: $2,340/mo",
   },
 ];

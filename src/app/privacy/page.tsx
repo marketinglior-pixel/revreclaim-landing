@@ -51,6 +51,8 @@ export default function PrivacyPage() {
               <li><span className="text-text-secondary">One-time scans:</span> API keys used for manual scans are processed in memory and never stored on any server or database. The key exists for approximately 90 seconds during the scan.</li>
               <li><span className="text-text-secondary">Auto-scan keys:</span> If you enable automated weekly scans, your API key is encrypted using AES-256-GCM with a derived key before storage. The encryption key is stored separately from the database. You can delete it at any time from your settings.</li>
               <li><span className="text-text-secondary">Data minimization:</span> We only fetch the billing data needed for leak detection (subscriptions, invoices, customers, coupons, prices). We do not access full credit card numbers, bank accounts, or personal identity documents.</li>
+              <li><span className="text-text-secondary">Customer names:</span> We never fetch or store customer full names from your billing platform. Only customer IDs and masked emails are used.</li>
+              <li><span className="text-text-secondary">Privacy Mode (optional):</span> When enabled, customer emails and IDs are hidden from the dashboard, reports, and exports. Data remains encrypted server-side for recovery action execution.</li>
             </ul>
           </section>
 
@@ -61,6 +63,8 @@ export default function PrivacyPage() {
               <li>Store scan history in your dashboard</li>
               <li>Run automated scans on your chosen schedule</li>
               <li>Send scan completion notifications (if enabled)</li>
+              <li>Send automated pre-dunning emails for expiring cards (if enabled)</li>
+              <li>Deliver webhook notifications to your configured endpoints</li>
               <li>Improve our leak detection algorithms</li>
             </ul>
           </section>

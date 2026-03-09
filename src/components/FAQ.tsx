@@ -9,6 +9,10 @@ const faqs = [
     a: "Yes. We only read data. We cannot modify your billing, create charges, or access card numbers. All supported platforms (Stripe, Polar, Paddle) support restricted read-only keys. Your key is used only during the scan and is never stored or logged.",
   },
   {
+    q: "Do you store my customers' personal information?",
+    a: "No. We never pull customer names from your billing platform. Customer emails are masked in the UI (j***@example.com) and encrypted in our database. With Privacy Mode enabled, even masked emails and customer IDs are hidden from your dashboard and exports. Recovery actions still work — customer data is decrypted only server-side when sending dunning emails.",
+  },
+  {
     q: "Which billing platforms do you support?",
     a: "We support Stripe, Polar.sh, and Paddle. Select your platform on the scan page and we'll guide you through creating an API key. Each platform gets a tailored scan covering the leak types it supports.",
   },

@@ -15,7 +15,7 @@ export function SecuritySection() {
           enforced by Stripe, Paddle, and Polar at the platform level. Not a promise. A technical limitation.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {/* Read-Only */}
           <div className="rounded-2xl border border-border/50 bg-surface/80 backdrop-blur-sm p-6">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand/10 mb-4">
@@ -56,6 +56,20 @@ export function SecuritySection() {
             <p className="text-sm text-text-muted leading-relaxed">
               TLS 1.3 in transit. AES-256-GCM at rest (for auto-scan users only).
               Row Level Security in the database. Your data is isolated &mdash; even we can&apos;t see it.
+            </p>
+          </div>
+
+          {/* Customer Names Never Stored */}
+          <div className="rounded-2xl border border-border/50 bg-surface/80 backdrop-blur-sm p-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand/10 mb-4">
+              <svg className="h-5 w-5 text-brand" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">Customer Names Never Stored</h3>
+            <p className="text-sm text-text-muted leading-relaxed">
+              RevReclaim never pulls customer names from your billing platform. Only masked emails and anonymized IDs.
+              Enable Privacy Mode to hide all identifying data from the dashboard and exports.
             </p>
           </div>
         </div>

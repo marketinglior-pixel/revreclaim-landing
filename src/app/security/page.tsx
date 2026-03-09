@@ -122,9 +122,48 @@ export default function SecurityPage() {
                 <li className="flex items-start gap-2"><span className="text-danger mt-0.5">&#10007;</span>Access credit card numbers</li>
                 <li className="flex items-start gap-2"><span className="text-danger mt-0.5">&#10007;</span>Delete any data from your account</li>
                 <li className="flex items-start gap-2"><span className="text-danger mt-0.5">&#10007;</span>Store your API key after the scan</li>
+                <li className="flex items-start gap-2"><span className="text-danger mt-0.5">&#10007;</span>Access or store customer full names</li>
               </ul>
             </div>
           </div>
+        </div>
+
+        {/* Privacy Mode */}
+        <div className="mb-16 rounded-xl border border-brand/20 bg-brand/5 p-8">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand/10">
+              <svg className="h-5 w-5 text-brand" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-white">Privacy Mode</h2>
+            <span className="rounded-full bg-brand/20 px-2 py-0.5 text-xs font-bold text-brand">NEW</span>
+          </div>
+          <p className="text-text-muted mb-6">
+            For teams with strict data policies, Privacy Mode adds an extra layer of protection.
+            When enabled from your dashboard settings:
+          </p>
+          <ul className="space-y-3 mb-6">
+            <li className="flex items-start gap-2 text-sm text-text-muted">
+              <span className="text-brand mt-0.5">&#10003;</span>
+              Customer emails are hidden from all reports and leak cards
+            </li>
+            <li className="flex items-start gap-2 text-sm text-text-muted">
+              <span className="text-brand mt-0.5">&#10003;</span>
+              Customer IDs are anonymized in exports (CSV, JSON, PDF)
+            </li>
+            <li className="flex items-start gap-2 text-sm text-text-muted">
+              <span className="text-brand mt-0.5">&#10003;</span>
+              Recovery actions still work &mdash; customer data is encrypted and only decrypted server-side
+            </li>
+            <li className="flex items-start gap-2 text-sm text-text-muted">
+              <span className="text-brand mt-0.5">&#10003;</span>
+              Customer names are never fetched from billing APIs in any mode
+            </li>
+          </ul>
+          <p className="text-xs text-text-dim">
+            Available for Pro and Team plans. Enable it in Dashboard &rarr; Settings &rarr; Privacy Mode.
+          </p>
         </div>
 
         {/* Technical security details */}
@@ -138,6 +177,7 @@ export default function SecurityPage() {
               { label: "Hosting", detail: "Vercel with automatic HTTPS, DDoS protection, and edge network." },
               { label: "Authentication", detail: "Passwords are hashed. Only essential cookies are used — no advertising or third-party tracking cookies." },
               { label: "Data Minimization", detail: "RevReclaim only fetches the billing data needed for leak detection: subscriptions, invoices, customers. It does not access payment method details, bank accounts, or personal identity documents." },
+              { label: "Customer Privacy", detail: "Customer names are never fetched from billing APIs. Emails are masked (j***@example.com) in the UI and encrypted with AES-256-GCM in the database. Privacy Mode hides all PII from the dashboard and exports." },
               { label: "Third Parties", detail: "Only Vercel (hosting) and Supabase (database), both under strict data processing agreements. RevReclaim does not sell, rent, or share your data." },
             ].map((item) => (
               <div key={item.label} className="flex gap-4 rounded-xl border border-border bg-surface p-5">
