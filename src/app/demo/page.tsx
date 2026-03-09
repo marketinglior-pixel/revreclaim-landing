@@ -1,8 +1,10 @@
 "use client";
 
 import { ScanReport } from "@/lib/types";
+import { computeBillingHealth } from "@/lib/billing-health";
 import ReportHeader from "@/components/report/ReportHeader";
 import ReportSummary from "@/components/report/ReportSummary";
+import BillingHealthInsights from "@/components/report/BillingHealthInsights";
 import LeakCategoryChart from "@/components/report/LeakCategoryChart";
 import LeakTable from "@/components/report/LeakTable";
 import ReportCTA from "@/components/report/ReportCTA";
@@ -11,21 +13,21 @@ import AgentSimulation from "@/components/report/AgentSimulation";
 
 // ──────────────────────────────────────────────────────────────
 // DEMO SCENARIO: ScaleFlow — A B2B SaaS doing $187K MRR
-// They ran RevReclaim and found $4,830/mo ($57,960/yr) in leaks
-// across 23 issues. Health score: 62 ("Needs Attention").
+// They ran RevReclaim and found $5,728/mo ($68,736/yr) in leaks
+// across 27 issues. Health score: 56 ("Needs Attention").
 // ──────────────────────────────────────────────────────────────
 
 const DEMO_REPORT: ScanReport = {
   id: "demo-scaleflow-2026",
   scannedAt: new Date().toISOString(),
   summary: {
-    mrrAtRisk: 483000,       // $4,830/mo
-    leaksFound: 23,
-    recoveryPotential: 5796000, // $57,960/yr
+    mrrAtRisk: 572800,       // $5,728/mo
+    leaksFound: 27,
+    recoveryPotential: 6873600, // $68,736/yr
     totalSubscriptions: 312,
     totalCustomers: 287,
     totalMRR: 18700000,      // $187,000/mo
-    healthScore: 62,
+    healthScore: 56,
   },
   categories: [
     {
@@ -75,7 +77,28 @@ const DEMO_REPORT: ScanReport = {
       label: "Missing Payment Methods",
       count: 2,
       totalMonthlyImpact: 12200, // $122/mo
-      percentage: 2.5,
+      percentage: 2.1,
+    },
+    {
+      type: "unbilled_overage",
+      label: "Unbilled Overages",
+      count: 1,
+      totalMonthlyImpact: 45000, // $450/mo
+      percentage: 7.7,
+    },
+    {
+      type: "trial_expired",
+      label: "Expired Trials",
+      count: 1,
+      totalMonthlyImpact: 19900, // $199/mo
+      percentage: 3.4,
+    },
+    {
+      type: "duplicate_subscription",
+      label: "Duplicate Subscriptions",
+      count: 1,
+      totalMonthlyImpact: 24900, // $249/mo
+      percentage: 4.3,
     },
   ],
   leaks: [
@@ -505,6 +528,66 @@ const DEMO_REPORT: ScanReport = {
       metadata: {},
     },
 
+    // ── HIGH: Unbilled Overages ──
+    {
+      id: "leak-025",
+      type: "unbilled_overage",
+      severity: "high",
+      title: "Quantity mismatch: 8 seats but billing for 1",
+      description:
+        "This Enterprise subscription shows 8 seats (quantity) but is billing only $199/mo instead of the expected $1,592/mo (8 × $199). The per-seat pricing isn't being applied correctly — likely a Stripe coupon or manual override zeroing out the additional seats.",
+      customerEmail: "ops***@scaleco.io",
+      customerId: "cus_G6iI8kIj5sO",
+      subscriptionId: "sub_6KuA2hI4jP",
+      monthlyImpact: 45000,
+      annualImpact: 540000,
+      fixSuggestion:
+        "Review this subscription's quantity and pricing in Stripe Dashboard. The customer has 8 seats — verify the billing reflects per-seat pricing. Check for any 100% coupons or manual overrides.",
+      stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_6KuA2hI4jP",
+      detectedAt: new Date(Date.now() - 60 * 86400000).toISOString(),
+      metadata: {},
+    },
+
+    // ── HIGH: Expired Trials ──
+    {
+      id: "leak-026",
+      type: "trial_expired",
+      severity: "high",
+      title: "Trial subscription active for 67 days",
+      description:
+        "This subscription has been in 'trialing' status for 67 days. Your trial period is 14 days. The customer is using the Growth plan ($199/mo) for free. The trial-to-paid webhook likely failed, and the subscription was never converted.",
+      customerEmail: "d***@freetrial.com",
+      customerId: "cus_H7jJ9lJk6tP",
+      subscriptionId: "sub_7LvB3iJ5kQ",
+      monthlyImpact: 19900,
+      annualImpact: 238800,
+      fixSuggestion:
+        "Check this subscription in Stripe Dashboard. If the trial should have ended, either convert the customer to a paid plan or cancel the subscription. Review your trial_end webhook handling.",
+      stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_7LvB3iJ5kQ",
+      detectedAt: new Date(Date.now() - 67 * 86400000).toISOString(),
+      metadata: {},
+    },
+
+    // ── CRITICAL: Duplicate Subscriptions ──
+    {
+      id: "leak-027",
+      type: "duplicate_subscription",
+      severity: "critical",
+      title: "Customer has 2 active subscriptions for the same product",
+      description:
+        "This customer upgraded from Growth ($199/mo) to Pro ($249/mo) 3 days ago, but the old Growth subscription was never canceled. They're now paying for both — $448/mo total. When they notice the double charge, expect a chargeback.",
+      customerEmail: "c***@growthco.com",
+      customerId: "cus_I8kK0mKl7uQ",
+      subscriptionId: "sub_8MwC4jK6lR",
+      monthlyImpact: 24900,
+      annualImpact: 298800,
+      fixSuggestion:
+        "Cancel the old Growth subscription immediately. Proactively refund the overlap charges ($199 for the current period). Send the customer a note explaining the fix. Review your upgrade flow to auto-cancel old subscriptions.",
+      stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_8MwC4jK6lR",
+      detectedAt: new Date(Date.now() - 3 * 86400000).toISOString(),
+      metadata: {},
+    },
+
     // ── MEDIUM: Never-Expiring Discount ──
     {
       id: "leak-024",
@@ -527,6 +610,13 @@ const DEMO_REPORT: ScanReport = {
   ],
 };
 
+// Compute billing health from demo data
+const DEMO_BILLING_HEALTH = computeBillingHealth(
+  DEMO_REPORT.summary,
+  DEMO_REPORT.categories,
+  DEMO_REPORT.leaks
+);
+
 export default function DemoReportPage() {
   return (
     <div className="min-h-screen bg-surface-dim">
@@ -544,6 +634,9 @@ export default function DemoReportPage() {
 
         {/* Summary Cards + Health Score */}
         <ReportSummary summary={DEMO_REPORT.summary} />
+
+        {/* Billing Health Breakdown */}
+        <BillingHealthInsights billingHealth={DEMO_BILLING_HEALTH} />
 
         {/* Category Breakdown Chart */}
         <LeakCategoryChart categories={DEMO_REPORT.categories} />

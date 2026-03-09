@@ -7,7 +7,10 @@ export type LeakType =
   | "expiring_card"
   | "ghost_subscription"
   | "legacy_pricing"
-  | "missing_payment_method";
+  | "missing_payment_method"
+  | "unbilled_overage"
+  | "trial_expired"
+  | "duplicate_subscription";
 
 export const LEAK_TYPE_LABELS: Record<LeakType, string> = {
   expired_coupon: "Expired Coupons",
@@ -17,6 +20,9 @@ export const LEAK_TYPE_LABELS: Record<LeakType, string> = {
   ghost_subscription: "Ghost Subscriptions",
   legacy_pricing: "Legacy Pricing",
   missing_payment_method: "Missing Payment Methods",
+  unbilled_overage: "Unbilled Overages",
+  trial_expired: "Expired Trials",
+  duplicate_subscription: "Duplicate Subscriptions",
 };
 
 export const SEVERITY_ORDER: Record<LeakSeverity, number> = {
@@ -62,6 +68,20 @@ export interface ScanSummary {
   healthScore: number; // 0-100
 }
 
+export interface BillingHealthInsight {
+  id: string;
+  label: string;
+  description: string;
+  score: number; // 0-100 (higher = healthier)
+  status: "healthy" | "warning" | "danger";
+  detail: string; // e.g. "3 of 12 customers have discounts"
+}
+
+export interface BillingHealthInsights {
+  insights: BillingHealthInsight[];
+  overallGrade: "A" | "B" | "C" | "D" | "F";
+}
+
 export interface ScanReport {
   id: string;
   platform?: string; // BillingPlatform — which platform was scanned
@@ -69,6 +89,7 @@ export interface ScanReport {
   summary: ScanSummary;
   categories: LeakCategorySummary[];
   leaks: Leak[];
+  billingHealth?: BillingHealthInsights;
 }
 
 export interface ScanRequest {

@@ -120,7 +120,15 @@ export async function POST(req: NextRequest) {
       }).catch((err) => log.error("Persist error:", err));
     }
 
-    return NextResponse.json({ report });
+    // Build warnings
+    const warnings: string[] = [];
+    if (platform === "stripe" && apiKey.startsWith("sk_")) {
+      warnings.push(
+        "You used a secret key with full write access. We recommend creating a restricted read-only key (rk_live_...) and rotating this key in your Stripe Dashboard."
+      );
+    }
+
+    return NextResponse.json({ report, ...(warnings.length > 0 && { warnings }) });
   } catch (error) {
     const message =
       error instanceof Error

@@ -301,7 +301,7 @@ export async function runFullScan(
   // Step 2: Fetch all data from Stripe
   const data = await fetchStripeData(stripe, onProgress);
 
-  // Step 3: Run all 7 scanners
+  // Step 3: Run all 10 scanners
   onProgress?.({ step: "Analyzing subscriptions...", progress: 70 });
 
   const allLeaks: Leak[] = [

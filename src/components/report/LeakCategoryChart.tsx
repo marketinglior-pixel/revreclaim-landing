@@ -18,23 +18,25 @@ const CATEGORY_COLORS: Record<string, string> = {
   expired_coupon: "#8B5CF6",
   never_expiring_discount: "#6366F1",
   legacy_pricing: "#3B82F6",
+  unbilled_overage: "#14B8A6",
+  trial_expired: "#A78BFA",
+  duplicate_subscription: "#F472B6",
 };
 
 export default function LeakCategoryChart({
   categories,
 }: LeakCategoryChartProps) {
   const prefersReducedMotion = useReducedMotion();
-  const [animate, setAnimate] = useState(prefersReducedMotion);
+  const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
-    if (prefersReducedMotion) {
-      setAnimate(true);
-      return;
-    }
+    if (prefersReducedMotion) return;
     // Small delay to trigger entry animation
     const timer = setTimeout(() => setAnimate(true), 200);
     return () => clearTimeout(timer);
   }, [prefersReducedMotion]);
+
+  const shouldAnimate = animate || prefersReducedMotion;
 
   if (categories.length === 0) return null;
 
@@ -84,10 +86,10 @@ export default function LeakCategoryChart({
                 <div
                   className={`h-full rounded-full hover:brightness-125 ${prefersReducedMotion ? "" : "transition-all duration-700 ease-out"}`}
                   style={{
-                    width: animate ? `${barWidth}%` : "0%",
+                    width: shouldAnimate ? `${barWidth}%` : "0%",
                     backgroundColor: color,
                     transitionDelay: prefersReducedMotion ? "0ms" : `${i * 120}ms`,
-                    boxShadow: animate ? `0 0 8px ${color}40` : "none",
+                    boxShadow: shouldAnimate ? `0 0 8px ${color}40` : "none",
                   }}
                 />
               </div>

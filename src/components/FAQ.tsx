@@ -26,7 +26,7 @@ const faqs = [
   },
   {
     q: "What exactly do you scan for?",
-    a: "We run 7 automated checks: (1) Expired coupons still discounting, (2) Legacy pricing below current rates, (3) Forever discounts with no end date, (4) Ghost subscriptions stuck in bad states, (5) Expiring cards within 90 days, (6) Uncollected revenue with open invoices, (7) Missing payment methods on active subscriptions.",
+    a: "We run 10 automated checks: (1) Expired coupons still discounting, (2) Legacy pricing below current rates, (3) Forever discounts with no end date, (4) Ghost subscriptions stuck in bad states, (5) Expiring cards within 90 days, (6) Uncollected revenue with open invoices, (7) Missing payment methods on active subscriptions, (8) Unbilled overages — quantity mismatches and usage exceeding plan limits, (9) Expired trials — subscriptions stuck in 'trialing' status long past the trial period, (10) Duplicate subscriptions — customers charged twice after a failed upgrade or migration.",
   },
   {
     q: "What do I do with the report?",

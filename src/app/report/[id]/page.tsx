@@ -6,10 +6,12 @@ import { Leak, ScanReport } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
 import ReportHeader from "@/components/report/ReportHeader";
 import ReportSummary from "@/components/report/ReportSummary";
+import BillingHealthInsights from "@/components/report/BillingHealthInsights";
 import LeakCategoryChart from "@/components/report/LeakCategoryChart";
 import LeakTable from "@/components/report/LeakTable";
 import ReportCTA from "@/components/report/ReportCTA";
 import RecoveryBanner from "@/components/report/RecoveryBanner";
+import { PostScanSurvey } from "@/components/report/PostScanSurvey";
 import Link from "next/link";
 
 /** Key used to deduplicate dismissals */
@@ -28,6 +30,7 @@ export default function ReportPage() {
   const [dismissedKeys, setDismissedKeys] = useState<Set<string>>(new Set());
   const [pendingActionsCount, setPendingActionsCount] = useState(0);
   const [privacyMode, setPrivacyMode] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadReport() {
@@ -38,6 +41,7 @@ export default function ReportPage() {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           setIsLoggedIn(true);
+          setUserId(user.id);
           userLoggedIn = true;
         }
         const { data: row, error } = await supabase
@@ -294,6 +298,11 @@ export default function ReportPage() {
         {/* Summary Cards + Health Score */}
         <ReportSummary summary={adjustedSummary ?? report.summary} leaks={visibleLeaks} />
 
+        {/* Billing Health Breakdown */}
+        {report.billingHealth && (
+          <BillingHealthInsights billingHealth={report.billingHealth} />
+        )}
+
         {/* Category Breakdown Chart */}
         {report.categories.length > 0 && (
           <LeakCategoryChart categories={report.categories} />
@@ -310,6 +319,9 @@ export default function ReportPage() {
           isLoggedIn={isLoggedIn}
           pendingActionsCount={pendingActionsCount}
         />
+
+        {/* Post-Scan Survey — shown once, collects MRR range + leak awareness */}
+        <PostScanSurvey userId={userId} />
       </main>
     </div>
   );

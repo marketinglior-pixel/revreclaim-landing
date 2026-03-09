@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import ExternalAnalytics from "@/components/ExternalAnalytics";
 import UTMCapture from "@/components/UTMCapture";
+import PostHogProvider from "@/components/PostHogProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -95,7 +96,7 @@ const jsonLd = {
           name: "Free",
           price: "0",
           priceCurrency: "USD",
-          description: "Unlimited scans, 7 leak checks, export to PDF/CSV",
+          description: "Unlimited scans, 10 leak checks, export to PDF/CSV",
         },
         {
           "@type": "Offer",
@@ -156,7 +157,7 @@ const jsonLd = {
           name: "What exactly do you scan for?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "We run 7 automated checks: (1) Expired coupons still discounting, (2) Legacy pricing below current rates, (3) Forever discounts with no end date, (4) Ghost subscriptions stuck in bad states, (5) Expiring cards within 90 days, (6) Uncollected revenue with open invoices, (7) Missing payment methods on active subscriptions.",
+            text: "We run 10 automated checks: (1) Expired coupons still discounting, (2) Legacy pricing below current rates, (3) Forever discounts with no end date, (4) Ghost subscriptions stuck in bad states, (5) Expiring cards within 90 days, (6) Uncollected revenue with open invoices, (7) Missing payment methods on active subscriptions, (8) Unbilled overages — quantity mismatches and usage exceeding plan limits, (9) Expired trials — subscriptions stuck in trialing status, (10) Duplicate subscriptions — customers charged twice after failed upgrades.",
           },
         },
         {
@@ -226,9 +227,11 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} antialiased`}>
-        <ExternalAnalytics />
-        <UTMCapture />
-        {children}
+        <PostHogProvider>
+          <ExternalAnalytics />
+          <UTMCapture />
+          {children}
+        </PostHogProvider>
       </body>
     </html>
   );

@@ -58,6 +58,30 @@ const leaks = [
     afterFix: "Prompt them to add a card now. Save the subscription before it fails.",
     severity: "CRITICAL",
   },
+  {
+    title: "Unbilled Overages",
+    description:
+      "Your customer has 12 seats but their invoice only charges for 1. Or their usage blew past the plan ceiling 3 months ago and nobody upgraded them. That's revenue you earned and never collected.",
+    impact: "Avg $800/mo per affected customer",
+    afterFix: "Fix the quantity or upgrade the plan. Back-billing is optional — future billing isn't.",
+    severity: "HIGH",
+  },
+  {
+    title: "Expired Trials",
+    description:
+      "A subscription has been in 'trialing' status for 67 days. Your trial is 14 days. This customer has been using your product for free for two months. Your webhook didn't fire. Your billing didn't convert them.",
+    impact: "Full price × every day they're free",
+    afterFix: "Convert to paid or cancel. Either way, stop giving it away.",
+    severity: "HIGH",
+  },
+  {
+    title: "Duplicate Subscriptions",
+    description:
+      "A customer upgraded their plan, but the old subscription was never canceled. They're paying for both. When they notice — and they will — you'll get a chargeback, not a thank you.",
+    impact: "Double-charge = chargeback risk",
+    afterFix: "Cancel the duplicate. Proactively refund the overlap. Keep the customer.",
+    severity: "CRITICAL",
+  },
 ];
 
 export function LeakTypes() {
@@ -69,7 +93,7 @@ export function LeakTypes() {
         </div>
         {/* Headline with reason why (Hormozi Hack #4) */}
         <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
-          Seven revenue streams hiding in your billing data.
+          Ten revenue streams hiding in your billing data.
         </h2>
         <p className="mb-12 text-lg text-text-muted italic">
           We find them in 90 seconds. You fix them before lunch.

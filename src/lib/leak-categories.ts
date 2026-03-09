@@ -7,6 +7,7 @@ import { LeakType } from "./types";
 export const REVIEW_ONLY_LEAK_TYPES: Set<LeakType> = new Set([
   "legacy_pricing",
   "never_expiring_discount",
+  "unbilled_overage",
 ]);
 
 /** Returns true if the leak type has automated recovery actions. */

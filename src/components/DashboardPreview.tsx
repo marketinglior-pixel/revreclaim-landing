@@ -54,8 +54,8 @@ export function DashboardPreview() {
               />
               <StatCard
                 label="Leaks Found"
-                value="18"
-                sub="across 7 checks"
+                value="23"
+                sub="across 10 checks"
               />
               <StatCard
                 label="Annual Recovery"
@@ -111,8 +111,17 @@ export function DashboardPreview() {
                 fix="Migrate to current plan"
               />
 
+              <LeakTableRow
+                severity="HIGH"
+                type="Duplicate Subscription"
+                customer="t***@growthco.com"
+                impact="$199/mo"
+                detail="Customer has 2 active subscriptions for the same product. Old plan not canceled after upgrade."
+                fix="Cancel duplicate & refund overlap"
+              />
+
               <div className="px-5 py-3 text-center text-xs text-text-muted">
-                + 13 more leaks found across all 7 categories
+                + 17 more leaks found across all 10 categories
               </div>
             </div>
           </div>

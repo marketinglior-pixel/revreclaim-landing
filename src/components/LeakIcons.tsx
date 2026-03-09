@@ -53,6 +53,24 @@ const leakIconPaths: Record<string, ReactNode> = {
   ),
   "Missing Payment": shieldExclamation,
   "Missing Payment Methods": shieldExclamation,
+  "Unbilled Overages": (
+    <>
+      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+      <path d="M19 12l2 2-2 2" />
+    </>
+  ),
+  "Expired Trials": (
+    <>
+      <path d="M6 2v6h.01L10 12 6.01 16H6v6" />
+      <path d="M18 2v6h-.01L14 12l3.99 4H18v6" />
+    </>
+  ),
+  "Duplicate Subscriptions": (
+    <>
+      <rect x="3" y="5" width="14" height="14" rx="2" />
+      <rect x="7" y="3" width="14" height="14" rx="2" />
+    </>
+  ),
 };
 
 export function LeakIcon({

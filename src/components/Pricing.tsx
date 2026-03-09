@@ -17,7 +17,7 @@ const plans = [
     period: "",
     description: "See exactly how much you could recover. No strings.",
     features: [
-      "Full 7-category leak scan",
+      "Full 10-category leak scan",
       "Real customer names & dollar amounts",
       "One-click fix instructions + 1 free recovery action",
       "Billing Health Score (0–100)",

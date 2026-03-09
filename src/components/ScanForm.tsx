@@ -31,6 +31,7 @@ export default function ScanForm() {
   const abortRef = useRef<AbortController | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [scanWarnings, setScanWarnings] = useState<string[]>([]);
 
   useEffect(() => {
     const supabase = createClient();
@@ -101,6 +102,11 @@ export default function ScanForm() {
           message: data.error || "Scan failed. Please try again.",
         });
         return;
+      }
+
+      // Capture server-side warnings (e.g., write-key used)
+      if (data.warnings?.length) {
+        setScanWarnings(data.warnings);
       }
 
       const report: ScanReport = data.report;
@@ -261,6 +267,25 @@ export default function ScanForm() {
           </div>
         </div>
 
+        {/* Write-key warning — Stripe secret keys have full write access */}
+        {platform === "stripe" && apiKey.startsWith("sk_") && (
+          <div className="rounded-lg bg-warning/10 border border-warning/30 px-4 py-3">
+            <div className="flex items-start gap-2">
+              <svg className="w-4 h-4 text-warning flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+              <div>
+                <p className="text-xs font-semibold text-warning">This is a secret key with full write access</p>
+                <p className="text-xs text-text-muted mt-1">
+                  We only need read access. For maximum security, use a{" "}
+                  <strong className="text-white">restricted key</strong> (starts with <code className="text-brand">rk_live_</code>).
+                  {" "}Follow the instructions below to create one. Your scan will still work with this key, but we strongly recommend switching.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* API Key Instructions */}
         <ApiKeyInstructions platform={platform} />
 
@@ -326,6 +351,23 @@ export default function ScanForm() {
           <p className="text-xs text-text-muted mt-2">
             This usually takes 30-90 seconds depending on your account size.
           </p>
+        </div>
+      )}
+
+      {/* Key rotation reminder (shown after scan with warnings) */}
+      {scanWarnings.length > 0 && !isScanning && (
+        <div className="mt-4 bg-warning/10 border border-warning/20 rounded-xl p-4">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+            </svg>
+            <div>
+              <p className="text-sm text-warning font-medium">Rotate your API key</p>
+              <p className="text-xs text-text-muted mt-1">
+                {scanWarnings[0]} After scanning, delete or rotate the key you used for maximum security.
+              </p>
+            </div>
+          </div>
         </div>
       )}
 

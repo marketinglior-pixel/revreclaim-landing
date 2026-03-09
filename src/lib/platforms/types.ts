@@ -137,6 +137,9 @@ export interface PlatformCapabilities {
   neverExpiringDiscounts: boolean;
   legacyPricing: boolean;
   missingPaymentMethods: boolean;
+  unbilledOverages: boolean;
+  trialExpired: boolean;
+  duplicateSubscriptions: boolean;
 }
 
 export const PLATFORM_CAPABILITIES: Record<
@@ -151,6 +154,9 @@ export const PLATFORM_CAPABILITIES: Record<
     neverExpiringDiscounts: true,
     legacyPricing: true,
     missingPaymentMethods: true,
+    unbilledOverages: true,
+    trialExpired: true,
+    duplicateSubscriptions: true,
   },
   polar: {
     failedPayments: true,
@@ -160,6 +166,9 @@ export const PLATFORM_CAPABILITIES: Record<
     neverExpiringDiscounts: true,
     legacyPricing: true,
     missingPaymentMethods: true,
+    unbilledOverages: true,
+    trialExpired: true,
+    duplicateSubscriptions: true,
   },
   paddle: {
     failedPayments: true,
@@ -169,6 +178,9 @@ export const PLATFORM_CAPABILITIES: Record<
     neverExpiringDiscounts: true,
     legacyPricing: true,
     missingPaymentMethods: true,
+    unbilledOverages: true,
+    trialExpired: true,
+    duplicateSubscriptions: true,
   },
 };
 

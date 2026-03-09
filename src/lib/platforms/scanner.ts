@@ -18,6 +18,7 @@ import {
 } from "../types";
 import { generateReportId, calculateHealthScore } from "../utils";
 import { buildEmailMap } from "../recovery/action-generator";
+import { computeBillingHealth } from "../billing-health";
 
 export interface PlatformScanResult {
   report: ScanReport;
@@ -32,6 +33,9 @@ import { scanExpiredCoupons } from "../scanners-v2/expired-coupons";
 import { scanNeverExpiringDiscounts } from "../scanners-v2/never-expiring-discounts";
 import { scanLegacyPricing } from "../scanners-v2/legacy-pricing";
 import { scanMissingPaymentMethods } from "../scanners-v2/missing-payment-methods";
+import { scanUnbilledOverages } from "../scanners-v2/unbilled-overages";
+import { scanTrialExpired } from "../scanners-v2/trial-expired";
+import { scanDuplicateSubscriptions } from "../scanners-v2/duplicate-subscriptions";
 
 /**
  * Run a full scan for any supported billing platform.
@@ -87,6 +91,15 @@ export async function runPlatformScan(
   if (caps.missingPaymentMethods) {
     runScanner("missingPaymentMethods", () => scanMissingPaymentMethods(data.subscriptions, data.paymentMethods));
   }
+  if (caps.unbilledOverages) {
+    runScanner("unbilledOverages", () => scanUnbilledOverages(data.subscriptions, data.invoices));
+  }
+  if (caps.trialExpired) {
+    runScanner("trialExpired", () => scanTrialExpired(data.subscriptions));
+  }
+  if (caps.duplicateSubscriptions) {
+    runScanner("duplicateSubscriptions", () => scanDuplicateSubscriptions(data.subscriptions));
+  }
 
   onProgress?.({ step: "Building report...", progress: 90 });
 
@@ -109,22 +122,29 @@ export async function runPlatformScan(
   // Step 7: Count unique customers
   const uniqueCustomers = new Set(data.subscriptions.map((s) => s.customerId));
 
-  // Step 8: Build final report
+  // Step 8: Build summary
+  const summary = {
+    mrrAtRisk,
+    leaksFound: allLeaks.length,
+    recoveryPotential: mrrAtRisk * 12,
+    totalSubscriptions: data.subscriptions.length,
+    totalCustomers: uniqueCustomers.size,
+    totalMRR: totalMRR,
+    healthScore,
+  };
+
+  // Step 9: Compute billing health insights
+  const billingHealth = computeBillingHealth(summary, categories, allLeaks);
+
+  // Step 10: Build final report
   const report: ScanReport = {
     id: generateReportId(),
     platform,
     scannedAt: new Date().toISOString(),
-    summary: {
-      mrrAtRisk,
-      leaksFound: allLeaks.length,
-      recoveryPotential: mrrAtRisk * 12,
-      totalSubscriptions: data.subscriptions.length,
-      totalCustomers: uniqueCustomers.size,
-      totalMRR: totalMRR,
-      healthScore,
-    },
+    summary,
     categories,
     leaks: allLeaks,
+    billingHealth,
   };
 
   onProgress?.({ step: "Scan complete!", progress: 100 });

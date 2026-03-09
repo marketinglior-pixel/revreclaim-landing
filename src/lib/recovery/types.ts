@@ -3,7 +3,7 @@
 // ============================================================
 
 import type { BillingPlatform } from "../platforms/types";
-import type { LeakType, LeakSeverity } from "../types";
+import type { LeakType } from "../types";
 
 /** Actions the recovery agent can perform */
 export type ActionType =
@@ -125,4 +125,13 @@ export const LEAK_TO_ACTIONS: Partial<
     { actionType: "remove_coupon" },
   ],
   // legacy_pricing → manual review only (requires manual price migration)
+  // unbilled_overage → manual review only (requires pricing/quantity adjustment)
+  // trial_expired → manual review: convert to paid or cancel
+  trial_expired: [
+    { actionType: "cancel_subscription" },
+  ],
+  // duplicate_subscription → cancel the duplicate
+  duplicate_subscription: [
+    { actionType: "cancel_subscription" },
+  ],
 };
