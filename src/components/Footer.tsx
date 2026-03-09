@@ -25,10 +25,11 @@ export function Footer() {
             <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-text-muted">Product</h4>
             <ul className="space-y-2">
               <li><Link href="/scan" className="text-sm text-text-muted transition-colors hover:text-white">Free Scan</Link></li>
-              <li><a href="/#how-it-works" className="text-sm text-text-muted transition-colors hover:text-white">How It Works</a></li>
-              <li><a href="/#pricing" className="text-sm text-text-muted transition-colors hover:text-white">Pricing</a></li>
-              <li><a href="/#faq" className="text-sm text-text-muted transition-colors hover:text-white">FAQ</a></li>
+              <li><Link href="/#how-it-works" className="text-sm text-text-muted transition-colors hover:text-white">How It Works</Link></li>
+              <li><Link href="/#pricing" className="text-sm text-text-muted transition-colors hover:text-white">Pricing</Link></li>
+              <li><Link href="/#faq" className="text-sm text-text-muted transition-colors hover:text-white">FAQ</Link></li>
               <li><Link href="/blog" className="text-sm text-text-muted transition-colors hover:text-white">Blog</Link></li>
+              <li><Link href="/calculator" className="text-sm text-text-muted transition-colors hover:text-white">Leakage Calculator</Link></li>
             </ul>
           </div>
 
