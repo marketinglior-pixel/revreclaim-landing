@@ -30,8 +30,8 @@ export function Hero() {
           It&apos;s already sitting in your billing data.
         </h1>
         <p className="mb-4 text-lg text-text-muted animate-fade-in-up animate-delay-250">
-          We scan your billing account and find every mistake
-          that&apos;s costing you money. Takes 90&nbsp;seconds.
+          We scan your billing account, find every mistake
+          that&apos;s costing you money, and fix it. Takes 90&nbsp;seconds.
         </p>
 
         {/* Platform logos */}
@@ -47,7 +47,7 @@ export function Hero() {
         {/* Subheadline — concise value prop */}
         <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-text-muted md:text-xl lg:text-xl animate-fade-in-up animate-delay-300 text-balance">
           Paste one API key. Get a report with customer names, dollar amounts,
-          and one-click fixes.
+          and automated recovery.
           <br />
           <span className="text-text-secondary">
             No sales call. No setup. Just answers in 90&nbsp;seconds.

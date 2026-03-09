@@ -33,13 +33,13 @@ export default async function RecoveryActionsBanner({
   return (
     <Link
       href="/dashboard/actions"
-      className="group block rounded-2xl border border-warning/20 bg-warning/5 p-5 hover:bg-warning/10 transition-all"
+      className="group block rounded-2xl border border-brand/20 bg-brand/5 p-5 hover:bg-brand/10 transition-all"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-warning/15">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/15">
             <svg
-              className="h-5 w-5 text-warning"
+              className="h-5 w-5 text-brand"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -48,31 +48,35 @@ export default async function RecoveryActionsBanner({
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+                d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
               />
             </svg>
           </div>
           <div>
             <p className="text-sm font-semibold text-white">
               {pendingCount} recovery action{pendingCount === 1 ? "" : "s"}{" "}
-              waiting for your approval
+              ready to auto-fix
             </p>
             <p className="text-xs text-text-muted">
               Potential recovery:{" "}
               <span className="text-brand font-semibold">
                 ${(totalRecoverable / 100).toLocaleString()}/mo
               </span>
+              {" "}&middot; Review and fix with one click
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-1 text-xs font-medium text-warning group-hover:text-warning/80 transition">
-          Review
+        <div className="flex items-center gap-1.5 rounded-lg bg-brand/15 px-3 py-1.5 text-xs font-bold text-brand group-hover:bg-brand/25 transition">
+          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+          </svg>
+          Auto-Fix Now
           <svg
-            className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+            className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            strokeWidth={2}
+            strokeWidth={2.5}
           >
             <path
               strokeLinecap="round"

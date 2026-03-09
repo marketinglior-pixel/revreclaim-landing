@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { Leak, LEAK_TYPE_LABELS } from "@/lib/types";
 import { formatCurrency, getSeverityColor } from "@/lib/utils";
 import { REVIEW_ONLY_LEAK_TYPES } from "@/lib/leak-categories";
+import { LEAK_TO_ACTIONS } from "@/lib/recovery/types";
 import { useState } from "react";
 
 interface LeakCardProps {
@@ -104,6 +106,14 @@ export default function LeakCard({ leak, isLoggedIn, onDismiss }: LeakCardProps)
                   Manual Review
                 </span>
               )}
+              {isLoggedIn && !REVIEW_ONLY_LEAK_TYPES.has(leak.type) && LEAK_TO_ACTIONS[leak.type] && (
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-brand bg-brand/10 border border-brand/20 rounded">
+                  <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                  </svg>
+                  Auto-Fix Available
+                </span>
+              )}
               {leak.customerEmail && (
                 <>
                   <span className="text-xs text-text-muted">·</span>
@@ -188,19 +198,37 @@ export default function LeakCard({ leak, isLoggedIn, onDismiss }: LeakCardProps)
                   <p className="text-xs text-text-muted leading-relaxed">
                     {leak.fixSuggestion}
                   </p>
-                  {(leak.platformUrl || leak.stripeUrl) && (
-                    <a
-                      href={leak.platformUrl || leak.stripeUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 mt-2 text-xs font-medium text-brand hover:text-brand-light transition"
-                    >
-                      View in Dashboard
-                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </a>
-                  )}
+                  <div className="flex flex-wrap items-center gap-3 mt-2">
+                    {(leak.platformUrl || leak.stripeUrl) && (
+                      <a
+                        href={leak.platformUrl || leak.stripeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs font-medium text-brand hover:text-brand-light transition"
+                      >
+                        View in Dashboard
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                    )}
+                    {isLoggedIn && !REVIEW_ONLY_LEAK_TYPES.has(leak.type) && LEAK_TO_ACTIONS[leak.type] && (
+                      <>
+                        {(leak.platformUrl || leak.stripeUrl) && (
+                          <span className="text-text-dim">·</span>
+                        )}
+                        <Link
+                          href="/dashboard/actions"
+                          className="inline-flex items-center gap-1 text-xs font-medium text-brand hover:text-brand-light transition"
+                        >
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                          </svg>
+                          Go to Recovery Actions
+                        </Link>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

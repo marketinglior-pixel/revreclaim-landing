@@ -16,9 +16,9 @@ const steps = [
   },
   {
     number: "03",
-    title: "See Where Your Money Went",
+    title: "See It. Fix It. Recover.",
     description:
-      "A report appears. Customer names on the left. Dollar amounts on the right. A green 'Fix' button next to each one. Click it and it takes you to the exact page in your billing dashboard to fix that leak. That's it.",
+      "A report appears. Customer names on the left. Dollar amounts on the right. One-click auto-fix for every recoverable leak — payment reminders, retry failed charges, remove expired coupons. We handle it. You keep the revenue.",
     detail: "Average recovery: $2,340/mo",
   },
 ];
