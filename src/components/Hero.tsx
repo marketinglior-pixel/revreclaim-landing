@@ -22,9 +22,9 @@ export function Hero() {
 
         {/* Headline — THE SPECIFIC MOMENT (Harry Dry: visual, falsifiable, unique) */}
         <h1 className="mb-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl md:leading-[1.2] lg:text-6xl animate-fade-in-up animate-delay-200">
-          There&apos;s a customer in your Stripe
+          There&apos;s a customer in your
           <br className="hidden md:block" />
-          {" "}who owes you{" "}
+          {" "}billing account who owes you{" "}
           <span className="bg-gradient-to-r from-danger to-warning bg-clip-text text-transparent">$499</span>.
         </h1>
         <p className="mb-10 text-xl font-medium text-text-muted md:text-2xl animate-fade-in-up animate-delay-250">
