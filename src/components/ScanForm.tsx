@@ -295,7 +295,7 @@ export default function ScanForm() {
           disabled={isScanning}
           className="w-full py-3 bg-brand text-sm font-bold text-black rounded-lg min-h-[44px] transition-all hover:bg-brand-dark hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
-          {isScanning ? "Scanning..." : `Scan My ${PLATFORM_LABELS[platform]} → Get My Report`}
+          {isScanning ? "Scanning..." : "Start My Free Audit →"}
         </button>
 
         {/* Security badge */}

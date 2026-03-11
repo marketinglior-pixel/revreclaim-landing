@@ -88,7 +88,7 @@ export function FinalCTA() {
                 }}
                 className="group inline-flex items-center gap-2 rounded-lg bg-brand px-5 py-3 text-sm font-bold text-black min-h-[44px] transition-all hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
               >
-                Show Me My Leaks
+                Get My Free $2,847 Audit
                 <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -129,8 +129,18 @@ export function FinalCTA() {
           )}
         </div>
 
+        {/* Recovery agent callout — Hormozi: give them a taste */}
+        <div className="mt-10 mx-auto max-w-lg rounded-xl border border-brand/20 bg-brand/5 p-5 text-left">
+          <p className="text-sm text-text-secondary leading-relaxed">
+            <span className="font-semibold text-brand">Your first fix is free.</span>{" "}
+            See a $499 failed payment sitting there for 12 days? Hit one button.
+            Our AI agent retries the charge. That money hits your account next billing cycle.
+            No signup required.
+          </p>
+        </div>
+
         {/* Guarantee badge */}
-        <div className="mt-12 inline-flex items-center gap-3 rounded-xl border border-border bg-surface px-6 py-4">
+        <div className="mt-8 inline-flex items-center gap-3 rounded-xl border border-border bg-surface px-6 py-4">
           <svg className="h-8 w-8 text-brand" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
           </svg>

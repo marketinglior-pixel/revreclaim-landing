@@ -36,7 +36,8 @@ export type AnalyticsEvent =
   | "post_fix_survey"
   | "nps_survey"
   | "feedback_widget"
-  | "feature_interest";
+  | "feature_interest"
+  | "calculator_used";
 
 /**
  * Track an analytics event. Fire-and-forget — errors are logged but never thrown.

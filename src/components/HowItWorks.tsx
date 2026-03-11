@@ -21,6 +21,13 @@ const steps = [
       "Customer names. Dollar amounts. One-click fix for each one. The average founder discovers $2,340/month they didn't know they were missing. Most fix the critical leaks before lunch. That money hits your account next billing cycle.",
     detail: "Average founder recovers $2,340/mo — from customers they already have.",
   },
+  {
+    number: "04",
+    title: "Your First Fix Is On Us.",
+    description:
+      "See a critical leak? Hit Fix. Our AI recovery agent sends a payment reminder, retries a failed charge, or removes an expired coupon — whatever the leak needs. Your first recovery action is free. Most founders recover more in that single action than the Pro plan costs.",
+    detail: "Average first fix: $499 recovered. Free. No strings.",
+  },
 ];
 
 export function HowItWorks() {

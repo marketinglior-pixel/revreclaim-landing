@@ -73,6 +73,9 @@ export function Problem() {
           <div className="mt-2 text-center text-sm text-text-muted">
             That&apos;s <span className="font-semibold text-danger">$30,000/year</span> walking out the door
           </div>
+          <div className="mt-1 text-center text-sm text-text-muted">
+            That&apos;s <span className="font-semibold text-danger">$82 every day</span>. By the time you finish reading this page, you&apos;ll have lost another <span className="font-semibold text-danger">$3</span>.
+          </div>
           {/* Status tie — competitors are ahead (Hormozi Hack #7) */}
           <div className="mt-6 text-center text-sm text-text-muted">
             Your competitors who&apos;ve plugged these leaks are reinvesting that{" "}

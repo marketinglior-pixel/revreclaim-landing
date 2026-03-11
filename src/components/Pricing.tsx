@@ -10,25 +10,37 @@ import { trackCheckoutStarted } from "@/lib/conversion-tracking";
 const plans = [
   {
     name: "Revenue X-Ray",
-    badge: "FREE FOREVER",
+    badge: "$2,847 AUDIT — FREE",
     monthlyPrice: "$0",
     annualPrice: "$0",
     annualMonthly: "$0",
     period: "",
     description: "See exactly how much you could recover. No strings.",
     features: [
-      "Every dollar hiding in your billing, found",
-      "Know exactly who owes you and how much",
-      "Fix your biggest leak today — instructions included",
-      "Know if your billing is healthy or bleeding",
-      "Monthly check-up on your revenue health",
+      "Full 10-scanner revenue audit ($500 value)",
+      "Customer-level leak report with names & amounts",
+      "Billing Health Score with industry comparison",
+      "1 AI recovery action — auto-fix your biggest leak",
+      "Step-by-step fix instructions for every leak found",
+      "PDF & CSV export to share with your team",
+      "Monthly re-scan to catch new leaks",
     ],
-    cta: "Paste Your Key → Free Report",
+    cta: "Get My $2,847 Audit — Free",
     href: "/scan",
     highlighted: false,
     isPaid: false,
     planId: "free",
     valueStack: null,
+    freeValueStack: [
+      { name: "10-Scanner Revenue Audit", value: "$500" },
+      { name: "Customer-Level Leak Report", value: "$800" },
+      { name: "Billing Health Score", value: "$200" },
+      { name: "Fix Playbook", value: "$300" },
+      { name: "1 AI Recovery Action", value: "$297" },
+      { name: "PDF/CSV Export", value: "$150" },
+      { name: "Industry Benchmarks", value: "$200" },
+      { name: "Monthly Re-scan", value: "$400" },
+    ],
   },
   {
     name: "Revenue Shield",
@@ -132,15 +144,14 @@ export function Pricing() {
         </div>
         {/* Headline — ROI math upfront (Hormozi Hack #4: Reason Why) */}
         <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
-          The math is simple.{" "}
-          <span className="text-text-muted italic">(That&apos;s the point.)</span>
+          Choose how much money you want back.
         </h2>
         <p className="mx-auto mb-10 max-w-2xl text-center text-lg text-text-muted">
+          The free audit finds your leaks. The paid plans fix them automatically, forever.
+          <br />
           Average recovery: <span className="text-white font-semibold">$2,340/mo</span>.
           Pro plan: <span className="text-white font-semibold">{billing === "annual" ? "$249" : "$299"}/mo</span>.
-          That&apos;s an extra <span className="text-brand font-semibold">{billing === "annual" ? "$25,092" : "$24,492"}/year you keep</span>. From customers you already have.
-          <br />
-          If we don&apos;t find at least $1,000/mo in recoverable revenue, you pay nothing.
+          That&apos;s <span className="text-brand font-semibold">{billing === "annual" ? "$25,092" : "$24,492"}/year you keep</span>.
         </p>
 
         {/* Billing toggle */}
@@ -238,6 +249,30 @@ export function Pricing() {
                   ))}
                 </ul>
 
+                {/* Free plan value stack — Hormozi Grand Slam: show perceived value */}
+                {(plan as typeof plans[0] & { freeValueStack?: { name: string; value: string }[] }).freeValueStack && (
+                  <div className="mb-6 rounded-lg border border-brand/20 bg-brand/5 p-3 sm:p-4 text-xs md:text-sm">
+                    <div className="mb-2 font-semibold text-brand uppercase tracking-wider text-xs">What you get — free</div>
+                    <div className="space-y-1.5">
+                      {(plan as typeof plans[0] & { freeValueStack?: { name: string; value: string }[] }).freeValueStack!.map((item) => (
+                        <div key={item.name} className="flex justify-between gap-2 text-text-secondary">
+                          <span className="truncate">{item.name}</span>
+                          <span className="font-semibold shrink-0 line-through text-text-dim">{item.value}</span>
+                        </div>
+                      ))}
+                      <div className="border-t border-brand/20 my-2" />
+                      <div className="flex justify-between gap-2 text-white font-semibold">
+                        <span>Total value</span>
+                        <span className="shrink-0 line-through text-text-dim">$2,847</span>
+                      </div>
+                      <div className="flex justify-between gap-2">
+                        <span className="text-text-muted">You pay</span>
+                        <span className="font-bold text-brand text-lg">$0</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Value stacking ($100M Offers) */}
                 {plan.valueStack && (
                   <div className="mb-6 rounded-lg border border-border bg-surface-dim p-3 sm:p-4 text-xs md:text-sm">
@@ -270,27 +305,33 @@ export function Pricing() {
 
                 {/* CTA Button */}
                 {plan.isPaid ? (
-                  <button
-                    onClick={() => { trackEvent("cta_clicked", null, { location: "pricing", action: "upgrade", billing }).catch(() => {}); handleCheckout(plan.planId); }}
-                    disabled={loadingPlan !== null}
-                    className={`block w-full rounded-lg py-3 text-center text-sm font-semibold min-h-[44px] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
-                      plan.highlighted
-                        ? "bg-brand text-black hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
-                        : "border border-border bg-surface-light text-white hover:border-brand/30 hover:bg-surface-lighter"
-                    }`}
-                  >
-                    {loadingPlan === plan.planId ? (
-                      <span className="inline-flex items-center gap-2">
-                        <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                        </svg>
-                        Redirecting...
-                      </span>
-                    ) : (
-                      plan.cta
-                    )}
-                  </button>
+                  <>
+                    <button
+                      onClick={() => { trackEvent("cta_clicked", null, { location: "pricing", action: "upgrade", billing }).catch(() => {}); handleCheckout(plan.planId); }}
+                      disabled={loadingPlan !== null}
+                      className={`block w-full rounded-lg py-3 text-center text-sm font-semibold min-h-[44px] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+                        plan.highlighted
+                          ? "bg-brand text-black hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+                          : "border border-border bg-surface-light text-white hover:border-brand/30 hover:bg-surface-lighter"
+                      }`}
+                    >
+                      {loadingPlan === plan.planId ? (
+                        <span className="inline-flex items-center gap-2">
+                          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                          </svg>
+                          Redirecting...
+                        </span>
+                      ) : (
+                        plan.cta
+                      )}
+                    </button>
+                    {/* $1,000/mo guarantee — Hormozi risk reversal at decision point */}
+                    <p className="mt-3 text-center text-xs text-text-muted">
+                      Find less than $1,000/mo? You pay nothing. Cancel anytime.
+                    </p>
+                  </>
                 ) : (
                   <Link
                     href={plan.href}

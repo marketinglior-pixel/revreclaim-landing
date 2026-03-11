@@ -135,7 +135,7 @@ export function DashboardPreview() {
             href="/scan"
             className="group inline-flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black min-h-[52px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
           >
-            See what YOUR report looks like &rarr;
+            Get My Free Revenue Audit &rarr;
             <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
@@ -193,6 +193,11 @@ function LeakTableRow({ severity, type, customer, impact, detail, fix }: {
       <span className="inline-block rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold text-brand">
         Fix: {fix}
       </span>
+      {(severity === "CRITICAL" || severity === "HIGH") && (
+        <span className="ml-2 inline-block rounded-full bg-brand/20 px-3 py-1 text-xs font-bold text-brand border border-brand/30">
+          Auto-Fix — Free
+        </span>
+      )}
     </div>
   );
 }

@@ -11,6 +11,7 @@ import LeakCategoryChart from "@/components/report/LeakCategoryChart";
 import LeakTable from "@/components/report/LeakTable";
 import ReportCTA from "@/components/report/ReportCTA";
 import RecoveryBanner from "@/components/report/RecoveryBanner";
+import DailyCostTicker from "@/components/report/DailyCostTicker";
 import { PostScanSurvey } from "@/components/report/PostScanSurvey";
 import Link from "next/link";
 
@@ -243,6 +244,9 @@ export default function ReportPage() {
       )}
 
       <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+        {/* Daily Cost Ticker — urgency using actual scan data */}
+        <DailyCostTicker mrrAtRisk={adjustedSummary?.mrrAtRisk ?? report.summary.mrrAtRisk} />
+
         {/* Recovery Banner */}
         <RecoveryBanner
           recoveryPotential={adjustedSummary?.recoveryPotential ?? report.summary.recoveryPotential}

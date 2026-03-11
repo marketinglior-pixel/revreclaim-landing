@@ -23,6 +23,13 @@ export default function RecoveryBanner({
 
   return (
     <div className="rounded-2xl border border-brand/20 bg-gradient-to-r from-brand/10 via-brand/5 to-transparent p-6 md:p-8 glow-green animate-fade-in-up">
+      {/* Free fix callout for non-logged-in users */}
+      {!isLoggedIn && (
+        <div className="mb-4 rounded-lg border border-brand/20 bg-brand/5 px-4 py-3 text-center text-sm text-text-secondary">
+          <span className="font-semibold text-brand">Your first recovery action is free.</span>{" "}
+          Pick your biggest leak. Hit Fix. Done.
+        </div>
+      )}
       <div className="flex flex-col items-center text-center md:flex-row md:items-center md:justify-between md:text-left">
         <div>
           <div className="mb-1 flex items-center justify-center gap-2 md:justify-start">
