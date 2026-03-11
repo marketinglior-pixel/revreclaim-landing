@@ -26,7 +26,7 @@ This post breaks down what each tool actually does, where the gaps are, and how 
 | **Revenue Recognition** | No | Yes | No | No |
 | **Forecasting** | Yes | Yes | No | No |
 | **Customer Segmentation** | Yes | Yes | Yes | No |
-| **Failed Payment Detection** | Basic (aggregate counts) | No | Built-in (Paddle only) | Yes (customer name + dollar amount + fix link) |
+| **Failed Payment Detection** | Basic (aggregate counts) | No | Built-in (Paddle only) | Yes (per-customer detail + dollar amount + fix link) |
 | **Failed Payment Recovery** | Yes (Recover add-on) | No | Built-in (Paddle only) | Identifies + prioritizes |
 | **Expired Coupon Detection** | No | No | No | Yes (per-subscription detail) |
 | **Ghost Subscription Detection** | No | No | No | Yes (with MRR correction) |

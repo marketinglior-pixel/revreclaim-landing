@@ -7,8 +7,30 @@ import { LeakIcon } from "@/components/LeakIcons";
 export const metadata: Metadata = {
   title: "Paste Your API Key → See Your Leaks | RevReclaim",
   description:
-    "Paste an API key from Stripe, Polar, or Paddle. See every revenue leak in your account in 90 seconds. Real customer names. Real dollar amounts. Free forever.",
+    "Paste an API key from Stripe, Polar, or Paddle. See every revenue leak in your account in 90 seconds. Every leak identified. Real dollar amounts. Free forever.",
   alternates: { canonical: "https://revreclaim.com/scan" },
+  openGraph: {
+    title: "Paste Your API Key → See Your Leaks | RevReclaim",
+    description:
+      "See every revenue leak in your billing account in 90 seconds. Real dollar amounts and one-click fixes. Free forever.",
+    url: "https://revreclaim.com/scan",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "RevReclaim — Scan your billing for revenue leaks",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Paste Your API Key → See Your Leaks | RevReclaim",
+    description:
+      "See every revenue leak in your billing account in 90 seconds. Real dollar amounts and one-click fixes. Free forever.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function ScanPage() {
@@ -52,7 +74,7 @@ export default function ScanPage() {
             Paste your key. See your leaks.
           </h1>
           <p className="text-text-muted max-w-md mx-auto">
-            In 90 seconds, you&apos;ll see every customer name, every dollar amount,
+            In 90 seconds, you&apos;ll see every leak identified, every dollar amount,
             and exactly where to click to fix each leak.
             The average founder finds $2,340/month they weren&apos;t collecting.
           </p>

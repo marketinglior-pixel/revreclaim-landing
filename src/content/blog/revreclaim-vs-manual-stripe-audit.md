@@ -89,7 +89,7 @@ RevReclaim is the right choice in different situations:
 
 **You want to run audits regularly.** A single audit finds current leaks. But leaks accumulate every month — new failed payments, newly expired coupons, customers hitting the end of a promotional period. If you're auditing quarterly or more often, repeating a 3-hour manual process every time is expensive. RevReclaim re-runs in 90 seconds.
 
-**You need customer-level detail without writing API calls.** RevReclaim outputs customer names, subscription IDs, dollar amounts, and direct fix links. Getting the same detail manually requires Stripe API calls, JSON parsing, and spreadsheet formulas. If you'd rather skip that step, automation handles it.
+**You need customer-level detail without writing API calls.** RevReclaim outputs account IDs, subscription IDs, dollar amounts, and direct fix links. Getting the same detail manually requires Stripe API calls, JSON parsing, and spreadsheet formulas. If you'd rather skip that step, automation handles it.
 
 **You use multiple billing platforms.** The [manual audit guide](/blog/audit-stripe-account-revenue-leaks) covers Stripe only. If you bill through Stripe and Paddle, or Stripe and Polar, you'd need to run separate manual audits for each platform with different processes. RevReclaim scans all three from one interface.
 

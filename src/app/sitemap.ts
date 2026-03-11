@@ -31,16 +31,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/auth/signup`,
+      url: `${baseUrl}/calculator`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.5,
+      priority: 0.7,
     },
     {
-      url: `${baseUrl}/auth/login`,
+      url: `${baseUrl}/compare/stripe-dunning`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.4,
+      priority: 0.6,
     },
     {
       url: `${baseUrl}/contact`,

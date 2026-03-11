@@ -6,8 +6,30 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "RevReclaim vs Stripe Dunning — What Stripe Doesn't Tell You",
   description:
-    "Stripe sends you 47 webhooks. None of them say 'you're losing $2,500/month.' See what Stripe's built-in dunning misses and how RevReclaim finds it in 90 seconds.",
+    "Stripe sends 47 webhooks. None say 'you're losing $2,500/mo.' See what built-in dunning misses and how RevReclaim finds it.",
   alternates: { canonical: "https://revreclaim.com/compare/stripe-dunning" },
+  openGraph: {
+    title: "RevReclaim vs Stripe Dunning — What Stripe Doesn't Tell You",
+    description:
+      "Stripe sends 47 webhooks. None say 'you're losing $2,500/mo.' See what built-in dunning misses.",
+    url: "https://revreclaim.com/compare/stripe-dunning",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "RevReclaim vs Stripe Dunning — side by side comparison",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RevReclaim vs Stripe Dunning — What Stripe Doesn't Tell You",
+    description:
+      "Stripe sends 47 webhooks. None say 'you're losing $2,500/mo.' See what built-in dunning misses.",
+    images: ["/og-image.png"],
+  },
 };
 
 /**
@@ -24,7 +46,7 @@ const COMPARISON_ROWS = [
   {
     category: "Expired Coupons",
     stripe: "No detection. Expired coupons continue discounting silently.",
-    revreclaim: "Detects every expired coupon still reducing invoices. Shows customer name + exact dollar impact.",
+    revreclaim: "Detects every expired coupon still reducing invoices. Shows exact dollar impact per customer.",
     stripeDoes: false,
   },
   {
@@ -259,7 +281,7 @@ export default function StripeDunningComparePage() {
               See what Stripe isn&apos;t showing you.
             </h2>
             <p className="text-text-muted mb-8 max-w-lg mx-auto">
-              Paste a read-only Stripe API key. Get a report with real customer names, real dollar amounts,
+              Paste a read-only Stripe API key. Get a report with every leak identified, real dollar amounts,
               and one-click fixes. 90 seconds. Free. No credit card.
             </p>
             <Link

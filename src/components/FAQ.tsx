@@ -30,7 +30,7 @@ const faqs = [
   },
   {
     q: "What do I do with the report?",
-    a: "Open the report. See the customer name. See the dollar amount. See the one-sentence fix. Click the link. It takes you straight to that customer in your billing dashboard. Fix it. That money hits your account next billing cycle.",
+    a: "Open the report. See the leak. See the dollar amount. See the one-sentence fix. Click the link. It takes you straight to that customer in your billing dashboard. Fix it. That money hits your account next billing cycle.",
   },
   {
     q: "What if you don't find any leaks?",

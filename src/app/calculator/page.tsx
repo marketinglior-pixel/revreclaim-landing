@@ -376,7 +376,7 @@ export default function CalculatorPage() {
                   These are estimates. Want the exact numbers?
                 </h3>
                 <p className="text-sm text-text-muted mb-6 max-w-lg mx-auto">
-                  A free scan shows <span className="text-white font-medium">real customer names, real dollar amounts</span>,
+                  A free scan shows <span className="text-white font-medium">every leak identified, real dollar amounts</span>,
                   and exactly which subscriptions are leaking. Takes 90 seconds. Read-only.
                 </p>
                 <Link

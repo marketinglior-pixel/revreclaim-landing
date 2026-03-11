@@ -16,9 +16,9 @@ export const metadata: Metadata = {
   verification: {
     google: "llleqEOxKm_NMJMV1M6vUbe3XFLOE1X0mHOKFZpsJ4M",
   },
-  title: "RevReclaim | Your Stripe Has Revenue Leaks. We Prove It in 90 Seconds.",
+  title: "RevReclaim | Find SaaS Revenue Leaks in 90 Seconds",
   description:
-    "Paste a read-only Stripe key. Get a report in 90 seconds showing every dollar you're losing to expired coupons, failed payments, and ghost subscriptions. Free. No credit card.",
+    "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find expired coupons, failed payments, and ghost subscriptions. Free. No credit card.",
   icons: {
     icon: "/icon.svg",
   },
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
     canonical: "https://revreclaim.com",
   },
   openGraph: {
-    title: "RevReclaim | Your Stripe Has Revenue Leaks. We Prove It in 90 Seconds.",
+    title: "RevReclaim | Find SaaS Revenue Leaks in 90 Seconds",
     description:
-      "Paste a read-only Stripe key. See real customer names, real dollar amounts, and one-click fixes in 90 seconds. 94% of SaaS accounts have leaks. Free scan.",
+      "See every revenue leak, real dollar amounts, and one-click fixes in 90 seconds. 94% of SaaS accounts have leaks. Free scan.",
     url: "https://revreclaim.com",
     siteName: "RevReclaim",
     type: "website",
@@ -44,9 +44,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "RevReclaim | Your Stripe Has Revenue Leaks. We Prove It in 90 Seconds.",
+    title: "RevReclaim | Find SaaS Revenue Leaks in 90 Seconds",
     description:
-      "Paste a read-only Stripe key. See real customer names, real dollar amounts, and one-click fixes in 90 seconds. 94% of SaaS accounts have leaks. Free scan.",
+      "See every revenue leak, real dollar amounts, and one-click fixes in 90 seconds. 94% of SaaS accounts have leaks. Free scan.",
     images: ["/og-image.png"],
   },
 };
@@ -166,7 +166,7 @@ const jsonLd = {
           name: "What do I do with the report?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Open the report. See the customer name. See the dollar amount. See the one-sentence fix. Click the link — it takes you straight to that customer in your billing dashboard. Fix it. That money hits your account next billing cycle.",
+            text: "Open the report. See the leak. See the dollar amount. See the one-sentence fix. Click the link — it takes you straight to that customer in your billing dashboard. Fix it. That money hits your account next billing cycle.",
           },
         },
         {

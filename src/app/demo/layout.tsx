@@ -10,6 +10,21 @@ export const metadata: Metadata = {
     description:
       "A real scan found $57,960/yr in hidden revenue leaks. See the full report with every leak, amounts, and fixes.",
     url: "https://revreclaim.com/demo",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "RevReclaim Demo Report — 23 leaks found, $57,960/yr recovery potential",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Demo Report — See What RevReclaim Finds",
+    description:
+      "A real scan found $57,960/yr in hidden revenue leaks. See the full report with every leak, amounts, and fixes.",
+    images: ["/og-image.png"],
   },
 };
 

@@ -347,7 +347,7 @@ And you should do this quarterly at minimum. Billing data drifts constantly — 
 
 RevReclaim runs all 10 checks automatically in under 90 seconds. You paste a read-only Stripe API key, and you get a report with:
 
-- Every leak found, with customer name and dollar amount
+- Every leak found, with account details and dollar amount
 - A health score (0-100) across 6 billing dimensions
 - Direct links to fix each issue in your Stripe dashboard
 - Prioritized by severity (critical leaks first)

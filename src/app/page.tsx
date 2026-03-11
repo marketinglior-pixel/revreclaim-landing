@@ -17,10 +17,32 @@ import { FinalCTA } from "@/components/FinalCTA";
 import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "RevReclaim | Free $2,847 SaaS Billing Leak Audit for Stripe, Paddle & Polar",
+  title: "RevReclaim | Free SaaS Billing Leak Audit in 90 Seconds",
   description:
-    "SaaS founders lose $2,500/mo to billing blind spots. RevReclaim scans your Stripe, Paddle, or Polar account in 90 seconds and finds failed payments, ghost subscriptions, and expired coupons. Free $2,847 billing audit with AI recovery agent.",
+    "SaaS founders lose $2,500/mo to billing blind spots. Scan your Stripe, Paddle, or Polar account in 90 seconds. Find every leak. Free.",
   alternates: { canonical: "https://revreclaim.com" },
+  openGraph: {
+    title: "RevReclaim | Free SaaS Billing Leak Audit in 90 Seconds",
+    description:
+      "SaaS founders lose $2,500/mo to billing blind spots. Scan your Stripe, Paddle, or Polar account in 90 seconds. Find every leak. Free.",
+    url: "https://revreclaim.com",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "RevReclaim — Find hidden revenue leaks in your billing data",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RevReclaim | Free SaaS Billing Leak Audit in 90 Seconds",
+    description:
+      "SaaS founders lose $2,500/mo to billing blind spots. Scan your Stripe, Paddle, or Polar account in 90 seconds. Find every leak. Free.",
+    images: ["/og-image.png"],
+  },
 };
 
 /* Hormozi Grand Slam Offer flow: Dream → Pain → Urgency → Show → Stack → How → Trust → Proof → Decision → Detail → FAQ → Close */

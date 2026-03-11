@@ -155,7 +155,7 @@ It takes 15 seconds. No login required.
 
 ## Calculator vs. Real Scan
 
-The calculator gives you estimates. A real scan gives you exact dollar amounts with customer names.
+The calculator gives you estimates. A real scan gives you exact dollar amounts with every leak identified.
 
 Here's the difference:
 
@@ -181,7 +181,7 @@ For a complete walkthrough of the scan process, see [How to Audit Your Stripe Ac
 
 **Step 1:** Run the [revenue leakage calculator](/calculator) to get your estimated range. Takes 15 seconds.
 
-**Step 2:** If the number is meaningful (and for most SaaS companies above $10K MRR, it will be), [run a free scan](/scan) to get exact amounts with customer names and fix actions.
+**Step 2:** If the number is meaningful (and for most SaaS companies above $10K MRR, it will be), [run a free scan](/scan) to get exact amounts with every leak identified and fix actions.
 
 **Step 3:** Fix the highest-impact leaks first. Our [Billing Health Checklist](/blog/saas-billing-health-checklist) gives you the prioritized order.
 
