@@ -79,7 +79,7 @@ export function Header() {
                 onClick={() => trackEvent("cta_clicked", null, { location: "header", action: "scan" }).catch(() => {})}
                 className="rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-black min-h-[40px] transition-all hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] hidden md:block"
               >
-                Paste Your Key &rarr; See Your Leaks
+                Free Leak Scan &rarr;
               </Link>
             </>
           )}
@@ -184,7 +184,7 @@ export function Header() {
                     onClick={() => setMenuOpen(false)}
                     className="block rounded-lg bg-brand w-full py-3 text-sm font-semibold text-black text-center min-h-[44px] transition-all hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] mt-2"
                   >
-                    Paste Your Key &rarr; See Your Leaks
+                    Free Leak Scan &rarr;
                   </Link>
                 </>
               )}

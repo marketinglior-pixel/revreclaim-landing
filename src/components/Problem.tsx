@@ -21,9 +21,10 @@ export function Problem() {
           You track churn. You track MRR. You track CAC.
           But nobody tracks the money that&apos;s already yours and isn&apos;t arriving.
           <br />
-          The average SaaS at your stage loses $2,500/month to billing blind spots.
-          Not because your product is broken.{" "}
-          <span className="text-white">Because your billing platform doesn&apos;t alert you.</span>
+          <span className="text-white font-semibold">Stripe doesn&apos;t alert you when a coupon expires and keeps running.
+          Paddle doesn&apos;t flag ghost subscriptions. Nobody does.</span>
+          <br />
+          The average SaaS at your stage loses $2,500/month to these blind spots.
         </p>
 
         {/* Revenue leak visualization */}

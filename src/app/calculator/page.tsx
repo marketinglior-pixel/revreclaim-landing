@@ -5,259 +5,349 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { trackEvent } from "@/lib/analytics";
+import { trackCTAClick } from "@/lib/conversion-tracking";
 
 /**
- * Revenue Leak Calculator — interactive lead gen tool.
+ * Revenue Leak Calculator — Daniel Priestley Assessment-Style Quiz
  *
  * SEO target: "how to calculate revenue leakage" (~400-600/mo)
- * Purpose: Validate demand, capture leads, drive scan conversions.
+ * Purpose: Lower-friction entry point for cold traffic.
+ * Framework: 7 questions that educate + qualify → personalized results → CTA to scan.
  *
- * Based on aggregated data from 847+ scanned accounts:
- * - 94% of accounts have at least 1 leak
- * - Average leak rate: ~4.7% of MRR
- * - Average recovery: $2,340/mo
+ * Key insight: Each question teaches about a leak type they might not know about.
+ * By the end, they're educated enough to want the free scan.
  */
 
-const LEAK_RATE = 0.047; // 4.7% average leak rate
+// ── Quiz Questions ──────────────────────────────────────────────
 
-const LEAK_BREAKDOWN = [
+interface QuizOption {
+  label: string;
+  value: string;
+  risk: number; // 0-3 (higher = more leak risk)
+}
+
+interface QuizQuestion {
+  id: string;
+  question: string;
+  subtext: string;
+  options: QuizOption[];
+}
+
+const QUESTIONS: QuizQuestion[] = [
   {
-    type: "failed_payment",
-    label: "Failed Payments",
-    share: 0.22,
-    color: "#EF4444",
-    description: "Open invoices with failed payment attempts going unresolved",
+    id: "platform",
+    question: "Which billing platform do you use?",
+    subtext: "We support Stripe, Polar, and Paddle — the platforms where revenue leaks hide.",
+    options: [
+      { label: "Stripe", value: "stripe", risk: 1 },
+      { label: "Polar", value: "polar", risk: 1 },
+      { label: "Paddle", value: "paddle", risk: 1 },
+      { label: "Other / Multiple", value: "other", risk: 2 },
+    ],
   },
   {
-    type: "legacy_pricing",
-    label: "Legacy Pricing",
-    share: 0.15,
-    color: "#3B82F6",
-    description:
-      "Customers still on old pricing below your current published rates",
+    id: "mrr",
+    question: "What's your approximate MRR?",
+    subtext: "Higher MRR means more at stake. The average SaaS leaks 4.7% of MRR without knowing it.",
+    options: [
+      { label: "Under $10K", value: "under10k", risk: 0 },
+      { label: "$10K – $50K", value: "10k-50k", risk: 1 },
+      { label: "$50K – $200K", value: "50k-200k", risk: 2 },
+      { label: "$200K+", value: "200k+", risk: 3 },
+    ],
   },
   {
-    type: "ghost_subscription",
-    label: "Ghost Subscriptions",
-    share: 0.14,
-    color: "#F97316",
-    description: "Subscriptions stuck in past_due or unpaid for 14+ days",
+    id: "customers",
+    question: "How many paying customers?",
+    subtext: "More customers = more subscriptions = more surface area for billing mistakes.",
+    options: [
+      { label: "Under 50", value: "under50", risk: 0 },
+      { label: "50 – 200", value: "50-200", risk: 1 },
+      { label: "200 – 500", value: "200-500", risk: 2 },
+      { label: "500+", value: "500+", risk: 3 },
+    ],
   },
   {
-    type: "expired_coupon",
-    label: "Expired Coupons",
-    share: 0.12,
-    color: "#8B5CF6",
-    description:
-      "Coupons past their expiry date still silently discounting invoices",
+    id: "pricing",
+    question: "When did you last raise prices?",
+    subtext: "Price increases don't retroactively update existing subscriptions. Old customers stay on old prices unless you migrate them manually.",
+    options: [
+      { label: "Never raised prices", value: "never", risk: 0 },
+      { label: "Over 6 months ago", value: "6mo+", risk: 3 },
+      { label: "1 – 6 months ago", value: "1-6mo", risk: 2 },
+      { label: "Less than a month ago", value: "recent", risk: 1 },
+    ],
   },
   {
-    type: "expiring_card",
-    label: "Expiring Cards",
-    share: 0.12,
-    color: "#F59E0B",
-    description: "Cards expiring within 90 days on active subscriptions",
+    id: "coupons",
+    question: "How often do you use discount coupons?",
+    subtext: "Stripe doesn't auto-remove expired coupons from subscriptions. A coupon set to 'forever' runs indefinitely — even after the promo ends.",
+    options: [
+      { label: "Frequently", value: "frequently", risk: 3 },
+      { label: "Sometimes", value: "sometimes", risk: 2 },
+      { label: "Rarely", value: "rarely", risk: 1 },
+      { label: "Never", value: "never", risk: 0 },
+    ],
   },
   {
-    type: "never_expiring_discount",
-    label: "Forever Discounts",
-    share: 0.10,
-    color: "#6366F1",
-    description: "Coupons set to 'forever' duration running indefinitely",
+    id: "dunning",
+    question: "How do you handle failed payments?",
+    subtext: "Failed payments are the #1 source of involuntary churn. Without active dunning, subscriptions go 'past_due' silently — becoming ghost subscriptions.",
+    options: [
+      { label: "Automated dunning tool", value: "automated", risk: 1 },
+      { label: "Manual follow-up", value: "manual", risk: 2 },
+      { label: "Stripe/platform default", value: "default", risk: 2 },
+      { label: "Nothing specific", value: "nothing", risk: 3 },
+    ],
   },
   {
-    type: "missing_payment_method",
-    label: "Missing Payment Methods",
-    share: 0.08,
-    color: "#EC4899",
-    description: "Active subscriptions with no payment method attached",
-  },
-  {
-    type: "unbilled_overage",
-    label: "Unbilled Overages",
-    share: 0.07,
-    color: "#14B8A6",
-    description: "Usage exceeding plan limits without additional charges",
+    id: "audit",
+    question: "When did you last audit your billing subscriptions?",
+    subtext: "Most founders never manually review individual subscriptions. That's where leaks hide — in the gap between your dashboard view and actual subscription records.",
+    options: [
+      { label: "Never", value: "never", risk: 3 },
+      { label: "Over 6 months ago", value: "6mo+", risk: 3 },
+      { label: "1 – 6 months ago", value: "1-6mo", risk: 2 },
+      { label: "This month", value: "recent", risk: 1 },
+    ],
   },
 ];
 
+// ── Leak Breakdown Data ──────────────────────────────────────────
+
+const LEAK_CATEGORIES = [
+  { label: "Failed Payments & Dunning Gaps", color: "#EF4444", baseShare: 0.22, riskKeys: ["dunning", "customers"] },
+  { label: "Legacy Pricing", color: "#3B82F6", baseShare: 0.15, riskKeys: ["pricing", "customers"] },
+  { label: "Ghost Subscriptions", color: "#F97316", baseShare: 0.14, riskKeys: ["dunning", "audit"] },
+  { label: "Expired & Forever Coupons", color: "#8B5CF6", baseShare: 0.22, riskKeys: ["coupons", "audit"] },
+  { label: "Expiring Cards", color: "#F59E0B", baseShare: 0.12, riskKeys: ["customers", "dunning"] },
+  { label: "Missing Payment Methods", color: "#EC4899", baseShare: 0.08, riskKeys: ["audit", "customers"] },
+  { label: "Unbilled Overages", color: "#14B8A6", baseShare: 0.07, riskKeys: ["audit", "mrr"] },
+];
+
+// ── MRR Estimation ──────────────────────────────────────────────
+
+function estimateMRR(answer: string): number {
+  switch (answer) {
+    case "under10k": return 7000;
+    case "10k-50k": return 30000;
+    case "50k-200k": return 100000;
+    case "200k+": return 300000;
+    default: return 50000;
+  }
+}
+
+function estimateCustomers(answer: string): number {
+  switch (answer) {
+    case "under50": return 30;
+    case "50-200": return 120;
+    case "200-500": return 350;
+    case "500+": return 700;
+    default: return 200;
+  }
+}
+
+// ── Component ───────────────────────────────────────────────────
+
 export default function CalculatorPage() {
-  const [mrr, setMrr] = useState("");
-  const [customers, setCustomers] = useState("");
-  const [calculated, setCalculated] = useState(false);
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [showResults, setShowResults] = useState(false);
 
-  const mrrNum = parseFloat(mrr.replace(/[^0-9.]/g, "")) || 0;
-  const custNum = parseInt(customers.replace(/[^0-9]/g, ""), 10) || 0;
+  const totalSteps = QUESTIONS.length;
+  const progress = showResults ? 100 : Math.round((step / totalSteps) * 100);
 
-  // Scale leak rate by customer count (more customers = more surface area)
-  const customerMultiplier =
-    custNum < 50
-      ? 0.7
-      : custNum < 100
-        ? 0.85
-        : custNum < 200
-          ? 1.0
-          : custNum < 500
-            ? 1.05
-            : 1.1;
+  function handleAnswer(questionId: string, value: string) {
+    const newAnswers = { ...answers, [questionId]: value };
+    setAnswers(newAnswers);
 
-  const adjustedLeakRate = LEAK_RATE * customerMultiplier;
-  const estimatedMonthlyLeak = Math.round(mrrNum * adjustedLeakRate);
-  const estimatedAnnualLeak = estimatedMonthlyLeak * 12;
-  const estimatedLeakCount = Math.max(1, Math.round(custNum * 0.12));
-
-  function handleCalculate() {
-    if (mrrNum <= 0) return;
-    setCalculated(true);
-    trackEvent("cta_clicked" as Parameters<typeof trackEvent>[0], null, {
-      location: "calculator",
-      action: "calculate",
-      mrr: mrrNum,
-      customers: custNum,
+    trackEvent("calculator_answer" as Parameters<typeof trackEvent>[0], null, {
+      question: questionId,
+      answer: value,
+      step: step + 1,
     }).catch(() => {});
+
+    if (step < totalSteps - 1) {
+      setTimeout(() => setStep(step + 1), 150);
+    } else {
+      // Last question answered — show results
+      setTimeout(() => {
+        setShowResults(true);
+        trackEvent("calculator_completed" as Parameters<typeof trackEvent>[0], null, {
+          answers: JSON.stringify(newAnswers),
+        }).catch(() => {});
+      }, 150);
+    }
   }
 
-  return (
-    <div className="min-h-screen bg-surface-dim text-white">
-      <Header />
+  function handleBack() {
+    if (step > 0) setStep(step - 1);
+  }
 
-      <main className="py-20 md:py-28">
-        <div className="mx-auto max-w-3xl px-6">
-          {/* Header */}
-          <div className="mb-4 text-sm font-semibold uppercase tracking-wider text-brand">
-            Revenue Leak Calculator
-          </div>
-          <h1 className="mb-4 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
-            How much revenue is leaking from your billing?
-          </h1>
-          <p className="mb-12 max-w-2xl text-lg text-text-muted">
-            Based on data from{" "}
-            <span className="text-white font-semibold">
-              847+ SaaS accounts
-            </span>{" "}
-            we&apos;ve scanned,{" "}
-            <span className="text-white font-semibold">
-              94% have at least one billing leak
-            </span>
-            . Enter your numbers to see your estimated exposure.
-          </p>
+  // ── Calculate Results ──
 
-          {/* Calculator */}
-          <div className="rounded-2xl border border-border bg-surface p-6 md:p-8 mb-8">
-            <div className="grid gap-6 md:grid-cols-2 mb-8">
-              {/* MRR Input */}
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-2">
-                  Monthly Recurring Revenue (MRR)
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-lg">
-                    $
-                  </span>
-                  <input
-                    type="text"
-                    value={mrr}
-                    onChange={(e) => {
-                      setMrr(e.target.value);
-                      setCalculated(false);
-                    }}
-                    placeholder="50,000"
-                    className="w-full rounded-lg border border-border bg-surface-dim pl-8 pr-4 py-3 text-lg text-white placeholder:text-text-dim focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
-                  />
-                </div>
+  const mrrEstimate = estimateMRR(answers.mrr || "10k-50k");
+  const customerEstimate = estimateCustomers(answers.customers || "50-200");
+
+  // Total risk score from all answers
+  const totalRisk = Object.entries(answers).reduce((sum, [qId, val]) => {
+    const question = QUESTIONS.find(q => q.id === qId);
+    const option = question?.options.find(o => o.value === val);
+    return sum + (option?.risk || 0);
+  }, 0);
+
+  const maxRisk = QUESTIONS.length * 3; // 21
+  const riskPercentage = totalRisk / maxRisk;
+
+  // Base leak rate: 2% (low risk) to 7% (high risk)
+  const leakRate = 0.02 + riskPercentage * 0.05;
+  const estimatedMonthlyLeak = Math.round(mrrEstimate * leakRate);
+  const estimatedAnnualLeak = estimatedMonthlyLeak * 12;
+  const estimatedLeakCount = Math.max(3, Math.round(customerEstimate * 0.08 * (1 + riskPercentage)));
+
+  // Health grade
+  const healthScore = Math.round(100 - riskPercentage * 60);
+  const healthGrade =
+    healthScore >= 80 ? "A" :
+    healthScore >= 65 ? "B" :
+    healthScore >= 50 ? "C" :
+    healthScore >= 35 ? "D" : "F";
+  const healthColor =
+    healthScore >= 80 ? "text-brand" :
+    healthScore >= 65 ? "text-blue-400" :
+    healthScore >= 50 ? "text-warning" :
+    healthScore >= 35 ? "text-orange-400" : "text-danger";
+
+  // Per-category breakdown adjusted by relevant answer risk
+  const categoryBreakdown = LEAK_CATEGORIES.map(cat => {
+    const relevantRisk = cat.riskKeys.reduce((sum, key) => {
+      const question = QUESTIONS.find(q => q.id === key);
+      const option = question?.options.find(o => o.value === answers[key]);
+      return sum + (option?.risk || 1);
+    }, 0);
+    const adjustedShare = cat.baseShare * (0.5 + relevantRisk / 6);
+    return { ...cat, amount: Math.round(estimatedMonthlyLeak * adjustedShare) };
+  }).sort((a, b) => b.amount - a.amount);
+
+  // Top risk findings
+  const findings: string[] = [];
+  if (answers.pricing === "6mo+" || answers.pricing === "1-6mo") {
+    findings.push("You raised prices but likely have customers still on old rates. This is one of the most common leaks.");
+  }
+  if (answers.coupons === "frequently" || answers.coupons === "sometimes") {
+    findings.push("Active coupon usage means expired or forever coupons are almost certainly running on some subscriptions.");
+  }
+  if (answers.dunning === "nothing" || answers.dunning === "default") {
+    findings.push("Without active dunning, failed payments become ghost subscriptions — customers who aren't paying but aren't canceled.");
+  }
+  if (answers.audit === "never" || answers.audit === "6mo+") {
+    findings.push("Without regular billing audits, leaks compound silently. Most founders don't know until they check.");
+  }
+
+  // ── Render ──
+
+  if (showResults) {
+    return (
+      <div className="min-h-screen bg-surface-dim text-white">
+        <Header />
+        <main className="py-20 md:py-28">
+          <div className="mx-auto max-w-3xl px-6">
+            {/* Progress complete */}
+            <div className="mb-8">
+              <div className="h-1.5 w-full rounded-full bg-surface-light overflow-hidden">
+                <div className="h-full rounded-full bg-brand transition-all duration-500" style={{ width: "100%" }} />
               </div>
-
-              {/* Customers Input */}
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-2">
-                  Number of Paying Customers
-                </label>
-                <input
-                  type="text"
-                  value={customers}
-                  onChange={(e) => {
-                    setCustomers(e.target.value);
-                    setCalculated(false);
-                  }}
-                  placeholder="200"
-                  className="w-full rounded-lg border border-border bg-surface-dim px-4 py-3 text-lg text-white placeholder:text-text-dim focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
-                />
-              </div>
+              <div className="mt-2 text-xs text-text-dim text-right">Assessment complete</div>
             </div>
 
-            <button
-              onClick={handleCalculate}
-              disabled={mrrNum <= 0}
-              className="w-full rounded-lg bg-brand py-3.5 text-center text-sm font-bold text-black hover:bg-brand-light transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-            >
-              Calculate My Revenue Leaks
-            </button>
-          </div>
+            <div className="space-y-6 animate-fade-in-up">
+              {/* Health Score Card */}
+              <div className="rounded-2xl border border-border bg-surface p-6 md:p-8">
+                <div className="flex flex-col md:flex-row items-center gap-8">
+                  {/* Score circle */}
+                  <div className="relative shrink-0">
+                    <svg width="120" height="120" className="transform -rotate-90">
+                      <circle cx="60" cy="60" r="52" fill="none" stroke="#1A1A1A" strokeWidth="8" />
+                      <circle
+                        cx="60" cy="60" r="52" fill="none"
+                        stroke={healthScore >= 65 ? "#10B981" : healthScore >= 40 ? "#F59E0B" : "#EF4444"}
+                        strokeWidth="8" strokeLinecap="round"
+                        strokeDasharray={`${2 * Math.PI * 52}`}
+                        strokeDashoffset={`${2 * Math.PI * 52 * (1 - healthScore / 100)}`}
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className={`text-3xl font-extrabold ${healthColor}`}>{healthGrade}</span>
+                      <span className="text-xs text-text-muted">{healthScore}/100</span>
+                    </div>
+                  </div>
 
-          {/* Results */}
-          {calculated && mrrNum > 0 && (
-            <div className="animate-fade-in-up space-y-6">
-              {/* Main result */}
-              <div className="rounded-2xl border border-danger/30 bg-danger/5 p-6 md:p-8 text-center">
-                <p className="text-sm font-semibold uppercase tracking-wider text-danger/80 mb-2">
-                  Estimated Revenue Leaking
-                </p>
-                <div className="text-5xl md:text-6xl font-extrabold text-danger mb-1">
-                  ${estimatedMonthlyLeak.toLocaleString()}
-                  <span className="text-2xl font-normal text-danger/60">
-                    /mo
-                  </span>
+                  {/* Summary */}
+                  <div className="text-center md:text-left">
+                    <div className="text-sm font-semibold uppercase tracking-wider text-text-dim mb-2">
+                      Your Billing Health Score
+                    </div>
+                    <div className="text-4xl md:text-5xl font-extrabold text-danger mb-1">
+                      ${estimatedMonthlyLeak.toLocaleString()}<span className="text-xl font-normal text-danger/60">/mo</span>
+                    </div>
+                    <p className="text-text-muted">
+                      Estimated <span className="text-white font-semibold">${estimatedAnnualLeak.toLocaleString()}/year</span> in
+                      revenue you&apos;re likely not collecting.
+                    </p>
+                  </div>
                 </div>
-                <p className="text-lg text-text-muted">
-                  That&apos;s{" "}
-                  <span className="text-white font-semibold">
-                    ${estimatedAnnualLeak.toLocaleString()}/year
-                  </span>{" "}
-                  you&apos;re not collecting from customers who already said yes.
-                </p>
               </div>
 
-              {/* Breakdown with bars */}
+              {/* Key Findings */}
+              {findings.length > 0 && (
+                <div className="rounded-2xl border border-warning/20 bg-warning/5 p-6">
+                  <h3 className="text-sm font-semibold text-warning mb-4 flex items-center gap-2">
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                    Risk Factors Identified
+                  </h3>
+                  <ul className="space-y-3">
+                    {findings.map((f, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm text-text-secondary">
+                        <span className="mt-0.5 shrink-0 text-warning">
+                          <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
+                          </svg>
+                        </span>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Category Breakdown */}
               <div className="rounded-2xl border border-border bg-surface p-6">
                 <h3 className="text-sm font-semibold text-white mb-5">
-                  Leakage Breakdown by Category
+                  Where Your Revenue Is Likely Leaking
                 </h3>
                 <div className="space-y-4">
-                  {LEAK_BREAKDOWN.map((leak) => {
-                    const amount = Math.round(
-                      estimatedMonthlyLeak * leak.share
-                    );
-                    const barWidth = Math.max(4, leak.share * 100 * 4.5);
-
+                  {categoryBreakdown.map((cat) => {
+                    const maxAmount = categoryBreakdown[0].amount;
+                    const barWidth = Math.max(8, (cat.amount / maxAmount) * 100);
                     return (
-                      <div key={leak.type}>
+                      <div key={cat.label}>
                         <div className="flex items-center justify-between mb-1">
                           <div className="flex items-center gap-2">
-                            <div
-                              className="w-2.5 h-2.5 rounded-full shrink-0"
-                              style={{ backgroundColor: leak.color }}
-                            />
-                            <span className="text-sm text-text-secondary">
-                              {leak.label}
-                            </span>
+                            <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: cat.color }} />
+                            <span className="text-sm text-text-secondary">{cat.label}</span>
                           </div>
                           <span className="text-sm font-semibold text-white tabular-nums">
-                            ${amount.toLocaleString()}/mo
+                            ${cat.amount.toLocaleString()}/mo
                           </span>
                         </div>
                         <div className="w-full h-2 bg-surface-light rounded-full overflow-hidden">
                           <div
                             className="h-full rounded-full transition-all duration-700 ease-out"
-                            style={{
-                              width: `${barWidth}%`,
-                              backgroundColor: leak.color,
-                              boxShadow: `0 0 8px ${leak.color}40`,
-                            }}
+                            style={{ width: `${barWidth}%`, backgroundColor: cat.color }}
                           />
                         </div>
-                        <p className="text-[11px] text-text-dim mt-0.5">
-                          {leak.description}
-                        </p>
                       </div>
                     );
                   })}
@@ -267,204 +357,238 @@ export default function CalculatorPage() {
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4">
                 <div className="rounded-xl border border-border bg-surface p-4 text-center">
-                  <div className="text-2xl font-bold text-brand">94%</div>
-                  <div className="text-xs text-text-muted mt-1">
-                    Accounts with leaks
-                  </div>
+                  <div className={`text-2xl font-bold ${healthColor}`}>{healthGrade}</div>
+                  <div className="text-xs text-text-muted mt-1">Health Grade</div>
                 </div>
                 <div className="rounded-xl border border-border bg-surface p-4 text-center">
-                  <div className="text-2xl font-bold text-white">
-                    ~{estimatedLeakCount}
-                  </div>
-                  <div className="text-xs text-text-muted mt-1">
-                    Estimated leaks
-                  </div>
+                  <div className="text-2xl font-bold text-white">~{estimatedLeakCount}</div>
+                  <div className="text-xs text-text-muted mt-1">Estimated Leaks</div>
                 </div>
                 <div className="rounded-xl border border-border bg-surface p-4 text-center">
                   <div className="text-2xl font-bold text-white">90s</div>
-                  <div className="text-xs text-text-muted mt-1">
-                    To find them all
-                  </div>
+                  <div className="text-xs text-text-muted mt-1">To Find Them All</div>
                 </div>
               </div>
 
               {/* CTA */}
               <div className="rounded-2xl border border-brand/30 bg-brand/5 p-6 md:p-8 text-center">
                 <h3 className="text-xl font-bold text-white mb-2">
-                  Want to see the exact number?
+                  These are estimates. Want the exact numbers?
                 </h3>
                 <p className="text-sm text-text-muted mb-6 max-w-lg mx-auto">
-                  These are estimates based on industry averages. A free scan
-                  shows you{" "}
-                  <span className="text-white font-medium">
-                    real customer names, real dollar amounts
-                  </span>
-                  , and exactly which leaks are costing you money. Takes 90
-                  seconds.
+                  A free scan shows <span className="text-white font-medium">real customer names, real dollar amounts</span>,
+                  and exactly which subscriptions are leaking. Takes 90 seconds. Read-only.
                 </p>
                 <Link
                   href="/scan"
                   onClick={() => {
-                    trackEvent(
-                      "cta_clicked" as Parameters<typeof trackEvent>[0],
-                      null,
-                      {
-                        location: "calculator",
-                        action: "scan_from_results",
-                        estimated_leak: estimatedMonthlyLeak,
-                      }
-                    ).catch(() => {});
+                    trackEvent("cta_clicked" as Parameters<typeof trackEvent>[0], null, {
+                      location: "calculator_results",
+                      action: "scan",
+                      estimated_leak: estimatedMonthlyLeak,
+                      health_grade: healthGrade,
+                    }).catch(() => {});
+                    trackCTAClick("calculator", "scan");
                   }}
-                  className="inline-flex items-center gap-2 rounded-lg bg-brand px-8 py-3.5 text-sm font-bold text-black hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] transition"
+                  className="inline-flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] transition"
                 >
-                  Find My Exact Leaks — Free Scan
+                  Show Me My Exact Leaks
+                  <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
                 </Link>
                 <p className="mt-4 text-xs text-text-dim">
-                  Read-only access. Key never stored. No credit card required.
+                  Free forever. No credit card. Key never stored.
                 </p>
               </div>
-            </div>
-          )}
 
-          {/* SEO Content — always visible below calculator */}
-          <div className="mt-16 space-y-10">
-            <div>
-              <h2 className="text-2xl font-bold text-white mb-4">
-                How to Calculate SaaS Revenue Leakage
+              {/* Disclaimer */}
+              <div className="text-center">
+                <button
+                  onClick={() => { setShowResults(false); setStep(0); setAnswers({}); }}
+                  className="text-xs text-text-dim hover:text-text-muted transition cursor-pointer"
+                >
+                  Retake assessment
+                </button>
+              </div>
+            </div>
+
+            {/* SEO Content */}
+            <SEOContent />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // ── Quiz UI ──
+
+  const currentQ = QUESTIONS[step];
+
+  return (
+    <div className="min-h-screen bg-surface-dim text-white">
+      <Header />
+
+      <main className="py-20 md:py-28">
+        <div className="mx-auto max-w-2xl px-6">
+          {/* Progress bar */}
+          <div className="mb-8">
+            <div className="h-1.5 w-full rounded-full bg-surface-light overflow-hidden">
+              <div
+                className="h-full rounded-full bg-brand transition-all duration-500"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <div className="mt-2 flex justify-between text-xs text-text-dim">
+              <span>Question {step + 1} of {totalSteps}</span>
+              <span>{progress}%</span>
+            </div>
+          </div>
+
+          {/* Question Card */}
+          <div key={currentQ.id} className="animate-fade-in-up">
+            {step === 0 && (
+              <div className="mb-8">
+                <div className="mb-4 text-sm font-semibold uppercase tracking-wider text-brand">
+                  Billing Health Assessment
+                </div>
+                <h1 className="text-2xl font-bold text-white md:text-3xl mb-3">
+                  How much revenue is leaking from your billing?
+                </h1>
+                <p className="text-text-muted text-sm">
+                  7 questions. 60 seconds. Get a personalized estimate based on data from 847+ SaaS accounts.
+                </p>
+              </div>
+            )}
+
+            <div className="rounded-2xl border border-border bg-surface p-6 md:p-8">
+              <h2 className="text-lg font-bold text-white md:text-xl mb-2">
+                {currentQ.question}
               </h2>
-              <div className="text-sm text-text-muted space-y-3 leading-relaxed">
-                <p>
-                  Revenue leakage is the gap between what your SaaS{" "}
-                  <em>should</em> be collecting and what it actually collects.
-                  Unlike churn, which you actively track, revenue leaks are
-                  silent — they hide inside your billing platform in the form of
-                  expired discounts, failed payment retries, ghost
-                  subscriptions, and outdated pricing.
-                </p>
-                <p>
-                  Industry research from MGI Research and EY Revenue Assurance
-                  consistently shows that the average business loses 1-5% of
-                  revenue to billing issues. For SaaS specifically, our data
-                  from 847+ account scans puts the average at{" "}
-                  <strong className="text-text-secondary">
-                    4.7% of MRR
-                  </strong>
-                  .
-                </p>
-              </div>
-            </div>
+              <p className="text-sm text-text-muted mb-6 leading-relaxed">
+                {currentQ.subtext}
+              </p>
 
-            <div>
-              <h3 className="text-lg font-bold text-white mb-3">
-                The 8 Most Common Revenue Leaks in SaaS
-              </h3>
-              <div className="grid gap-3 md:grid-cols-2">
-                {LEAK_BREAKDOWN.map((leak) => (
-                  <div
-                    key={leak.type}
-                    className="flex items-start gap-3 rounded-lg border border-border bg-surface p-4"
+              <div className="space-y-3">
+                {currentQ.options.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => handleAnswer(currentQ.id, opt.value)}
+                    className={`w-full rounded-xl border px-5 py-4 text-left text-sm font-medium transition-all cursor-pointer ${
+                      answers[currentQ.id] === opt.value
+                        ? "border-brand bg-brand/10 text-brand"
+                        : "border-border bg-surface-dim text-text-secondary hover:border-brand/30 hover:bg-surface"
+                    }`}
                   >
-                    <div
-                      className="w-2 h-2 rounded-full mt-1.5 shrink-0"
-                      style={{ backgroundColor: leak.color }}
-                    />
-                    <div>
-                      <h4 className="text-sm font-semibold text-white">
-                        {leak.label}
-                      </h4>
-                      <p className="text-xs text-text-muted mt-0.5 leading-relaxed">
-                        {leak.description}.{" "}
-                        {leak.type === "failed_payment"
-                          ? "This is the #1 source of involuntary churn."
-                          : leak.type === "legacy_pricing"
-                            ? "Price increases don't retroactively update existing subscriptions."
-                            : leak.type === "expired_coupon"
-                              ? "Stripe doesn't auto-remove expired coupons from subscriptions."
-                              : leak.type === "never_expiring_discount"
-                                ? "A 20% forever discount on a $100/mo plan costs $240/year. Indefinitely."
-                                : ""}
-                      </p>
-                    </div>
-                  </div>
+                    {opt.label}
+                  </button>
                 ))}
               </div>
+
+              {/* Back button */}
+              {step > 0 && (
+                <button
+                  onClick={handleBack}
+                  className="mt-4 text-xs text-text-dim hover:text-text-muted transition cursor-pointer"
+                >
+                  &larr; Previous question
+                </button>
+              )}
             </div>
 
-            <div>
-              <h3 className="text-lg font-bold text-white mb-3">
-                Why Most Founders Don&apos;t Know They&apos;re Leaking
-              </h3>
-              <div className="text-sm text-text-muted space-y-3 leading-relaxed">
-                <p>
-                  Your MRR dashboard shows the big picture — total revenue,
-                  growth rate, churn rate. But it doesn&apos;t show the
-                  subscription that&apos;s been on a 50% discount for 3 years
-                  because someone forgot to set an expiry date. It doesn&apos;t
-                  flag the customer on $49/mo who should be on your $79/mo plan.
-                </p>
-                <p>
-                  Revenue leakage sits in the gap between your dashboard view
-                  and your individual subscription records. The only way to find
-                  it is to audit each subscription, each coupon, each payment
-                  method — one by one. At 200+ customers, that&apos;s not a
-                  Saturday afternoon project.
-                </p>
-                <p>
-                  That&apos;s why we built{" "}
-                  <Link
-                    href="/"
-                    className="text-brand hover:text-brand-light underline"
-                  >
-                    RevReclaim
-                  </Link>
-                  . Paste a read-only API key from Stripe, Polar, or Paddle. Get
-                  a complete billing audit in 90 seconds — with real customer
-                  names, real dollar amounts, and one-click fixes.
-                </p>
-              </div>
-            </div>
-
-            {/* Methodology */}
-            <div className="rounded-xl border border-border bg-surface p-6">
-              <h3 className="text-sm font-semibold text-white mb-3">
-                Calculator Methodology
-              </h3>
-              <div className="text-xs text-text-muted space-y-2 leading-relaxed">
-                <p>
-                  This calculator estimates revenue leakage based on
-                  aggregated, anonymized data from 847+ SaaS accounts scanned
-                  by RevReclaim. The base leak rate of 4.7% is adjusted by
-                  customer count (more customers = more surface area for
-                  billing issues).
-                </p>
-                <p>
-                  Leak shares are weighted by prevalence: failed payments
-                  (22%), legacy pricing (15%), ghost subscriptions (14%),
-                  expired coupons (12%), expiring cards (12%), forever
-                  discounts (10%), missing payment methods (8%), unbilled
-                  overages (7%).
-                </p>
-                <p>
-                  <strong className="text-text-secondary">
-                    Your actual leakage depends on your specific billing setup.
-                  </strong>{" "}
-                  Some companies have zero leaks. Others lose 8%+ of MRR. The
-                  only way to know is to{" "}
-                  <Link
-                    href="/scan"
-                    className="text-brand hover:text-brand-light underline"
-                  >
-                    scan your real data
-                  </Link>
-                  .
-                </p>
-              </div>
+            {/* Trust line */}
+            <div className="mt-6 text-center text-xs text-text-dim">
+              No email required. No data stored. Just an estimate.
             </div>
           </div>
         </div>
       </main>
 
       <Footer />
+    </div>
+  );
+}
+
+// ── SEO Content Component ──────────────────────────────────────
+
+function SEOContent() {
+  return (
+    <div className="mt-16 space-y-10">
+      <div>
+        <h2 className="text-2xl font-bold text-white mb-4">
+          How to Calculate SaaS Revenue Leakage
+        </h2>
+        <div className="text-sm text-text-muted space-y-3 leading-relaxed">
+          <p>
+            Revenue leakage is the gap between what your SaaS <em>should</em> be collecting and what it actually collects.
+            Unlike churn, which you actively track, revenue leaks are silent — they hide inside your billing platform in the
+            form of expired discounts, failed payment retries, ghost subscriptions, and outdated pricing.
+          </p>
+          <p>
+            Industry research from MGI Research and EY Revenue Assurance consistently shows that the average business loses
+            1-5% of revenue to billing issues. For SaaS specifically, our data from 847+ account scans puts the average at{" "}
+            <strong className="text-text-secondary">4.7% of MRR</strong>.
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-lg font-bold text-white mb-3">
+          The 7 Most Common Revenue Leaks in SaaS
+        </h3>
+        <div className="grid gap-3 md:grid-cols-2">
+          {LEAK_CATEGORIES.map((leak) => (
+            <div key={leak.label} className="flex items-start gap-3 rounded-lg border border-border bg-surface p-4">
+              <div className="w-2 h-2 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: leak.color }} />
+              <div>
+                <h4 className="text-sm font-semibold text-white">{leak.label}</h4>
+                <p className="text-xs text-text-muted mt-0.5 leading-relaxed">
+                  Average share of total leakage: {Math.round(leak.baseShare * 100)}%
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-lg font-bold text-white mb-3">
+          Why Most Founders Don&apos;t Know They&apos;re Leaking
+        </h3>
+        <div className="text-sm text-text-muted space-y-3 leading-relaxed">
+          <p>
+            Your MRR dashboard shows the big picture — total revenue, growth rate, churn rate. But it doesn&apos;t show the
+            subscription that&apos;s been on a 50% discount for 3 years because someone forgot to set an expiry date. It
+            doesn&apos;t flag the customer on $49/mo who should be on your $79/mo plan.
+          </p>
+          <p>
+            Revenue leakage sits in the gap between your dashboard view and your individual subscription records.
+            The only way to find it is to audit each subscription — one by one.
+          </p>
+          <p>
+            That&apos;s why we built{" "}
+            <Link href="/" className="text-brand hover:text-brand-light underline">RevReclaim</Link>.
+            Paste a read-only API key from Stripe, Polar, or Paddle. Get a complete billing audit in 90 seconds.
+          </p>
+        </div>
+      </div>
+
+      {/* Methodology */}
+      <div className="rounded-xl border border-border bg-surface p-6">
+        <h3 className="text-sm font-semibold text-white mb-3">Assessment Methodology</h3>
+        <div className="text-xs text-text-muted space-y-2 leading-relaxed">
+          <p>
+            This assessment estimates revenue leakage based on your billing practices and aggregated data from 847+ SaaS
+            accounts scanned by RevReclaim. Risk factors are weighted by their impact on specific leak categories.
+          </p>
+          <p>
+            <strong className="text-text-secondary">Your actual leakage depends on your specific billing setup.</strong>{" "}
+            The only way to know your exact number is to{" "}
+            <Link href="/scan" className="text-brand hover:text-brand-light underline">scan your real data</Link>.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

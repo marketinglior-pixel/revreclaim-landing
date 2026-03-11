@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useSectionView } from "@/hooks/useSectionView";
 import { trackEvent } from "@/lib/analytics";
-import { trackNewsletterSignup, trackCTAClick } from "@/lib/conversion-tracking";
+import { trackNewsletterSignup } from "@/lib/conversion-tracking";
 
 export function FinalCTA() {
   const [email, setEmail] = useState("");
@@ -48,18 +48,18 @@ export function FinalCTA() {
 
         {/* Headline — future-focused (85/15 Rule) */}
         <h2 className="relative mb-4 text-3xl font-bold text-white md:text-5xl lg:text-6xl">
-          Picture this: next month,
+          Stop the leak.
           <br />
-          <span className="text-text-muted">your MRR is $2,340 higher.</span>
+          <span className="text-text-muted">Keep the money.</span>
         </h2>
 
         {/* Future outcome + urgency (85/15 Rule + Hormozi Hack #8) */}
         <p className="relative mb-10 text-base md:text-lg text-text-muted leading-relaxed">
           No new customers. No new features. Just money that was always yours,
-          finally hitting your account. One scan. A few clicks. Done before lunch.
+          finally hitting your account.
           <br />
           <span className="text-white font-semibold break-words">
-            A year from now, that&apos;s $28,080 in recovered revenue. The scan takes 90 seconds.
+            The average founder recovers $2,340/mo. The scan takes 90 seconds.
           </span>
         </p>
 
@@ -88,7 +88,7 @@ export function FinalCTA() {
                 }}
                 className="group inline-flex items-center gap-2 rounded-lg bg-brand px-5 py-3 text-sm font-bold text-black min-h-[44px] transition-all hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
               >
-                Find My Hidden Revenue → Free Scan
+                Show Me My Leaks
                 <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>

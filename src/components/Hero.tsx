@@ -14,27 +14,31 @@ export function Hero() {
       <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[600px] w-[800px] rounded-full bg-brand/5 blur-[120px]" />
 
       <div className="relative mx-auto max-w-4xl px-6 text-center">
-        {/* Live badge */}
+        {/* Social proof badge — implied authority (Hormozi Hack #9) */}
         <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand/10 px-4 py-2 text-sm font-medium text-brand animate-fade-in-up">
           <span className="inline-block h-2 w-2 rounded-full bg-brand animate-pulse" />
-          We&apos;re LIVE. Not a waitlist
+          <ScanCounter /> SaaS billing accounts audited
         </div>
 
-        {/* Headline — concrete $ not % (Hormozi Hack #1) */}
+        {/* Headline — Visual, Falsifiable, One Idea (Harry Dry + Hormozi Rule of One) */}
         <h1 className="mb-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-6xl md:leading-[1.1] lg:text-7xl animate-fade-in-up animate-delay-200">
-          What would you do with an extra{" "}
-          <span className="bg-gradient-to-r from-brand to-brand-light bg-clip-text text-transparent">
-            $28K this year?
-          </span>
-          <br />
-          It&apos;s already sitting in your billing data.
+          Your Stripe account is{" "}
+          <span className="bg-gradient-to-r from-danger to-warning bg-clip-text text-transparent">
+            leaking money
+          </span>{" "}
+          right now.
         </h1>
-        <p className="mb-4 text-lg text-text-muted animate-fade-in-up animate-delay-250">
-          We scan your billing account, find every mistake
-          that&apos;s costing you money, and fix it. Takes 90&nbsp;seconds.
+
+        {/* Problem education — bridges Stage 1→2→3 (SPF Framework) */}
+        <p className="mx-auto mb-4 max-w-2xl text-lg leading-relaxed text-text-muted md:text-xl animate-fade-in-up animate-delay-250">
+          Failed payments. Expired coupons. Ghost subscriptions.
+          <br />
+          The average SaaS loses{" "}
+          <span className="font-semibold text-danger">$2,340/mo</span> to billing
+          mistakes that nobody notices.
         </p>
 
-        {/* Platform logos */}
+        {/* Platform badges */}
         <div className="mb-8 flex items-center justify-center gap-3 animate-fade-in-up animate-delay-250">
           <span className="text-xs text-text-dim">Works with</span>
           <div className="flex items-center gap-3">
@@ -44,17 +48,12 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Subheadline — concise value prop */}
-        <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-text-muted md:text-xl lg:text-xl animate-fade-in-up animate-delay-300 text-balance">
-          Paste one API key. Get a report with customer names, dollar amounts,
-          and automated recovery.
-          <br />
-          <span className="text-text-secondary">
-            No sales call. No setup. Just answers in 90&nbsp;seconds.
-          </span>
+        {/* Solution — 90-second promise (Hormozi Value Equation: Time↓ Effort↓) */}
+        <p className="mx-auto mb-10 max-w-xl text-base leading-relaxed text-text-secondary animate-fade-in-up animate-delay-300">
+          We find every leak in 90&nbsp;seconds. Customer names. Dollar amounts. One-click fixes.
         </p>
 
-        {/* CTA — prescriptive physical action (Hormozi Hack #11) */}
+        {/* CTA — benefit-focused (Neil Patel: CTA = benefit, not action) */}
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center animate-fade-in-up animate-delay-400">
           <a
             href="/scan"
@@ -62,9 +61,9 @@ export function Hero() {
               trackEvent("cta_clicked", null, { location: "hero", action: "scan" }).catch(() => {});
               trackCTAClick("hero", "scan");
             }}
-            className="group flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black min-h-[52px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
+            className="group flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-lg font-bold text-black min-h-[56px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
           >
-            Find My Hidden Revenue → Free Scan
+            Show Me My Leaks
             <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
@@ -83,25 +82,28 @@ export function Hero() {
             </svg>
           </a>
         </div>
-        {/* Trust stack — three lines, vertically centered */}
-        <div className="mt-6 flex flex-col items-center gap-3 animate-fade-in-up animate-delay-400">
-          <span className="text-sm text-text-muted">Free forever. No credit card. No sales call. Report in 90 seconds.</span>
-          <a href="/security" className="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-brand transition">
-            <svg className="h-4 w-4 text-brand" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-            Read-only access. Key never stored.
-          </a>
-          <div className="inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-5 py-2.5">
-            <svg className="h-5 w-5 text-brand" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-            </svg>
-            <span className="text-sm font-semibold text-brand">$1,000/mo Guarantee</span>
-            <span className="text-sm text-text-muted">or every paid plan is free</span>
+        {/* Trust stack — risk reduction (Hormozi Value Equation: Risk↓) */}
+        <div className="mt-6 flex flex-col items-center gap-2 animate-fade-in-up animate-delay-400">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-text-muted">
+            <span className="inline-flex items-center gap-1.5">
+              <svg className="h-4 w-4 text-brand" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              Free forever
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <svg className="h-4 w-4 text-brand" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              Read-only access
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <svg className="h-4 w-4 text-brand" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              Results in 90 seconds
+            </span>
           </div>
-          <span className="text-xs text-text-dim">
-            Why? Because 94% of accounts have leaks above this threshold.
-          </span>
         </div>
 
         {/* Proof bar — implied authority: track record, not features (Hormozi Hack #9) */}
