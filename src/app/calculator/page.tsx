@@ -451,14 +451,21 @@ export default function CalculatorPage() {
             {step === 0 && (
               <div className="mb-8">
                 <div className="mb-4 text-sm font-semibold uppercase tracking-wider text-brand">
-                  Billing Health Assessment
+                  Free billing health assessment
                 </div>
                 <h1 className="text-2xl font-bold text-white md:text-3xl mb-3">
-                  How much revenue is leaking from your billing?
+                  How much money is hiding in your billing account?
                 </h1>
-                <p className="text-text-muted text-sm">
-                  7 questions. 60 seconds. Get a personalized estimate based on data from 847+ SaaS accounts.
+                <p className="text-text-muted text-sm mb-4">
+                  The average SaaS loses <span className="text-danger font-semibold">$2,340/mo</span> to billing mistakes nobody tracks.
+                  <br />
+                  7 questions. 60 seconds. Get your personalized estimate.
                 </p>
+                <div className="flex items-center justify-center gap-4 text-xs text-text-dim">
+                  <span>Based on data from <strong className="text-text-muted">847+</strong> SaaS accounts</span>
+                  <span className="text-border">|</span>
+                  <span>Works with Stripe, Polar &amp; Paddle</span>
+                </div>
               </div>
             )}
 

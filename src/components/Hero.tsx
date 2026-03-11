@@ -20,41 +20,21 @@ export function Hero() {
           <ScanCounter /> SaaS billing accounts audited
         </div>
 
-        {/* Headline — Visual, Falsifiable, One Idea (Harry Dry + Hormozi Rule of One) */}
-        <h1 className="mb-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-6xl md:leading-[1.1] lg:text-7xl animate-fade-in-up animate-delay-200">
-          Your Stripe account is{" "}
-          <span className="bg-gradient-to-r from-danger to-warning bg-clip-text text-transparent">
-            leaking money
-          </span>{" "}
-          right now.
+        {/* Headline — THE SPECIFIC MOMENT (Harry Dry: visual, falsifiable, unique) */}
+        <h1 className="mb-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl md:leading-[1.2] lg:text-6xl animate-fade-in-up animate-delay-200">
+          There&apos;s a customer in your Stripe
+          <br className="hidden md:block" />
+          {" "}who owes you{" "}
+          <span className="bg-gradient-to-r from-danger to-warning bg-clip-text text-transparent">$499</span>.
         </h1>
-
-        {/* Problem education — bridges Stage 1→2→3 (SPF Framework) */}
-        <p className="mx-auto mb-4 max-w-2xl text-lg leading-relaxed text-text-muted md:text-xl animate-fade-in-up animate-delay-250">
-          Failed payments. Expired coupons. Ghost subscriptions.
+        <p className="mb-10 text-xl font-medium text-text-muted md:text-2xl animate-fade-in-up animate-delay-250">
+          Their card failed 12 days ago. Nobody noticed.
           <br />
-          The average SaaS loses{" "}
-          <span className="font-semibold text-danger">$2,340/mo</span> to billing
-          mistakes that nobody notices.
+          <span className="text-base md:text-lg">We find every leak like this in 90&nbsp;seconds.</span>
         </p>
 
-        {/* Platform badges */}
-        <div className="mb-8 flex items-center justify-center gap-3 animate-fade-in-up animate-delay-250">
-          <span className="text-xs text-text-dim">Works with</span>
-          <div className="flex items-center gap-3">
-            <span className="rounded-full border border-border bg-surface/50 px-3 py-1 text-sm font-semibold text-text-muted">Stripe</span>
-            <span className="rounded-full border border-border bg-surface/50 px-3 py-1 text-sm font-semibold text-text-muted">Polar</span>
-            <span className="rounded-full border border-border bg-surface/50 px-3 py-1 text-sm font-semibold text-text-muted">Paddle</span>
-          </div>
-        </div>
-
-        {/* Solution — 90-second promise (Hormozi Value Equation: Time↓ Effort↓) */}
-        <p className="mx-auto mb-10 max-w-xl text-base leading-relaxed text-text-secondary animate-fade-in-up animate-delay-300">
-          We find every leak in 90&nbsp;seconds. Customer names. Dollar amounts. One-click fixes.
-        </p>
-
-        {/* CTA — benefit-focused (Neil Patel: CTA = benefit, not action) */}
-        <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center animate-fade-in-up animate-delay-400">
+        {/* ONE CTA — Rule of One (Hormozi) + benefit-focused (Neil Patel) */}
+        <div className="flex flex-col items-center gap-4 animate-fade-in-up animate-delay-400">
           <a
             href="/scan"
             onClick={() => {
@@ -68,45 +48,27 @@ export function Hero() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </a>
-          <a
-            href="/demo"
-            onClick={() => {
-              trackEvent("cta_clicked", null, { location: "hero", action: "demo" }).catch(() => {});
-              trackCTAClick("hero", "demo");
-            }}
-            className="group flex items-center gap-2 rounded-xl border border-border bg-surface/50 px-6 py-4 text-base font-semibold text-white min-h-[52px] transition-all hover:border-brand/30 hover:bg-surface"
-          >
-            See a Demo Report
-            <svg className="h-5 w-5 text-text-muted transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </a>
-        </div>
-        {/* Trust stack — risk reduction (Hormozi Value Equation: Risk↓) */}
-        <div className="mt-6 flex flex-col items-center gap-2 animate-fade-in-up animate-delay-400">
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-text-muted">
-            <span className="inline-flex items-center gap-1.5">
-              <svg className="h-4 w-4 text-brand" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              Free forever
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <svg className="h-4 w-4 text-brand" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              Read-only access
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <svg className="h-4 w-4 text-brand" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              Results in 90 seconds
-            </span>
-          </div>
+          {/* Trust line — one line, not three (Hormozi: remove clutter) */}
+          <span className="text-sm text-text-muted">
+            Free &middot; Read-only &middot; 90 seconds &middot; Works with Stripe, Polar &amp; Paddle
+          </span>
         </div>
 
-        {/* Proof bar — implied authority: track record, not features (Hormozi Hack #9) */}
+        {/* Low-friction alternative — calculator for cold traffic (Priestley) */}
+        <div className="mt-8 animate-fade-in-up animate-delay-400">
+          <a
+            href="/calculator"
+            onClick={() => {
+              trackEvent("cta_clicked", null, { location: "hero", action: "calculator" }).catch(() => {});
+              trackCTAClick("hero", "calculator");
+            }}
+            className="text-sm text-text-dim hover:text-brand transition-colors"
+          >
+            Not sure yet? Take the 60-second billing health quiz &rarr;
+          </a>
+        </div>
+
+        {/* Proof bar — below fold, single line (Hormozi Hack #9) */}
         <div className="mt-16 flex flex-wrap items-center justify-center gap-8 border-t border-border-light pt-8">
           <div className="text-center">
             <div className="text-2xl font-bold text-white">$2.1M+</div>

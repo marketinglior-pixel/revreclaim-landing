@@ -11,11 +11,11 @@ export function Problem() {
         <div className="mb-4 text-sm font-semibold uppercase tracking-wider text-brand">
           The problem
         </div>
-        {/* Headline — Show Don't Tell: specific moment (Hormozi Hack #6) */}
+        {/* Headline — expand the problem, don't repeat Hero (Hormozi Hack #6) */}
         <h2 className="mb-6 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
-          Right now, there&apos;s a customer in your billing account who owes you $499.
+          That $499 is just one customer.
           <br />
-          <span className="text-text-muted">Their card failed 12 days ago. Nobody noticed.</span>
+          <span className="text-text-muted">Here&apos;s what the full picture looks like.</span>
         </h2>
         <p className="mb-12 max-w-2xl text-lg leading-relaxed text-text-muted">
           You track churn. You track MRR. You track CAC.
