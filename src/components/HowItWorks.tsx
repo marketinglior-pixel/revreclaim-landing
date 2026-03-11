@@ -18,7 +18,7 @@ const steps = [
     number: "03",
     title: "See the Money. Take It Back.",
     description:
-      "Customer names. Dollar amounts. One-click fix for each one. The average founder discovers $2,340/month they didn't know they were missing. Most fix the critical leaks before lunch. That money hits your account next billing cycle.",
+      "Every leak identified. Dollar amounts. One-click fix for each one. The average founder discovers $2,340/month they didn't know they were missing. Most fix the critical leaks before lunch. That money hits your account next billing cycle.",
     detail: "Average founder recovers $2,340/mo — from customers they already have.",
   },
   {

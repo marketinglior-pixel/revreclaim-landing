@@ -43,7 +43,7 @@ RevReclaim runs the same 10 checks, automated.
 
 **Output:** A structured report with:
 
-- Customer names and subscription IDs for every flagged issue
+- Account IDs and subscription IDs for every flagged issue
 - Dollar amounts per leak (monthly and annual)
 - Severity levels (critical, high, medium, low)
 - Direct links to the relevant Stripe dashboard page for each fix
