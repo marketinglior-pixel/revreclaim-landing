@@ -37,10 +37,8 @@ export function DailyLossCalculator() {
     }
   }
 
-  // Slider stops
-  const stops = [10000, 25000, 50000, 100000, 200000, 500000];
-  const stopIndex = stops.findIndex((s) => s >= mrr);
-  const progressPercent = ((stopIndex === -1 ? stops.length - 1 : stopIndex) / (stops.length - 1)) * 100;
+  // Progress must match the browser's linear thumb position exactly
+  const progressPercent = ((mrr - 10000) / (500000 - 10000)) * 100;
 
   return (
     <section ref={sectionRef} className="border-t border-border-light py-20 md:py-28">
