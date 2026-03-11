@@ -253,6 +253,19 @@ export default function ProfitWellComparePage() {
             </p>
           </div>
 
+          {/* Other comparisons */}
+          <div className="mb-12">
+            <p className="mb-4 text-sm font-medium uppercase tracking-wider text-zinc-500">
+              Other comparisons
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/compare/stripe-dunning" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs Stripe Dunning</Link>
+              <Link href="/compare/baremetrics" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs Baremetrics</Link>
+              <Link href="/compare/chartmogul" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs ChartMogul</Link>
+              <Link href="/compare/manual-audit" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs Manual Audit</Link>
+            </div>
+          </div>
+
           {/* CTA */}
           <div className="text-center">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
@@ -274,6 +287,42 @@ export default function ProfitWellComparePage() {
           </div>
         </div>
       </main>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "Is ProfitWell the same as RevReclaim?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "No. ProfitWell (now part of Paddle) provides free revenue analytics for Paddle users. RevReclaim detects billing leaks that analytics tools miss — like expired coupons still discounting active subscriptions, ghost subscriptions, and legacy pricing gaps.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Does ProfitWell work with Stripe?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "ProfitWell is now Paddle-exclusive after the 2022 acquisition. It no longer supports Stripe directly. RevReclaim works with Stripe, Paddle, and Polar from a single interface.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "What revenue leaks does ProfitWell miss?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "ProfitWell doesn't scan for expired coupons, ghost subscriptions, legacy pricing gaps, forever discounts, duplicate subscriptions, unbilled overages, or missing payment methods. RevReclaim checks all 10 leak types in 90 seconds.",
+                },
+              },
+            ],
+          }),
+        }}
+      />
 
       <Footer />
     </div>

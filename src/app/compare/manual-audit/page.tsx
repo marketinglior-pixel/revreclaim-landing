@@ -255,6 +255,19 @@ export default function ManualAuditComparePage() {
             </p>
           </div>
 
+          {/* Other comparisons */}
+          <div className="mb-12">
+            <p className="mb-4 text-sm font-medium uppercase tracking-wider text-zinc-500">
+              Other comparisons
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/compare/stripe-dunning" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs Stripe Dunning</Link>
+              <Link href="/compare/baremetrics" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs Baremetrics</Link>
+              <Link href="/compare/chartmogul" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs ChartMogul</Link>
+              <Link href="/compare/profitwell" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs ProfitWell</Link>
+            </div>
+          </div>
+
           {/* CTA */}
           <div className="text-center">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
@@ -276,6 +289,42 @@ export default function ManualAuditComparePage() {
           </div>
         </div>
       </main>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "How long does a manual Stripe audit take?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "A thorough manual Stripe audit takes 3-4 hours for a typical account with 100-500 customers. It requires exporting CSVs, filtering by status, cross-referencing coupons, and checking payment methods. RevReclaim runs the same checks in 90 seconds.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "What do manual Stripe audits miss?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Manual audits typically catch failed payments and obvious cancellations but miss expired coupons still discounting, ghost subscriptions in limbo states, legacy pricing gaps, forever discounts, and duplicate subscriptions — roughly 50% of total leaks.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Is there a free tool to audit my Stripe account?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Yes. RevReclaim offers a free billing leak scan that checks 10 leak types in 90 seconds using read-only API access. No signup required, no credit card, and your API key is never stored.",
+                },
+              },
+            ],
+          }),
+        }}
+      />
 
       <Footer />
     </div>

@@ -245,6 +245,19 @@ export default function ChartMogulComparePage() {
             </p>
           </div>
 
+          {/* Other comparisons */}
+          <div className="mb-12">
+            <p className="mb-4 text-sm font-medium uppercase tracking-wider text-zinc-500">
+              Other comparisons
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/compare/stripe-dunning" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs Stripe Dunning</Link>
+              <Link href="/compare/baremetrics" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs Baremetrics</Link>
+              <Link href="/compare/profitwell" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs ProfitWell</Link>
+              <Link href="/compare/manual-audit" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs Manual Audit</Link>
+            </div>
+          </div>
+
           {/* CTA */}
           <div className="text-center">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
@@ -266,6 +279,42 @@ export default function ChartMogulComparePage() {
           </div>
         </div>
       </main>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "Does ChartMogul find revenue leaks?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "No. ChartMogul tracks revenue metrics like MRR, churn, and LTV and provides analytics dashboards. It doesn't scan individual subscriptions for billing configuration errors like expired coupons or ghost subscriptions.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "What does RevReclaim do that ChartMogul doesn't?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "RevReclaim scans each subscription for 10 types of billing leaks (expired coupons, ghost subscriptions, legacy pricing, etc.). ChartMogul aggregates revenue data into dashboards but doesn't examine individual records for errors.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Is ChartMogul free?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "ChartMogul offers a free tier for companies with up to $10K MRR. RevReclaim's billing leak scan is free for all MRR levels with no limits. Together they cost under $29/mo total.",
+                },
+              },
+            ],
+          }),
+        }}
+      />
 
       <Footer />
     </div>

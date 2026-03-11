@@ -260,6 +260,19 @@ export default function BaremetricsComparePage() {
             </p>
           </div>
 
+          {/* Other comparisons */}
+          <div className="mb-12">
+            <p className="mb-4 text-sm font-medium uppercase tracking-wider text-zinc-500">
+              Other comparisons
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/compare/stripe-dunning" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs Stripe Dunning</Link>
+              <Link href="/compare/chartmogul" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs ChartMogul</Link>
+              <Link href="/compare/profitwell" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs ProfitWell</Link>
+              <Link href="/compare/manual-audit" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs Manual Audit</Link>
+            </div>
+          </div>
+
           {/* CTA */}
           <div className="text-center">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
@@ -281,6 +294,42 @@ export default function BaremetricsComparePage() {
           </div>
         </div>
       </main>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "Does Baremetrics detect expired coupons or ghost subscriptions?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "No. Baremetrics tracks MRR, churn, and LTV but doesn't scan individual subscriptions for billing configuration errors like expired coupons still discounting or ghost subscriptions inflating MRR.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "What's the difference between Baremetrics and RevReclaim?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Baremetrics is a revenue analytics dashboard that tracks MRR, churn, and LTV. RevReclaim is a billing leak detector that finds revenue you're losing from expired coupons, ghost subscriptions, and 8 other leak types. They're complementary tools.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Can I use Baremetrics and RevReclaim together?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Yes. They're complementary. Baremetrics tracks your revenue metrics. RevReclaim finds the billing leaks hiding behind those metrics. Together you get accurate numbers and recovered revenue.",
+                },
+              },
+            ],
+          }),
+        }}
+      />
 
       <Footer />
     </div>

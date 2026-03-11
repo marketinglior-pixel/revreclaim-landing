@@ -275,6 +275,19 @@ export default function StripeDunningComparePage() {
             </p>
           </div>
 
+          {/* Other comparisons */}
+          <div className="mb-12">
+            <p className="mb-4 text-sm font-medium uppercase tracking-wider text-zinc-500">
+              Other comparisons
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/compare/baremetrics" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs Baremetrics</Link>
+              <Link href="/compare/chartmogul" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs ChartMogul</Link>
+              <Link href="/compare/profitwell" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs ProfitWell</Link>
+              <Link href="/compare/manual-audit" className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-600 hover:text-white">vs Manual Audit</Link>
+            </div>
+          </div>
+
           {/* CTA */}
           <div className="text-center">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
@@ -296,6 +309,42 @@ export default function StripeDunningComparePage() {
           </div>
         </div>
       </main>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "Does Stripe automatically recover failed payments?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Stripe's Smart Retries handle some failed payments, but they only cover 1 of 10 leak types. Expired coupons, ghost subscriptions, and legacy pricing gaps are not addressed by Stripe's built-in dunning.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "What's the difference between Stripe dunning and RevReclaim?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Stripe dunning retries failed payments. RevReclaim scans for 10 types of revenue leaks including expired coupons, ghost subscriptions, and legacy pricing — issues Stripe doesn't flag.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "How much revenue does Stripe dunning miss?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "On a typical $50K MRR account, Stripe dunning recovers ~$400/mo in failed payments. RevReclaim finds ~$2,500/mo across all 10 leak types — a gap of ~$2,100/mo ($25,200/year).",
+                },
+              },
+            ],
+          }),
+        }}
+      />
 
       <Footer />
     </div>
