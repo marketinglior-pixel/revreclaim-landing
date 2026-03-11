@@ -22,13 +22,12 @@ export function Hero() {
 
         {/* Headline — THE SPECIFIC MOMENT (Harry Dry: visual, falsifiable, unique) */}
         <h1 className="mb-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl md:leading-[1.2] lg:text-6xl animate-fade-in-up animate-delay-200">
-          There&apos;s a customer in your
+          <span className="bg-gradient-to-r from-danger to-warning bg-clip-text text-transparent">$499</span> is sitting in your
           <br className="hidden md:block" />
-          {" "}billing account who owes you{" "}
-          <span className="bg-gradient-to-r from-danger to-warning bg-clip-text text-transparent">$499</span>.
+          {" "}billing account right now.
         </h1>
         <p className="mb-10 text-xl font-medium text-text-muted md:text-2xl animate-fade-in-up animate-delay-250">
-          Their card failed 12 days ago. Nobody noticed.
+          A failed payment from 12 days ago. Nobody noticed.
           <br />
           <span className="text-base md:text-lg">We find every leak like this in 90&nbsp;seconds.</span>
         </p>
