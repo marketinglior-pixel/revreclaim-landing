@@ -22,7 +22,7 @@ export function Hero() {
 
         {/* Headline — Hormozi Grand Slam: Dream Outcome + Value Stack upfront */}
         <h1 className="mb-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl md:leading-[1.2] lg:text-6xl animate-fade-in-up animate-delay-200">
-          Your Stripe account is leaking
+          Your SaaS is leaking
           <br className="hidden md:block" />
           {" "}<span className="bg-gradient-to-r from-danger to-warning bg-clip-text text-transparent">$2,500 every month.</span>
         </h1>
