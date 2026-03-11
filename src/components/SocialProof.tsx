@@ -55,7 +55,7 @@ export function SocialProof() {
           Same billing account. Same customers. Same product.
           They just stopped leaving money on the table.
           <br />
-          <span className="text-white">The only difference? They ran a 90-second scan.</span>
+          <span className="text-white">The only difference? They decided to look.</span>
         </p>
 
         {/* Stats bar */}

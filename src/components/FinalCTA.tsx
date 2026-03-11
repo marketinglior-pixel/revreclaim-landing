@@ -94,7 +94,7 @@ export function FinalCTA() {
                 </svg>
               </a>
               <p className="text-xs text-text-muted">
-                Free. No credit card. No sales call. 90 seconds to your report.
+                90 seconds from now, you&apos;ll know exactly where your money is going.
               </p>
 
               {/* Secondary: email capture */}

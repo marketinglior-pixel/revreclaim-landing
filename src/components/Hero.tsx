@@ -29,7 +29,7 @@ export function Hero() {
         <p className="mb-10 text-xl font-medium text-text-muted md:text-2xl animate-fade-in-up animate-delay-250">
           A failed payment from 12 days ago. Nobody noticed.
           <br />
-          <span className="text-base md:text-lg">We find every leak like this in 90&nbsp;seconds.</span>
+          <span className="text-base md:text-lg">Your full revenue picture in 90&nbsp;seconds.</span>
         </p>
 
         {/* ONE CTA — Rule of One (Hormozi) + benefit-focused (Neil Patel) */}
@@ -71,22 +71,22 @@ export function Hero() {
         <div className="mt-16 flex flex-wrap items-center justify-center gap-8 border-t border-border-light pt-8">
           <div className="text-center">
             <div className="text-2xl font-bold text-white">$2.1M+</div>
-            <div className="text-xs text-text-muted">Revenue recovered</div>
+            <div className="text-xs text-text-muted">Back in founders&apos; accounts</div>
           </div>
           <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
           <div className="text-center">
             <div className="text-2xl font-bold"><ScanCounter /></div>
-            <div className="text-xs text-text-muted">Accounts scanned</div>
+            <div className="text-xs text-text-muted">Founders who found hidden revenue</div>
           </div>
           <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
           <div className="text-center">
             <div className="text-2xl font-bold text-white">94%</div>
-            <div className="text-xs text-text-muted">Had at least 1 leak</div>
+            <div className="text-xs text-text-muted">Had money they didn&apos;t know about</div>
           </div>
           <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
           <div className="text-center">
             <div className="text-2xl font-bold text-white">&lt; 90 sec</div>
-            <div className="text-xs text-text-muted">Scan time</div>
+            <div className="text-xs text-text-muted">From paste to &lsquo;holy shit&rsquo;</div>
           </div>
         </div>
       </div>

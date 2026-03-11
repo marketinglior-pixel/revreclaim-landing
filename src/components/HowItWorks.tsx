@@ -2,24 +2,24 @@
 const steps = [
   {
     number: "01",
-    title: "Create a Read-Only API Key",
+    title: "60 Seconds of Setup, Zero Risk",
     description:
-      "Open your billing dashboard (Stripe, Polar, or Paddle). Navigate to API Keys. Create a restricted, read-only API key — it can only view data, never modify anything. This limitation is enforced by the platform itself. Copy it. Done.",
-    detail: "60 seconds. Read-only access only.",
+      "Grab a read-only key from your billing dashboard (Stripe, Polar, or Paddle). It can view data but can't change anything — that's enforced by the platform, not by us. You're in control the whole time.",
+    detail: "You stay in control. Read-only means read-only.",
   },
   {
     number: "02",
-    title: "Paste It Here",
+    title: "Watch Your Revenue Picture Appear",
     description:
-      "Come back to RevReclaim. Select your platform. Paste the key into the box. Click 'Scan.' Watch the progress bar. We're reading every subscription, every invoice, every coupon, every payment method in your account. Your key is processed in memory — never stored, never logged.",
-    detail: "Under 90 seconds. Key deleted after scan.",
+      "Paste the key. Hit scan. In 90 seconds, every subscription, invoice, coupon, and payment method gets checked. Your key is used once and deleted — it exists only for this scan.",
+    detail: "Your key disappears after the scan. Your revenue picture stays.",
   },
   {
     number: "03",
-    title: "See It. Fix It. Recover.",
+    title: "See the Money. Take It Back.",
     description:
-      "A report appears. Customer names on the left. Dollar amounts on the right. AI recovery agents handle the rest — dunning emails, payment retries, coupon removal. Approve each action or let pre-dunning run automatically. You keep the revenue.",
-    detail: "Average recovery: $2,340/mo",
+      "Customer names. Dollar amounts. One-click fix for each one. The average founder discovers $2,340/month they didn't know they were missing. Most fix the critical leaks before lunch. That money hits your account next billing cycle.",
+    detail: "Average founder recovers $2,340/mo — from customers they already have.",
   },
 ];
 
@@ -31,13 +31,13 @@ export function HowItWorks() {
           How it works
         </div>
         <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
-          Three steps. 90 seconds. The money was there the whole time.
+          90 seconds from now, you&apos;ll know exactly where your money is.
         </h2>
-        {/* Damaging admission (Hormozi Hack #5) */}
+        {/* Future-focused sub (85/15 Rule) */}
         <p className="mb-16 max-w-2xl text-lg text-text-muted">
-          We won&apos;t lie. There&apos;s no magic here. We&apos;re reading data that your
-          billing platform already has but doesn&apos;t surface to you. The magic is
-          that nobody else built a tool to show you. So we did. And it takes 90 seconds.
+          Right now, your billing data is sitting in Stripe, Polar, or Paddle &mdash;
+          full of answers nobody&apos;s looking at. In 90 seconds, you&apos;ll see every
+          dollar that should be hitting your account but isn&apos;t. Here&apos;s how.
         </p>
 
         <div className="relative">

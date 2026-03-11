@@ -9,9 +9,8 @@ export function DashboardPreview() {
           In 90 seconds, this will be your screen.
         </h2>
         <p className="mx-auto mb-12 max-w-2xl text-center text-lg text-text-muted">
-          Not a sample report. Not demo data. This is what an actual RevReclaim scan
-          looks like: real customer emails, real dollar amounts,
-          and a direct link to fix each one in your billing dashboard.
+          Every customer who owes you money. Every dollar amount. Every fix &mdash; one click away.
+          This is what you&apos;ll see 90 seconds after you paste your key.
         </p>
 
         {/* Dashboard mockup */}
@@ -142,7 +141,7 @@ export function DashboardPreview() {
             </svg>
           </a>
           <p className="mt-3 text-sm text-text-muted">
-            Free. Takes 90 seconds. Those are real dollars waiting for you.
+            90 seconds from now, you&apos;ll know exactly how much you&apos;re leaving on the table.
           </p>
         </div>
       </div>

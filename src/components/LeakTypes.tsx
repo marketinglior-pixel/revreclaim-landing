@@ -7,7 +7,7 @@ const leaks = [
     description:
       "Your sales rep promised '3 months at 50% off.' That was 8 months ago. The coupon expired. The discount is still running. Nobody canceled it. Nobody noticed.",
     impact: "Most common leak. 35% of all scans",
-    afterFix: "Remove the expired discount. Full-price billing starts next cycle.",
+    afterFix: "Full-price revenue starts hitting your account next cycle.",
     severity: "HIGH",
   },
   {
@@ -15,7 +15,7 @@ const leaks = [
     description:
       "You raised prices 6 months ago. 40% of your customers are still on the old rate. They're getting the same product for less money than your newest signup. Your billing platform won't migrate them automatically.",
     impact: "Found in 22% of scans",
-    afterFix: "Migrate to current pricing. One email, instant revenue lift.",
+    afterFix: "One migration email → instant revenue lift from customers you already have.",
     severity: "MEDIUM",
   },
   {
@@ -23,7 +23,7 @@ const leaks = [
     description:
       "Someone on your team set a coupon to 'forever.' That customer will pay 30% less than everyone else for the rest of their lifetime. Unless you find it.",
     impact: "Silent margin killer",
-    afterFix: "Set an end date. Your margins recover month over month.",
+    afterFix: "Your margins recover month over month. Automatically.",
     severity: "MEDIUM",
   },
   {
@@ -31,7 +31,7 @@ const leaks = [
     description:
       "14 subscriptions sitting in 'past_due' since November. They're not active. They're not canceled. They're in billing purgatory. Nobody fixes this for you.",
     impact: "Found in 30% of accounts we scan",
-    afterFix: "Cancel or reactivate each one. Clean billing = predictable MRR.",
+    afterFix: "Clean billing = predictable MRR. No more guessing what's real.",
     severity: "HIGH",
   },
   {
@@ -39,7 +39,7 @@ const leaks = [
     description:
       "23 of your customers have cards expiring in the next 60 days. On that date, their next payment will fail. Then you'll call it 'involuntary churn.' But it was preventable.",
     impact: "$4,200/mo at risk right now",
-    afterFix: "Send update reminders before expiry. Keep every customer paying.",
+    afterFix: "Every customer keeps paying. No surprise churn next month.",
     severity: "HIGH",
   },
   {
@@ -55,7 +55,7 @@ const leaks = [
     description:
       "An active subscription with no credit card attached. The next billing attempt will fail. That customer will silently disappear. You'll count it as churn. It wasn't.",
     impact: "Next payment = guaranteed failure",
-    afterFix: "Prompt them to add a card now. Save the subscription before it fails.",
+    afterFix: "That subscription keeps paying. No silent disappearance.",
     severity: "CRITICAL",
   },
   {
@@ -63,7 +63,7 @@ const leaks = [
     description:
       "Your customer has 12 seats but their invoice only charges for 1. Or their usage blew past the plan ceiling 3 months ago and nobody upgraded them. That's revenue you earned and never collected.",
     impact: "Avg $800/mo per affected customer",
-    afterFix: "Fix the quantity or upgrade the plan. Back-billing is optional — future billing isn't.",
+    afterFix: "Future billing matches actual usage. That revenue gap closes permanently.",
     severity: "HIGH",
   },
   {
@@ -71,7 +71,7 @@ const leaks = [
     description:
       "A subscription has been in 'trialing' status for 67 days. Your trial is 14 days. This customer has been using your product for free for two months. Your webhook didn't fire. Your billing didn't convert them.",
     impact: "Full price × every day they're free",
-    afterFix: "Convert to paid or cancel. Either way, stop giving it away.",
+    afterFix: "Either they start paying or you stop giving it away. Either way, you win.",
     severity: "HIGH",
   },
   {
@@ -79,7 +79,7 @@ const leaks = [
     description:
       "A customer upgraded their plan, but the old subscription was never canceled. They're paying for both. When they notice — and they will — you'll get a chargeback, not a thank you.",
     impact: "Double-charge = chargeback risk",
-    afterFix: "Cancel the duplicate. Proactively refund the overlap. Keep the customer.",
+    afterFix: "Customer stays happy. No chargeback. Clean billing going forward.",
     severity: "CRITICAL",
   },
 ];
@@ -96,7 +96,7 @@ export function LeakTypes() {
           Ten revenue streams hiding in your billing data.
         </h2>
         <p className="mb-12 text-lg text-text-muted italic">
-          We find them in 90 seconds. You fix them before lunch.
+          Most founders fix the critical ones before lunch. The money lands next billing cycle.
         </p>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
