@@ -54,7 +54,7 @@ async function fetchAll<T extends { id: string }>(
 }
 
 /**
- * Validate the Stripe API key by attempting to retrieve the balance.
+ * Validate the Stripe API key by testing actual required resources.
  * Returns the Stripe instance if valid, throws descriptive error if not.
  */
 async function validateAndCreateStripe(apiKey: string): Promise<Stripe> {
@@ -62,9 +62,9 @@ async function validateAndCreateStripe(apiKey: string): Promise<Stripe> {
     apiVersion: "2026-02-25.clover",
   });
 
+  // Test with subscriptions.list — a permission we actually need
   try {
-    await stripe.balance.retrieve();
-    return stripe;
+    await stripe.subscriptions.list({ limit: 1 });
   } catch (error) {
     if (error instanceof Stripe.errors.StripeAuthenticationError) {
       throw new Error(
@@ -73,17 +73,20 @@ async function validateAndCreateStripe(apiKey: string): Promise<Stripe> {
     }
     if (error instanceof Stripe.errors.StripePermissionError) {
       throw new Error(
-        "This API key doesn't have the required permissions. Please ensure read access is enabled for: Subscriptions, Customers, Invoices, Products, Prices, Coupons, and Payment Methods."
+        "This API key is missing Subscriptions read access. Please enable it in your Stripe Dashboard under Developers → API Keys."
       );
     }
     throw new Error(
       `Failed to connect to Stripe: ${error instanceof Error ? error.message : "Unknown error"}`
     );
   }
+
+  return stripe;
 }
 
 /**
  * Fetch all required data from Stripe in parallel batches.
+ * Gracefully handles missing Customers read permission.
  */
 async function fetchStripeData(
   stripe: Stripe,
@@ -91,36 +94,78 @@ async function fetchStripeData(
 ) {
   onProgress?.({ step: "Fetching subscriptions...", progress: 10 });
 
+  let hasCustomerAccess = true;
+
   // Batch 1: Subscriptions (with expanded data) + Invoices + Products
-  const [subscriptions, invoices, products] = await Promise.all([
-    fetchAll(
-      (params) =>
-        stripe.subscriptions.list({
-          ...params,
-          status: "all",
-          expand: [
-            "data.discounts",
-            "data.default_payment_method",
-            "data.customer",
-          ],
-        } as Stripe.SubscriptionListParams),
-      {}
-    ),
-    fetchAll(
-      (params) =>
-        stripe.invoices.list({
-          ...params,
-          status: "open",
-          expand: ["data.customer"],
-        } as Stripe.InvoiceListParams),
-      {}
-    ),
-    fetchAll(
-      (params) =>
-        stripe.products.list(params as Stripe.ProductListParams),
-      {}
-    ),
-  ]);
+  let subscriptions: Stripe.Subscription[];
+  let invoices: Stripe.Invoice[];
+  let products: Stripe.Product[];
+
+  try {
+    [subscriptions, invoices, products] = await Promise.all([
+      fetchAll(
+        (params) =>
+          stripe.subscriptions.list({
+            ...params,
+            status: "all",
+            expand: [
+              "data.discounts",
+              "data.default_payment_method",
+              "data.customer",
+            ],
+          } as Stripe.SubscriptionListParams),
+        {}
+      ),
+      fetchAll(
+        (params) =>
+          stripe.invoices.list({
+            ...params,
+            status: "open",
+            expand: ["data.customer"],
+          } as Stripe.InvoiceListParams),
+        {}
+      ),
+      fetchAll(
+        (params) =>
+          stripe.products.list(params as Stripe.ProductListParams),
+        {}
+      ),
+    ]);
+  } catch (error) {
+    // If Customers permission is missing, retry without customer expansion
+    if (error instanceof Stripe.errors.StripePermissionError) {
+      hasCustomerAccess = false;
+      [subscriptions, invoices, products] = await Promise.all([
+        fetchAll(
+          (params) =>
+            stripe.subscriptions.list({
+              ...params,
+              status: "all",
+              expand: [
+                "data.discounts",
+                "data.default_payment_method",
+              ],
+            } as Stripe.SubscriptionListParams),
+          {}
+        ),
+        fetchAll(
+          (params) =>
+            stripe.invoices.list({
+              ...params,
+              status: "open",
+            } as Stripe.InvoiceListParams),
+          {}
+        ),
+        fetchAll(
+          (params) =>
+            stripe.products.list(params as Stripe.ProductListParams),
+          {}
+        ),
+      ]);
+    } else {
+      throw error;
+    }
+  }
 
   onProgress?.({ step: "Fetching prices and coupons...", progress: 40 });
 
@@ -191,6 +236,7 @@ async function fetchStripeData(
     prices,
     coupons,
     paymentMethods,
+    hasCustomerAccess,
   };
 }
 
@@ -288,6 +334,7 @@ function buildCategorySummaries(
 export interface StripeScanResult {
   report: ScanReport;
   emailMap: Map<string, string>;
+  warnings: string[];
 }
 
 export async function runFullScan(
@@ -314,19 +361,37 @@ export async function runFullScan(
     ...scanMissingPaymentMethods(data.subscriptions, data.paymentMethods),
   ];
 
-  // Step 3b: Build emailMap from expanded customer data (before masking)
+  // Step 3b: Build emailMap from available customer data
   const emailMap = new Map<string, string>();
-  for (const sub of data.subscriptions) {
-    const cust = sub.customer;
-    if (typeof cust !== "string" && cust && !("deleted" in cust && cust.deleted) && cust.email) {
-      emailMap.set(cust.id, cust.email);
+  const scanWarnings: string[] = [];
+
+  if (data.hasCustomerAccess) {
+    // Full access: get emails from expanded customer objects
+    for (const sub of data.subscriptions) {
+      const cust = sub.customer;
+      if (typeof cust !== "string" && cust && !("deleted" in cust && cust.deleted) && cust.email) {
+        emailMap.set(cust.id, cust.email);
+      }
     }
-  }
-  for (const inv of data.invoices) {
-    const cust = inv.customer;
-    if (typeof cust !== "string" && cust && !("deleted" in cust && cust.deleted) && cust.email && !emailMap.has(cust.id)) {
-      emailMap.set(cust.id, cust.email);
+    for (const inv of data.invoices) {
+      const cust = inv.customer;
+      if (typeof cust !== "string" && cust && !("deleted" in cust && cust.deleted) && cust.email && !emailMap.has(cust.id)) {
+        emailMap.set(cust.id, cust.email);
+      }
     }
+  } else {
+    // Fallback: get emails from invoice.customer_email (no Customers permission needed)
+    for (const inv of data.invoices) {
+      if (inv.customer_email) {
+        const custId = typeof inv.customer === "string" ? inv.customer : inv.customer?.id;
+        if (custId && !emailMap.has(custId)) {
+          emailMap.set(custId, inv.customer_email);
+        }
+      }
+    }
+    scanWarnings.push(
+      "Customers read access was not enabled on this API key. Some customer emails may be missing from the report. Enable Customers read access for full results."
+    );
   }
 
   onProgress?.({ step: "Building report...", progress: 90 });
@@ -363,5 +428,5 @@ export async function runFullScan(
 
   onProgress?.({ step: "Scan complete!", progress: 100 });
 
-  return { report, emailMap };
+  return { report, emailMap, warnings: scanWarnings };
 }

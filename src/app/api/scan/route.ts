@@ -83,10 +83,13 @@ export async function POST(req: NextRequest) {
     let report;
     let emailMap = new Map<string, string>();
 
+    const scanWarnings: string[] = [];
+
     if (platform === "stripe") {
       const result = await runFullScan(apiKey);
       report = result.report;
       emailMap = result.emailMap;
+      scanWarnings.push(...result.warnings);
     } else {
       const result = await runPlatformScan(platform, apiKey);
       report = result.report;
@@ -121,14 +124,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Build warnings
-    const warnings: string[] = [];
     if (platform === "stripe" && apiKey.startsWith("sk_")) {
-      warnings.push(
+      scanWarnings.push(
         "You used a secret key with full write access. We recommend creating a restricted read-only key (rk_live_...) and rotating this key in your Stripe Dashboard."
       );
     }
 
-    return NextResponse.json({ report, ...(warnings.length > 0 && { warnings }) });
+    return NextResponse.json({ report, ...(scanWarnings.length > 0 && { warnings: scanWarnings }) });
   } catch (error) {
     const message =
       error instanceof Error
@@ -138,6 +140,7 @@ export async function POST(req: NextRequest) {
     log.error(`${message}`);
 
     let errorType = "scan_failed";
+    let userMessage = message;
     const lower = message.toLowerCase();
     if (
       lower.includes("invalid api key") ||
@@ -149,13 +152,19 @@ export async function POST(req: NextRequest) {
       errorType = "invalid_key";
     } else if (
       lower.includes("permissions") ||
-      lower.includes("forbidden")
+      lower.includes("forbidden") ||
+      lower.includes("permission")
     ) {
       errorType = "insufficient_permissions";
+      // If the error doesn't already specify the resource, add a helpful message
+      if (!lower.includes("subscriptions") && !lower.includes("read access")) {
+        userMessage =
+          "This API key is missing required permissions. Please ensure read access is enabled for: Subscriptions, Invoices, Products, Prices, and Coupons. Customers read access is recommended but optional.";
+      }
     }
 
     return NextResponse.json(
-      { error: message, errorType },
+      { error: userMessage, errorType },
       { status: errorType === "scan_failed" ? 500 : 400 }
     );
   }

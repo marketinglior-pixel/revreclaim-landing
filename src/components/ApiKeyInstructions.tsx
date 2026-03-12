@@ -11,6 +11,7 @@ interface StepConfig {
   link?: string;
   linkLabel?: string;
   permissions?: string[];
+  optionalPermissions?: string[];
 }
 
 const PLATFORM_STEPS: Record<BillingPlatform, StepConfig[]> = {
@@ -32,7 +33,6 @@ const PLATFORM_STEPS: Record<BillingPlatform, StepConfig[]> = {
       title: "Enable Read Permissions",
       description: "Set these to Read access:",
       permissions: [
-        "Customers",
         "Subscriptions",
         "Invoices",
         "Products",
@@ -40,6 +40,7 @@ const PLATFORM_STEPS: Record<BillingPlatform, StepConfig[]> = {
         "Coupons",
         "Payment Methods",
       ],
+      optionalPermissions: ["Customers"],
     },
     {
       number: "4",
@@ -181,6 +182,28 @@ export default function ApiKeyInstructions({
                           />
                         </svg>
                         {p}
+                      </span>
+                    ))}
+                    {step.optionalPermissions?.map((p) => (
+                      <span
+                        key={p}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-white/5 text-text-muted rounded border border-border"
+                      >
+                        <svg
+                          className="w-3 h-3"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                        {p}
+                        <span className="text-[10px] opacity-70">(optional)</span>
                       </span>
                     ))}
                   </div>
