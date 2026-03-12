@@ -29,6 +29,7 @@ const INSIGHT_ICONS: Record<string, string> = {
   subscription_integrity: "M12 2a7 7 0 0 0-7 7v11l2.5-2 2.5 2 2-2 2 2 2.5-2L19 20V9a7 7 0 0 0-7-7Z",
   churn_risk: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10ZM12 9v4M12 17h.01",
   revenue_capture: "M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6",
+  customer_engagement: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75",
 };
 
 function InsightIcon({ id, color }: { id: string; color: string }) {
@@ -121,7 +122,7 @@ export default function BillingHealthInsights({
             Billing Health Breakdown
           </h3>
           <p className="text-xs text-text-muted mt-0.5">
-            6 dimensions of your billing infrastructure health
+            {billingHealth.insights.length} dimensions of your billing infrastructure health
           </p>
         </div>
         <div className="flex items-center gap-2">

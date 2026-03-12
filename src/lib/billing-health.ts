@@ -20,7 +20,7 @@ export function computeBillingHealth(
   categories: LeakCategorySummary[],
   leaks: Leak[]
 ): BillingHealthInsights {
-  const insights: BillingHealthInsight[] = [
+  const baseInsights: BillingHealthInsight[] = [
     computePaymentHealth(summary, categories, leaks),
     computeDiscountHygiene(summary, categories, leaks),
     computePriceFreshness(summary, categories, leaks),
@@ -28,6 +28,14 @@ export function computeBillingHealth(
     computeChurnRisk(summary, categories, leaks),
     computeRevenueCapture(summary, categories, leaks),
   ];
+
+  // 7th dimension: Customer Engagement — only when CRM enrichment data is present
+  const enrichedLeaks = leaks.filter((l) => l.enrichment?.signals?.found);
+  if (enrichedLeaks.length > 0) {
+    baseInsights.push(computeCustomerEngagement(summary, enrichedLeaks));
+  }
+
+  const insights = baseInsights;
 
   const overallGrade = computeGrade(insights);
 
@@ -291,6 +299,58 @@ function computeRevenueCapture(
     id: "revenue_capture",
     label: "Revenue Capture",
     description: "Unbilled usage, underpricing, and uncollected amounts",
+    score,
+    status: getStatus(score),
+    detail,
+  };
+}
+
+// ── Customer Engagement (7th dimension — CRM enrichment) ────
+
+function computeCustomerEngagement(
+  summary: ScanSummary,
+  enrichedLeaks: Leak[]
+): BillingHealthInsight {
+  const totalEnriched = enrichedLeaks.length;
+  const activeCount = enrichedLeaks.filter(
+    (l) => l.enrichment?.signals?.engagementLevel === "active"
+  ).length;
+  const coolingCount = enrichedLeaks.filter(
+    (l) => l.enrichment?.signals?.engagementLevel === "cooling"
+  ).length;
+  const inactiveCount = enrichedLeaks.filter(
+    (l) => l.enrichment?.signals?.engagementLevel === "inactive"
+  ).length;
+
+  // Score based on engagement distribution among leaky customers
+  let score = 100;
+  if (totalEnriched > 0) {
+    const inactivePct = inactiveCount / totalEnriched;
+    const coolingPct = coolingCount / totalEnriched;
+    score -= Math.min(50, inactivePct * 100);
+    score -= Math.min(25, coolingPct * 50);
+  }
+  // Penalize for high inactive count
+  score -= Math.min(25, inactiveCount * 5);
+  score = Math.max(0, Math.round(score));
+
+  let detail: string;
+  if (inactiveCount === 0 && coolingCount === 0) {
+    detail = `All ${totalEnriched} customers with leaks are actively engaged in CRM. High recovery potential.`;
+  } else {
+    const parts: string[] = [];
+    if (activeCount > 0) parts.push(`${activeCount} active`);
+    if (coolingCount > 0) parts.push(`${coolingCount} cooling off`);
+    if (inactiveCount > 0) parts.push(`${inactiveCount} inactive`);
+    detail = `Of ${totalEnriched} enriched customers: ${parts.join(", ")}.${
+      inactiveCount > 0 ? " Inactive customers have lower recovery likelihood." : ""
+    }`;
+  }
+
+  return {
+    id: "customer_engagement",
+    label: "Customer Engagement",
+    description: "CRM engagement levels of customers with billing issues",
     score,
     status: getStatus(score),
     detail,

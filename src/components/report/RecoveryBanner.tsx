@@ -4,22 +4,31 @@ import Link from "next/link";
 import { useAnimatedNumber } from "@/lib/useAnimatedNumber";
 
 interface RecoveryBannerProps {
-  recoveryPotential: number; // in cents
+  recoveryPotential: number; // in cents (weighted)
+  rawRecoveryPotential?: number; // in cents (unweighted max)
   isLoggedIn?: boolean;
   pendingActionsCount?: number;
 }
 
 export default function RecoveryBanner({
   recoveryPotential,
+  rawRecoveryPotential,
   isLoggedIn = false,
   pendingActionsCount = 0,
 }: RecoveryBannerProps) {
   const dollars = Math.round(recoveryPotential / 100);
   const animatedDollars = useAnimatedNumber(dollars, 1500, 200);
+  const rawDollars = rawRecoveryPotential
+    ? Math.round(rawRecoveryPotential / 100)
+    : undefined;
 
   if (recoveryPotential <= 0) return null;
 
   const hasActions = isLoggedIn && pendingActionsCount > 0;
+
+  const scrollToLeaks = () => {
+    document.getElementById("leak-table")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <div className="rounded-2xl border border-brand/20 bg-gradient-to-r from-brand/10 via-brand/5 to-transparent p-6 md:p-8 glow-green animate-fade-in-up">
@@ -35,7 +44,7 @@ export default function RecoveryBanner({
           <div className="mb-1 flex items-center justify-center gap-2 md:justify-start">
             <div className="h-2 w-2 rounded-full bg-brand animate-pulse" />
             <span className="text-xs font-semibold uppercase tracking-wider text-brand">
-              Recoverable Revenue Found
+              Likely Recoverable Revenue
             </span>
           </div>
           <p className="text-3xl font-bold text-white md:text-4xl">
@@ -45,8 +54,13 @@ export default function RecoveryBanner({
           <p className="mt-1 text-sm text-text-muted">
             {hasActions
               ? "We generated recovery actions you can execute with one click."
-              : "This is money you\u2019re losing right now. Fix these leaks to recover it."}
+              : "Based on typical recovery rates for each leak type."}
           </p>
+          {rawDollars && rawDollars > dollars && (
+            <p className="mt-0.5 text-xs text-text-dim">
+              Max potential: ${rawDollars.toLocaleString()}/yr before adjusting for recovery likelihood
+            </p>
+          )}
         </div>
         <div className="mt-4 flex flex-col items-center gap-2 sm:flex-row md:mt-0">
           {hasActions ? (
@@ -60,26 +74,26 @@ export default function RecoveryBanner({
                 </svg>
                 Auto-Fix {pendingActionsCount} Leak{pendingActionsCount !== 1 ? "s" : ""}
               </Link>
-              <a
-                href="#leak-table"
-                className="inline-flex items-center gap-1 rounded-xl border border-brand/20 bg-brand/5 px-4 py-3 text-sm font-medium text-brand transition hover:bg-brand/10"
+              <button
+                onClick={scrollToLeaks}
+                className="inline-flex items-center gap-1 rounded-xl border border-brand/20 bg-brand/5 px-4 py-3 text-sm font-medium text-brand transition hover:bg-brand/10 cursor-pointer"
               >
                 View details
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
-              </a>
+              </button>
             </>
           ) : (
-            <a
-              href="#leak-table"
-              className="inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-bold text-black transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
+            <button
+              onClick={scrollToLeaks}
+              className="inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-bold text-black transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] cursor-pointer"
             >
               Fix these leaks
               <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
-            </a>
+            </button>
           )}
         </div>
       </div>

@@ -271,6 +271,9 @@ export type Database = {
           action_api_key_encrypted: string | null
           created_at: string
           encrypted_api_key: string
+          hubspot_enabled: boolean
+          hubspot_portal_id: string | null
+          hubspot_token_encrypted: string | null
           id: string
           is_active: boolean
           last_scan_at: string | null
@@ -289,6 +292,9 @@ export type Database = {
           action_api_key_encrypted?: string | null
           created_at?: string
           encrypted_api_key: string
+          hubspot_enabled?: boolean
+          hubspot_portal_id?: string | null
+          hubspot_token_encrypted?: string | null
           id?: string
           is_active?: boolean
           last_scan_at?: string | null
@@ -307,6 +313,9 @@ export type Database = {
           action_api_key_encrypted?: string | null
           created_at?: string
           encrypted_api_key?: string
+          hubspot_enabled?: boolean
+          hubspot_portal_id?: string | null
+          hubspot_token_encrypted?: string | null
           id?: string
           is_active?: boolean
           last_scan_at?: string | null

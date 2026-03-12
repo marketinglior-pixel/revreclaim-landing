@@ -37,6 +37,8 @@ export type AuditAction =
   | "team_member_removed"
   | "billing_portal_opened"
   | "api_key_submitted"
+  | "hubspot_connected"
+  | "hubspot_disconnected"
   | "login"
   | "signup";
 
@@ -48,6 +50,7 @@ export type AuditResource =
   | "team_member"
   | "settings"
   | "scan_config"
+  | "integration"
   | "profile";
 
 interface AuditEntry {

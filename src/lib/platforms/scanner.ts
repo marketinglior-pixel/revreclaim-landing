@@ -113,7 +113,8 @@ export async function runPlatformScan(
     .filter((s) => s.status === "active" || s.status === "trialing")
     .reduce((sum, s) => sum + s.monthlyAmountCents, 0);
 
-  const mrrAtRisk = allLeaks.reduce((sum, l) => sum + l.monthlyImpact, 0);
+  const rawMrrAtRisk = allLeaks.reduce((sum, l) => sum + l.monthlyImpact, 0);
+  const mrrAtRisk = allLeaks.reduce((sum, l) => sum + Math.round(l.monthlyImpact * (l.recoveryRate ?? 1)), 0);
   const healthScore = calculateHealthScore(allLeaks, totalMRR);
 
   // Step 6: Build category summaries
@@ -125,8 +126,10 @@ export async function runPlatformScan(
   // Step 8: Build summary
   const summary = {
     mrrAtRisk,
+    rawMrrAtRisk,
+    trialingMRR: 0,
     leaksFound: allLeaks.length,
-    recoveryPotential: mrrAtRisk * 12,
+    recoveryPotential: allLeaks.reduce((sum, l) => sum + Math.round(l.annualImpact * (l.recoveryRate ?? 1)), 0),
     totalSubscriptions: data.subscriptions.length,
     totalCustomers: uniqueCustomers.size,
     totalMRR: totalMRR,

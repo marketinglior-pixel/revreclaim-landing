@@ -75,6 +75,7 @@ export function scanExpiringCards(
       subscriptionId: sub.id,
       monthlyImpact: monthlyAmount,
       annualImpact: monthlyAmount * 12,
+      recoveryRate: 0.5, // ~50% update on their own or with a reminder
       fixSuggestion:
         "Contact the customer to update their payment method before it expires. Stripe Dashboard → Customers → Select customer → Send update payment method email.",
       stripeUrl: `https://dashboard.stripe.com/customers/${customerId}`,

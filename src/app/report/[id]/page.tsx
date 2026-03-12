@@ -11,6 +11,7 @@ import LeakCategoryChart from "@/components/report/LeakCategoryChart";
 import LeakTable from "@/components/report/LeakTable";
 import ReportCTA from "@/components/report/ReportCTA";
 import RecoveryBanner from "@/components/report/RecoveryBanner";
+import QuickWins from "@/components/report/QuickWins";
 import DailyCostTicker from "@/components/report/DailyCostTicker";
 import { PostScanSurvey } from "@/components/report/PostScanSurvey";
 import Link from "next/link";
@@ -152,15 +153,23 @@ export default function ReportPage() {
     );
   }, [report, dismissedKeys]);
 
-  /** Recompute summary without dismissed leaks */
+  /** Recompute summary without dismissed leaks (weighted by recovery rate) */
   const adjustedSummary = useMemo(() => {
     if (!report) return undefined;
     if (dismissedKeys.size === 0) return report.summary;
-    const mrrAtRisk = visibleLeaks.reduce((sum, l) => sum + l.monthlyImpact, 0);
-    const recoveryPotential = visibleLeaks.reduce((sum, l) => sum + l.annualImpact, 0);
+    const mrrAtRisk = visibleLeaks.reduce(
+      (sum, l) => sum + Math.round(l.monthlyImpact * (l.recoveryRate ?? 1)),
+      0
+    );
+    const rawMrrAtRisk = visibleLeaks.reduce((sum, l) => sum + l.monthlyImpact, 0);
+    const recoveryPotential = visibleLeaks.reduce(
+      (sum, l) => sum + Math.round(l.annualImpact * (l.recoveryRate ?? 1)),
+      0
+    );
     return {
       ...report.summary,
       mrrAtRisk,
+      rawMrrAtRisk,
       recoveryPotential,
       leaksFound: visibleLeaks.length,
     };
@@ -250,6 +259,9 @@ export default function ReportPage() {
         {/* Recovery Banner */}
         <RecoveryBanner
           recoveryPotential={adjustedSummary?.recoveryPotential ?? report.summary.recoveryPotential}
+          rawRecoveryPotential={
+            (adjustedSummary?.rawMrrAtRisk ?? report.summary.rawMrrAtRisk ?? 0) * 12
+          }
           isLoggedIn={isLoggedIn}
           pendingActionsCount={pendingActionsCount}
         />
@@ -309,6 +321,9 @@ export default function ReportPage() {
         {report.categories.length > 0 && (
           <LeakCategoryChart categories={report.categories} />
         )}
+
+        {/* Quick Wins — start here summary */}
+        <QuickWins leaks={visibleLeaks} />
 
         {/* All Leaks Table */}
         <div id="leak-table">

@@ -37,7 +37,9 @@ export type AnalyticsEvent =
   | "nps_survey"
   | "feedback_widget"
   | "feature_interest"
-  | "calculator_used";
+  | "calculator_used"
+  | "hubspot_connected"
+  | "hubspot_disconnected";
 
 /**
  * Track an analytics event. Fire-and-forget — errors are logged but never thrown.

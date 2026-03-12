@@ -1,3 +1,5 @@
+import type { LeakEnrichment, EnrichmentProvider } from "./enrichment/types";
+
 export type LeakSeverity = "critical" | "high" | "medium" | "low";
 
 export type LeakType =
@@ -17,7 +19,7 @@ export const LEAK_TYPE_LABELS: Record<LeakType, string> = {
   never_expiring_discount: "Never-Expiring Discounts",
   failed_payment: "Uncollected Revenue",
   expiring_card: "Expiring Cards",
-  ghost_subscription: "Ghost Subscriptions",
+  ghost_subscription: "Stuck Subscriptions",
   legacy_pricing: "Legacy Pricing",
   missing_payment_method: "Missing Payment Methods",
   unbilled_overage: "Unbilled Overages",
@@ -43,11 +45,14 @@ export interface Leak {
   subscriptionId: string | null;
   monthlyImpact: number; // in cents
   annualImpact: number; // in cents
+  recoveryRate: number; // 0-1 probability of actually recovering this amount
   fixSuggestion: string;
   platformUrl?: string; // Direct link to platform dashboard
   stripeUrl?: string; // @deprecated — use platformUrl. Kept for backward compat.
   detectedAt: string; // ISO 8601
   metadata: Record<string, unknown>;
+  /** CRM enrichment data — present when an enrichment provider is connected */
+  enrichment?: LeakEnrichment;
 }
 
 export interface LeakCategorySummary {
@@ -59,12 +64,14 @@ export interface LeakCategorySummary {
 }
 
 export interface ScanSummary {
-  mrrAtRisk: number; // in cents
+  mrrAtRisk: number; // in cents (weighted by recoveryRate)
+  rawMrrAtRisk: number; // in cents (unweighted — max potential)
   leaksFound: number;
-  recoveryPotential: number; // in cents (annual)
+  recoveryPotential: number; // in cents (annual, weighted)
   totalSubscriptions: number;
   totalCustomers: number;
-  totalMRR: number; // in cents
+  totalMRR: number; // in cents (active only, excludes trialing)
+  trialingMRR: number; // in cents (trialing subs, shown separately)
   healthScore: number; // 0-100
 }
 
@@ -90,6 +97,8 @@ export interface ScanReport {
   categories: LeakCategorySummary[];
   leaks: Leak[];
   billingHealth?: BillingHealthInsights;
+  /** Which enrichment provider was used, if any */
+  enrichedWith?: EnrichmentProvider;
 }
 
 export interface ScanRequest {

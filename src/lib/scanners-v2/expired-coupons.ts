@@ -37,6 +37,7 @@ export function scanExpiredCoupons(
         subscriptionId: sub.id,
         monthlyImpact: discountAmount,
         annualImpact: discountAmount * 12,
+        recoveryRate: 0.8,
         fixSuggestion: `Remove this expired coupon from the subscription in ${platformLabel} Dashboard → Subscriptions → Select subscription → Remove discount.`,
         platformUrl: sub.platformUrl,
         stripeUrl: sub.platform === "stripe" ? sub.platformUrl : undefined,

@@ -12,6 +12,8 @@ export function scanGhostSubscriptions(
     let title: string;
     let description: string;
     let fixSuggestion: string;
+    let recoveryRate: number;
+    let effectiveMonthlyImpact: number;
 
     const monthlyAmount = getSubscriptionMonthlyAmount(sub);
     if (monthlyAmount <= 0) continue;
@@ -33,6 +35,8 @@ export function scanGhostSubscriptions(
         description = `This subscription is past due. The customer's payment failed and hasn't been recovered. You're losing ${formatCents(monthlyAmount)}/mo in uncollected revenue.`;
         fixSuggestion =
           "Contact the customer to update their payment method. Go to Stripe Dashboard → Subscriptions → Filter by 'Past due' → Select subscription → Retry payment or send reminder.";
+        recoveryRate = 0.4;
+        effectiveMonthlyImpact = monthlyAmount;
         break;
 
       case "unpaid":
@@ -41,22 +45,28 @@ export function scanGhostSubscriptions(
         description = `This subscription has exhausted all retry attempts and is marked as unpaid. The invoices remain open but no further automatic retries will occur.`;
         fixSuggestion =
           "Decide whether to cancel this subscription or contact the customer directly. Go to Stripe Dashboard → Subscriptions → Filter by 'Unpaid' → Take action.";
+        recoveryRate = 0.2;
+        effectiveMonthlyImpact = monthlyAmount;
         break;
 
       case "incomplete":
-        severity = "medium";
-        title = `Incomplete subscription - ${formatCents(monthlyAmount)}/mo pending`;
-        description = `This subscription was created but the first payment was never completed. It will auto-cancel after 23 hours if not resolved.`;
+        severity = "low";
+        title = `Incomplete subscription - never activated`;
+        description = `This subscription was created but the first payment was never completed. The customer never started paying — this is not lost revenue.`;
         fixSuggestion =
           "Send the customer the hosted invoice link to complete their first payment. Check Stripe Dashboard → Subscriptions → Filter by 'Incomplete'.";
+        recoveryRate = 0;
+        effectiveMonthlyImpact = 0; // Never paid — not real revenue
         break;
 
       case "incomplete_expired":
         severity = "low";
-        title = `Expired incomplete subscription - ${formatCents(monthlyAmount)}/mo lost`;
+        title = `Expired incomplete subscription - never activated`;
         description = `This subscription was never activated. The customer started signing up but never completed payment. It has automatically expired.`;
         fixSuggestion =
           "Consider reaching out to the customer to re-engage. Create a new subscription or send them a payment link.";
+        recoveryRate = 0;
+        effectiveMonthlyImpact = 0; // Never paid — not real revenue
         break;
 
       case "paused":
@@ -66,8 +76,10 @@ export function scanGhostSubscriptions(
           description = `This subscription is paused with no resume date set. Revenue of ${formatCents(monthlyAmount)}/mo is on hold indefinitely.`;
           fixSuggestion =
             "Review if this pause is still needed. Set a resume date or contact the customer. Go to Stripe Dashboard → Subscriptions → Select subscription → Resume collection.";
+          recoveryRate = 0.6;
+          effectiveMonthlyImpact = monthlyAmount;
         } else {
-          continue; // Has a resume date, not a ghost
+          continue; // Has a resume date, not stuck
         }
         break;
 
@@ -84,8 +96,9 @@ export function scanGhostSubscriptions(
       customerEmail: customerEmail ? maskEmail(customerEmail) : null,
       customerId,
       subscriptionId: sub.id,
-      monthlyImpact: monthlyAmount,
-      annualImpact: monthlyAmount * 12,
+      monthlyImpact: effectiveMonthlyImpact,
+      annualImpact: effectiveMonthlyImpact * 12,
+      recoveryRate,
       fixSuggestion,
       stripeUrl: `https://dashboard.stripe.com/subscriptions/${sub.id}`,
       detectedAt: new Date().toISOString(),

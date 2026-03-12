@@ -107,6 +107,24 @@ export function canUseRecoveryActions(
 /**
  * Check if a user can invite team members based on their plan.
  */
+/**
+ * Check if a user can use CRM integrations (HubSpot, etc.) based on their plan.
+ * Available on Pro and Team plans only.
+ */
+export function canUseIntegrations(plan: PlanType): {
+  allowed: boolean;
+  reason?: string;
+} {
+  if (plan === "pro" || plan === "team") {
+    return { allowed: true };
+  }
+  return {
+    allowed: false,
+    reason:
+      "CRM integrations require a Pro or Team plan. Upgrade to enrich your leaks with HubSpot data.",
+  };
+}
+
 export function canInviteTeamMember(
   plan: PlanType,
   currentMemberCount: number

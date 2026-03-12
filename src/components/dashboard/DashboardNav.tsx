@@ -73,6 +73,14 @@ export default function DashboardNav({
                 Audit Log
               </Link>
             )}
+            {(plan === "pro" || plan === "team") && (
+              <Link
+                href="/dashboard/integrations"
+                className="px-3 py-2 text-xs text-text-muted hover:text-white hover:bg-surface-light rounded-lg transition"
+              >
+                Integrations
+              </Link>
+            )}
             {isAdmin && (
               <Link
                 href="/dashboard/feedback"
@@ -147,6 +155,14 @@ export default function DashboardNav({
                     className="block px-4 py-2.5 text-sm text-text-muted hover:text-white hover:bg-surface-light transition"
                   >
                     Audit Log
+                  </Link>
+                )}
+                {(plan === "pro" || plan === "team") && (
+                  <Link
+                    href="/dashboard/integrations"
+                    className="block px-4 py-2.5 text-sm text-text-muted hover:text-white hover:bg-surface-light transition"
+                  >
+                    Integrations
                   </Link>
                 )}
                 {isAdmin && (

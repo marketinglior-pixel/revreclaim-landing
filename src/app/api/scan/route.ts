@@ -7,6 +7,7 @@ import { guardMutation } from "@/lib/api-security";
 import { authenticateAndCheckPlan } from "@/lib/scan/authenticate";
 import { notifyScanStarted, notifyScanCompleted } from "@/lib/scan/notify";
 import { persistScanResults } from "@/lib/scan/persist";
+import { tryEnrichLeaks } from "@/lib/scan/enrich-step";
 import { createLogger } from "@/lib/logger";
 
 const log = createLogger("SCAN");
@@ -103,6 +104,30 @@ export async function POST(req: NextRequest) {
         if (leak.stripeUrl && !leak.platformUrl) {
           leak.platformUrl = leak.stripeUrl;
         }
+      }
+    }
+
+    // CRM Enrichment (HubSpot) — non-blocking, graceful degradation
+    if (auth.userId && report.leaks.length > 0) {
+      try {
+        const enrichResult = await tryEnrichLeaks(
+          auth.userId,
+          report,
+          emailMap
+        );
+        if (enrichResult) {
+          report.leaks = enrichResult.leaks;
+          report.enrichedWith = "hubspot";
+          log.info(
+            `Enriched ${enrichResult.enrichedCount}/${report.leaks.length} leaks (${enrichResult.matchedContacts} CRM matches)`
+          );
+        }
+      } catch (err) {
+        // Enrichment failure should never block the scan
+        log.warn(
+          "Enrichment failed, proceeding without CRM data:",
+          err instanceof Error ? err.message : err
+        );
       }
     }
 

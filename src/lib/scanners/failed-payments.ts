@@ -55,7 +55,8 @@ export function scanFailedPayments(
       customerId,
       subscriptionId,
       monthlyImpact: amountDue,
-      annualImpact: amountDue * 12,
+      annualImpact: amountDue, // One-time invoice — not multiplied by 12
+      recoveryRate: 0.6, // ~60% of failed payments can be recovered with dunning
       fixSuggestion:
         invoice.attempted
           ? "The payment failed. Contact the customer to update their payment method, or retry the payment from Stripe Dashboard → Invoices → Select invoice → Retry payment."

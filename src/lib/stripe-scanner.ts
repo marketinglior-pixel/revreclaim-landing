@@ -241,14 +241,20 @@ async function fetchStripeData(
 }
 
 /**
- * Calculate total MRR from all active subscriptions.
+ * Calculate MRR from subscriptions.
+ * Returns active MRR (matches Stripe's definition) and trialing MRR separately.
  */
-function calculateTotalMRR(subscriptions: Stripe.Subscription[]): number {
-  let totalMRR = 0;
+function calculateMRR(subscriptions: Stripe.Subscription[]): {
+  activeMRR: number;
+  trialingMRR: number;
+} {
+  let activeMRR = 0;
+  let trialingMRR = 0;
 
   for (const sub of subscriptions) {
     if (sub.status !== "active" && sub.status !== "trialing") continue;
 
+    let subMRR = 0;
     for (const item of sub.items.data) {
       const price = item.price;
       if (!price.unit_amount) continue;
@@ -256,24 +262,30 @@ function calculateTotalMRR(subscriptions: Stripe.Subscription[]): number {
 
       switch (price.recurring?.interval) {
         case "month":
-          totalMRR += amount;
+          subMRR += amount;
           break;
         case "year":
-          totalMRR += Math.round(amount / 12);
+          subMRR += Math.round(amount / 12);
           break;
         case "week":
-          totalMRR += Math.round(amount * 4.33);
+          subMRR += Math.round(amount * 4.33);
           break;
         case "day":
-          totalMRR += Math.round(amount * 30);
+          subMRR += Math.round(amount * 30);
           break;
         default:
-          totalMRR += amount;
+          subMRR += amount;
       }
+    }
+
+    if (sub.status === "active") {
+      activeMRR += subMRR;
+    } else {
+      trialingMRR += subMRR;
     }
   }
 
-  return totalMRR;
+  return { activeMRR, trialingMRR };
 }
 
 /**
@@ -401,13 +413,21 @@ export async function runFullScan(
     (a, b) => SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity]
   );
 
-  // Step 5: Calculate metrics
-  const totalMRR = calculateTotalMRR(data.subscriptions);
-  const mrrAtRisk = allLeaks.reduce((sum, l) => sum + l.monthlyImpact, 0);
-  const healthScore = calculateHealthScore(allLeaks, totalMRR);
+  // Step 5: Calculate metrics (weighted by recovery rates)
+  const { activeMRR, trialingMRR } = calculateMRR(data.subscriptions);
+  const rawMrrAtRisk = allLeaks.reduce((sum, l) => sum + l.monthlyImpact, 0);
+  const mrrAtRisk = allLeaks.reduce(
+    (sum, l) => sum + Math.round(l.monthlyImpact * l.recoveryRate),
+    0
+  );
+  const recoveryPotential = allLeaks.reduce(
+    (sum, l) => sum + Math.round(l.annualImpact * l.recoveryRate),
+    0
+  );
+  const healthScore = calculateHealthScore(allLeaks, activeMRR);
 
   // Step 6: Build category summaries
-  const categories = buildCategorySummaries(allLeaks, mrrAtRisk);
+  const categories = buildCategorySummaries(allLeaks, rawMrrAtRisk);
 
   // Step 7: Build final report
   const report: ScanReport = {
@@ -415,11 +435,13 @@ export async function runFullScan(
     scannedAt: new Date().toISOString(),
     summary: {
       mrrAtRisk,
+      rawMrrAtRisk,
       leaksFound: allLeaks.length,
-      recoveryPotential: mrrAtRisk * 12,
+      recoveryPotential,
       totalSubscriptions: data.subscriptions.length,
       totalCustomers: countUniqueCustomers(data.subscriptions),
-      totalMRR,
+      totalMRR: activeMRR,
+      trialingMRR,
       healthScore,
     },
     categories,

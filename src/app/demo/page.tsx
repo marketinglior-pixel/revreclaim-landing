@@ -1,6 +1,7 @@
 "use client";
 
 import { ScanReport } from "@/lib/types";
+import type { LeakEnrichment } from "@/lib/enrichment/types";
 import { computeBillingHealth } from "@/lib/billing-health";
 import ReportHeader from "@/components/report/ReportHeader";
 import ReportSummary from "@/components/report/ReportSummary";
@@ -9,6 +10,7 @@ import LeakCategoryChart from "@/components/report/LeakCategoryChart";
 import LeakTable from "@/components/report/LeakTable";
 import ReportCTA from "@/components/report/ReportCTA";
 import RecoveryBanner from "@/components/report/RecoveryBanner";
+import QuickWins from "@/components/report/QuickWins";
 import AgentSimulation from "@/components/report/AgentSimulation";
 
 // ──────────────────────────────────────────────────────────────
@@ -21,12 +23,14 @@ const DEMO_REPORT: ScanReport = {
   id: "demo-scaleflow-2026",
   scannedAt: new Date().toISOString(),
   summary: {
-    mrrAtRisk: 572800,       // $5,728/mo
+    mrrAtRisk: 311500,        // $3,115/mo (weighted by recovery rates)
+    rawMrrAtRisk: 572800,     // $5,728/mo (unweighted max)
     leaksFound: 27,
-    recoveryPotential: 6873600, // $68,736/yr
+    recoveryPotential: 2322960, // $23,230/yr (weighted)
     totalSubscriptions: 312,
     totalCustomers: 287,
-    totalMRR: 18700000,      // $187,000/mo
+    totalMRR: 18700000,      // $187,000/mo (active only)
+    trialingMRR: 0,
     healthScore: 56,
   },
   categories: [
@@ -53,7 +57,7 @@ const DEMO_REPORT: ScanReport = {
     },
     {
       type: "ghost_subscription",
-      label: "Ghost Subscriptions",
+      label: "Stuck Subscriptions",
       count: 4,
       totalMonthlyImpact: 89700, // $897/mo
       percentage: 18.6,
@@ -114,7 +118,8 @@ const DEMO_REPORT: ScanReport = {
       customerId: "cus_R8kT9mNp2xQ",
       subscriptionId: "sub_1NvB7kL9mQ",
       monthlyImpact: 89900, // $899/mo
-      annualImpact: 1078800,
+      annualImpact: 89900,
+      recoveryRate: 0.6,
       fixSuggestion:
         "Contact the customer immediately via email and phone. Offer to update their payment method. Consider a 3-day grace period before pausing the account. This is your highest-value at-risk customer.",
       stripeUrl: "https://dashboard.stripe.com/invoices/in_1NvB7kL9mQ",
@@ -132,7 +137,8 @@ const DEMO_REPORT: ScanReport = {
       customerId: "cus_K4nM8pLq3wR",
       subscriptionId: "sub_2MwC8jK0nR",
       monthlyImpact: 49900,
-      annualImpact: 598800,
+      annualImpact: 49900,
+      recoveryRate: 0.6,
       fixSuggestion:
         "Send a personalized email from the founder. Include a direct payment link. This customer has high team usage — they're unlikely to intentionally churn.",
       stripeUrl: "https://dashboard.stripe.com/invoices/in_2MwC8jK0nR",
@@ -150,7 +156,8 @@ const DEMO_REPORT: ScanReport = {
       customerId: "cus_P2qR6mNk9xS",
       subscriptionId: "sub_3NxD9kL1mS",
       monthlyImpact: 34900,
-      annualImpact: 418800,
+      annualImpact: 34900,
+      recoveryRate: 0.6,
       fixSuggestion:
         "This customer's card is expired — automatic retries will continue to fail. Send an immediate card update request email with a Stripe-hosted payment link.",
       stripeUrl: "https://dashboard.stripe.com/invoices/in_3NxD9kL1mS",
@@ -168,7 +175,8 @@ const DEMO_REPORT: ScanReport = {
       customerId: "cus_L5nN7pMq4xT",
       subscriptionId: "sub_4OyE0lM2nT",
       monthlyImpact: 19900,
-      annualImpact: 238800,
+      annualImpact: 19900,
+      recoveryRate: 0.6,
       fixSuggestion:
         "Send a payment reminder. For ACH failures, suggest switching to card payment for more reliable billing. Offer to help update payment method.",
       stripeUrl: "https://dashboard.stripe.com/invoices/in_4OyE0lM2nT",
@@ -186,7 +194,8 @@ const DEMO_REPORT: ScanReport = {
       customerId: "cus_M6oO8qNr5yU",
       subscriptionId: "sub_5PzF1mN3oU",
       monthlyImpact: 9900,
-      annualImpact: 118800,
+      annualImpact: 9900,
+      recoveryRate: 0.6,
       fixSuggestion:
         "Monitor the automatic retry. If it fails again, send a friendly payment update reminder. 'Do not honor' often resolves on retry with the same card.",
       stripeUrl: "https://dashboard.stripe.com/invoices/in_5PzF1mN3oU",
@@ -204,7 +213,8 @@ const DEMO_REPORT: ScanReport = {
       customerId: "cus_N7pP9rOs6zV",
       subscriptionId: "sub_6QaG2nO4pV",
       monthlyImpact: 9900,
-      annualImpact: 118800,
+      annualImpact: 9900,
+      recoveryRate: 0.6,
       fixSuggestion:
         "Send the customer a direct link to complete 3D Secure authentication. Include clear instructions. European customers often hit this with SCA requirements.",
       stripeUrl: "https://dashboard.stripe.com/invoices/in_6QaG2nO4pV",
@@ -225,6 +235,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_8ScI4pQ6rX",
       monthlyImpact: 34900,
       annualImpact: 418800,
+      recoveryRate: 0.4,
       fixSuggestion:
         "This subscription should be canceled or paused. The customer has effectively churned. Cancel the subscription and send a win-back campaign in 30 days.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_8ScI4pQ6rX",
@@ -243,6 +254,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_9TdJ5qR7sY",
       monthlyImpact: 24900,
       annualImpact: 298800,
+      recoveryRate: 0.4,
       fixSuggestion:
         "Reach out to the customer personally. If no response in 7 days, pause the subscription to stop resource allocation. Keep the account data for 90 days in case they return.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_9TdJ5qR7sY",
@@ -261,6 +273,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_0UeK6rS8tZ",
       monthlyImpact: 19900,
       annualImpact: 238800,
+      recoveryRate: 0.4,
       fixSuggestion:
         "Email is bouncing — this company may have shut down. Cancel the subscription immediately. Mark as 'churned - company closed' for your records.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_0UeK6rS8tZ",
@@ -279,6 +292,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_1VfL7sT9uA",
       monthlyImpact: 9900,
       annualImpact: 118800,
+      recoveryRate: 0.4,
       fixSuggestion:
         "Send a friendly 'are you still using us?' email. If no response, cancel and offer a free month to come back.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_1VfL7sT9uA",
@@ -299,6 +313,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_2WgM8tU0vB",
       monthlyImpact: 20000,
       annualImpact: 240000,
+      recoveryRate: 0.8,
       fixSuggestion:
         "Remove the expired coupon from the subscription. Send the customer a heads-up email: 'Your promotional rate has ended. Your plan will renew at the standard rate of $399/mo.' Offer a 20% loyalty discount if needed for retention.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_2WgM8tU0vB",
@@ -317,6 +332,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_3XhN9uV1wC",
       monthlyImpact: 20000,
       annualImpact: 240000,
+      recoveryRate: 0.8,
       fixSuggestion:
         "Contact the customer before removing the discount. Thank them for being a beta tester. Offer a 15% 'Early Adopter' discount as a bridge to full pricing.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_3XhN9uV1wC",
@@ -335,6 +351,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_4YiO0vW2xD",
       monthlyImpact: 6000,
       annualImpact: 72000,
+      recoveryRate: 0.8,
       fixSuggestion:
         "Remove the expired promo code. Notify the customer their conference discount has ended. Standard pricing resumes next billing cycle.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_4YiO0vW2xD",
@@ -353,6 +370,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_5ZjP1wX3yE",
       monthlyImpact: 5000,
       annualImpact: 60000,
+      recoveryRate: 0.8,
       fixSuggestion:
         "This is a coupon configuration error. Remove the coupon from this subscription. Going forward, set referral coupons to 'repeating' duration with a 3-month limit.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_5ZjP1wX3yE",
@@ -373,6 +391,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_6AkQ2xY4zF",
       monthlyImpact: 14200,
       annualImpact: 170400,
+      recoveryRate: 0.5,
       fixSuggestion:
         "Send an urgent card update reminder. Stripe may auto-update via card network updater, but don't rely on it for this high-value account. Personal outreach recommended.",
       stripeUrl: "https://dashboard.stripe.com/customers/cus_W6yY8aYz5iE",
@@ -391,6 +410,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_7BlR3yZ5aG",
       monthlyImpact: 11200,
       annualImpact: 134400,
+      recoveryRate: 0.5,
       fixSuggestion:
         "Send a proactive card update email. Mention the exact last 4 digits so they know which card to update. Include a direct link to update payment method.",
       stripeUrl: "https://dashboard.stripe.com/customers/cus_X7zZ9bZa6jF",
@@ -409,6 +429,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_8CmS4zA6bH",
       monthlyImpact: 9900,
       annualImpact: 118800,
+      recoveryRate: 0.5,
       fixSuggestion:
         "Queue a card expiration reminder email for 30 days before expiry. Stripe's Smart Retries may handle this automatically, but proactive communication reduces churn.",
       stripeUrl: "https://dashboard.stripe.com/customers/cus_Y8aA0cAb7kG",
@@ -427,6 +448,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_9DnT5aB7cI",
       monthlyImpact: 9900,
       annualImpact: 118800,
+      recoveryRate: 0.5,
       fixSuggestion:
         "Send batch card update reminders. Consider enabling Stripe's automatic card updater if not already enabled.",
       stripeUrl: "https://dashboard.stripe.com/customers/cus_Z9bB1dBc8lH",
@@ -445,6 +467,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_0EoU6bC8dJ",
       monthlyImpact: 9000,
       annualImpact: 108000,
+      recoveryRate: 0.5,
       fixSuggestion:
         "No immediate action needed. Monitor and send a reminder 30 days before expiry.",
       stripeUrl: "https://dashboard.stripe.com/customers/cus_A0cC2eCd9mI",
@@ -465,6 +488,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_1FpV7cD9eK",
       monthlyImpact: 20000,
       annualImpact: 240000,
+      recoveryRate: 0.3,
       fixSuggestion:
         "Schedule a pricing migration. Best approach: Email the customer about the price change, give 30 days notice, offer to lock in a 10% 'loyalty discount' on the new price ($179/mo). Most customers accept when framed positively.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_1FpV7cD9eK",
@@ -483,6 +507,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_2GqW8dE0fL",
       monthlyImpact: 12000,
       annualImpact: 144000,
+      recoveryRate: 0.3,
       fixSuggestion:
         "Migrate to current pricing with advance notice. Grandfather for one more billing cycle, then transition. Highlight any new features added since they signed up to justify the increase.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_2GqW8dE0fL",
@@ -503,6 +528,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_3HrX9eF1gM",
       monthlyImpact: 9900,
       annualImpact: 118800,
+      recoveryRate: 0.3,
       fixSuggestion:
         "Send an immediate email asking the customer to add a payment method. Include a Stripe Checkout link for easy card entry. This must be resolved before the next billing date.",
       stripeUrl: "https://dashboard.stripe.com/customers/cus_D3fF5hFg2pL",
@@ -521,6 +547,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_4IsY0fG2hN",
       monthlyImpact: 2300,
       annualImpact: 27600,
+      recoveryRate: 0.3,
       fixSuggestion:
         "Send a trial ending reminder with a clear CTA to add payment. Consider an in-app notification too. Trial-to-paid conversion is a critical moment.",
       stripeUrl: "https://dashboard.stripe.com/customers/cus_E4gG6iGh3qM",
@@ -541,6 +568,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_6KuA2hI4jP",
       monthlyImpact: 45000,
       annualImpact: 540000,
+      recoveryRate: 0.7,
       fixSuggestion:
         "Review this subscription's quantity and pricing in Stripe Dashboard. The customer has 8 seats — verify the billing reflects per-seat pricing. Check for any 100% coupons or manual overrides.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_6KuA2hI4jP",
@@ -561,6 +589,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_7LvB3iJ5kQ",
       monthlyImpact: 19900,
       annualImpact: 238800,
+      recoveryRate: 0.5,
       fixSuggestion:
         "Check this subscription in Stripe Dashboard. If the trial should have ended, either convert the customer to a paid plan or cancel the subscription. Review your trial_end webhook handling.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_7LvB3iJ5kQ",
@@ -581,6 +610,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_8MwC4jK6lR",
       monthlyImpact: 24900,
       annualImpact: 298800,
+      recoveryRate: 0.9,
       fixSuggestion:
         "Cancel the old Growth subscription immediately. Proactively refund the overlap charges ($199 for the current period). Send the customer a note explaining the fix. Review your upgrade flow to auto-cancel old subscriptions.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_8MwC4jK6lR",
@@ -601,6 +631,7 @@ const DEMO_REPORT: ScanReport = {
       subscriptionId: "sub_5JtZ1gH3iO",
       monthlyImpact: 5000,
       annualImpact: 60000,
+      recoveryRate: 0.4,
       fixSuggestion:
         "Review whether this coupon should have had a time limit. If it was an error, contact the customer, explain the situation, and offer a 20% ongoing discount as a compromise. Update the coupon configuration to prevent this for future customers.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_5JtZ1gH3iO",
@@ -610,7 +641,155 @@ const DEMO_REPORT: ScanReport = {
   ],
 };
 
-// Compute billing health from demo data
+// ── Demo CRM Enrichment ──────────────────────────────────────
+// Add enrichment data to a subset of leaks to showcase CRM intelligence
+
+function addDemoEnrichment() {
+  const enrichmentMap: Record<string, LeakEnrichment> = {
+    // Failed payment — customer is active in CRM → recovery rate boosted
+    "leak-001": {
+      originalSeverity: "critical",
+      originalRecoveryRate: 0.6,
+      severityAdjusted: false,
+      recoveryRateAdjusted: true,
+      adjustmentReason:
+        "Customer recently active in CRM. High recovery potential — likely a temporary payment issue.",
+      signals: {
+        found: true,
+        daysSinceLastActivity: 3,
+        lifecycleStage: "customer",
+        leadStatus: null,
+        dealCount: 2,
+        tenureDays: 420,
+        engagementLevel: "active",
+        hubspotUrl: "https://app.hubspot.com/contacts/12345/contact/101",
+      },
+      provider: "hubspot",
+    },
+    // Failed payment — customer is inactive → red flag
+    "leak-004": {
+      originalSeverity: "high",
+      originalRecoveryRate: 0.6,
+      severityAdjusted: false,
+      recoveryRateAdjusted: true,
+      adjustmentReason:
+        "Customer inactive in CRM for 52 days. Payment failure may signal churn rather than a temporary card issue.",
+      signals: {
+        found: true,
+        daysSinceLastActivity: 52,
+        lifecycleStage: "customer",
+        leadStatus: null,
+        dealCount: 0,
+        tenureDays: 180,
+        engagementLevel: "inactive",
+        hubspotUrl: "https://app.hubspot.com/contacts/12345/contact/104",
+      },
+      provider: "hubspot",
+    },
+    // Ghost subscription — inactive 90+ days → severity escalated to critical
+    "leak-007": {
+      originalSeverity: "critical",
+      originalRecoveryRate: 0.4,
+      severityAdjusted: false,
+      recoveryRateAdjusted: true,
+      adjustmentReason:
+        "Ghost sub confirmed — zero CRM activity in 92 days. Very unlikely to recover.",
+      signals: {
+        found: true,
+        daysSinceLastActivity: 92,
+        lifecycleStage: "customer",
+        leadStatus: null,
+        dealCount: 0,
+        tenureDays: 365,
+        engagementLevel: "inactive",
+        hubspotUrl: "https://app.hubspot.com/contacts/12345/contact/107",
+      },
+      provider: "hubspot",
+    },
+    // Ghost subscription — actually active in CRM → good sign
+    "leak-008": {
+      originalSeverity: "high",
+      originalRecoveryRate: 0.4,
+      severityAdjusted: false,
+      recoveryRateAdjusted: true,
+      adjustmentReason:
+        "Customer still actively engaged in CRM despite billing issue. Worth personal outreach.",
+      signals: {
+        found: true,
+        daysSinceLastActivity: 5,
+        lifecycleStage: "customer",
+        leadStatus: null,
+        dealCount: 1,
+        tenureDays: 310,
+        engagementLevel: "active",
+        hubspotUrl: "https://app.hubspot.com/contacts/12345/contact/108",
+      },
+      provider: "hubspot",
+    },
+    // Legacy pricing — high-value active customer
+    "leak-020": {
+      originalSeverity: "high",
+      originalRecoveryRate: 0.3,
+      severityAdjusted: false,
+      recoveryRateAdjusted: true,
+      adjustmentReason:
+        "High-value customer (2 deals, actively engaged). Good candidate for pricing conversation.",
+      signals: {
+        found: true,
+        daysSinceLastActivity: 2,
+        lifecycleStage: "customer",
+        leadStatus: null,
+        dealCount: 2,
+        tenureDays: 420,
+        engagementLevel: "active",
+        hubspotUrl: "https://app.hubspot.com/contacts/12345/contact/120",
+      },
+      provider: "hubspot",
+    },
+    // Expiring card — inactive customer → severity escalated
+    "leak-015": {
+      originalSeverity: "high",
+      originalRecoveryRate: 0.5,
+      severityAdjusted: true,
+      recoveryRateAdjusted: true,
+      adjustmentReason:
+        "Expiring card + no CRM activity for 38 days. High churn risk — customer may not update payment method.",
+      signals: {
+        found: true,
+        daysSinceLastActivity: 38,
+        lifecycleStage: "customer",
+        leadStatus: null,
+        dealCount: 0,
+        tenureDays: 240,
+        engagementLevel: "cooling",
+        hubspotUrl: "https://app.hubspot.com/contacts/12345/contact/115",
+      },
+      provider: "hubspot",
+    },
+  };
+
+  for (const leak of DEMO_REPORT.leaks) {
+    const enrichment = enrichmentMap[leak.id];
+    if (enrichment) {
+      leak.enrichment = enrichment;
+      // Apply recovery rate adjustments for demo consistency
+      if (enrichment.signals.engagementLevel === "active") {
+        leak.recoveryRate = Math.min(0.95, leak.recoveryRate + 0.1);
+      } else if (enrichment.signals.engagementLevel === "inactive") {
+        leak.recoveryRate = Math.max(0.05, leak.recoveryRate - 0.2);
+      } else if (enrichment.signals.engagementLevel === "cooling") {
+        leak.recoveryRate = Math.max(0.05, leak.recoveryRate - 0.15);
+      }
+    }
+  }
+}
+
+addDemoEnrichment();
+
+// Mark the demo report as enriched
+DEMO_REPORT.enrichedWith = "hubspot";
+
+// Compute billing health from demo data (after enrichment, so 7th dimension shows)
 const DEMO_BILLING_HEALTH = computeBillingHealth(
   DEMO_REPORT.summary,
   DEMO_REPORT.categories,
@@ -630,16 +809,20 @@ export default function DemoReportPage() {
         {/* Recovery Banner */}
         <RecoveryBanner
           recoveryPotential={DEMO_REPORT.summary.recoveryPotential}
+          rawRecoveryPotential={DEMO_REPORT.summary.rawMrrAtRisk * 12}
         />
 
         {/* Summary Cards + Health Score */}
-        <ReportSummary summary={DEMO_REPORT.summary} />
+        <ReportSummary summary={DEMO_REPORT.summary} leaks={DEMO_REPORT.leaks} />
 
         {/* Billing Health Breakdown */}
         <BillingHealthInsights billingHealth={DEMO_BILLING_HEALTH} />
 
         {/* Category Breakdown Chart */}
         <LeakCategoryChart categories={DEMO_REPORT.categories} />
+
+        {/* Quick Wins — start here summary */}
+        <QuickWins leaks={DEMO_REPORT.leaks} />
 
         {/* All Leaks Table */}
         <div id="leak-table">

@@ -47,6 +47,7 @@ export function scanExpiredCoupons(
           subscriptionId: sub.id,
           monthlyImpact: discountAmount,
           annualImpact: discountAmount * 12,
+          recoveryRate: 0.8, // High — removing expired coupon is safe, customers rarely notice
           fixSuggestion:
             "Remove this expired coupon from the subscription in Stripe Dashboard → Subscriptions → Select subscription → Remove discount.",
           stripeUrl: `https://dashboard.stripe.com/subscriptions/${sub.id}`,

@@ -41,7 +41,8 @@ export function scanFailedPayments(invoices: NormalizedInvoice[]): Leak[] {
       customerId: invoice.customerId,
       subscriptionId: invoice.subscriptionId,
       monthlyImpact: invoice.amountDueCents,
-      annualImpact: invoice.amountDueCents * 12,
+      annualImpact: invoice.amountDueCents,
+      recoveryRate: 0.6,
       fixSuggestion: invoice.attempted
         ? `The payment failed. Contact the customer to update their payment method, or retry the payment from ${platformLabel} Dashboard.`
         : `This invoice hasn't been charged yet. Go to ${platformLabel} Dashboard to charge the customer.`,

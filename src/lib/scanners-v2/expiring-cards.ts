@@ -73,6 +73,7 @@ export function scanExpiringCards(
       subscriptionId: sub.id,
       monthlyImpact: sub.monthlyAmountCents,
       annualImpact: sub.monthlyAmountCents * 12,
+      recoveryRate: 0.5,
       fixSuggestion: `Contact the customer to update their payment method before it expires. ${platformLabel} Dashboard → Customers → Send update payment method email.`,
       platformUrl: sub.platformUrl,
       stripeUrl: sub.platform === "stripe" ? sub.platformUrl : undefined,
