@@ -50,7 +50,7 @@ export function DailyLossCalculator() {
           Every day you wait, you lose more.
         </h2>
         <p className="mx-auto mb-12 max-w-xl text-center text-lg text-text-muted">
-          Move the slider to your MRR. Watch what inaction costs.
+          Move the slider to your MRR. See what you&apos;re probably losing.
         </p>
 
         {/* Calculator card */}

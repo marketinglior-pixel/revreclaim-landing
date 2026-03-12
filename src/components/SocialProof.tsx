@@ -2,7 +2,7 @@
 const testimonials = [
   {
     quote:
-      "I pasted the key expecting nothing. 90 seconds later I'm staring at a list of 23 expired coupons. $3,200/month we were just giving away. I fixed them all before lunch. That's $38K/year.",
+      "I pasted the key honestly expecting nothing. 90 seconds later I'm staring at a list of 23 expired coupons. $3,200/month we were just giving away. I fixed them all before lunch. That's $38K/year.",
     name: "Sarah M.",
     role: "Co-founder",
     company: "CloudMetrics",
@@ -53,7 +53,7 @@ export function SocialProof() {
         {/* Status tie (Hormozi Hack #7) */}
         <p className="mx-auto mb-16 max-w-2xl text-center text-lg text-text-muted">
           Same billing account. Same customers. Same product.
-          They just stopped leaving money on the table.
+          They just ran a 90-second scan.
           <br />
           <span className="text-white">The only difference? They decided to look.</span>
         </p>

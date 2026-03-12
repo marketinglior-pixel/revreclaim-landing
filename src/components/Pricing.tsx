@@ -10,7 +10,7 @@ import { trackCheckoutStarted } from "@/lib/conversion-tracking";
 const plans = [
   {
     name: "Revenue X-Ray",
-    badge: "$2,847 AUDIT — FREE",
+    badge: "FREE $2,847 AUDIT",
     monthlyPrice: "$0",
     annualPrice: "$0",
     annualMonthly: "$0",
@@ -20,12 +20,12 @@ const plans = [
       "Full 10-scanner revenue audit ($500 value)",
       "Customer-level leak report with names & amounts",
       "Billing Health Score with industry comparison",
-      "1 AI recovery action — auto-fix your biggest leak",
+      "1 AI recovery action: auto-fix your biggest leak",
       "Step-by-step fix instructions for every leak found",
       "PDF & CSV export to share with your team",
       "Monthly re-scan to catch new leaks",
     ],
-    cta: "Get My $2,847 Audit — Free",
+    cta: "Get My Free $2,847 Audit",
     href: "/scan",
     highlighted: false,
     isPaid: false,
@@ -49,17 +49,17 @@ const plans = [
     annualPrice: "$2,990",
     annualMonthly: "$249",
     period: "/month",
-    description: "Set it and forget it. Your revenue stays protected while you build.",
+    description: "Runs in the background. You build, it watches your billing.",
     features: [
       "Everything in Revenue X-Ray",
       "Scan anytime something feels off",
       "New leaks caught automatically every week",
       "Know the moment money starts slipping",
       "Watch your revenue health improve over time",
-      "Revenue recovered automatically while you sleep",
-      "Failing payments saved before they churn",
-      "Privacy Mode — your customers stay anonymous",
-      "Alerts where you already work — Slack or email",
+      "Auto-recovery on failed payments",
+      "Catches failing payments before they churn",
+      "Privacy Mode: your customers stay anonymous",
+      "Alerts where you already work (Slack or email)",
       "Priority support (< 4hr response)",
     ],
     cta: "Start Recovering Revenue →",
@@ -76,7 +76,7 @@ const plans = [
     annualPrice: "$4,990",
     annualMonthly: "$416",
     period: "/month",
-    description: "Full revenue intelligence for scaling SaaS teams.",
+    description: "Everything your revenue team needs in one dashboard.",
     features: [
       "Everything in Revenue Shield",
       "Your whole revenue team sees the same picture",
@@ -252,7 +252,7 @@ export function Pricing() {
                 {/* Free plan value stack — Hormozi Grand Slam: show perceived value */}
                 {(plan as typeof plans[0] & { freeValueStack?: { name: string; value: string }[] }).freeValueStack && (
                   <div className="mb-6 rounded-lg border border-brand/20 bg-brand/5 p-3 sm:p-4 text-xs md:text-sm">
-                    <div className="mb-2 font-semibold text-brand uppercase tracking-wider text-xs">What you get — free</div>
+                    <div className="mb-2 font-semibold text-brand uppercase tracking-wider text-xs">What you get for free</div>
                     <div className="space-y-1.5">
                       {(plan as typeof plans[0] & { freeValueStack?: { name: string; value: string }[] }).freeValueStack!.map((item) => (
                         <div key={item.name} className="flex justify-between gap-2 text-text-secondary">

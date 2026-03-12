@@ -6,39 +6,39 @@ import { useSectionView } from "@/hooks/useSectionView";
 const faqs = [
   {
     q: "Is my billing data safe?",
-    a: "Yes. We only read data. We cannot modify your billing, create charges, or access card numbers. All supported platforms (Stripe, Polar, Paddle) support restricted read-only keys. Your key is used only during the scan and is never stored or logged.",
+    a: "Short answer: we literally can't touch your billing. The key you give us is read-only, enforced by Stripe, Paddle, and Polar at the platform level. Not a promise we make. A technical limitation they enforce. The key is used once during the scan and never stored.",
   },
   {
     q: "Do you store my customers' personal information?",
-    a: "No. We never pull customer names from your billing platform. Customer emails are masked in the UI (j***@example.com) and encrypted in our database. With Privacy Mode enabled, even masked emails and customer IDs are hidden from your dashboard and exports. Recovery actions still work — customer data is decrypted only server-side when sending dunning emails.",
+    a: "No. We never pull customer names from your billing platform. Customer emails are masked in the UI (j***@example.com) and encrypted in our database. With Privacy Mode enabled, even masked emails and customer IDs are hidden from your dashboard and exports. Recovery actions still work. Customer data is decrypted only server-side when sending dunning emails.",
   },
   {
     q: "Which billing platforms do you support?",
-    a: "We support Stripe, Polar.sh, and Paddle. Select your platform on the scan page and we'll guide you through creating an API key. Each platform gets a tailored scan covering the leak types it supports.",
+    a: "Stripe, Polar.sh, and Paddle. Select your platform on the scan page and we'll walk you through creating an API key. Each platform gets a tailored scan covering the leak types it supports.",
   },
   {
     q: "What permissions does the API key need?",
-    a: "Read access for: Customers, Subscriptions, Invoices, Products, Prices, Coupons, and Payment Methods (exact names vary by platform). We provide step-by-step instructions on the scan page. It takes about 60 seconds to create.",
+    a: "Read access for: Customers, Subscriptions, Invoices, Products, Prices, Coupons, and Payment Methods (exact names vary by platform). We show you exactly how on the scan page. Takes about 60 seconds.",
   },
   {
     q: "How long does the scan take?",
-    a: "Under 90 seconds for most accounts. Larger accounts (1,000+ customers) may take up to 3 minutes. You'll see real-time progress as we scan each category.",
+    a: "Under 90 seconds for most accounts. Larger accounts (1,000+ customers) may take up to 3 minutes. You'll see real-time progress as each category gets scanned.",
   },
   {
     q: "What exactly do you scan for?",
-    a: "We run 10 automated checks: (1) Expired coupons still discounting, (2) Legacy pricing below current rates, (3) Forever discounts with no end date, (4) Ghost subscriptions stuck in bad states, (5) Expiring cards within 90 days, (6) Uncollected revenue with open invoices, (7) Missing payment methods on active subscriptions, (8) Unbilled overages — quantity mismatches and usage exceeding plan limits, (9) Expired trials — subscriptions stuck in 'trialing' status long past the trial period, (10) Duplicate subscriptions — customers charged twice after a failed upgrade or migration.",
+    a: "10 checks: expired coupons, legacy pricing, forever discounts, ghost subscriptions, expiring cards, uncollected revenue, missing payment methods, unbilled overages, expired trials, and duplicate subscriptions. Each one is a different way money slips through your billing without anyone noticing.",
   },
   {
     q: "What do I do with the report?",
-    a: "Open the report. See the leak. See the dollar amount. See the one-sentence fix. Click the link. It takes you straight to that customer in your billing dashboard. Fix it. That money hits your account next billing cycle.",
+    a: "Open it. See the leak, the dollar amount, and a one-sentence fix. Click the link, it takes you straight to that customer in your billing dashboard. Fix it. That money hits your account next billing cycle.",
   },
   {
     q: "What if you don't find any leaks?",
-    a: "Then your billing is in better shape than 94% of the SaaS accounts we've scanned. You'll get a perfect health score and genuine peace of mind. The free scan costs you nothing either way. If you're on a paid plan and we find less than $1,000/mo, you pay nothing. We can afford that guarantee because it almost never happens.",
+    a: "Then your billing is in better shape than 94% of the accounts we've scanned. You get a perfect health score and some peace of mind. The free scan costs you nothing either way. If you're on a paid plan and we find less than $1,000/mo, you pay nothing. We can afford that guarantee because honestly, it almost never happens.",
   },
   {
     q: "Is this the same as chargeback recovery?",
-    a: "No. Chargeback tools handle disputed payments. We find revenue you earned but aren't collecting: expired discounts still running, subscriptions stuck in failed states, cards about to expire, and outdated pricing that was never updated. Different problem, different fix.",
+    a: "No. Chargeback tools handle disputed payments. We find revenue you earned but aren't collecting: expired discounts still running, subscriptions stuck in failed states, cards about to expire, pricing that was never updated. Different problem, different fix.",
   },
   {
     q: "Can I cancel the monthly plan anytime?",
@@ -52,7 +52,7 @@ const faqs = [
   /* Trust FAQ — damaging admission + transparency (Hormozi Hack #5) */
   {
     q: "Why should I trust you with my billing data?",
-    a: "Fair question. Here's the honest answer: you shouldn't blindly trust anyone with your billing data. That's why we designed RevReclaim to work with restricted, read-only API keys, scoped to specific resources. We only perform read operations, never modify your data, never see card numbers, and never store the key after the scan.",
+    a: "Honestly? You probably shouldn't trust anyone blindly with your billing data. That's exactly why we built RevReclaim to work with restricted, read-only API keys, scoped to specific resources. We can't modify your data, we never see card numbers, and we don't store the key after the scan.",
   },
 ];
 

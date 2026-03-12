@@ -167,11 +167,11 @@ export function FinalCTA() {
         <div className="mt-16 mx-auto max-w-lg px-4 md:px-0 text-left">
           <p className="text-sm md:text-base text-text-muted leading-relaxed">
             <span className="font-semibold text-white">P.S.</span> Imagine opening your
-            billing dashboard tomorrow knowing that every subscription is collecting, every
-            coupon is correct, every card is current. That&apos;s what our founders tell us
+            billing dashboard tomorrow knowing that every subscription is collecting,
+            coupons are correct, cards are current. That&apos;s what our founders tell us
             after their first scan. Not &ldquo;wow, I had leaks&rdquo; but &ldquo;I finally know my
             revenue number is real.&rdquo; Run the free scan. 90 seconds. The worst case is you
-            wasted 90 seconds. The best case is you just found your next raise.
+            wasted 90 seconds. The best case? You probably don&apos;t want to think about how long those leaks have been running.
           </p>
           <p className="mt-4 text-sm md:text-base text-text-muted leading-relaxed">
             <span className="font-semibold text-white">P.P.S.</span> We scan

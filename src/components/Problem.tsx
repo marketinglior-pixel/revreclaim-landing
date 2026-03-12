@@ -18,8 +18,8 @@ export function Problem() {
           <span className="text-text-muted">Here&apos;s what the full picture looks like.</span>
         </h2>
         <p className="mb-12 max-w-2xl text-lg leading-relaxed text-text-muted">
-          You track churn. You track MRR. You track CAC.
-          But nobody tracks the money that&apos;s already yours and isn&apos;t arriving.
+          You track churn. You track MRR. You probably track CAC too.
+          But nobody tracks the money that&apos;s already yours and just... isn&apos;t arriving.
           <br />
           <span className="text-white font-semibold">Stripe doesn&apos;t alert you when a coupon expires and keeps running.
           Paddle doesn&apos;t flag ghost subscriptions. Nobody does.</span>

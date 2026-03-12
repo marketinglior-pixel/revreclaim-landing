@@ -7,7 +7,7 @@ const leaks = [
     description:
       "Your sales rep promised '3 months at 50% off.' That was 8 months ago. The coupon expired. The discount is still running. Nobody canceled it. Nobody noticed.",
     impact: "Most common leak. 35% of all scans",
-    afterFix: "Full-price revenue starts hitting your account next cycle.",
+    afterFix: "Full-price revenue, starting next cycle.",
     severity: "HIGH",
   },
   {
@@ -55,7 +55,7 @@ const leaks = [
     description:
       "An active subscription with no credit card attached. The next billing attempt will fail. That customer will silently disappear. You'll count it as churn. It wasn't.",
     impact: "Next payment = guaranteed failure",
-    afterFix: "That subscription keeps paying. No silent disappearance.",
+    afterFix: "That subscription keeps paying. No silent churn.",
     severity: "CRITICAL",
   },
   {
@@ -77,7 +77,7 @@ const leaks = [
   {
     title: "Duplicate Subscriptions",
     description:
-      "A customer upgraded their plan, but the old subscription was never canceled. They're paying for both. When they notice — and they will — you'll get a chargeback, not a thank you.",
+      "A customer upgraded their plan, but the old subscription was never canceled. They're paying for both. When they notice (and they will), you'll get a chargeback, not a thank you.",
     impact: "Double-charge = chargeback risk",
     afterFix: "Customer stays happy. No chargeback. Clean billing going forward.",
     severity: "CRITICAL",

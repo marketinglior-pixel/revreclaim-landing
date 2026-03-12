@@ -22,7 +22,7 @@ const valueItems = [
       </svg>
     ),
     name: "Billing Health Score",
-    description: "Like a credit score for your billing system — compared to industry benchmarks",
+    description: "Like a credit score for your billing system, compared to industry benchmarks",
     value: "$200",
   },
   {
@@ -32,7 +32,7 @@ const valueItems = [
       </svg>
     ),
     name: "Customer-Level Leak Report",
-    description: "Names, emails, dollar amounts — every customer who owes you money",
+    description: "Names, emails, dollar amounts. Every customer who owes you money",
     value: "$800",
   },
   {
@@ -42,7 +42,7 @@ const valueItems = [
       </svg>
     ),
     name: "Fix Playbook",
-    description: "Step-by-step instructions to fix every single leak we find",
+    description: "How to fix each leak, step by step",
     value: "$300",
   },
   {
@@ -52,7 +52,7 @@ const valueItems = [
       </svg>
     ),
     name: "1 AI Recovery Action",
-    description: "Our agent sends a dunning email, retries a charge, or removes a coupon — automatically",
+    description: "Our agent sends a dunning email, retries a charge, or removes a coupon. Automatically.",
     value: "$297",
   },
   {
@@ -134,7 +134,7 @@ export function FreeValueStack() {
           <div className="text-4xl font-extrabold text-brand">$0</div>
           <p className="mt-3 text-sm text-text-muted">
             Why free? Because <span className="text-white font-semibold">94% of founders who see their leaks</span>{" "}
-            upgrade to fix them automatically. The scan sells itself.
+            upgrade to fix them automatically. The scan usually sells itself.
           </p>
         </div>
 

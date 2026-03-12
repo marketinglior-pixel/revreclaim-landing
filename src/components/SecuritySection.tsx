@@ -11,8 +11,8 @@ export function SecuritySection() {
           Your API key gets less access than a junior developer.
         </h2>
         <p className="mb-16 max-w-2xl text-lg text-text-muted">
-          We designed it that way. The key you create is restricted to read operations only &mdash;
-          enforced by Stripe, Paddle, and Polar at the platform level. Not a promise. A technical limitation.
+          We designed it that way. The key you create is restricted to read operations only.
+          Enforced by Stripe, Paddle, and Polar at the platform level. Not a promise. A technical limitation.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -26,7 +26,7 @@ export function SecuritySection() {
             <h3 className="text-lg font-bold text-white mb-2">Nothing changes in your billing. Ever.</h3>
             <p className="text-sm text-text-muted leading-relaxed">
               The API key you create is restricted to read operations. RevReclaim cannot create charges,
-              modify subscriptions, or cancel anything. This is enforced by the platform &mdash; it&apos;s technically impossible.
+              modify subscriptions, or cancel anything. This is enforced by the platform. It&apos;s technically impossible.
             </p>
           </div>
 
@@ -37,7 +37,7 @@ export function SecuritySection() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">Your key exists for 90 seconds. Then it&apos;s gone.</h3>
+            <h3 className="text-lg font-bold text-white mb-2">We delete your key after the scan.</h3>
             <p className="text-sm text-text-muted leading-relaxed">
               Your key is processed in memory during the scan and discarded immediately after.
               Never written to a database, never logged, never visible to our team. The scan takes 90 seconds.
@@ -52,10 +52,10 @@ export function SecuritySection() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">Your data is yours. Even we can&apos;t see it.</h3>
+            <h3 className="text-lg font-bold text-white mb-2">Even our own team can&apos;t see your data.</h3>
             <p className="text-sm text-text-muted leading-relaxed">
               TLS 1.3 in transit. AES-256-GCM at rest (for auto-scan users only).
-              Row Level Security in the database. Your data is isolated &mdash; even we can&apos;t see it.
+              Row Level Security in the database. Basically, your data is in a vault even we can&apos;t open.
             </p>
           </div>
 

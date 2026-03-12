@@ -27,7 +27,7 @@ export function Hero() {
           {" "}<span className="bg-gradient-to-r from-danger to-warning bg-clip-text text-transparent">$2,500 every month.</span>
         </h1>
         <p className="mb-10 text-xl font-medium text-text-muted md:text-2xl animate-fade-in-up animate-delay-250">
-          A <span className="text-white font-semibold">$2,847 revenue audit</span>. 10 checks. Every leak identified. Dollar amounts.
+          A <span className="text-white font-semibold">$2,847 revenue audit</span>. 10 checks. Every leak, with dollar amounts.
           <br />
           <span className="text-base md:text-lg">Fix instructions. One free recovery action. Done in 90&nbsp;seconds.</span>
         </p>

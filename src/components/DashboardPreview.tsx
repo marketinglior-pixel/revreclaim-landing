@@ -9,8 +9,8 @@ export function DashboardPreview() {
           In 90 seconds, this will be your screen.
         </h2>
         <p className="mx-auto mb-12 max-w-2xl text-center text-lg text-text-muted">
-          Every customer who owes you money. Every dollar amount. Every fix &mdash; one click away.
-          This is what you&apos;ll see 90 seconds after you paste your key.
+          Every customer who owes you money. Dollar amounts. Fix instructions, one click away.
+          This is what your screen looks like 90 seconds after you paste your key.
         </p>
 
         {/* Dashboard mockup */}
@@ -141,7 +141,7 @@ export function DashboardPreview() {
             </svg>
           </a>
           <p className="mt-3 text-sm text-text-muted">
-            90 seconds from now, you&apos;ll know exactly how much you&apos;re leaving on the table.
+            This is what 90 seconds of your time gets you.
           </p>
         </div>
       </div>
@@ -195,7 +195,7 @@ function LeakTableRow({ severity, type, customer, impact, detail, fix }: {
       </span>
       {(severity === "CRITICAL" || severity === "HIGH") && (
         <span className="ml-2 inline-block rounded-full bg-brand/20 px-3 py-1 text-xs font-bold text-brand border border-brand/30">
-          Auto-Fix — Free
+          Auto-Fix (Free)
         </span>
       )}
     </div>

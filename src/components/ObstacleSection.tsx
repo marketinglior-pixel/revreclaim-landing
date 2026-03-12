@@ -5,7 +5,7 @@ import { useSectionView } from "@/hooks/useSectionView";
 const obstacles = [
   {
     question: "Is my API key safe?",
-    answer: "Read-only. Deleted after scan. Platform-enforced — gets less access than a junior developer.",
+    answer: "Read-only. Deleted after scan. Platform-enforced. Gets less access than a junior developer.",
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -91,7 +91,7 @@ export function ObstacleSection() {
           <span className="text-text-muted">Answered.</span>
         </h2>
         <p className="mx-auto mb-12 max-w-xl text-center text-lg text-text-muted">
-          We&apos;ve heard them all. Here&apos;s the truth.
+          We get these a lot. Here you go.
         </p>
 
         <div className="grid gap-4 sm:grid-cols-2">
