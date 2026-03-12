@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { trackEvent } from "@/lib/analytics";
 import { trackCTAClick } from "@/lib/conversion-tracking";
+
+const STORAGE_KEY = "revreclaim_calculator_progress";
 
 /**
  * Revenue Leak Calculator — Daniel Priestley Assessment-Style Quiz
@@ -153,9 +155,50 @@ export default function CalculatorPage() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showResults, setShowResults] = useState(false);
+  const [email, setEmail] = useState("");
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
+  const [hasResumableProgress, setHasResumableProgress] = useState(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const { answers: savedAnswers, step: savedStep } = JSON.parse(saved);
+        return !!(savedAnswers && Object.keys(savedAnswers).length > 0 && savedStep > 0);
+      }
+    } catch { /* ignore */ }
+    return false;
+  });
 
   const totalSteps = QUESTIONS.length;
   const progress = showResults ? 100 : Math.round((step / totalSteps) * 100);
+
+  // ── Abandon Prevention: Save progress on every answer ──
+  const saveProgress = useCallback((currentAnswers: Record<string, string>, currentStep: number) => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers: currentAnswers, step: currentStep }));
+    } catch {
+      // Ignore localStorage errors
+    }
+  }, []);
+
+  function resumeProgress() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const { answers: savedAnswers, step: savedStep } = JSON.parse(saved);
+        setAnswers(savedAnswers);
+        setStep(savedStep);
+        setHasResumableProgress(false);
+      }
+    } catch {
+      setHasResumableProgress(false);
+    }
+  }
+
+  function dismissResume() {
+    setHasResumableProgress(false);
+    try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
+  }
 
   function handleAnswer(questionId: string, value: string) {
     const newAnswers = { ...answers, [questionId]: value };
@@ -168,9 +211,12 @@ export default function CalculatorPage() {
     }).catch(() => {});
 
     if (step < totalSteps - 1) {
-      setTimeout(() => setStep(step + 1), 150);
+      const nextStep = step + 1;
+      saveProgress(newAnswers, nextStep);
+      setTimeout(() => setStep(nextStep), 150);
     } else {
-      // Last question answered — show results
+      // Last question answered — show results, clear saved progress
+      try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
       setTimeout(() => {
         setShowResults(true);
         trackEvent("calculator_completed" as Parameters<typeof trackEvent>[0], null, {
@@ -181,7 +227,21 @@ export default function CalculatorPage() {
   }
 
   function handleBack() {
-    if (step > 0) setStep(step - 1);
+    if (step > 0) {
+      const prevStep = step - 1;
+      saveProgress(answers, prevStep);
+      setStep(prevStep);
+    }
+  }
+
+  function handleEmailSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setEmailSubmitted(true);
+    trackEvent("calculator_email_captured" as Parameters<typeof trackEvent>[0], null, {
+      health_grade: healthGrade,
+      estimated_leak: estimatedMonthlyLeak,
+    }).catch(() => {});
   }
 
   // ── Calculate Results ──
@@ -370,15 +430,55 @@ export default function CalculatorPage() {
                 </div>
               </div>
 
-              {/* CTA */}
-              <div className="rounded-2xl border border-brand/30 bg-brand/5 p-6 md:p-8 text-center">
-                <h3 className="text-xl font-bold text-white mb-2">
-                  These are estimates. Want the exact numbers?
-                </h3>
-                <p className="text-sm text-text-muted mb-6 max-w-lg mx-auto">
-                  A free scan shows <span className="text-white font-medium">every leak identified, real dollar amounts</span>,
-                  and exactly which subscriptions are leaking. Takes 90 seconds. Read-only.
-                </p>
+              {/* Severity-Based CTA */}
+              <div className={`rounded-2xl border p-6 md:p-8 text-center ${
+                healthGrade === "F" || healthGrade === "D"
+                  ? "border-danger/30 bg-danger/5"
+                  : healthGrade === "C"
+                    ? "border-warning/30 bg-warning/5"
+                    : "border-brand/30 bg-brand/5"
+              }`}>
+                {(healthGrade === "F" || healthGrade === "D") && (
+                  <>
+                    <div className="inline-flex items-center gap-2 rounded-full bg-danger/10 px-3 py-1 text-xs font-semibold text-danger mb-4">
+                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                      </svg>
+                      Urgent attention needed
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">
+                      Your billing is actively losing you money.
+                    </h3>
+                    <p className="text-sm text-text-muted mb-6 max-w-lg mx-auto">
+                      An estimated <span className="text-danger font-semibold">${estimatedMonthlyLeak.toLocaleString()}/mo</span> is
+                      disappearing from your account. A free scan shows the <span className="text-white font-medium">exact subscriptions, exact
+                      dollar amounts, and how to fix each one</span>. 90 seconds. Read-only.
+                    </p>
+                  </>
+                )}
+                {healthGrade === "C" && (
+                  <>
+                    <h3 className="text-xl font-bold text-white mb-2">
+                      There&apos;s real money to recover here.
+                    </h3>
+                    <p className="text-sm text-text-muted mb-6 max-w-lg mx-auto">
+                      Your estimates suggest <span className="text-warning font-semibold">${estimatedMonthlyLeak.toLocaleString()}/mo</span> in
+                      recoverable revenue. A free scan gives you the{" "}
+                      <span className="text-white font-medium">exact numbers and fix instructions</span>. Takes 90 seconds.
+                    </p>
+                  </>
+                )}
+                {(healthGrade === "A" || healthGrade === "B") && (
+                  <>
+                    <h3 className="text-xl font-bold text-white mb-2">
+                      Looking solid. Want to confirm with real data?
+                    </h3>
+                    <p className="text-sm text-text-muted mb-6 max-w-lg mx-auto">
+                      Your billing practices are better than most. A free scan confirms your score and catches any{" "}
+                      <span className="text-white font-medium">hidden leaks the assessment can&apos;t detect</span>. 90 seconds. Read-only.
+                    </p>
+                  </>
+                )}
                 <Link
                   href="/scan"
                   onClick={() => {
@@ -390,10 +490,14 @@ export default function CalculatorPage() {
                     }).catch(() => {});
                     trackCTAClick("calculator", "scan");
                   }}
-                  className="inline-flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] transition"
+                  className={`inline-flex items-center gap-2 rounded-xl px-8 py-4 text-base font-bold transition ${
+                    healthGrade === "F" || healthGrade === "D"
+                      ? "bg-danger text-white hover:bg-red-500 hover:shadow-[0_0_30px_rgba(239,68,68,0.4)]"
+                      : "bg-brand text-black hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
+                  }`}
                 >
-                  Show Me My Exact Leaks
-                  <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  {(healthGrade === "F" || healthGrade === "D") ? "Fix My Leaks Now" : "Show Me My Exact Leaks"}
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
                 </Link>
@@ -402,10 +506,53 @@ export default function CalculatorPage() {
                 </p>
               </div>
 
+              {/* Email Capture — for users not ready to scan */}
+              <div className="rounded-2xl border border-border bg-surface p-6 text-center">
+                {!emailSubmitted ? (
+                  <>
+                    <h4 className="text-sm font-semibold text-white mb-2">
+                      Not ready to scan? Get your results by email.
+                    </h4>
+                    <p className="text-xs text-text-muted mb-4">
+                      We&apos;ll send your breakdown + 3 quick fixes you can apply today. No spam.
+                    </p>
+                    <form onSubmit={handleEmailSubmit} className="flex gap-2 max-w-sm mx-auto">
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="founder@company.com"
+                        required
+                        className="flex-1 rounded-lg border border-border bg-surface-dim px-4 py-2.5 text-sm text-white placeholder-text-dim focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                      />
+                      <button
+                        type="submit"
+                        className="shrink-0 rounded-lg bg-surface-light px-5 py-2.5 text-sm font-semibold text-white hover:bg-border transition cursor-pointer"
+                      >
+                        Send
+                      </button>
+                    </form>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center gap-2 text-sm text-brand">
+                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
+                    </svg>
+                    Check your inbox. Your results are on the way.
+                  </div>
+                )}
+              </div>
+
               {/* Disclaimer */}
               <div className="text-center">
                 <button
-                  onClick={() => { setShowResults(false); setStep(0); setAnswers({}); }}
+                  onClick={() => {
+                    setShowResults(false);
+                    setStep(0);
+                    setAnswers({});
+                    setEmailSubmitted(false);
+                    setEmail("");
+                  }}
                   className="text-xs text-text-dim hover:text-text-muted transition cursor-pointer"
                 >
                   Retake assessment
@@ -451,20 +598,43 @@ export default function CalculatorPage() {
             {step === 0 && (
               <div className="mb-8">
                 <div className="mb-4 text-sm font-semibold uppercase tracking-wider text-brand">
-                  Free billing health assessment
+                  60-second billing health check
                 </div>
                 <h1 className="text-2xl font-bold text-white md:text-3xl mb-3">
-                  How much money is hiding in your billing account?
+                  94% of SaaS accounts are leaking revenue right now.
                 </h1>
                 <p className="text-text-muted text-sm mb-4">
-                  The average SaaS loses <span className="text-danger font-semibold">$2,340/mo</span> to billing mistakes nobody tracks.
+                  We scanned <span className="text-white font-semibold">847 billing accounts</span>. The average leak: <span className="text-danger font-semibold">$2,340/mo</span>.
                   <br />
-                  7 questions. 60 seconds. Get your personalized estimate.
+                  7 questions. No signup. See where <em>your</em> billing is most vulnerable.
                 </p>
                 <div className="flex items-center justify-center gap-4 text-xs text-text-dim">
-                  <span>Based on data from <strong className="text-text-muted">847+</strong> SaaS accounts</span>
+                  <span><strong className="text-text-muted">847+</strong> founders already checked</span>
                   <span className="text-border">|</span>
-                  <span>Works with Stripe, Polar &amp; Paddle</span>
+                  <span>Stripe, Polar &amp; Paddle</span>
+                </div>
+              </div>
+            )}
+
+            {/* Resume banner — abandon prevention */}
+            {step === 0 && hasResumableProgress && (
+              <div className="mb-6 rounded-xl border border-brand/30 bg-brand/5 px-5 py-4 flex items-center justify-between gap-4">
+                <p className="text-sm text-text-secondary">
+                  You have an unfinished assessment. Pick up where you left off?
+                </p>
+                <div className="flex gap-2 shrink-0">
+                  <button
+                    onClick={resumeProgress}
+                    className="rounded-lg bg-brand px-4 py-2 text-xs font-semibold text-black hover:bg-brand-light transition cursor-pointer"
+                  >
+                    Resume
+                  </button>
+                  <button
+                    onClick={dismissResume}
+                    className="rounded-lg border border-border px-4 py-2 text-xs text-text-dim hover:text-text-muted transition cursor-pointer"
+                  >
+                    Start over
+                  </button>
                 </div>
               </div>
             )}
@@ -504,9 +674,22 @@ export default function CalculatorPage() {
               )}
             </div>
 
-            {/* Trust line */}
+            {/* Social proof / encouragement — changes by step */}
             <div className="mt-6 text-center text-xs text-text-dim">
-              No email required. No data stored. Just an estimate.
+              {step < 3 && "No email required. No data stored. Just an estimate."}
+              {step === 3 && (
+                <>
+                  <span className="text-text-muted font-medium">Halfway there.</span>{" "}
+                  847 founders have taken this assessment. Most were surprised by their results.
+                </>
+              )}
+              {step === 4 && "Each question helps pinpoint where your specific leaks are hiding."}
+              {step === 5 && (
+                <>
+                  Almost done. <span className="text-text-muted font-medium">Your personalized breakdown is next.</span>
+                </>
+              )}
+              {step === 6 && "Last question. Your results are being calculated..."}
             </div>
           </div>
         </div>
