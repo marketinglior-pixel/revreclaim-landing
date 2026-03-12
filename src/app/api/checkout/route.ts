@@ -39,9 +39,9 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { plan, discountId, billing } = body;
 
-    if (!plan || !["pro", "team"].includes(plan)) {
+    if (!plan || !["watch", "pro", "team"].includes(plan)) {
       return NextResponse.json(
-        { error: "Invalid plan. Choose 'pro' or 'team'." },
+        { error: "Invalid plan. Choose 'watch', 'pro', or 'team'." },
         { status: 400 }
       );
     }
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     const url = await createCheckout({
       userId: user.id,
       email: user.email!,
-      plan: plan as "pro" | "team",
+      plan: plan as "watch" | "pro" | "team",
       baseUrl,
       billing: billingInterval as "monthly" | "annual",
       ...(discountId && typeof discountId === "string" ? { discountId } : {}),

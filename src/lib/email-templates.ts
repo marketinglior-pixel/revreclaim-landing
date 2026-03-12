@@ -130,8 +130,8 @@ export function scanCompleteEmailHtml(summary: {
 }
 
 export function upgradeConfirmationEmailHtml(plan: string): string {
-  const planName = plan === "pro" ? "Pro" : "Team";
-  const price = plan === "pro" ? "$299" : "$499";
+  const planName = plan === "watch" ? "Leak Watch" : plan === "pro" ? "Pro" : "Team";
+  const price = plan === "watch" ? "$79" : plan === "pro" ? "$299" : "$499";
 
   return baseLayout(`Welcome to RevReclaim ${planName}!`, `
     <div style="text-align:center;margin-bottom:24px;">

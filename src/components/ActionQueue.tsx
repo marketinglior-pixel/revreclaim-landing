@@ -8,7 +8,7 @@ import { trackRecoveryExecuted } from "@/lib/conversion-tracking";
 import { PostFixSurvey } from "./dashboard/PostFixSurvey";
 
 interface ActionQueueProps {
-  plan: "free" | "pro" | "team";
+  plan: "free" | "watch" | "pro" | "team";
   privacyMode?: boolean;
 }
 

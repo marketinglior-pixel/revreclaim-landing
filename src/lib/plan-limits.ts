@@ -1,4 +1,4 @@
-export type PlanType = "free" | "pro" | "team";
+export type PlanType = "free" | "watch" | "pro" | "team";
 
 export const PLAN_LIMITS: Record<PlanType, {
   scansPerMonth: number;
@@ -7,18 +7,21 @@ export const PLAN_LIMITS: Record<PlanType, {
   recoveryActions: boolean | number; // number = limited free actions, true = unlimited, false = none
 }> = {
   free: { scansPerMonth: 1, autoScans: false, teamMembers: 0, recoveryActions: 1 },
+  watch: { scansPerMonth: 1, autoScans: true, teamMembers: 0, recoveryActions: 1 },
   pro: { scansPerMonth: Infinity, autoScans: true, teamMembers: 0, recoveryActions: true },
   team: { scansPerMonth: Infinity, autoScans: true, teamMembers: 10, recoveryActions: true },
 };
 
 export const PLAN_DISPLAY_NAMES: Record<PlanType, string> = {
   free: "Free",
+  watch: "Leak Watch",
   pro: "Pro",
   team: "Team",
 };
 
 export const PLAN_PRICES: Record<PlanType, number> = {
   free: 0,
+  watch: 79,
   pro: 299,
   team: 499,
 };
@@ -37,8 +40,10 @@ export function canRunScan(
       allowed: false,
       reason:
         plan === "free"
-          ? "Free plan allows 1 scan per month. Upgrade to Pro for unlimited scans."
-          : "Scan limit reached for this billing period.",
+          ? "Free plan allows 1 scan per month. Upgrade to Leak Watch for monthly monitoring or Pro for unlimited scans."
+          : plan === "watch"
+            ? "Leak Watch includes 1 automated scan per month. Upgrade to Pro for unlimited scans."
+            : "Scan limit reached for this billing period.",
     };
   }
 
@@ -79,7 +84,7 @@ export function canUseRecoveryActions(
     return {
       allowed: false,
       reason:
-        "Recovery actions require a Pro or Team plan. Upgrade to send dunning emails and auto-fix leaks.",
+        "Auto-recovery requires a Pro or Team plan. Upgrade to send dunning emails and auto-fix leaks.",
     };
   }
 

@@ -123,7 +123,7 @@ export async function sendUpgradeConfirmationEmail(
   plan: string
 ): Promise<void> {
   try {
-    const planName = plan === "pro" ? "Pro" : "Team";
+    const planName = plan === "watch" ? "Leak Watch" : plan === "pro" ? "Pro" : "Team";
     await getResend().emails.send({
       from: FROM,
       to,

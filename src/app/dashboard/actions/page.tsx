@@ -24,7 +24,7 @@ export default async function ActionsPage() {
     .eq("id", user.id)
     .single();
 
-  const plan = (profile?.plan || "free") as "free" | "pro" | "team";
+  const plan = (profile?.plan || "free") as "free" | "watch" | "pro" | "team";
 
   // Fetch privacy mode setting
   const { data: scanConfig } = await supabase

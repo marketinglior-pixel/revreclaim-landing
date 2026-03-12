@@ -23,7 +23,6 @@ const plans = [
       "1 AI recovery action: auto-fix your biggest leak",
       "Step-by-step fix instructions for every leak found",
       "PDF & CSV export to share with your team",
-      "Monthly re-scan to catch new leaks",
     ],
     cta: "Get My Free $2,847 Audit",
     href: "/scan",
@@ -39,8 +38,29 @@ const plans = [
       { name: "1 AI Recovery Action", value: "$297" },
       { name: "PDF/CSV Export", value: "$150" },
       { name: "Industry Benchmarks", value: "$200" },
-      { name: "Monthly Re-scan", value: "$400" },
     ],
+  },
+  {
+    name: "Leak Watch",
+    badge: "SMART START",
+    monthlyPrice: "$79",
+    annualPrice: "$790",
+    annualMonthly: "$66",
+    period: "/month",
+    description: "Your billing gets checked every month. You get alerts. No surprises.",
+    features: [
+      "Everything in Revenue X-Ray",
+      "Monthly automated re-scan",
+      "Email alerts when new leaks appear",
+      "Leak trend tracking over time",
+      "Priority email support (< 24hr)",
+    ],
+    cta: "Start Watching My Revenue →",
+    href: "#",
+    highlighted: false,
+    isPaid: true,
+    planId: "watch",
+    valueStack: { recovery: "$2,340", support: "$200", total: "$2,540", roi: "30x" },
   },
   {
     name: "Revenue Shield",
@@ -51,15 +71,12 @@ const plans = [
     period: "/month",
     description: "Runs in the background. You build, it watches your billing.",
     features: [
-      "Everything in Revenue X-Ray",
-      "Scan anytime something feels off",
-      "New leaks caught automatically every week",
-      "Know the moment money starts slipping",
-      "Watch your revenue health improve over time",
+      "Everything in Leak Watch",
+      "Weekly scans (not just monthly)",
       "Auto-recovery on failed payments",
-      "Catches failing payments before they churn",
-      "Privacy Mode: your customers stay anonymous",
-      "Alerts where you already work (Slack or email)",
+      "Pre-churn alerts on expiring cards",
+      "Privacy Mode: customers stay anonymous",
+      "Slack + email alerts",
       "Priority support (< 4hr response)",
     ],
     cta: "Start Recovering Revenue →",
@@ -79,7 +96,7 @@ const plans = [
     description: "Everything your revenue team needs in one dashboard.",
     features: [
       "Everything in Revenue Shield",
-      "Your whole revenue team sees the same picture",
+      "Multi-user team access",
       "One dashboard. Everyone aligned on revenue health",
       "Pipe revenue alerts into your existing tools",
       "Full audit trail for board reporting & compliance",
@@ -126,7 +143,7 @@ export function Pricing() {
 
       // Track checkout event (fire-and-forget)
       trackEvent("checkout_started", null, { plan: planId, billing }).catch(() => {});
-      trackCheckoutStarted(planId, planId === "pro" ? 29 : 79);
+      trackCheckoutStarted(planId, planId === "watch" ? 79 : planId === "pro" ? 299 : 499);
 
       // Redirect to Polar Checkout
       globalThis.location.assign(data.url);
@@ -147,11 +164,11 @@ export function Pricing() {
           Choose how much money you want back.
         </h2>
         <p className="mx-auto mb-10 max-w-2xl text-center text-lg text-text-muted">
-          The free audit finds your leaks. The paid plans fix them automatically, forever.
+          The free audit finds your leaks. Paid plans watch and fix them automatically.
           <br />
           Average recovery: <span className="text-white font-semibold">$2,340/mo</span>.
-          Pro plan: <span className="text-white font-semibold">{billing === "annual" ? "$249" : "$299"}/mo</span>.
-          That&apos;s <span className="text-brand font-semibold">{billing === "annual" ? "$25,092" : "$24,492"}/year you keep</span>.
+          Start monitoring for <span className="text-white font-semibold">{billing === "annual" ? "$66" : "$79"}/mo</span> or
+          auto-recover for <span className="text-white font-semibold">{billing === "annual" ? "$249" : "$299"}/mo</span>.
         </p>
 
         {/* Billing toggle */}
@@ -196,7 +213,7 @@ export function Pricing() {
           </div>
         )}
 
-        <div className="grid gap-6 md:grid-cols-3 lg:gap-8">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 lg:gap-6">
           {plans.map((plan) => {
             const displayPrice = billing === "annual" && plan.isPaid
               ? plan.annualMonthly

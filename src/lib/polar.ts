@@ -22,6 +22,10 @@ function getServiceClient() {
  * Set these in your environment variables after creating products in Polar dashboard.
  */
 export const PLAN_PRODUCT_MAP: Record<string, Record<string, string | undefined>> = {
+  watch: {
+    monthly: process.env.POLAR_WATCH_PRODUCT_ID,
+    annual: process.env.POLAR_WATCH_ANNUAL_PRODUCT_ID,
+  },
   pro: {
     monthly: process.env.POLAR_PRO_PRODUCT_ID,
     annual: process.env.POLAR_PRO_ANNUAL_PRODUCT_ID,
@@ -37,7 +41,12 @@ export const PLAN_PRODUCT_MAP: Record<string, Record<string, string | undefined>
  */
 export function getPlanFromProductId(
   productId: string
-): "pro" | "team" | null {
+): "watch" | "pro" | "team" | null {
+  if (
+    productId === process.env.POLAR_WATCH_PRODUCT_ID ||
+    productId === process.env.POLAR_WATCH_ANNUAL_PRODUCT_ID
+  )
+    return "watch";
   if (
     productId === process.env.POLAR_PRO_PRODUCT_ID ||
     productId === process.env.POLAR_PRO_ANNUAL_PRODUCT_ID
@@ -70,7 +79,7 @@ export async function createCheckout({
 }: {
   userId: string;
   email: string;
-  plan: "pro" | "team";
+  plan: "watch" | "pro" | "team";
   baseUrl: string;
   discountId?: string;
   billing?: "monthly" | "annual";
