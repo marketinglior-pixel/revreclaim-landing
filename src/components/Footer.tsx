@@ -19,15 +19,15 @@ export function Footer() {
               Find and fix revenue leaks in your billing. Built for SaaS founders.
             </p>
             <a
-              href="https://www.producthunt.com/products/revreclaim?utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-revreclaim"
+              href="https://www.producthunt.com/products/revreclaim?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-revreclaim"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 inline-block transition-opacity hover:opacity-80"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1096804&theme=dark&t=1773346857240"
-                alt="RevReclaim on Product Hunt"
+                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1096804&theme=light&t=1773346857240"
+                alt="RevReclaim - SaaS billing leaks cost you thousands. We find them in 90s. | Product Hunt"
                 width="200"
                 height="43"
                 loading="lazy"
