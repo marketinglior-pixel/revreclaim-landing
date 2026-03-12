@@ -60,7 +60,7 @@ const plans = [
     highlighted: false,
     isPaid: true,
     planId: "watch",
-    valueStack: { recovery: "$2,340", support: "$200", total: "$2,540", roi: "30x" },
+    valueStack: { recovery: "$2,340", crm: null as string | null, support: "$200", total: "$2,540", roi: "30x" },
   },
   {
     name: "Revenue Shield",
@@ -75,6 +75,8 @@ const plans = [
       "Weekly scans (not just monthly)",
       "Auto-recovery on failed payments",
       "Pre-churn alerts on expiring cards",
+      "HubSpot CRM integration — see WHY each leak matters",
+      "Leak priority ranking based on customer activity",
       "Privacy Mode: customers stay anonymous",
       "Slack + email alerts",
       "Priority support (< 4hr response)",
@@ -84,7 +86,7 @@ const plans = [
     highlighted: true,
     isPaid: true,
     planId: "pro",
-    valueStack: { recovery: "$2,340", support: "$500", total: "$2,840", roi: "9x" },
+    valueStack: { recovery: "$2,340", crm: "$500", support: "$500", total: "$3,340", roi: "11x" },
   },
   {
     name: "Revenue Command Center",
@@ -96,6 +98,7 @@ const plans = [
     description: "Everything your revenue team needs in one dashboard.",
     features: [
       "Everything in Revenue Shield",
+      "HubSpot CRM integration for every team member",
       "Multi-user team access",
       "One dashboard. Everyone aligned on revenue health",
       "Pipe revenue alerts into your existing tools",
@@ -106,7 +109,7 @@ const plans = [
     highlighted: false,
     isPaid: true,
     planId: "team",
-    valueStack: { recovery: "$2,340", support: "$1,200", total: "$3,540", roi: "7x" },
+    valueStack: { recovery: "$2,340", crm: "$500", support: "$1,200", total: "$4,040", roi: "8x" },
   },
 ];
 
@@ -243,7 +246,15 @@ export function Pricing() {
                   </div>
                 )}
                 <h3 className="mb-1 text-lg font-bold text-white">{plan.name}</h3>
-                <p className="mb-6 text-sm text-text-muted">{plan.description}</p>
+                <p className="mb-3 text-sm text-text-muted">{plan.description}</p>
+                {(plan.planId === "pro" || plan.planId === "team") && (
+                  <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-info/20 bg-info/5 px-3 py-1 text-xs font-semibold text-info">
+                    <svg className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    Now with HubSpot CRM intelligence
+                  </div>
+                )}
                 <div className="mb-1">
                   <span className="text-4xl font-extrabold text-white">{displayPrice}</span>
                   <span className="text-text-muted">{displayPeriod}</span>
@@ -299,6 +310,12 @@ export function Pricing() {
                         <span className="truncate">Avg. monthly recovery</span>
                         <span className="font-semibold shrink-0">{plan.valueStack.recovery}/mo</span>
                       </div>
+                      {plan.valueStack.crm && (
+                        <div className="flex justify-between gap-2 text-text-secondary">
+                          <span className="truncate">CRM leak intelligence</span>
+                          <span className="font-semibold shrink-0">{plan.valueStack.crm}/mo</span>
+                        </div>
+                      )}
                       <div className="flex justify-between gap-2 text-text-secondary">
                         <span className="truncate">Priority support</span>
                         <span className="font-semibold shrink-0">{plan.valueStack.support}/mo</span>

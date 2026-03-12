@@ -9,8 +9,9 @@ export function DashboardPreview() {
           In 90 seconds, this will be your screen.
         </h2>
         <p className="mx-auto mb-12 max-w-2xl text-center text-lg text-text-muted">
-          Every customer who owes you money. Dollar amounts. Fix instructions, one click away.
-          This is what your screen looks like 90 seconds after you paste your key.
+          Every customer who owes you money. Dollar amounts. Priority ranking. Fix instructions, one click away.
+          {" "}<span className="text-white font-semibold">Connect HubSpot and see WHY each leak matters.</span>{" "}
+          This is what 90 seconds gets you.
         </p>
 
         {/* Dashboard mockup */}
@@ -30,7 +31,7 @@ export function DashboardPreview() {
           {/* Dashboard content */}
           <div className="p-6 md:p-8">
             {/* Top stats */}
-            <div className="mb-6 grid gap-4 md:grid-cols-4">
+            <div className="mb-6 grid gap-4 grid-cols-2 md:grid-cols-5">
               {/* Health Score */}
               <div className="rounded-xl border border-border bg-surface-dim p-5 flex flex-col items-center justify-center">
                 <div className="relative w-16 h-16 mb-2">
@@ -61,6 +62,12 @@ export function DashboardPreview() {
                 value="$28,080"
                 sub="/year"
               />
+              <StatCard
+                label="CRM Enriched"
+                value="14"
+                sub="of 23 leaks"
+                info
+              />
             </div>
 
             {/* Leak table */}
@@ -76,6 +83,7 @@ export function DashboardPreview() {
                 impact="$499/mo"
                 detail="Invoice #INV-2847 unpaid for 12 days. Payment attempted but failed."
                 fix="Retry payment or contact customer"
+                crmInsight="Inactive 52 days — likely churning"
               />
               <LeakTableRow
                 severity="CRITICAL"
@@ -108,6 +116,7 @@ export function DashboardPreview() {
                 impact="$100/mo"
                 detail="Paying $149/mo (2023 pricing). Current price: $249/mo. 40% below rate."
                 fix="Migrate to current plan"
+                crmInsight="Active, 2 open deals — upsell candidate"
               />
 
               <LeakTableRow
@@ -117,6 +126,7 @@ export function DashboardPreview() {
                 impact="$199/mo"
                 detail="Customer has 2 active subscriptions for the same product. Old plan not canceled after upgrade."
                 fix="Cancel duplicate & refund overlap"
+                crmInsight="Last activity: 3 days ago — reach out now"
               />
 
               <div className="px-5 py-3 text-center text-xs text-text-muted">
@@ -149,30 +159,32 @@ export function DashboardPreview() {
   );
 }
 
-function StatCard({ label, value, sub, highlight }: {
+function StatCard({ label, value, sub, highlight, info }: {
   label: string;
   value: string;
   sub: string;
   highlight?: boolean;
+  info?: boolean;
 }) {
   return (
-    <div className={`rounded-xl border p-5 ${highlight ? "border-danger/30 bg-danger/5" : "border-border bg-surface-dim"}`}>
+    <div className={`rounded-xl border p-5 ${highlight ? "border-danger/30 bg-danger/5" : info ? "border-info/30 bg-info/5" : "border-border bg-surface-dim"}`}>
       <div className="mb-1 text-xs text-text-muted">{label}</div>
       <div className="flex items-baseline gap-1">
-        <span className={`text-2xl font-bold ${highlight ? "text-danger" : "text-white"}`}>{value}</span>
+        <span className={`text-2xl font-bold ${highlight ? "text-danger" : info ? "text-info" : "text-white"}`}>{value}</span>
         <span className="text-sm text-text-muted">{sub}</span>
       </div>
     </div>
   );
 }
 
-function LeakTableRow({ severity, type, customer, impact, detail, fix }: {
+function LeakTableRow({ severity, type, customer, impact, detail, fix, crmInsight }: {
   severity: string;
   type: string;
   customer: string;
   impact: string;
   detail: string;
   fix: string;
+  crmInsight?: string;
 }) {
   const sevColor =
     severity === "CRITICAL"
@@ -196,6 +208,11 @@ function LeakTableRow({ severity, type, customer, impact, detail, fix }: {
       {(severity === "CRITICAL" || severity === "HIGH") && (
         <span className="ml-2 inline-block rounded-full bg-brand/20 px-3 py-1 text-xs font-bold text-brand border border-brand/30">
           Auto-Fix (Free)
+        </span>
+      )}
+      {crmInsight && (
+        <span className="ml-2 inline-block rounded-full bg-info/10 px-3 py-1 text-xs font-semibold text-info border border-info/20">
+          CRM: {crmInsight}
         </span>
       )}
     </div>

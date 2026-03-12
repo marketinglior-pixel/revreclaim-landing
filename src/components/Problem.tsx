@@ -21,10 +21,13 @@ export function Problem() {
           You track churn. You track MRR. You probably track CAC too.
           But nobody tracks the money that&apos;s already yours and just... isn&apos;t arriving.
           <br />
-          <span className="text-white font-semibold">Stripe doesn&apos;t alert you when a coupon expires and keeps running.
-          Paddle doesn&apos;t flag ghost subscriptions. Nobody does.</span>
+          <span className="text-white font-semibold">Stripe says &ldquo;payment failed.&rdquo; It doesn&apos;t tell you that customer has been inactive for 52 days and is probably gone.
+          Stripe says &ldquo;ghost subscription.&rdquo; It doesn&apos;t tell you that customer has zero CRM activity in 92 days.</span>
           <br />
-          The average SaaS at your stage loses $2,500/month to these blind spots.
+          Same leak. Different customers. Different fix.
+          <br />
+          The average SaaS at your stage loses $2,500/month to these blind spots.{" "}
+          <span className="text-white font-semibold">And wastes hours chasing the wrong ones.</span>
         </p>
 
         {/* Revenue leak visualization */}
@@ -81,6 +84,29 @@ export function Problem() {
             Your competitors who&apos;ve plugged these leaks are reinvesting that{" "}
             <span className="text-white font-semibold">$30,000/year</span> into growth.
           </div>
+        </div>
+
+        {/* Intelligence contrast — the CRM differentiator */}
+        <div className="mt-10 rounded-2xl border border-info/20 bg-info/5 p-6 md:p-8">
+          <div className="mb-5 text-sm font-semibold uppercase tracking-wider text-info">
+            The difference
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-xl border border-border bg-surface-dim p-5">
+              <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-text-dim">What Stripe tells you</div>
+              <p className="text-sm text-text-muted">&ldquo;Payment failed for customer a***@acmecorp.com&rdquo;</p>
+              <div className="mt-3 inline-block rounded-full bg-danger/10 px-3 py-1 text-xs text-danger">No context. No priority.</div>
+            </div>
+            <div className="rounded-xl border border-brand/30 bg-brand/5 p-5">
+              <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-brand">What RevReclaim tells you</div>
+              <p className="text-sm text-text-secondary">&ldquo;Payment failed + customer inactive 52 days + no CRM activity = likely churning. Don&apos;t chase. Write it off.&rdquo;</p>
+              <div className="mt-3 inline-block rounded-full bg-brand/10 px-3 py-1 text-xs text-brand">Context. Priority. Action.</div>
+            </div>
+          </div>
+          <p className="mt-4 text-center text-xs text-text-muted">
+            CRM intelligence available on Pro and Team plans.{" "}
+            <a href="#pricing" className="text-brand hover:underline">See pricing &darr;</a>
+          </p>
         </div>
       </div>
     </section>

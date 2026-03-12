@@ -16,10 +16,10 @@ const steps = [
   },
   {
     number: "03",
-    title: "See the Money. Take It Back.",
+    title: "See the Money. Know Who'll Pay.",
     description:
-      "Every leak, with dollar amounts and a one-click fix. The average founder discovers $2,340/month they didn't know they were missing. Most fix the critical ones before lunch. That money hits your account next billing cycle.",
-    detail: "Average founder recovers $2,340/mo. From customers they already have.",
+      "Every leak, with dollar amounts, priority ranking, and a one-click fix. The average founder discovers $2,340/month they didn't know they were missing. Connect HubSpot (optional) and each leak gets CRM context: is this customer active? Worth chasing? Or a write-off? Most fix the critical ones before lunch.",
+    detail: "Average founder recovers $2,340/mo. CRM intelligence shows which ones to fix first.",
   },
   {
     number: "04",

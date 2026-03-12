@@ -48,9 +48,9 @@ export function FinalCTA() {
 
         {/* Headline — future-focused (85/15 Rule) */}
         <h2 className="relative mb-4 text-3xl font-bold text-white md:text-5xl lg:text-6xl">
-          Stop the leak.
+          Stop guessing which leaks matter.
           <br />
-          <span className="text-text-muted">Keep the money.</span>
+          <span className="text-text-muted">Start knowing.</span>
         </h2>
 
         {/* Future outcome + urgency (85/15 Rule + Hormozi Hack #8) */}
@@ -135,7 +135,10 @@ export function FinalCTA() {
             <span className="font-semibold text-brand">Your first fix is free.</span>{" "}
             See a $499 failed payment sitting there for 12 days? Hit one button.
             Our AI agent retries the charge. That money hits your account next billing cycle.
-            No signup required.
+            <br /><br />
+            <span className="font-semibold text-info">Pro upgrade:</span>{" "}
+            Connect HubSpot and we&apos;ll tell you if that $499 customer is active (worth chasing)
+            or inactive for 52 days (probably gone). Same leak. Totally different response.
           </p>
         </div>
 
@@ -168,10 +171,10 @@ export function FinalCTA() {
           <p className="text-sm md:text-base text-text-muted leading-relaxed">
             <span className="font-semibold text-white">P.S.</span> Imagine opening your
             billing dashboard tomorrow knowing that every subscription is collecting,
-            coupons are correct, cards are current. That&apos;s what our founders tell us
-            after their first scan. Not &ldquo;wow, I had leaks&rdquo; but &ldquo;I finally know my
-            revenue number is real.&rdquo; Run the free scan. 90 seconds. The worst case is you
-            wasted 90 seconds. The best case? You probably don&apos;t want to think about how long those leaks have been running.
+            coupons are correct, cards are current, and you know exactly which customers are
+            worth chasing. That&apos;s what our founders tell us after connecting their CRM.
+            Not just &ldquo;I have leaks&rdquo; but &ldquo;I know which ones to fix first.&rdquo;
+            Run the free scan. 90 seconds. See the leaks. Then decide if you want the intelligence.
           </p>
           <p className="mt-4 text-sm md:text-base text-text-muted leading-relaxed">
             <span className="font-semibold text-white">P.P.S.</span> We scan

@@ -138,6 +138,28 @@ export function FreeValueStack() {
           </p>
         </div>
 
+        {/* Pro intelligence teaser */}
+        <div className="mt-6 rounded-xl border border-info/20 bg-info/5 p-6">
+          <div className="flex items-start gap-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-info/10 text-info">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-white">Want to know which leaks to fix first?</h3>
+              <p className="mt-1 text-xs text-text-muted">
+                Pro plans connect to HubSpot CRM and add intelligence to every leak.
+                Not just &ldquo;payment failed&rdquo; but &ldquo;payment failed + customer inactive 52 days = probably gone.&rdquo;
+                Same scan. Smarter priorities.
+              </p>
+              <a href="#pricing" className="mt-2 inline-block text-xs font-semibold text-info hover:underline">
+                See Pro features &darr;
+              </a>
+            </div>
+          </div>
+        </div>
+
         {/* CTA */}
         <div className="mt-8 text-center">
           <a

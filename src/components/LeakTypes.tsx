@@ -17,6 +17,7 @@ const leaks = [
     impact: "Found in 22% of scans",
     afterFix: "One migration email → instant revenue lift from customers you already have.",
     severity: "MEDIUM",
+    crmExample: "With CRM: Customer active, 2 open deals → perfect upsell. Without CRM: mass email that annoys everyone.",
   },
   {
     title: "Forever Discounts",
@@ -33,6 +34,7 @@ const leaks = [
     impact: "Found in 30% of accounts we scan",
     afterFix: "Clean billing = predictable MRR. No more guessing what's real.",
     severity: "HIGH",
+    crmExample: "With CRM: Zero activity in 92 days → confirmed write-off. Without CRM: chase a ghost.",
   },
   {
     title: "Expiring Cards",
@@ -49,6 +51,7 @@ const leaks = [
     impact: "$499/mo sitting uncollected",
     afterFix: "One click retries the charge. That $499 hits your account within 24 hours.",
     severity: "CRITICAL",
+    crmExample: "With CRM: Customer inactive 52 days → likely churning. Without CRM: you chase a dead lead for a week.",
   },
   {
     title: "Missing Payment Methods",
@@ -131,6 +134,17 @@ export function LeakTypes() {
               <div className="mt-2 text-xs text-text-secondary italic">
                 After fix: {leak.afterFix}
               </div>
+              {leak.crmExample && (
+                <div className="mt-3 rounded-lg border border-info/15 bg-info/5 px-3 py-2">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <svg className="h-3 w-3 text-info" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-xs font-semibold text-info">CRM Intelligence (Pro)</span>
+                  </div>
+                  <p className="text-xs text-text-muted">{leak.crmExample}</p>
+                </div>
+              )}
             </div>
           ))}
         </div>

@@ -17,6 +17,14 @@ const faqs = [
     a: "Stripe, Polar.sh, and Paddle. Select your platform on the scan page and we'll walk you through creating an API key. Each platform gets a tailored scan covering the leak types it supports.",
   },
   {
+    q: "What does CRM intelligence add to the scan?",
+    a: "The free scan finds your leaks and shows dollar amounts. CRM intelligence (Pro/Team plans) connects to your HubSpot and adds context to each leak: is this customer active? When did they last engage? Do they have open deals? This turns a list of problems into a prioritized action plan.",
+  },
+  {
+    q: "Do I need HubSpot to use RevReclaim?",
+    a: "No. The free scan works with just your billing platform (Stripe, Paddle, or Polar). HubSpot CRM integration is optional and available on Pro and Team plans. Without it, you get every leak with dollar amounts and fix instructions. With it, you also get customer context that helps you prioritize. Think of it as the difference between a list and a strategy.",
+  },
+  {
     q: "What permissions does the API key need?",
     a: "Read access for: Customers, Subscriptions, Invoices, Products, Prices, Coupons, and Payment Methods (exact names vary by platform). We show you exactly how on the scan page. Takes about 60 seconds.",
   },

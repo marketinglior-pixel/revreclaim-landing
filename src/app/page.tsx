@@ -17,14 +17,14 @@ import { FinalCTA } from "@/components/FinalCTA";
 import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "RevReclaim | Free SaaS Billing Leak Audit in 90 Seconds",
+  title: "RevReclaim | Free SaaS Revenue Leak Audit — Find Leaks, Know Which Ones Matter",
   description:
-    "SaaS founders lose $2,500/mo to billing blind spots. Scan your Stripe, Paddle, or Polar account in 90 seconds. Find every leak. Free.",
+    "SaaS founders lose $2,500/mo to billing leaks. Scan your Stripe, Paddle, or Polar account in 90 seconds. Find every leak, ranked by who'll actually pay. Free audit + CRM intelligence.",
   alternates: { canonical: "https://revreclaim.com" },
   openGraph: {
-    title: "RevReclaim | Free SaaS Billing Leak Audit in 90 Seconds",
+    title: "RevReclaim | Free SaaS Revenue Leak Audit — Find Leaks, Know Which Ones Matter",
     description:
-      "SaaS founders lose $2,500/mo to billing blind spots. Scan your Stripe, Paddle, or Polar account in 90 seconds. Find every leak. Free.",
+      "SaaS founders lose $2,500/mo to billing leaks. Scan your Stripe, Paddle, or Polar account in 90 seconds. Find every leak, ranked by who'll actually pay. Free audit + CRM intelligence.",
     url: "https://revreclaim.com",
     type: "website",
     images: [
@@ -32,15 +32,15 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "RevReclaim — Find hidden revenue leaks in your billing data",
+        alt: "RevReclaim — Find revenue leaks and know which ones matter",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "RevReclaim | Free SaaS Billing Leak Audit in 90 Seconds",
+    title: "RevReclaim | Free SaaS Revenue Leak Audit — Find Leaks, Know Which Ones Matter",
     description:
-      "SaaS founders lose $2,500/mo to billing blind spots. Scan your Stripe, Paddle, or Polar account in 90 seconds. Find every leak. Free.",
+      "SaaS founders lose $2,500/mo to billing leaks. Scan your Stripe, Paddle, or Polar account in 90 seconds. Find every leak, ranked by who'll actually pay. Free audit + CRM intelligence.",
     images: ["/og-image.png"],
   },
 };
