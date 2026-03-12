@@ -104,6 +104,22 @@ export function Hero() {
             <div className="text-2xl font-bold text-brand">1 Free Fix</div>
             <div className="text-xs text-text-muted">AI agent fixes your biggest leak</div>
           </div>
+          <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
+          <a
+            href="https://www.producthunt.com/products/revreclaim?utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-revreclaim"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-opacity hover:opacity-80"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1096804&theme=dark&t=1773346857240"
+              alt="RevReclaim on Product Hunt"
+              width="250"
+              height="54"
+              loading="lazy"
+            />
+          </a>
         </div>
       </div>
     </section>
