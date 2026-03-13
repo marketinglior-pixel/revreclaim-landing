@@ -7,15 +7,19 @@ import { ConfirmActionDialog, DESTRUCTIVE_ACTIONS } from "./ConfirmActionDialog"
 import { trackRecoveryExecuted } from "@/lib/conversion-tracking";
 import { PostFixSurvey } from "./dashboard/PostFixSurvey";
 
+// Write actions that require an Action API Key (read-only scan key is not enough)
+const WRITE_ACTIONS = new Set<ActionType>(["retry_payment", "remove_coupon", "cancel_subscription"]);
+
 interface ActionQueueProps {
   plan: "free" | "watch" | "pro" | "team";
   privacyMode?: boolean;
+  hasActionKey?: boolean;
 }
 
 type FilterStatus = "all" | ActionStatus;
 type FilterType = "all" | ActionType;
 
-export function ActionQueue({ plan, privacyMode }: ActionQueueProps) {
+export function ActionQueue({ plan, privacyMode, hasActionKey = false }: ActionQueueProps) {
   const [actions, setActions] = useState<ActionCardData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -292,8 +296,40 @@ export function ActionQueue({ plan, privacyMode }: ActionQueueProps) {
   const freeActionUsed = isFreeUser && remaining === 0;
   const freeActionAvailable = isFreeUser && remaining !== undefined && remaining > 0;
 
+  // Check if any approved actions need a write key but we don't have one
+  const hasWriteActionsWithoutKey = !hasActionKey && actions.some(
+    (a) => WRITE_ACTIONS.has(a.action_type) && (a.status === "approved" || a.status === "pending")
+  );
+
   return (
     <div className="rounded-2xl border border-border bg-surface">
+      {/* Missing Action API Key warning */}
+      {hasWriteActionsWithoutKey && (
+        <div className="border-b border-warning/30 bg-warning/5 px-4 py-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-start gap-2">
+              <svg className="w-4 h-4 text-warning mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+              </svg>
+              <div>
+                <p className="text-sm text-warning font-medium">
+                  Action API Key required for write actions
+                </p>
+                <p className="text-xs text-text-muted mt-0.5">
+                  Actions like retry payment, remove coupon, and cancel subscription need a write-capable API key. Payment reminder emails work without it.
+                </p>
+              </div>
+            </div>
+            <a
+              href="/dashboard/settings#action-api-key"
+              className="flex-shrink-0 rounded-lg border border-warning/30 bg-warning/10 px-3 py-1.5 text-xs font-bold text-warning hover:bg-warning/20 transition"
+            >
+              Add Key
+            </a>
+          </div>
+        </div>
+      )}
+
       {/* Free user banner */}
       {freeActionAvailable && (
         <div className="border-b border-brand/20 bg-brand/5 px-4 py-3">
@@ -517,6 +553,7 @@ export function ActionQueue({ plan, privacyMode }: ActionQueueProps) {
                   executing={executingId === action.id}
                   remaining={remaining}
                   privacyMode={privacyMode}
+                  missingWriteKey={!hasActionKey && WRITE_ACTIONS.has(action.action_type)}
                 />
                 {fixSurveyActionId === action.id && (
                   <PostFixSurvey

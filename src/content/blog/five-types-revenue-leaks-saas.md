@@ -94,17 +94,17 @@ Seat-based pricing where the billing system shows 5 seats but the product databa
 
 **Affected accounts:** 78%
 **Typical monthly loss:** $400-$2,000
-**Root cause:** Ghost subscriptions, stuck trials, duplicate subscriptions
+**Root cause:** Stuck subscriptions, stuck trials, duplicate subscriptions
 
 These are subscriptions that exist in your billing system but aren't generating real revenue — or are generating phantom revenue that inflates your MRR.
 
 **The three sub-types:**
 
-### Ghost Subscriptions
+### Stuck Subscriptions
 
-A [ghost subscription](/blog/ghost-subscriptions-saas) is a subscription that's technically "active" in Stripe but hasn't had a successful payment in 30+ days. The customer's card keeps failing, the subscription moves to `past_due`, and it sits there indefinitely. Nobody notices.
+A [stuck subscription](/blog/ghost-subscriptions-saas) is a subscription that's technically "active" in Stripe but hasn't had a successful payment in 30+ days. The customer's card keeps failing, the subscription moves to `past_due`, and it sits there indefinitely. Nobody notices.
 
-**78% of SaaS billing accounts have ghost subscriptions.** The average account has 11. That's $620/month in phantom MRR — revenue that shows up in your dashboard but never hits your bank account.
+**78% of SaaS billing accounts have stuck subscriptions.** The average account has 11. That's $620/month in phantom MRR — revenue that shows up in your dashboard but never hits your bank account.
 
 ### Expired Trials Stuck in Trialing
 
@@ -163,7 +163,7 @@ A SaaS company at $50K MRR rarely has just one type of leak. RevReclaim's data s
 | Payment recovery gaps | $900 |
 | Zombie discounts (2 active coupons) | $450 |
 | 18 customers on legacy pricing | $360 |
-| 9 ghost subscriptions | $550 |
+| 9 stuck subscriptions | $550 |
 | No pre-dunning (8 cards expiring) | $320 |
 | **Total** | **$2,580/month** |
 
@@ -185,7 +185,7 @@ Prioritize by **ease of fix multiplied by dollar impact**.
 
 **Start with payment recovery.** Enable customer failure emails in Stripe (5 minutes). Configure Smart Retries (10 minutes). Those two actions alone recover 20-35% more failed payments immediately.
 
-Then audit your coupons. Then clean up ghost subscriptions. Then tackle pricing.
+Then audit your coupons. Then clean up stuck subscriptions. Then tackle pricing.
 
 Don't try to fix all five at once. Fix the highest-impact leak first, measure the result, then move to the next one.
 
@@ -211,7 +211,7 @@ Want to audit manually instead? Follow the [step-by-step Stripe audit guide](/bl
 
 ### What percentage of SaaS revenue is typically lost to billing leaks?
 
-The average SaaS billing account leaks 8.4% of revenue across all five leak types combined, according to RevReclaim's analysis of 50 billing accounts. Companies in the $10K-$30K MRR range lose the most as a percentage (9.3%), while larger companies at $75K-$200K MRR lose 6.1%. The total leak includes failed payments, ghost subscriptions, coupon errors, pricing misalignment, and dunning gaps. See the full [billing leak statistics breakdown](/blog/saas-billing-leak-statistics).
+The average SaaS billing account leaks 8.4% of revenue across all five leak types combined, according to RevReclaim's analysis of 50 billing accounts. Companies in the $10K-$30K MRR range lose the most as a percentage (9.3%), while larger companies at $75K-$200K MRR lose 6.1%. The total leak includes failed payments, stuck subscriptions, coupon errors, pricing misalignment, and dunning gaps. See the full [billing leak statistics breakdown](/blog/saas-billing-leak-statistics).
 
 ### Are revenue leaks the same as churn?
 
@@ -219,7 +219,7 @@ No. Churn is when a customer decides to leave. Revenue leaks are money you lose 
 
 ### Can billing platforms like Stripe detect revenue leaks automatically?
 
-Stripe, Paddle, and Polar report basic metrics like failed payment counts and subscription statuses. But they don't cross-reference coupon expiration dates against active subscriptions, identify ghost subscriptions, flag pricing misalignments, or calculate your total leakage across all five categories. RevReclaim connects to your billing platform via read-only API access and runs a comprehensive scan across all five leak types in 60 seconds. [Run a free scan](/scan) to see your results.
+Stripe, Paddle, and Polar report basic metrics like failed payment counts and subscription statuses. But they don't cross-reference coupon expiration dates against active subscriptions, identify stuck subscriptions, flag pricing misalignments, or calculate your total leakage across all five categories. RevReclaim connects to your billing platform via read-only API access and runs a comprehensive scan across all five leak types in 60 seconds. [Run a free scan](/scan) to see your results.
 
 ### How often should I audit my SaaS billing for revenue leaks?
 

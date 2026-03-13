@@ -180,18 +180,18 @@ function computeSubscriptionIntegrity(
   _categories: LeakCategorySummary[],
   leaks: Leak[]
 ): BillingHealthInsight {
-  const ghosts = leaks.filter((l) => l.type === "ghost_subscription");
+  const stuckSubs = leaks.filter((l) => l.type === "stuck_subscription");
   const duplicates = leaks.filter((l) => l.type === "duplicate_subscription");
   const trialExpired = leaks.filter((l) => l.type === "trial_expired");
 
-  const totalIssues = ghosts.length + duplicates.length + trialExpired.length;
-  const totalImpact = [...ghosts, ...duplicates, ...trialExpired].reduce(
+  const totalIssues = stuckSubs.length + duplicates.length + trialExpired.length;
+  const totalImpact = [...stuckSubs, ...duplicates, ...trialExpired].reduce(
     (sum, l) => sum + l.monthlyImpact,
     0
   );
 
   let score = 100;
-  score -= Math.min(30, ghosts.length * 8);
+  score -= Math.min(30, stuckSubs.length * 8);
   score -= Math.min(30, duplicates.length * 15); // duplicates are more severe (chargeback risk)
   score -= Math.min(20, trialExpired.length * 10);
   if (summary.totalSubscriptions > 0) {
@@ -202,10 +202,10 @@ function computeSubscriptionIntegrity(
 
   let detail: string;
   if (totalIssues === 0) {
-    detail = "All subscriptions are clean. No ghosts, duplicates, or stuck trials.";
+    detail = "All subscriptions are clean. No stuck subs, duplicates, or expired trials.";
   } else {
     const parts: string[] = [];
-    if (ghosts.length > 0) parts.push(`${ghosts.length} ghost sub${ghosts.length !== 1 ? "s" : ""}`);
+    if (stuckSubs.length > 0) parts.push(`${stuckSubs.length} stuck sub${stuckSubs.length !== 1 ? "s" : ""}`);
     if (duplicates.length > 0) parts.push(`${duplicates.length} duplicate${duplicates.length !== 1 ? "s" : ""}`);
     if (trialExpired.length > 0) parts.push(`${trialExpired.length} stuck trial${trialExpired.length !== 1 ? "s" : ""}`);
     detail = `${parts.join(", ")}. ${formatCents(totalImpact)}/mo affected.`;
@@ -214,7 +214,7 @@ function computeSubscriptionIntegrity(
   return {
     id: "subscription_integrity",
     label: "Subscription Integrity",
-    description: "Ghost subscriptions, duplicates, and trials stuck in limbo",
+    description: "Stuck subscriptions, duplicates, and trials stuck in limbo",
     score,
     status: getStatus(score),
     detail,
@@ -228,9 +228,9 @@ function computeChurnRisk(
   _categories: LeakCategorySummary[],
   leaks: Leak[]
 ): BillingHealthInsight {
-  // Churn risk = expiring cards + failed payments + ghost subs + missing payment methods
+  // Churn risk = expiring cards + failed payments + stuck subs + missing payment methods
   const churnRelated = leaks.filter((l) =>
-    ["expiring_card", "failed_payment", "ghost_subscription", "missing_payment_method"].includes(l.type)
+    ["expiring_card", "failed_payment", "stuck_subscription", "missing_payment_method"].includes(l.type)
   );
 
   const atRiskMRR = churnRelated.reduce((sum, l) => sum + l.monthlyImpact, 0);

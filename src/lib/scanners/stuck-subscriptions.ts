@@ -2,7 +2,7 @@ import Stripe from "stripe";
 import { Leak, LeakSeverity } from "../types";
 import { generateLeakId, maskEmail } from "../utils";
 
-export function scanGhostSubscriptions(
+export function scanStuckSubscriptions(
   subscriptions: Stripe.Subscription[]
 ): Leak[] {
   const leaks: Leak[] = [];
@@ -89,7 +89,7 @@ export function scanGhostSubscriptions(
 
     leaks.push({
       id: generateLeakId(),
-      type: "ghost_subscription",
+      type: "stuck_subscription",
       severity,
       title,
       description,

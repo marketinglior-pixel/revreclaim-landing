@@ -20,7 +20,7 @@ Here's the formula RevReclaim uses to calculate total leakage as a percentage of
 
 ```
 Leakage Rate = (Failed Payments + Expired Coupon Discounts + Legacy Pricing Gap
-+ Ghost Subscription Cost + Expiring Card Risk + Forever Discounts
++ Stuck Subscription Cost + Expiring Card Risk + Forever Discounts
 + Missing Payment Method MRR + Unbilled Overages) / MRR x 100
 ```
 
@@ -41,7 +41,7 @@ Here's what a real leakage calculation looks like for a SaaS company at $50,000 
 | Failed Payments | 12 open invoices, avg $125 | $1,500 |
 | Expired Coupons | 8 subs with expired 20% off on $99 plan | $158 |
 | Legacy Pricing | 45 customers at $49 vs current $79 | $1,350 |
-| Ghost Subscriptions | 6 past_due subs, avg $89/mo | $534 |
+| Stuck Subscriptions | 6 past_due subs, avg $89/mo | $534 |
 | Expiring Cards | 22 cards expiring in 90 days x 35% fail rate x $105 avg | $808 |
 | Forever Discounts | 3 subs with permanent 25% off on $149 plan | $112 |
 | Missing Payment Methods | 2 active subs, avg $119/mo | $238 |
@@ -87,15 +87,15 @@ Pull your current published prices. Compare against what each active subscriptio
 
 **Your number:** Sum of (current_price - actual_price) for every subscription paying below current rates = Legacy Pricing Leakage.
 
-### 4. Ghost Subscription Cost
+### 4. Stuck Subscription Cost
 
 **Formula:** MRR of all subscriptions in `past_due` or `unpaid` status for 14+ days.
 
-Ghost subscriptions inflate your reported MRR and consume resources without generating revenue. The cost is both the phantom MRR (which distorts your metrics) and the real resource cost of serving non-paying users.
+Stuck subscriptions inflate your reported MRR and consume resources without generating revenue. The cost is both the phantom MRR (which distorts your metrics) and the real resource cost of serving non-paying users.
 
-Read our full breakdown in the [Ghost Subscriptions post](/blog/ghost-subscriptions-saas).
+Read our full breakdown in the [Stuck Subscriptions post](/blog/ghost-subscriptions-saas).
 
-**Your number:** Sum of monthly amounts for all past_due/unpaid subscriptions older than 14 days = Ghost Subscription Leakage.
+**Your number:** Sum of monthly amounts for all past_due/unpaid subscriptions older than 14 days = Stuck Subscription Leakage.
 
 ### 5. Expiring Card Risk
 
@@ -197,10 +197,10 @@ Every month you wait, the leaks compound. A $2,000/month leak is $24,000/year. T
 MGI Research puts the industry range at 1-5% of revenue. RevReclaim's data from 847+ billing scans shows an average of 4.7% of MRR. Companies with simple pricing (one plan, no coupons) tend to be at the low end. Companies with multiple tiers, frequent promotions, and price changes over time tend to be at the high end. Anything above 5% means there's significant money on the table.
 
 ### Is revenue leakage the same as revenue churn?
-No. Revenue churn is MRR lost from customers who intentionally downgrade or cancel. Revenue leakage is MRR lost from billing configuration issues — failed payments, expired coupons still running, customers on outdated pricing, ghost subscriptions. Churn is a customer decision. Leakage is a system problem. You track churn to improve retention. You track leakage to fix billing. Both reduce your effective MRR, but the solutions are completely different. For more on the specific types, see [5 Types of Revenue Leaks](/blog/five-types-revenue-leaks-saas).
+No. Revenue churn is MRR lost from customers who intentionally downgrade or cancel. Revenue leakage is MRR lost from billing configuration issues — failed payments, expired coupons still running, customers on outdated pricing, stuck subscriptions. Churn is a customer decision. Leakage is a system problem. You track churn to improve retention. You track leakage to fix billing. Both reduce your effective MRR, but the solutions are completely different. For more on the specific types, see [5 Types of Revenue Leaks](/blog/five-types-revenue-leaks-saas).
 
 ### How do I track revenue leakage over time?
 Run a leakage calculation monthly. Track the total dollar amount and leakage rate as a percentage of MRR. The goal is to keep it below 2%. RevReclaim's monitoring plans run automated scans on a weekly or daily schedule and alert you when new leaks appear, so your leakage rate trends down instead of compounding up.
 
 ### What causes revenue leakage in subscription billing?
-Eight primary causes: failed payments that aren't recovered, expired coupons still discounting active subscriptions, customers on legacy pricing after a price increase, ghost subscriptions stuck in past_due status, expiring credit cards, forever-duration discounts, subscriptions with missing payment methods, and unbilled usage overages. Most SaaS companies have at least 3 of these 8 active at any given time. A [free audit](/scan) identifies which ones apply to your account.
+Eight primary causes: failed payments that aren't recovered, expired coupons still discounting active subscriptions, customers on legacy pricing after a price increase, stuck subscriptions stuck in past_due status, expiring credit cards, forever-duration discounts, subscriptions with missing payment methods, and unbilled usage overages. Most SaaS companies have at least 3 of these 8 active at any given time. A [free audit](/scan) identifies which ones apply to your account.

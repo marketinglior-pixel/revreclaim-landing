@@ -62,11 +62,11 @@ Average gap: $13 per customer per month. Total: $611/month in [grandfathered pri
 
 This is the most common "accepted leak" in SaaS. Most founders know it exists. Few know the exact dollar amount.
 
-### 4. Ghost Subscriptions — 3 Subs, $297/mo
+### 4. Stuck Subscriptions — 3 Subs, $297/mo
 
 Three subscriptions in `past_due` status for 18-45 days. No successful payment in that window. Still technically "active" in Stripe. Still consuming API resources. Still counting toward MRR.
 
-These are [ghost subscriptions](/blog/ghost-subscriptions-saas) — they inflate your MRR and hide your real churn rate. In this case, they added $297/month to reported MRR that didn't actually exist as revenue.
+These are [stuck subscriptions](/blog/ghost-subscriptions-saas) — they inflate your MRR and hide your real churn rate. In this case, they added $297/month to reported MRR that didn't actually exist as revenue.
 
 The subscription with the longest past_due period (45 days) was on an annual plan worth $828/year. It had failed silently because the auto-cancellation policy was never configured.
 
@@ -91,7 +91,7 @@ Nobody caught it. $131/month — $1,572/year — leaking from a single coupon co
 | Failed Payments | 7 invoices | $847 |
 | Expired Coupons | 4 coupons (8 subs) | $412 |
 | Legacy Pricing | 47 customers | $611 |
-| Ghost Subscriptions | 3 subscriptions | $297 |
+| Stuck Subscriptions | 3 subscriptions | $297 |
 | Expiring Cards | 12 customers | $189 (projected) |
 | Forever Discount | 1 coupon | $131 |
 | **Total** | **23 issues** | **$2,487/mo** |
@@ -107,7 +107,7 @@ Not every leak needs the same response. Some are same-day fixes. Some require cu
 **Time invested:** ~2 hours.
 
 - **Enabled Smart Retries and dunning emails.** Stripe's optimized retry schedule was turned on. Customer failure notification emails were enabled. This alone puts the 7 failed invoices ($847/mo) on a recovery path.
-- **Canceled 3 ghost subscriptions.** The past_due subscriptions were canceled after confirming the customers hadn't logged in during the past_due period. MRR dropped by $297 on paper — but that revenue was never real.
+- **Canceled 3 stuck subscriptions.** The past_due subscriptions were canceled after confirming the customers hadn't logged in during the past_due period. MRR dropped by $297 on paper — but that revenue was never real.
 - **Removed the expired "launch20" coupon from 8 subscriptions.** Each customer was sent a brief email explaining the promotional period had ended. No complaints. $412/mo recovered.
 
 **Same-day recovery: $1,556/mo.**
@@ -173,7 +173,7 @@ The remaining 30% (legacy pricing) wasn't a technical fix. It was a business dec
 
 ### Quarterly scans prevent accumulation
 
-If this account had been scanned 6 months ago, the expired coupons would have been caught earlier. The ghost subscriptions wouldn't have accumulated. The forever discount would have been flagged months before $1,572 had leaked.
+If this account had been scanned 6 months ago, the expired coupons would have been caught earlier. The stuck subscriptions wouldn't have accumulated. The forever discount would have been flagged months before $1,572 had leaked.
 
 The [billing health checklist](/blog/saas-billing-health-checklist) recommends quarterly audits at minimum. RevReclaim Pro runs automated scans weekly or monthly so leaks get caught within one billing cycle, not after six.
 

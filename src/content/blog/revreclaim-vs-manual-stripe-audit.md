@@ -17,7 +17,7 @@ Both approaches find real money. The difference is time, consistency, and what y
 The full [manual Stripe audit guide](/blog/audit-stripe-account-revenue-leaks) walks through 10 checks:
 
 1. **Failed payments** — invoices with failed charges and no recovery
-2. **Ghost subscriptions** — past_due subscriptions with no successful payment in 30+ days
+2. **Stuck subscriptions** — past_due subscriptions with no successful payment in 30+ days
 3. **Expiring cards** — payment methods expiring within 60 days
 4. **Expired coupons** — coupons past their `redeem_by` date still active on subscriptions
 5. **Forever discounts** — coupons set to `forever` duration that should have been time-limited
@@ -166,7 +166,7 @@ That comparison gives you everything you need to decide which approach fits your
 
 ### Can I do a partial manual audit instead of the full 10 checks?
 
-Yes. If you're short on time, prioritize these three checks: failed payments, ghost subscriptions, and expired coupons. These three categories account for roughly 70% of total revenue leakage in most accounts. The full [manual audit guide](/blog/audit-stripe-account-revenue-leaks) walks through all 10, but starting with the top 3 takes about 45 minutes and catches the biggest leaks. RevReclaim covers all 10 automatically, but a partial manual audit is better than no audit.
+Yes. If you're short on time, prioritize these three checks: failed payments, stuck subscriptions, and expired coupons. These three categories account for roughly 70% of total revenue leakage in most accounts. The full [manual audit guide](/blog/audit-stripe-account-revenue-leaks) walks through all 10, but starting with the top 3 takes about 45 minutes and catches the biggest leaks. RevReclaim covers all 10 automatically, but a partial manual audit is better than no audit.
 
 ### How often should I run a billing audit?
 

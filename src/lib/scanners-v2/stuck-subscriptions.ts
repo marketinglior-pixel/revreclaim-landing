@@ -2,7 +2,7 @@ import { NormalizedSubscription, PLATFORM_LABELS } from "../platforms/types";
 import { Leak, LeakSeverity } from "../types";
 import { generateLeakId, maskEmail } from "../utils";
 
-export function scanGhostSubscriptions(
+export function scanStuckSubscriptions(
   subscriptions: NormalizedSubscription[]
 ): Leak[] {
   const leaks: Leak[] = [];
@@ -66,7 +66,7 @@ export function scanGhostSubscriptions(
           fixSuggestion = `Review if this pause is still needed. Set a resume date or contact the customer. Go to ${platformLabel} Dashboard → Subscriptions → Resume.`;
           recoveryRate = 0.6;
         } else {
-          continue; // Has a resume date, not a ghost
+          continue; // Has a resume date, not stuck
         }
         break;
 
@@ -76,7 +76,7 @@ export function scanGhostSubscriptions(
 
     leaks.push({
       id: generateLeakId(),
-      type: "ghost_subscription",
+      type: "stuck_subscription",
       severity,
       title,
       description,

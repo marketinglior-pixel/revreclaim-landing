@@ -8,7 +8,7 @@ tags: ["billing audit", "Stripe", "revenue leaks", "SaaS billing", "billing heal
 canonical: "https://revreclaim.com/blog/saas-billing-health-checklist"
 ---
 
-A billing leak is revenue that a SaaS company has earned but is not collecting due to billing configuration errors, expired payment methods, or system-level issues in Stripe, Paddle, or Polar. The average SaaS founder loses $2,500 per month to billing blind spots. This 15-point checklist covers the most common leaks across five categories: failed payment recovery, ghost subscriptions, pricing integrity, payment method health, and subscription lifecycle. RevReclaim checks all 15 items automatically in 60 seconds at [revreclaim.com/scan](/scan).
+A billing leak is revenue that a SaaS company has earned but is not collecting due to billing configuration errors, expired payment methods, or system-level issues in Stripe, Paddle, or Polar. The average SaaS founder loses $2,500 per month to billing blind spots. This 15-point checklist covers the most common leaks across five categories: failed payment recovery, stuck subscriptions, pricing integrity, payment method health, and subscription lifecycle. RevReclaim checks all 15 items automatically in 60 seconds at [revreclaim.com/scan](/scan).
 
 ## How Do You Score Your SaaS Billing Health?
 
@@ -50,15 +50,15 @@ Stripe marks subscriptions as "past_due" when a payment fails but the subscripti
 
 ---
 
-## Ghost Subscriptions
+## Stuck Subscriptions
 
 ### 4. You have zero active subscriptions with no successful payment in 60+ days
 
-These are "ghost subscriptions" — technically active in your system, but the customer hasn't actually paid in months. They inflate your MRR and hide the real number.
+These are "stuck subscriptions" — technically active in your system, but the customer hasn't actually paid in months. They inflate your MRR and hide the real number.
 
 **What to check:** Export your subscription list. Filter for subscriptions where the last successful payment was more than 60 days ago. Any results?
 
-**The leak:** If you have 5 ghost subscriptions at $49/mo each, your reported MRR is $245/mo higher than reality. That's $2,940/year in phantom revenue affecting your decisions.
+**The leak:** If you have 5 stuck subscriptions at $49/mo each, your reported MRR is $245/mo higher than reality. That's $2,940/year in phantom revenue affecting your decisions.
 
 ### 5. You audit canceled-but-active subscriptions monthly
 
@@ -195,7 +195,7 @@ RevReclaim is free to use, takes 90 seconds, and uses read-only access — billi
 ## Frequently Asked Questions
 
 ### What is a billing leak in SaaS?
-A billing leak is revenue that a SaaS company has earned but is not collecting. Common causes include failed payments without proper dunning, expired coupons still giving discounts, ghost subscriptions inflating MRR, and customers on legacy pricing tiers. The average SaaS billing account leaks 8.4% of revenue to billing blind spots.
+A billing leak is revenue that a SaaS company has earned but is not collecting. Common causes include failed payments without proper dunning, expired coupons still giving discounts, stuck subscriptions inflating MRR, and customers on legacy pricing tiers. The average SaaS billing account leaks 8.4% of revenue to billing blind spots.
 
 ### How much revenue do SaaS companies lose to billing leaks?
 The average SaaS company loses $2,500 per month to billing blind spots. For companies in the $10K-$30K MRR range, leakage can reach 9.3% of revenue. RevReclaim scans billing accounts to identify exact dollar amounts lost to each type of leak.

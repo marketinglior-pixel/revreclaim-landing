@@ -19,7 +19,7 @@ const WHY_THIS_MATTERS: Partial<Record<LeakType, string>> = {
     "Customers rarely notice when an expired promotion is removed. This is typically the safest, highest-ROI fix.",
   never_expiring_discount:
     "Forever discounts compound over time. A 20% discount on a $100/mo plan costs you $240/year per customer — growing with every price increase.",
-  ghost_subscription:
+  stuck_subscription:
     "Stuck subscriptions create phantom MRR in your dashboards. Resolving them gives you accurate revenue numbers to make better decisions.",
   missing_payment_method:
     "Subscriptions without a payment method have a 100% chance of failing at the next billing cycle. Act before the invoice is generated.",

@@ -53,8 +53,8 @@ const COMPARISON_ROWS = [
     revreclaimDoes: true,
   },
   {
-    category: "Ghost Subscription Detection",
-    competitor: "No detection. Counts ghost subscriptions as active MRR.",
+    category: "Stuck Subscription Detection",
+    competitor: "No detection. Counts stuck subscriptions as active MRR.",
     revreclaim: "Finds subscriptions in limbo states. Corrects your real MRR figure.",
     competitorDoes: false,
     revreclaimDoes: true,
@@ -129,14 +129,14 @@ export default function ChartMogulComparePage() {
           <h1 className="mb-4 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
             ChartMogul says your MRR is $50K.{" "}
             <span className="text-text-muted italic">
-              $2,350 of it is phantom revenue from ghost subscriptions.
+              $2,350 of it is phantom revenue from stuck subscriptions.
             </span>
           </h1>
           <p className="mb-16 max-w-3xl text-lg text-text-muted">
             ChartMogul is the gold standard for SaaS revenue analytics. Cohorts, LTV, churn &mdash; it&apos;s all there.
             But analytics tools work with <span className="text-white font-medium">aggregate sums</span>.
             They add up your subscriptions. They don&apos;t examine each one for errors.
-            Ghost subscriptions inflate your MRR. Expired coupons silently discount.
+            Stuck subscriptions inflate your MRR. Expired coupons silently discount.
             ChartMogul reports the total. RevReclaim shows what&apos;s broken inside it.
           </p>
 
@@ -292,7 +292,7 @@ export default function ChartMogulComparePage() {
                 name: "Does ChartMogul find revenue leaks?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "No. ChartMogul tracks revenue metrics like MRR, churn, and LTV and provides analytics dashboards. It doesn't scan individual subscriptions for billing configuration errors like expired coupons or ghost subscriptions.",
+                  text: "No. ChartMogul tracks revenue metrics like MRR, churn, and LTV and provides analytics dashboards. It doesn't scan individual subscriptions for billing configuration errors like expired coupons or stuck subscriptions.",
                 },
               },
               {
@@ -300,7 +300,7 @@ export default function ChartMogulComparePage() {
                 name: "What does RevReclaim do that ChartMogul doesn't?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "RevReclaim scans each subscription for 10 types of billing leaks (expired coupons, ghost subscriptions, legacy pricing, etc.). ChartMogul aggregates revenue data into dashboards but doesn't examine individual records for errors.",
+                  text: "RevReclaim scans each subscription for 10 types of billing leaks (expired coupons, stuck subscriptions, legacy pricing, etc.). ChartMogul aggregates revenue data into dashboards but doesn't examine individual records for errors.",
                 },
               },
               {

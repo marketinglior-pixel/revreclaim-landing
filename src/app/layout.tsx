@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   title: "RevReclaim | Find SaaS Revenue Leaks in 90 Seconds",
   description:
-    "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find expired coupons, failed payments, and ghost subscriptions. Free. No credit card.",
+    "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find expired coupons, failed payments, and stuck subscriptions. Free. No credit card.",
   icons: {
     icon: "/icon.svg",
   },
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "RevReclaim | Find SaaS Revenue Leaks in 90 Seconds",
     description:
-      "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find expired coupons, failed payments, and ghost subscriptions. Free. No credit card.",
+      "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find expired coupons, failed payments, and stuck subscriptions. Free. No credit card.",
     url: "https://revreclaim.com",
     siteName: "RevReclaim",
     type: "website",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "RevReclaim | Find SaaS Revenue Leaks in 90 Seconds",
     description:
-      "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find expired coupons, failed payments, and ghost subscriptions. Free. No credit card.",
+      "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find expired coupons, failed payments, and stuck subscriptions. Free. No credit card.",
     images: ["/og-image.png"],
   },
 };
@@ -62,7 +62,7 @@ const jsonLd = {
       url: "https://revreclaim.com",
       logo: "https://revreclaim.com/icon.svg",
       description:
-        "RevReclaim scans your Stripe, Polar, or Paddle account and finds hidden revenue leaks — expired coupons, failed payments, ghost subscriptions, and more.",
+        "RevReclaim scans your Stripe, Polar, or Paddle account and finds hidden revenue leaks — expired coupons, failed payments, stuck subscriptions, and more.",
       sameAs: [
         "https://x.com/revreclaim",
         "https://github.com/revreclaim",
@@ -88,9 +88,9 @@ const jsonLd = {
       operatingSystem: "Web",
       url: "https://revreclaim.com",
       description:
-        "Revenue leak detection for SaaS. Scans Stripe, Polar, and Paddle billing data in 90 seconds to find failed payments, expired coupons, ghost subscriptions, and more.",
+        "Revenue leak detection for SaaS. Scans Stripe, Polar, and Paddle billing data in 90 seconds to find failed payments, expired coupons, stuck subscriptions, and more.",
       disambiguatingDescription:
-        "A SaaS billing leak detection tool that scans Stripe, Paddle, and Polar accounts using read-only API keys to find revenue leaks like expired coupons, ghost subscriptions, and failed payments. Distinct from chargeback recovery services or dunning automation platforms.",
+        "A SaaS billing leak detection tool that scans Stripe, Paddle, and Polar accounts using read-only API keys to find revenue leaks like expired coupons, stuck subscriptions, and failed payments. Distinct from chargeback recovery services or dunning automation platforms.",
       offers: [
         {
           "@type": "Offer",
@@ -158,7 +158,7 @@ const jsonLd = {
           name: "What exactly do you scan for?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "We run 10 automated checks: (1) Expired coupons still discounting, (2) Legacy pricing below current rates, (3) Forever discounts with no end date, (4) Ghost subscriptions stuck in bad states, (5) Expiring cards within 90 days, (6) Uncollected revenue with open invoices, (7) Missing payment methods on active subscriptions, (8) Unbilled overages — quantity mismatches and usage exceeding plan limits, (9) Expired trials — subscriptions stuck in trialing status, (10) Duplicate subscriptions — customers charged twice after failed upgrades.",
+            text: "We run 10 automated checks: (1) Expired coupons still discounting, (2) Legacy pricing below current rates, (3) Forever discounts with no end date, (4) Stuck subscriptions stuck in bad states, (5) Expiring cards within 90 days, (6) Uncollected revenue with open invoices, (7) Missing payment methods on active subscriptions, (8) Unbilled overages — quantity mismatches and usage exceeding plan limits, (9) Expired trials — subscriptions stuck in trialing status, (10) Duplicate subscriptions — customers charged twice after failed upgrades.",
           },
         },
         {

@@ -34,7 +34,7 @@ const faqs = [
   },
   {
     q: "What exactly do you scan for?",
-    a: "10 checks: expired coupons, legacy pricing, forever discounts, ghost subscriptions, expiring cards, uncollected revenue, missing payment methods, unbilled overages, expired trials, and duplicate subscriptions. Each one is a different way money slips through your billing without anyone noticing.",
+    a: "10 checks: expired coupons, legacy pricing, forever discounts, stuck subscriptions, expiring cards, uncollected revenue, missing payment methods, unbilled overages, expired trials, and duplicate subscriptions. Each one is a different way money slips through your billing without anyone noticing.",
   },
   {
     q: "What do I do with the report?",

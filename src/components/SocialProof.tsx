@@ -11,7 +11,7 @@ const testimonials = [
   },
   {
     quote:
-      "14 ghost subscriptions. Sitting in 'past_due' for months. I had no idea Stripe doesn't flag these automatically. I literally said 'what the hell' out loud when I saw the report. Fixed them all in one afternoon.",
+      "14 stuck subscriptions. Sitting in 'past_due' for months. I had no idea Stripe doesn't flag these automatically. I literally said 'what the hell' out loud when I saw the report. Fixed them all in one afternoon.",
     name: "James K.",
     role: "Head of Revenue",
     company: "DataPulse",

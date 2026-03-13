@@ -88,7 +88,7 @@ export const ACTION_TYPE_LABELS: Record<ActionType, string> = {
   send_dunning_email: "Send Payment Reminder",
   retry_payment: "Retry Payment",
   remove_coupon: "Remove Expired Coupon",
-  cancel_subscription: "Cancel Ghost Subscription",
+  cancel_subscription: "Cancel Stuck Subscription",
 };
 
 export const ACTION_TYPE_DESCRIPTIONS: Record<ActionType, string> = {
@@ -99,7 +99,7 @@ export const ACTION_TYPE_DESCRIPTIONS: Record<ActionType, string> = {
   remove_coupon:
     "Remove the expired coupon from the subscription so the customer pays full price.",
   cancel_subscription:
-    "Cancel the ghost subscription that's stuck in a broken state.",
+    "Cancel the stuck subscription that's stuck in a broken state.",
 };
 
 /** Which leak types can generate which action types */
@@ -109,7 +109,7 @@ export const LEAK_TO_ACTIONS: Partial<
   failed_payment: [
     { actionType: "send_dunning_email", dunningTemplate: "failed_payment" },
   ],
-  ghost_subscription: [
+  stuck_subscription: [
     { actionType: "send_dunning_email", dunningTemplate: "payment_update" },
   ],
   expiring_card: [

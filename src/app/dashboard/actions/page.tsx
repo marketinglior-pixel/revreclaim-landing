@@ -26,13 +26,14 @@ export default async function ActionsPage() {
 
   const plan = (profile?.plan || "free") as "free" | "watch" | "pro" | "team";
 
-  // Fetch privacy mode setting
+  // Fetch privacy mode + action API key status
   const { data: scanConfig } = await supabase
     .from("scan_configs")
-    .select("privacy_mode")
+    .select("privacy_mode, action_api_key_encrypted")
     .eq("user_id", user.id)
     .single();
   const privacyMode = !!scanConfig?.privacy_mode;
+  const hasActionKey = !!scanConfig?.action_api_key_encrypted;
 
   // Fetch summary stats for the header
   const { count: pendingCount } = await supabase
@@ -197,7 +198,7 @@ export default async function ActionsPage() {
 
       {/* Action Queue */}
       <div className="animate-fade-in-up animate-delay-200">
-        <ActionQueue plan={plan} privacyMode={privacyMode} />
+        <ActionQueue plan={plan} privacyMode={privacyMode} hasActionKey={hasActionKey} />
       </div>
     </div>
   );

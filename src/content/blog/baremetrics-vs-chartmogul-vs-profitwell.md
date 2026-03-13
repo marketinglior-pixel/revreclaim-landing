@@ -29,7 +29,7 @@ This post breaks down what each tool actually does, where the gaps are, and how 
 | **Failed Payment Detection** | Basic (aggregate counts) | No | Built-in (Paddle only) | Yes (per-customer detail + dollar amount + fix link) |
 | **Failed Payment Recovery** | Yes (Recover add-on) | No | Built-in (Paddle only) | Identifies + prioritizes |
 | **Expired Coupon Detection** | No | No | No | Yes (per-subscription detail) |
-| **Ghost Subscription Detection** | No | No | No | Yes (with MRR correction) |
+| **Stuck Subscription Detection** | No | No | No | Yes (with MRR correction) |
 | **Legacy Pricing Analysis** | No | No | No | Yes (gap per customer) |
 | **Expiring Card Alerts** | No | No | No | Yes (probability-weighted risk) |
 | **Forever Discount Detection** | No | No | No | Yes (with dollar amounts) |
@@ -86,7 +86,7 @@ Use both. They solve different problems.
 
 **Leak detection** (RevReclaim) gives you the money on the table. Specific customers, specific dollar amounts, specific fix actions. This is your operational layer. It tells you what to do today to collect more of what you already earned.
 
-Running analytics without leak detection means you're tracking numbers that might be wrong. Your MRR is inflated by ghost subscriptions. Your ARPU is distorted by legacy pricing. Your churn looks different when you clean up the ghosts.
+Running analytics without leak detection means you're tracking numbers that might be wrong. Your MRR is inflated by stuck subscriptions. Your ARPU is distorted by legacy pricing. Your churn looks different when you clean up the ghosts.
 
 Running leak detection without analytics means you're fixing individual issues without seeing the trends. You recover $2,000 this month, but you don't know if the underlying leakage rate is going up or down.
 
@@ -107,7 +107,7 @@ Baremetrics was one of the first SaaS analytics dashboards. It connects to Strip
 **Limitations:**
 
 - Pricing starts at $108/mo for up to $50K MRR. Goes up to $458/mo for $500K MRR. This is the most expensive option in this comparison.
-- Recover is focused on failed payments only. It doesn't address expired coupons, legacy pricing, ghost subscriptions, or the other 6 leak types.
+- Recover is focused on failed payments only. It doesn't address expired coupons, legacy pricing, stuck subscriptions, or the other 6 leak types.
 - No revenue recognition features.
 - No free tier.
 
@@ -136,7 +136,7 @@ ChartMogul positions itself as the subscription analytics platform for data-driv
 - No billing leak detection at the individual subscription level.
 - Designed for analytics teams — smaller SaaS companies may not need this depth.
 
-**The gap RevReclaim fills:** ChartMogul tells you your MRR is $50,000. RevReclaim tells you $2,350 of that is phantom MRR from ghost subscriptions and expired coupons. ChartMogul shows churn trends. RevReclaim shows which specific subscriptions are about to fail because of expiring cards. They're complementary — ChartMogul for the what, RevReclaim for the fix.
+**The gap RevReclaim fills:** ChartMogul tells you your MRR is $50,000. RevReclaim tells you $2,350 of that is phantom MRR from stuck subscriptions and expired coupons. ChartMogul shows churn trends. RevReclaim shows which specific subscriptions are about to fail because of expiring cards. They're complementary — ChartMogul for the what, RevReclaim for the fix.
 
 ---
 
@@ -158,9 +158,9 @@ ProfitWell was acquired by Paddle in 2022 and is now deeply integrated into the 
 - **Paddle-only.** If you use Stripe, Recurly, or any other billing platform, ProfitWell's free tier doesn't apply. The standalone product has been de-emphasized since the Paddle acquisition.
 - Limited customization compared to Baremetrics and ChartMogul.
 - No individual subscription-level leak detection.
-- Paddle handles some billing issues (like dunning) automatically, but doesn't detect expired coupons, legacy pricing gaps, or ghost subscriptions.
+- Paddle handles some billing issues (like dunning) automatically, but doesn't detect expired coupons, legacy pricing gaps, or stuck subscriptions.
 
-**The gap RevReclaim fills:** Paddle's built-in dunning handles failed payments well. But Paddle users still have expired coupons, legacy pricing after plan changes, and ghost subscriptions. RevReclaim (with Paddle support coming soon) will scan Paddle accounts for the same 8 leak categories.
+**The gap RevReclaim fills:** Paddle's built-in dunning handles failed payments well. But Paddle users still have expired coupons, legacy pricing after plan changes, and stuck subscriptions. RevReclaim (with Paddle support coming soon) will scan Paddle accounts for the same 8 leak categories.
 
 ---
 
@@ -172,7 +172,7 @@ RevReclaim is not an analytics tool. It doesn't show MRR charts or churn graphs.
 
 **What it does:**
 
-- Scans 8 leak categories: failed payments, expired coupons, legacy pricing, ghost subscriptions, expiring cards, forever discounts, missing payment methods, and unbilled overages
+- Scans 8 leak categories: failed payments, expired coupons, legacy pricing, stuck subscriptions, expiring cards, forever discounts, missing payment methods, and unbilled overages
 - Returns customer-level detail: which customer, which subscription, how much money, what to do
 - Provides a billing health score (0-100) across 6 dimensions
 - Generates one-click fix links that take you directly to the issue in your billing dashboard
@@ -236,7 +236,7 @@ The tool you choose matters less than choosing one. Tracking your metrics and au
 ## Frequently Asked Questions
 
 ### Can I use RevReclaim alongside Baremetrics?
-Yes. They solve different problems and don't overlap. Baremetrics tracks your SaaS metrics (MRR, churn, LTV) and recovers failed payments through its Recover feature. RevReclaim scans for 8 types of billing leaks including expired coupons, ghost subscriptions, legacy pricing gaps, and more. Baremetrics tells you what your numbers are. RevReclaim tells you which specific billing records are wrong and how to fix them. Many SaaS companies use both.
+Yes. They solve different problems and don't overlap. Baremetrics tracks your SaaS metrics (MRR, churn, LTV) and recovers failed payments through its Recover feature. RevReclaim scans for 8 types of billing leaks including expired coupons, stuck subscriptions, legacy pricing gaps, and more. Baremetrics tells you what your numbers are. RevReclaim tells you which specific billing records are wrong and how to fix them. Many SaaS companies use both.
 
 ### Does ChartMogul detect billing leaks?
 No. ChartMogul is a revenue analytics platform. It calculates MRR, churn, LTV, ARPU, and provides cohort analysis. It does not scan individual subscriptions for configuration errors, expired coupons, legacy pricing gaps, or other billing leaks. ChartMogul shows you aggregate trends. To find specific record-level issues, you need a tool like RevReclaim. For the full list of leak types, see [5 Types of Revenue Leaks](/blog/five-types-revenue-leaks-saas).

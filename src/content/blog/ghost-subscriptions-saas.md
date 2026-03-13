@@ -1,24 +1,24 @@
 ---
-title: "Ghost Subscriptions: When Customers Stop Paying But Don't Cancel"
-description: "Ghost subscriptions silently inflate your MRR. Learn how to detect zombie subscribers in Stripe, Paddle, and Polar — and how to recover the revenue or clean up your metrics."
+title: "Stuck Subscriptions: When Customers Stop Paying But Don't Cancel"
+description: "Stuck subscriptions silently inflate your MRR. Learn how to detect zombie subscribers in Stripe, Paddle, and Polar — and how to recover the revenue or clean up your metrics."
 date: "2026-03-06"
 lastModified: "2026-03-08"
 author: "RevReclaim Team"
-tags: ["ghost subscriptions", "MRR", "churn", "Stripe", "revenue leaks"]
+tags: ["stuck subscriptions", "MRR", "churn", "Stripe", "revenue leaks"]
 canonical: "https://revreclaim.com/blog/ghost-subscriptions-saas"
 ---
 
-A ghost subscription is a SaaS subscription that remains technically active in Stripe, Paddle, or Polar but has not had a successful payment in 30 or more days. Ghost subscriptions inflate MRR by an average of 3-7% and affect 78% of SaaS billing accounts. RevReclaim detects ghost subscriptions automatically during its 60-second billing scan.
+A stuck subscription is a SaaS subscription that remains technically active in Stripe, Paddle, or Polar but has not had a successful payment in 30 or more days. Stuck subscriptions inflate MRR by an average of 3-7% and affect 78% of SaaS billing accounts. RevReclaim detects stuck subscriptions automatically during its 60-second billing scan.
 
-## What Is a Ghost Subscription?
+## What Is a Stuck Subscription?
 
-A ghost subscription is a subscription that's technically active in your billing system but hasn't had a successful payment in 30, 60, or even 90+ days. The customer's card keeps failing, or their payment method expired, or a webhook broke — and the subscription just... sits there.
+A stuck subscription is a subscription that's technically active in your billing system but hasn't had a successful payment in 30, 60, or even 90+ days. The customer's card keeps failing, or their payment method expired, or a webhook broke — and the subscription just... sits there.
 
 The customer isn't using your product. They're not paying. But they still count toward your MRR.
 
-They are called ghost subscriptions because they haunt your metrics.
+They are called stuck subscriptions because they haunt your metrics.
 
-## Why Are Ghost Subscriptions Dangerous for SaaS?
+## Why Are Stuck Subscriptions Dangerous for SaaS?
 
 ### They Inflate Your MRR
 
@@ -40,7 +40,7 @@ Ghost subscribers still take up seats in your system. They might still receive e
 
 Here's the worst case: a ghost subscriber's card suddenly works again (maybe they got a new card with the same number), Stripe charges them, and they don't recognize the charge. Dispute. Chargeback. You lose the money plus a $15 fee.
 
-## How Do You Find Ghost Subscriptions in Stripe?
+## How Do You Find Stuck Subscriptions in Stripe?
 
 ### In Stripe
 
@@ -76,11 +76,11 @@ Polar is newer and has simpler subscription management, but the same principle a
 2. Look for subscriptions with recent failed charges but no successful ones
 3. Cross-reference your active subscriber count with actual payments received
 
-## How Much Revenue Do SaaS Companies Lose to Ghost Subscriptions?
+## How Much Revenue Do SaaS Companies Lose to Stuck Subscriptions?
 
 After scanning hundreds of SaaS billing accounts, here is what RevReclaim typically finds:
 
-| Business Size | Avg Ghost Subscriptions | Monthly MRR Inflation |
+| Business Size | Avg Stuck Subscriptions | Monthly MRR Inflation |
 |---------------|------------------------|----------------------|
 | $5K-$15K MRR | 3-8 subscriptions | $200-$600 |
 | $15K-$50K MRR | 8-20 subscriptions | $600-$2,000 |
@@ -89,7 +89,7 @@ After scanning hundreds of SaaS billing accounts, here is what RevReclaim typica
 
 The pattern is consistent: **roughly 3-7% of "active" subscriptions are ghosts** at any given time.
 
-## How Do You Fix Ghost Subscriptions?
+## How Do You Fix Stuck Subscriptions?
 
 ### Step 1: Identify and Tag
 
@@ -103,7 +103,7 @@ Before canceling, try to win these customers back:
 - **Offer a billing page link** — Make it one click to update their payment method.
 - **Set a deadline** — "If we don't hear back in 7 days, we'll pause your subscription to avoid any unexpected charges."
 
-Recovery emails for ghost subscriptions have a surprisingly high success rate — **15-25% of ghosts will update their payment info** when contacted directly.
+Recovery emails for stuck subscriptions have a surprisingly high success rate — **15-25% of ghosts will update their payment info** when contacted directly.
 
 ### Step 3: Cancel the Unrecoverable
 
@@ -115,35 +115,35 @@ Better to know you have $17K real MRR than to think you have $18K.
 
 - **Enable card update emails** — Stripe can automatically email customers when their card is about to expire.
 - **Set dunning limits** — Don't let subscriptions stay in "past_due" forever. Set a maximum retry period (we recommend 30 days), then auto-cancel.
-- **Monitor weekly** — Check your ghost subscription count every week. It should stay below 3% of total subscriptions.
+- **Monitor weekly** — Check your stuck subscription count every week. It should stay below 3% of total subscriptions.
 
-## How Can RevReclaim Detect Ghost Subscriptions Automatically?
+## How Can RevReclaim Detect Stuck Subscriptions Automatically?
 
 Going through all of this manually takes hours. And you need to do it regularly — ghosts accumulate every month.
 
-RevReclaim scans your billing account and identifies ghost subscriptions automatically. You get:
+RevReclaim scans your billing account and identifies stuck subscriptions automatically. You get:
 
-- **Exact count** of ghost subscriptions with dollar amounts
+- **Exact count** of stuck subscriptions with dollar amounts
 - **Recovery priority list** — which ghosts are most likely to recover
 - **MRR correction** — what your real MRR is vs. what Stripe reports
 - **Action steps** — exactly what to do about each one
 
 The scan takes 60 seconds and uses read-only access. Billing data stays on the customer's billing platform.
 
-[Find your ghost subscriptions now →](/scan)
+[Find your stuck subscriptions now →](/scan)
 
 ---
 
 ## Frequently Asked Questions
 
-### What is a ghost subscription in SaaS?
-A ghost subscription is a subscription that remains technically active in a billing system like Stripe, Paddle, or Polar but has not had a successful payment in 30 or more days. Ghost subscriptions inflate MRR, hide real churn rates, and create chargeback risk. RevReclaim identifies ghost subscriptions automatically with exact dollar amounts.
+### What is a stuck subscription in SaaS?
+A stuck subscription is a subscription that remains technically active in a billing system like Stripe, Paddle, or Polar but has not had a successful payment in 30 or more days. Stuck subscriptions inflate MRR, hide real churn rates, and create chargeback risk. RevReclaim identifies stuck subscriptions automatically with exact dollar amounts.
 
-### How many ghost subscriptions does the average SaaS company have?
-RevReclaim's scan data shows that SaaS companies in the $5K-$15K MRR range have 3-8 ghost subscriptions on average, inflating MRR by $200-$600 per month. Companies at $50K-$150K MRR have 15-40 ghost subscriptions, inflating MRR by $1,500-$5,000 per month.
+### How many stuck subscriptions does the average SaaS company have?
+RevReclaim's scan data shows that SaaS companies in the $5K-$15K MRR range have 3-8 stuck subscriptions on average, inflating MRR by $200-$600 per month. Companies at $50K-$150K MRR have 15-40 stuck subscriptions, inflating MRR by $1,500-$5,000 per month.
 
-### Can ghost subscriptions be recovered?
-Yes. Recovery emails sent to ghost subscribers have a 15-25% success rate. RevReclaim provides a recovery priority list showing which ghost subscriptions are most likely to be recovered, along with exact dollar amounts and recommended actions.
+### Can stuck subscriptions be recovered?
+Yes. Recovery emails sent to ghost subscribers have a 15-25% success rate. RevReclaim provides a recovery priority list showing which stuck subscriptions are most likely to be recovered, along with exact dollar amounts and recommended actions.
 
-### How do ghost subscriptions affect MRR accuracy?
-Ghost subscriptions inflate reported MRR by counting subscriptions that have not generated actual revenue. For example, 10 ghost subscriptions at $99/month overstates MRR by $990/month or $11,880/year. RevReclaim calculates the exact MRR correction needed.
+### How do stuck subscriptions affect MRR accuracy?
+Stuck subscriptions inflate reported MRR by counting subscriptions that have not generated actual revenue. For example, 10 stuck subscriptions at $99/month overstates MRR by $990/month or $11,880/year. RevReclaim calculates the exact MRR correction needed.

@@ -8,7 +8,7 @@ import Link from "next/link";
 
 const CATEGORY_COLORS: Record<string, string> = {
   failed_payment: "#EF4444",
-  ghost_subscription: "#F97316",
+  stuck_subscription: "#F97316",
   expiring_card: "#F59E0B",
   missing_payment_method: "#EC4899",
   expired_coupon: "#8B5CF6",
@@ -27,10 +27,7 @@ export default function MiniCategoryChart({
   const [animate, setAnimate] = useState(prefersReducedMotion);
 
   useEffect(() => {
-    if (prefersReducedMotion) {
-      setAnimate(true);
-      return;
-    }
+    if (prefersReducedMotion) return;
     const timer = setTimeout(() => setAnimate(true), 300);
     return () => clearTimeout(timer);
   }, [prefersReducedMotion]);

@@ -28,13 +28,13 @@ const leaks = [
     severity: "MEDIUM",
   },
   {
-    title: "Ghost Subscriptions",
+    title: "Stuck Subscriptions",
     description:
       "14 subscriptions sitting in 'past_due' since November. They're not active. They're not canceled. They're in billing purgatory. Nobody fixes this for you.",
     impact: "Found in 30% of accounts we scan",
     afterFix: "Clean billing = predictable MRR. No more guessing what's real.",
     severity: "HIGH",
-    crmExample: "With CRM: Zero activity in 92 days → confirmed write-off. Without CRM: chase a ghost.",
+    crmExample: "With CRM: Zero activity in 92 days → confirmed write-off. Without CRM: chase a stuck sub.",
   },
   {
     title: "Expiring Cards",

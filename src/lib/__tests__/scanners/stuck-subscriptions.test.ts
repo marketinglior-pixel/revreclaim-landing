@@ -1,29 +1,29 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { scanGhostSubscriptions } from "../../scanners-v2/ghost-subscriptions";
+import { scanStuckSubscriptions } from "../../scanners-v2/stuck-subscriptions";
 import { mockSubscription, resetCounter } from "./helpers";
 
-describe("scanGhostSubscriptions", () => {
+describe("scanStuckSubscriptions", () => {
   beforeEach(() => {
     resetCounter();
   });
 
   it("returns empty array when no subscriptions", () => {
-    expect(scanGhostSubscriptions([])).toEqual([]);
+    expect(scanStuckSubscriptions([])).toEqual([]);
   });
 
   it("ignores active subscriptions", () => {
     const sub = mockSubscription({ status: "active" });
-    expect(scanGhostSubscriptions([sub])).toEqual([]);
+    expect(scanStuckSubscriptions([sub])).toEqual([]);
   });
 
   it("ignores trialing subscriptions", () => {
     const sub = mockSubscription({ status: "trialing" });
-    expect(scanGhostSubscriptions([sub])).toEqual([]);
+    expect(scanStuckSubscriptions([sub])).toEqual([]);
   });
 
   it("ignores canceled subscriptions", () => {
     const sub = mockSubscription({ status: "canceled" });
-    expect(scanGhostSubscriptions([sub])).toEqual([]);
+    expect(scanStuckSubscriptions([sub])).toEqual([]);
   });
 
   it("detects past_due subscription as critical", () => {
@@ -32,9 +32,9 @@ describe("scanGhostSubscriptions", () => {
       monthlyAmountCents: 9900,
     });
 
-    const leaks = scanGhostSubscriptions([sub]);
+    const leaks = scanStuckSubscriptions([sub]);
     expect(leaks).toHaveLength(1);
-    expect(leaks[0].type).toBe("ghost_subscription");
+    expect(leaks[0].type).toBe("stuck_subscription");
     expect(leaks[0].severity).toBe("critical");
     expect(leaks[0].monthlyImpact).toBe(9900);
     expect(leaks[0].title).toContain("Past due");
@@ -46,7 +46,7 @@ describe("scanGhostSubscriptions", () => {
       monthlyAmountCents: 4900,
     });
 
-    const leaks = scanGhostSubscriptions([sub]);
+    const leaks = scanStuckSubscriptions([sub]);
     expect(leaks).toHaveLength(1);
     expect(leaks[0].severity).toBe("high");
     expect(leaks[0].title).toContain("Unpaid");
@@ -58,7 +58,7 @@ describe("scanGhostSubscriptions", () => {
       monthlyAmountCents: 2900,
     });
 
-    const leaks = scanGhostSubscriptions([sub]);
+    const leaks = scanStuckSubscriptions([sub]);
     expect(leaks).toHaveLength(1);
     expect(leaks[0].severity).toBe("medium");
     expect(leaks[0].title).toContain("Incomplete");
@@ -70,7 +70,7 @@ describe("scanGhostSubscriptions", () => {
       monthlyAmountCents: 2900,
     });
 
-    const leaks = scanGhostSubscriptions([sub]);
+    const leaks = scanStuckSubscriptions([sub]);
     expect(leaks).toHaveLength(1);
     expect(leaks[0].severity).toBe("low");
   });
@@ -82,7 +82,7 @@ describe("scanGhostSubscriptions", () => {
       monthlyAmountCents: 4900,
     });
 
-    const leaks = scanGhostSubscriptions([sub]);
+    const leaks = scanStuckSubscriptions([sub]);
     expect(leaks).toHaveLength(1);
     expect(leaks[0].severity).toBe("medium");
     expect(leaks[0].title).toContain("paused");
@@ -94,7 +94,7 @@ describe("scanGhostSubscriptions", () => {
       pauseResumesAt: Math.floor(Date.now() / 1000) + 86400 * 30,
     });
 
-    expect(scanGhostSubscriptions([sub])).toEqual([]);
+    expect(scanStuckSubscriptions([sub])).toEqual([]);
   });
 
   it("ignores zero-amount subscriptions", () => {
@@ -103,17 +103,17 @@ describe("scanGhostSubscriptions", () => {
       monthlyAmountCents: 0,
     });
 
-    expect(scanGhostSubscriptions([sub])).toEqual([]);
+    expect(scanStuckSubscriptions([sub])).toEqual([]);
   });
 
-  it("handles multiple ghost subscriptions", () => {
+  it("handles multiple stuck subscriptions", () => {
     const subs = [
       mockSubscription({ status: "past_due", monthlyAmountCents: 9900 }),
       mockSubscription({ status: "unpaid", monthlyAmountCents: 4900 }),
       mockSubscription({ status: "active", monthlyAmountCents: 2900 }), // skip
     ];
 
-    const leaks = scanGhostSubscriptions(subs);
+    const leaks = scanStuckSubscriptions(subs);
     expect(leaks).toHaveLength(2);
   });
 
@@ -123,7 +123,7 @@ describe("scanGhostSubscriptions", () => {
       monthlyAmountCents: 9900,
     });
 
-    const leaks = scanGhostSubscriptions([sub]);
+    const leaks = scanStuckSubscriptions([sub]);
     expect(leaks[0].metadata.subscriptionStatus).toBe("past_due");
   });
 });

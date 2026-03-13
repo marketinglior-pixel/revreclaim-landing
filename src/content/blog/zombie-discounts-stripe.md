@@ -322,7 +322,7 @@ RevReclaim has scanned hundreds of SaaS billing accounts. Here's what the data s
 - **Average age of zombie discounts:** 7.4 months (the discount has been running 7+ months past its intended end date)
 - **Average number of zombie discounts per affected account:** 3.2
 
-For a SaaS company at $50K MRR, zombie discounts are typically the second or third largest leak type — behind failed payment gaps but often ahead of [ghost subscriptions](/blog/ghost-subscriptions-saas).
+For a SaaS company at $50K MRR, zombie discounts are typically the second or third largest leak type — behind failed payment gaps but often ahead of [stuck subscriptions](/blog/ghost-subscriptions-saas).
 
 The insidious part: zombie discounts don't show up as failed revenue. The invoices succeed. The customers pay. The money just arrives at a lower amount than it should. There's no alert, no error, no notification. The revenue quietly doesn't exist.
 

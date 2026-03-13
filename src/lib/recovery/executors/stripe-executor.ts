@@ -72,7 +72,7 @@ export async function stripeRemoveCoupon(
 }
 
 /**
- * Cancel a ghost subscription that's stuck in a broken state.
+ * Cancel a stuck subscription that's stuck in a broken state.
  */
 export async function stripeCancelSubscription(
   apiKey: string,

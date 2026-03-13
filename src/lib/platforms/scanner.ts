@@ -27,7 +27,7 @@ export interface PlatformScanResult {
 
 // Import v2 scanners
 import { scanFailedPayments } from "../scanners-v2/failed-payments";
-import { scanGhostSubscriptions } from "../scanners-v2/ghost-subscriptions";
+import { scanStuckSubscriptions } from "../scanners-v2/stuck-subscriptions";
 import { scanExpiringCards } from "../scanners-v2/expiring-cards";
 import { scanExpiredCoupons } from "../scanners-v2/expired-coupons";
 import { scanNeverExpiringDiscounts } from "../scanners-v2/never-expiring-discounts";
@@ -73,8 +73,8 @@ export async function runPlatformScan(
   if (caps.failedPayments) {
     runScanner("failedPayments", () => scanFailedPayments(data.invoices));
   }
-  if (caps.ghostSubscriptions) {
-    runScanner("ghostSubscriptions", () => scanGhostSubscriptions(data.subscriptions));
+  if (caps.stuckSubscriptions) {
+    runScanner("stuckSubscriptions", () => scanStuckSubscriptions(data.subscriptions));
   }
   if (caps.expiringCards) {
     runScanner("expiringCards", () => scanExpiringCards(data.subscriptions, data.paymentMethods));
@@ -121,7 +121,7 @@ export async function runPlatformScan(
 
   // Step 5b: Deduplicate MRR-at-risk by subscriptionId
   // The same subscription can appear in multiple scanners (e.g., expiring card +
-  // missing payment method + ghost subscription). For totals, only count the
+  // missing payment method + stuck subscription). For totals, only count the
   // highest-impact leak per subscription to avoid inflating the numbers.
   // Leaks without a subscriptionId (e.g., invoice-level) are always counted.
   const subMaxImpact = new Map<string, { raw: number; weighted: number }>();

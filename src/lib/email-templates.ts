@@ -63,7 +63,7 @@ export function welcomeEmailHtml(): string {
     <h1 style="color:white;font-size:24px;margin:0 0 16px;">Welcome to RevReclaim!</h1>
     <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
       You're all set up. RevReclaim scans your billing platform for revenue leaks — expired coupons,
-      failed payments, ghost subscriptions, and more. We support Stripe, Polar, and Paddle.
+      failed payments, stuck subscriptions, and more. We support Stripe, Polar, and Paddle.
     </p>
 
     <h2 style="color:white;font-size:16px;margin:0 0 12px;">Get started in 3 steps:</h2>
@@ -278,7 +278,7 @@ export function lastChanceEmailHtml(mrrAtRisk: number): string {
     <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 16px;">
       It's been 14 days since you found <strong style="color:#EF4444;">${amount}/month</strong> in revenue leaks.
       Without automated monitoring, new leaks appear every week — failed payments, expired cards,
-      ghost subscriptions.
+      stuck subscriptions.
     </p>
 
     <div style="background:#0A0A0A;border:1px solid #EF444430;border-radius:12px;padding:20px;margin-bottom:24px;">

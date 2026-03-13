@@ -23,7 +23,7 @@ const leakIconPaths: Record<string, ReactNode> = {
       <path d="M15 14l4 4m0-4l-4 4" />
     </>
   ),
-  "Ghost Subscriptions": (
+  "Stuck Subscriptions": (
     <>
       <path d="M12 2a7 7 0 0 0-7 7v11l2.5-2 2.5 2 2-2 2 2 2.5-2L19 20V9a7 7 0 0 0-7-7Z" />
       <path d="M9 10h.01M15 10h.01" />

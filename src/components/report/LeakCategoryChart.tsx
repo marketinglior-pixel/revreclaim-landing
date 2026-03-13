@@ -12,7 +12,7 @@ interface LeakCategoryChartProps {
 
 const CATEGORY_COLORS: Record<string, string> = {
   failed_payment: "#EF4444",
-  ghost_subscription: "#F97316",
+  stuck_subscription: "#F97316",
   expiring_card: "#F59E0B",
   missing_payment_method: "#EC4899",
   expired_coupon: "#8B5CF6",

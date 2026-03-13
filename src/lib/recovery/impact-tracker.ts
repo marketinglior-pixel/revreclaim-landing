@@ -122,13 +122,13 @@ function actionTypeToLeakType(
   const mapping: Record<string, string[]> = {
     send_dunning_email: [
       "failed_payment",
-      "ghost_subscription",
+      "stuck_subscription",
       "expiring_card",
       "missing_payment_method",
     ],
     retry_payment: ["failed_payment"],
     remove_coupon: ["expired_coupon", "never_expiring_discount"],
-    cancel_subscription: ["ghost_subscription"],
+    cancel_subscription: ["stuck_subscription"],
   };
 
   const types = mapping[actionType];

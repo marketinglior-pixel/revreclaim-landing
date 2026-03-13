@@ -1285,8 +1285,8 @@ export default function SettingsPage() {
       )}
 
       {/* Action API Key — for write operations */}
-      {userPlan !== "free" && hasExistingConfig && (
-        <div className="rounded-2xl border border-border bg-surface p-6">
+      {hasExistingConfig && (
+        <div id="action-api-key" className="rounded-2xl border border-border bg-surface p-6 scroll-mt-8">
           <div className="flex items-center gap-3 mb-1">
             <h2 className="text-lg font-bold text-white">Action API Key</h2>
             <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
@@ -1294,7 +1294,7 @@ export default function SettingsPage() {
             </span>
           </div>
           <p className="text-sm text-text-muted mb-6">
-            Enable automated recovery actions (retry payments, remove expired coupons, cancel ghost subscriptions).
+            Enable automated recovery actions (retry payments, remove expired coupons, cancel stuck subscriptions).
             This key requires <strong className="text-white">write access</strong> to your billing platform.
           </p>
 

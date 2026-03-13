@@ -94,7 +94,7 @@ const QUESTIONS: QuizQuestion[] = [
   {
     id: "dunning",
     question: "How do you handle failed payments?",
-    subtext: "Failed payments are the #1 source of involuntary churn. Without active dunning, subscriptions go 'past_due' silently — becoming ghost subscriptions.",
+    subtext: "Failed payments are the #1 source of involuntary churn. Without active dunning, subscriptions go 'past_due' silently — becoming stuck subscriptions.",
     options: [
       { label: "Automated dunning tool", value: "automated", risk: 1 },
       { label: "Manual follow-up", value: "manual", risk: 2 },
@@ -120,7 +120,7 @@ const QUESTIONS: QuizQuestion[] = [
 const LEAK_CATEGORIES = [
   { label: "Failed Payments & Dunning Gaps", color: "#EF4444", baseShare: 0.22, riskKeys: ["dunning", "customers"] },
   { label: "Legacy Pricing", color: "#3B82F6", baseShare: 0.15, riskKeys: ["pricing", "customers"] },
-  { label: "Ghost Subscriptions", color: "#F97316", baseShare: 0.14, riskKeys: ["dunning", "audit"] },
+  { label: "Stuck Subscriptions", color: "#F97316", baseShare: 0.14, riskKeys: ["dunning", "audit"] },
   { label: "Expired & Forever Coupons", color: "#8B5CF6", baseShare: 0.22, riskKeys: ["coupons", "audit"] },
   { label: "Expiring Cards", color: "#F59E0B", baseShare: 0.12, riskKeys: ["customers", "dunning"] },
   { label: "Missing Payment Methods", color: "#EC4899", baseShare: 0.08, riskKeys: ["audit", "customers"] },
@@ -298,7 +298,7 @@ export default function CalculatorPage() {
     findings.push("Active coupon usage means expired or forever coupons are almost certainly running on some subscriptions.");
   }
   if (answers.dunning === "nothing" || answers.dunning === "default") {
-    findings.push("Without active dunning, failed payments become ghost subscriptions — customers who aren't paying but aren't canceled.");
+    findings.push("Without active dunning, failed payments become stuck subscriptions — customers who aren't paying but aren't canceled.");
   }
   if (answers.audit === "never" || answers.audit === "6mo+") {
     findings.push("Without regular billing audits, leaks compound silently. Most founders don't know until they check.");
@@ -713,7 +713,7 @@ function SEOContent() {
           <p>
             Revenue leakage is the gap between what your SaaS <em>should</em> be collecting and what it actually collects.
             Unlike churn, which you actively track, revenue leaks are silent — they hide inside your billing platform in the
-            form of expired discounts, failed payment retries, ghost subscriptions, and outdated pricing.
+            form of expired discounts, failed payment retries, stuck subscriptions, and outdated pricing.
           </p>
           <p>
             Industry research from MGI Research and EY Revenue Assurance consistently shows that the average business loses

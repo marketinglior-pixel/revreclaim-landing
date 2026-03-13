@@ -39,7 +39,7 @@ const COMPARISON_ROWS = [
     revreclaimDoes: true,
   },
   {
-    category: "Ghost Subscription Detection",
+    category: "Stuck Subscription Detection",
     competitor: "Possible via dashboard filters. Manual review of past_due and unpaid statuses. Easy to miss edge cases.",
     revreclaim: "Automatic. Catches all limbo states including past_due, unpaid, and incomplete_expired.",
     competitorDoes: "partial" as unknown as boolean,
@@ -310,7 +310,7 @@ export default function ManualAuditComparePage() {
                 name: "What do manual Stripe audits miss?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "Manual audits typically catch failed payments and obvious cancellations but miss expired coupons still discounting, ghost subscriptions in limbo states, legacy pricing gaps, forever discounts, and duplicate subscriptions — roughly 50% of total leaks.",
+                  text: "Manual audits typically catch failed payments and obvious cancellations but miss expired coupons still discounting, stuck subscriptions in limbo states, legacy pricing gaps, forever discounts, and duplicate subscriptions — roughly 50% of total leaks.",
                 },
               },
               {

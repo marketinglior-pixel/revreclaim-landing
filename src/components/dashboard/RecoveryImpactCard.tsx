@@ -26,7 +26,7 @@ const ACTION_LABELS: Record<string, string> = {
   send_dunning_email: "Payment reminder sent",
   retry_payment: "Payment retried",
   remove_coupon: "Coupon removed",
-  cancel_subscription: "Ghost sub cancelled",
+  cancel_subscription: "Stuck sub cancelled",
 };
 
 export default function RecoveryImpactCard() {

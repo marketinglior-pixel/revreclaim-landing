@@ -12,7 +12,7 @@ import { scanExpiredCoupons } from "./scanners/expired-coupons";
 import { scanNeverExpiringDiscounts } from "./scanners/never-expiring-discounts";
 import { scanFailedPayments } from "./scanners/failed-payments";
 import { scanExpiringCards } from "./scanners/expiring-cards";
-import { scanGhostSubscriptions } from "./scanners/ghost-subscriptions";
+import { scanStuckSubscriptions } from "./scanners/stuck-subscriptions";
 import { scanLegacyPricing } from "./scanners/legacy-pricing";
 import { scanMissingPaymentMethods } from "./scanners/missing-payment-methods";
 
@@ -368,7 +368,7 @@ export async function runFullScan(
     ...scanNeverExpiringDiscounts(data.subscriptions),
     ...scanFailedPayments(data.invoices),
     ...scanExpiringCards(data.subscriptions, data.paymentMethods),
-    ...scanGhostSubscriptions(data.subscriptions),
+    ...scanStuckSubscriptions(data.subscriptions),
     ...scanLegacyPricing(data.subscriptions, data.prices, data.products),
     ...scanMissingPaymentMethods(data.subscriptions, data.paymentMethods),
   ];

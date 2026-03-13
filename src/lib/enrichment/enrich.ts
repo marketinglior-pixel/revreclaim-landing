@@ -112,8 +112,8 @@ function calculateAdjustment(
       }
       break;
 
-    // ── Ghost Subscriptions ───────────────────────────────
-    case "ghost_subscription":
+    // ── Stuck Subscriptions ───────────────────────────────
+    case "stuck_subscription":
       if (
         engagementLevel === "inactive" &&
         daysSinceLastActivity !== null &&
@@ -122,7 +122,7 @@ function calculateAdjustment(
         return {
           newSeverity: "critical",
           recoveryRateDelta: -0.3,
-          reason: `Ghost sub confirmed — zero CRM activity in ${daysSinceLastActivity} days. Very unlikely to recover.`,
+          reason: `Stuck sub confirmed — zero CRM activity in ${daysSinceLastActivity} days. Very unlikely to recover.`,
         };
       }
       if (engagementLevel === "active") {

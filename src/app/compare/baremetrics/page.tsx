@@ -47,7 +47,7 @@ const COMPARISON_ROWS = [
     revreclaimDoes: true,
   },
   {
-    category: "Ghost Subscription Detection",
+    category: "Stuck Subscription Detection",
     competitor: "No detection. Shows aggregate churn but doesn't flag individual stuck subscriptions.",
     revreclaim: "Finds subscriptions in limbo states. AI agents can auto-resolve or cancel.",
     competitorDoes: false,
@@ -137,7 +137,7 @@ export default function BaremetricsComparePage() {
             Baremetrics is a great analytics dashboard. It tracks MRR, churn, LTV, and recovers failed payments with Recover.
             But analytics tools work with <span className="text-white font-medium">aggregate data</span>.
             Revenue leaks hide in <span className="text-white font-medium">individual records</span> &mdash;
-            expired coupons, ghost subscriptions, legacy pricing gaps. Baremetrics doesn&apos;t scan for those.
+            expired coupons, stuck subscriptions, legacy pricing gaps. Baremetrics doesn&apos;t scan for those.
           </p>
 
           {/* The question */}
@@ -304,10 +304,10 @@ export default function BaremetricsComparePage() {
             mainEntity: [
               {
                 "@type": "Question",
-                name: "Does Baremetrics detect expired coupons or ghost subscriptions?",
+                name: "Does Baremetrics detect expired coupons or stuck subscriptions?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "No. Baremetrics tracks MRR, churn, and LTV but doesn't scan individual subscriptions for billing configuration errors like expired coupons still discounting or ghost subscriptions inflating MRR.",
+                  text: "No. Baremetrics tracks MRR, churn, and LTV but doesn't scan individual subscriptions for billing configuration errors like expired coupons still discounting or stuck subscriptions inflating MRR.",
                 },
               },
               {
@@ -315,7 +315,7 @@ export default function BaremetricsComparePage() {
                 name: "What's the difference between Baremetrics and RevReclaim?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "Baremetrics is a revenue analytics dashboard that tracks MRR, churn, and LTV. RevReclaim is a billing leak detector that finds revenue you're losing from expired coupons, ghost subscriptions, and 8 other leak types. They're complementary tools.",
+                  text: "Baremetrics is a revenue analytics dashboard that tracks MRR, churn, and LTV. RevReclaim is a billing leak detector that finds revenue you're losing from expired coupons, stuck subscriptions, and 8 other leak types. They're complementary tools.",
                 },
               },
               {

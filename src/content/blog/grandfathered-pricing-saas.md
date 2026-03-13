@@ -339,7 +339,7 @@ RevReclaim scans your billing account and surfaces the legacy pricing gap automa
 
 The scan takes 60 seconds. Read-only access. No stored keys.
 
-Legacy pricing is one of [5 types of revenue leaks](/blog/five-types-revenue-leaks-saas) that RevReclaim detects. The others -- [ghost subscriptions](/blog/ghost-subscriptions-saas), [failed payments](/blog/find-failed-payments-stripe), expired coupons, and missing payment methods -- compound on top of the pricing gap.
+Legacy pricing is one of [5 types of revenue leaks](/blog/five-types-revenue-leaks-saas) that RevReclaim detects. The others -- [stuck subscriptions](/blog/ghost-subscriptions-saas), [failed payments](/blog/find-failed-payments-stripe), expired coupons, and missing payment methods -- compound on top of the pricing gap.
 
 [Run a free scan to find your legacy pricing gap -->](/scan)
 

@@ -30,6 +30,7 @@ interface ActionCardProps {
   executing: boolean;
   remaining?: number;
   privacyMode?: boolean;
+  missingWriteKey?: boolean;
 }
 
 const STATUS_BADGE: Record<
@@ -138,6 +139,7 @@ export function ActionCard({
   canApprove,
   executing,
   privacyMode,
+  missingWriteKey,
 }: ActionCardProps) {
   const [showPreview, setShowPreview] = useState(false);
   const badge = STATUS_BADGE[action.status];
@@ -271,20 +273,32 @@ export function ActionCard({
           )}
 
           {action.status === "approved" && canApprove && (
-            <button
-              onClick={() => onExecute(action.id)}
-              disabled={executing}
-              className="rounded-lg bg-brand px-3 py-1.5 text-xs font-bold text-black hover:bg-brand-dark transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
-            >
-              {executing ? (
-                <>
-                  <span className="h-3 w-3 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                  Running…
-                </>
-              ) : (
-                "Execute"
-              )}
-            </button>
+            missingWriteKey ? (
+              <a
+                href="/dashboard/settings#action-api-key"
+                className="rounded-lg bg-warning/10 border border-warning/25 px-3 py-1.5 text-xs font-medium text-warning hover:bg-warning/20 transition flex items-center gap-1.5"
+              >
+                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+                </svg>
+                Add API Key
+              </a>
+            ) : (
+              <button
+                onClick={() => onExecute(action.id)}
+                disabled={executing}
+                className="rounded-lg bg-brand px-3 py-1.5 text-xs font-bold text-black hover:bg-brand-dark transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+              >
+                {executing ? (
+                  <>
+                    <span className="h-3 w-3 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                    Running…
+                  </>
+                ) : (
+                  "Execute"
+                )}
+              </button>
+            )
           )}
 
           {action.status === "failed" && canApprove && (

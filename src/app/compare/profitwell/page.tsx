@@ -53,7 +53,7 @@ const COMPARISON_ROWS = [
     revreclaimDoes: true,
   },
   {
-    category: "Ghost Subscription Detection",
+    category: "Stuck Subscription Detection",
     competitor: "No detection. Shows aggregate churn but doesn't flag stuck subscriptions.",
     revreclaim: "Finds subscriptions in limbo states. Shows which ones need action.",
     competitorDoes: false,
@@ -300,7 +300,7 @@ export default function ProfitWellComparePage() {
                 name: "Is ProfitWell the same as RevReclaim?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "No. ProfitWell (now part of Paddle) provides free revenue analytics for Paddle users. RevReclaim detects billing leaks that analytics tools miss — like expired coupons still discounting active subscriptions, ghost subscriptions, and legacy pricing gaps.",
+                  text: "No. ProfitWell (now part of Paddle) provides free revenue analytics for Paddle users. RevReclaim detects billing leaks that analytics tools miss — like expired coupons still discounting active subscriptions, stuck subscriptions, and legacy pricing gaps.",
                 },
               },
               {
@@ -316,7 +316,7 @@ export default function ProfitWellComparePage() {
                 name: "What revenue leaks does ProfitWell miss?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "ProfitWell doesn't scan for expired coupons, ghost subscriptions, legacy pricing gaps, forever discounts, duplicate subscriptions, unbilled overages, or missing payment methods. RevReclaim checks all 10 leak types in 90 seconds.",
+                  text: "ProfitWell doesn't scan for expired coupons, stuck subscriptions, legacy pricing gaps, forever discounts, duplicate subscriptions, unbilled overages, or missing payment methods. RevReclaim checks all 10 leak types in 90 seconds.",
                 },
               },
             ],

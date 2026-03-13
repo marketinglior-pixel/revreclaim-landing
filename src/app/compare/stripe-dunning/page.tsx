@@ -62,7 +62,7 @@ const COMPARISON_ROWS = [
     stripeDoes: false,
   },
   {
-    category: "Ghost Subscriptions",
+    category: "Stuck Subscriptions",
     stripe: "Shows status as 'past_due' but doesn't alert you or take action.",
     revreclaim: "Finds subscriptions stuck in limbo states. AI agents can auto-resolve or cancel.",
     stripeDoes: false,
@@ -322,7 +322,7 @@ export default function StripeDunningComparePage() {
                 name: "Does Stripe automatically recover failed payments?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "Stripe's Smart Retries handle some failed payments, but they only cover 1 of 10 leak types. Expired coupons, ghost subscriptions, and legacy pricing gaps are not addressed by Stripe's built-in dunning.",
+                  text: "Stripe's Smart Retries handle some failed payments, but they only cover 1 of 10 leak types. Expired coupons, stuck subscriptions, and legacy pricing gaps are not addressed by Stripe's built-in dunning.",
                 },
               },
               {
@@ -330,7 +330,7 @@ export default function StripeDunningComparePage() {
                 name: "What's the difference between Stripe dunning and RevReclaim?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "Stripe dunning retries failed payments. RevReclaim scans for 10 types of revenue leaks including expired coupons, ghost subscriptions, and legacy pricing — issues Stripe doesn't flag.",
+                  text: "Stripe dunning retries failed payments. RevReclaim scans for 10 types of revenue leaks including expired coupons, stuck subscriptions, and legacy pricing — issues Stripe doesn't flag.",
                 },
               },
               {

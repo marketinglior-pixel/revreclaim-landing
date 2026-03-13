@@ -7,7 +7,7 @@ export type LeakType =
   | "never_expiring_discount"
   | "failed_payment"
   | "expiring_card"
-  | "ghost_subscription"
+  | "stuck_subscription"
   | "legacy_pricing"
   | "missing_payment_method"
   | "unbilled_overage"
@@ -19,7 +19,7 @@ export const LEAK_TYPE_LABELS: Record<LeakType, string> = {
   never_expiring_discount: "Never-Expiring Discounts",
   failed_payment: "Uncollected Revenue",
   expiring_card: "Expiring Cards",
-  ghost_subscription: "Stuck Subscriptions",
+  stuck_subscription: "Stuck Subscriptions",
   legacy_pricing: "Legacy Pricing",
   missing_payment_method: "Missing Payment Methods",
   unbilled_overage: "Unbilled Overages",

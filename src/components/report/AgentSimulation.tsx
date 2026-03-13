@@ -380,7 +380,7 @@ export default function AgentSimulation({ leaks }: { leaks: Leak[] }) {
               </p>
               <p className="text-sm text-text-muted max-w-lg mx-auto mb-5">
                 These agents run automatically on your account. Fixing failed
-                payments, removing expired coupons, and cleaning up ghost
+                payments, removing expired coupons, and cleaning up stuck
                 subscriptions. No manual work.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">

@@ -35,7 +35,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">1. Service Overview</h2>
             <p className="text-text-muted">
-              RevReclaim (&quot;the Service&quot;) is a SaaS tool that scans your Stripe, Paddle, or Polar billing account to detect revenue leaks — failed payments, ghost subscriptions, pricing mismatches, and other billing issues that cost you money. The Service is provided by RevReclaim (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;).
+              RevReclaim (&quot;the Service&quot;) is a SaaS tool that scans your Stripe, Paddle, or Polar billing account to detect revenue leaks — failed payments, stuck subscriptions, pricing mismatches, and other billing issues that cost you money. The Service is provided by RevReclaim (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;).
             </p>
           </section>
 

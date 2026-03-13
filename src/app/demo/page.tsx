@@ -56,7 +56,7 @@ const DEMO_REPORT: ScanReport = {
       percentage: 1.0,
     },
     {
-      type: "ghost_subscription",
+      type: "stuck_subscription",
       label: "Stuck Subscriptions",
       count: 4,
       totalMonthlyImpact: 89700, // $897/mo
@@ -228,14 +228,14 @@ const DEMO_REPORT: ScanReport = {
       metadata: {},
     },
 
-    // ── CRITICAL: Ghost Subscriptions ──
+    // ── CRITICAL: Stuck Subscriptions ──
     {
       id: "leak-007",
-      type: "ghost_subscription",
+      type: "stuck_subscription",
       severity: "critical",
       title: "Enterprise sub in 'past_due' for 45 days — likely churned",
       description:
-        "Subscription sub_8ScI4pQ6rX has been in 'past_due' status for 45 days with no successful payment. All 4 retry attempts failed. Customer hasn't logged in for 38 days. This is effectively a ghost subscription consuming resources.",
+        "Subscription sub_8ScI4pQ6rX has been in 'past_due' status for 45 days with no successful payment. All 4 retry attempts failed. Customer hasn't logged in for 38 days. This is effectively a stuck subscription consuming resources.",
       customerEmail: "d***@bigcorp.com",
       customerId: "cus_O8qQ0sQr7aW",
       subscriptionId: "sub_8ScI4pQ6rX",
@@ -251,7 +251,7 @@ const DEMO_REPORT: ScanReport = {
     },
     {
       id: "leak-008",
-      type: "ghost_subscription",
+      type: "stuck_subscription",
       severity: "high",
       title: "Pro sub 'past_due' 22 days — no login in 3 weeks",
       description:
@@ -271,9 +271,9 @@ const DEMO_REPORT: ScanReport = {
     },
     {
       id: "leak-009",
-      type: "ghost_subscription",
+      type: "stuck_subscription",
       severity: "high",
-      title: "Growth plan ghost — 30 days past due",
+      title: "Growth plan stuck — 30 days past due",
       description:
         "Subscription sub_0UeK6rS8tZ ($199/mo Growth) has been past due for 30 days. Customer email bounces. No login activity in 28 days. All automatic retries exhausted.",
       customerEmail: "t***@defunct-startup.com",
@@ -291,7 +291,7 @@ const DEMO_REPORT: ScanReport = {
     },
     {
       id: "leak-010",
-      type: "ghost_subscription",
+      type: "stuck_subscription",
       severity: "medium",
       title: "Starter plan — 14 days past due, low usage",
       description:
@@ -713,14 +713,14 @@ function addDemoEnrichment() {
       },
       provider: "hubspot",
     },
-    // Ghost subscription — inactive 90+ days → severity escalated to critical
+    // Stuck subscription — inactive 90+ days → severity escalated to critical
     "leak-007": {
       originalSeverity: "critical",
       originalRecoveryRate: 0.4,
       severityAdjusted: false,
       recoveryRateAdjusted: true,
       adjustmentReason:
-        "Ghost sub confirmed — zero CRM activity in 92 days. Very unlikely to recover.",
+        "Stuck sub confirmed — zero CRM activity in 92 days. Very unlikely to recover.",
       signals: {
         found: true,
         daysSinceLastActivity: 92,
@@ -733,7 +733,7 @@ function addDemoEnrichment() {
       },
       provider: "hubspot",
     },
-    // Ghost subscription — actually active in CRM → good sign
+    // Stuck subscription — actually active in CRM → good sign
     "leak-008": {
       originalSeverity: "high",
       originalRecoveryRate: 0.4,

@@ -8,7 +8,7 @@
 
 ## What Is RevReclaim
 
-RevReclaim is a SaaS that scans billing platform accounts (Stripe, Lemon Squeezy, Paddle) for revenue leaks — failed payments, ghost subscriptions, expired coupons, legacy pricing, and more. SaaS founders paste a read-only API key, get a report in 90 seconds showing real customer names, real dollar amounts, and one-click fix instructions. Free scan forever, paid plans for continuous monitoring.
+RevReclaim is a SaaS that scans billing platform accounts (Stripe, Lemon Squeezy, Paddle) for revenue leaks — failed payments, stuck subscriptions, expired coupons, legacy pricing, and more. SaaS founders paste a read-only API key, get a report in 90 seconds showing real customer names, real dollar amounts, and one-click fix instructions. Free scan forever, paid plans for continuous monitoring.
 
 ---
 
@@ -38,7 +38,7 @@ RevReclaim is a SaaS that scans billing platform accounts (Stripe, Lemon Squeezy
 
 ### Core Product
 - Multi-platform scan engine: Stripe, Lemon Squeezy, Paddle
-- 7 scanner modules per platform (failed payments, ghost subscriptions, expiring cards, expired coupons, never-expiring discounts, legacy pricing, missing payment methods)
+- 7 scanner modules per platform (failed payments, stuck subscriptions, expiring cards, expired coupons, never-expiring discounts, legacy pricing, missing payment methods)
 - Report viewer with Billing Health Score (0–100), leak category charts, per-leak fix instructions
 - PDF + CSV export
 - AES-256-GCM encryption for stored API keys

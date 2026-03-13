@@ -200,7 +200,7 @@ export default function ScanPage() {
                 desc: "Set to 'forever.' They'll never pay full price.",
               },
               {
-                title: "Ghost Subscriptions",
+                title: "Stuck Subscriptions",
                 desc: "Stuck in limbo. Not active, not canceled.",
               },
               {

@@ -8,7 +8,7 @@ tags: ["Stripe", "billing audit", "revenue leakage", "SaaS billing", "MRR"]
 canonical: "https://revreclaim.com/blog/audit-stripe-account-revenue-leaks"
 ---
 
-94% of the SaaS accounts we've scanned have at least one billing leak. Not a bug. Not fraud. Just money sitting in your Stripe account that you earned but aren't collecting — because of expired coupons, ghost subscriptions, outdated pricing, or failed payments nobody noticed.
+94% of the SaaS accounts we've scanned have at least one billing leak. Not a bug. Not fraud. Just money sitting in your Stripe account that you earned but aren't collecting — because of expired coupons, stuck subscriptions, outdated pricing, or failed payments nobody noticed.
 
 The average leak: **$2,340/month**. That's $28,000/year walking out the door.
 
@@ -63,7 +63,7 @@ console.log(`$${failedInvoices.reduce((sum, inv) => sum + inv.amount_remaining, 
 
 ---
 
-### 2. Ghost Subscriptions
+### 2. Stuck Subscriptions
 
 **What to look for:** Subscriptions stuck in `past_due` or `unpaid` status for 14+ days. These customers aren't paying, but their subscription isn't canceled either. They're ghosts — consuming resources without generating revenue.
 
@@ -80,7 +80,7 @@ const ghosts = subs.data.filter(sub => {
   return daysSinceCreated > 14;
 });
 
-console.log(`${ghosts.length} ghost subscriptions`);
+console.log(`${ghosts.length} stuck subscriptions`);
 ```
 
 Also check `unpaid` status subscriptions and any subscription where the latest invoice has been open for more than 2 weeks.

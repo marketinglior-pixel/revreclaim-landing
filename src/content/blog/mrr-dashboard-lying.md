@@ -41,7 +41,7 @@ Stripe keeps a subscription in "active" status until it's explicitly canceled --
 Your dashboard sees: $99/mo active subscription.
 Your bank sees: $0 collected for the last 2 months.
 
-These are [ghost subscriptions](/blog/ghost-subscriptions-saas). They inflate MRR by 1-3% on average. On a $50K MRR account, that's $500-$1,500/month in phantom revenue.
+These are [stuck subscriptions](/blog/ghost-subscriptions-saas). They inflate MRR by 1-3% on average. On a $50K MRR account, that's $500-$1,500/month in phantom revenue.
 
 The fix: configure Stripe to auto-cancel subscriptions after a maximum dunning period (we recommend 30 days). Don't let ghosts accumulate.
 
@@ -106,7 +106,7 @@ Here's the formula:
 ```
 Real MRR = Dashboard MRR
            - Failed Payment MRR (past_due subscriptions)
-           - Ghost Subscription MRR (unpaid 30+ days)
+           - Stuck Subscription MRR (unpaid 30+ days)
            - No Payment Method MRR (will fail next cycle)
            - Discount Overstatement (if dashboard ignores discounts)
 ```
@@ -117,7 +117,7 @@ Real MRR = Dashboard MRR
 |----------|--------|
 | Dashboard MRR | $50,000 |
 | Failed payments (past_due) | -$1,200 |
-| Ghost subscriptions (30+ days unpaid) | -$600 |
+| Stuck subscriptions (30+ days unpaid) | -$600 |
 | No payment method | -$300 |
 | Discount overstatement | -$250 |
 | **Real Collected MRR** | **$47,650** |
@@ -132,7 +132,7 @@ For exact numbers specific to your billing account, [run a free scan](/scan). Re
 
 ### Run a Billing Audit Quarterly
 
-At minimum, audit your billing data every 90 days. Revenue leaks compound -- a $200/mo ghost subscription costs $2,400/year if nobody catches it.
+At minimum, audit your billing data every 90 days. Revenue leaks compound -- a $200/mo stuck subscription costs $2,400/year if nobody catches it.
 
 Our complete [Stripe billing audit guide](/blog/audit-stripe-account-revenue-leaks) walks through 10 checks you should run, with code examples for each one.
 
@@ -156,7 +156,7 @@ Don't wait for MRR to drop. A declining collection rate is the early warning sig
 
 ### Get the Exact Gap in 60 Seconds
 
-RevReclaim scans your billing account and shows the precise gap between dashboard MRR and collected MRR. Every ghost subscription, every failed payment, every zombie discount -- itemized with dollar amounts and fix recommendations.
+RevReclaim scans your billing account and shows the precise gap between dashboard MRR and collected MRR. Every stuck subscription, every failed payment, every zombie discount -- itemized with dollar amounts and fix recommendations.
 
 Read-only access. No stored keys. Takes 60 seconds.
 
@@ -170,7 +170,7 @@ Use our [revenue leakage calculator](/calculator) to estimate the gap before sca
 
 ### Do Baremetrics and ChartMogul show real collected MRR?
 
-Both tools pull data from your billing provider's API, so their accuracy depends on how they handle edge cases. Baremetrics and ChartMogul generally exclude `canceled` subscriptions from MRR but may still count `past_due` subscriptions as active. Neither tool flags [ghost subscriptions](/blog/ghost-subscriptions-saas), expired coupons still discounting, or legacy pricing gaps. They report what your billing system tells them -- they don't audit it. For a complete picture of the gap between reported and collected MRR, you need a billing-specific audit tool like RevReclaim.
+Both tools pull data from your billing provider's API, so their accuracy depends on how they handle edge cases. Baremetrics and ChartMogul generally exclude `canceled` subscriptions from MRR but may still count `past_due` subscriptions as active. Neither tool flags [stuck subscriptions](/blog/ghost-subscriptions-saas), expired coupons still discounting, or legacy pricing gaps. They report what your billing system tells them -- they don't audit it. For a complete picture of the gap between reported and collected MRR, you need a billing-specific audit tool like RevReclaim.
 
 ### How much of a gap between dashboard MRR and collected MRR is normal?
 
