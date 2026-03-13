@@ -1,7 +1,7 @@
 const steps = [
   {
     number: "01",
-    title: "Grab a read-only key from Stripe",
+    title: "Grab a read-only key from your billing platform",
     description:
       "4 clicks. We show you exactly which buttons to press. The key can view data but can't change anything. That's enforced by Stripe, Polar, or Paddle at the platform level, not by us.",
     detail: "Takes about 60 seconds. Seriously.",
@@ -17,7 +17,7 @@ const steps = [
     number: "03",
     title: "See every leak, with instructions on how to fix each one",
     description:
-      "Dollar amounts. Customer names (masked). Fix links that take you straight to the right place in Stripe. Connect HubSpot (optional) and each leak also gets customer context so you know which ones are worth chasing.",
+      "Dollar amounts. Customer names (masked). Fix links that take you straight to the right place in your billing platform. Connect HubSpot (optional) and each leak also gets customer context so you know which ones are worth chasing.",
     detail: "Most founders fix the easy ones before lunch.",
   },
 ];

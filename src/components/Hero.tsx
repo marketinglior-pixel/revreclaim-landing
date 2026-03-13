@@ -15,22 +15,19 @@ export function Hero() {
       <div className="relative mx-auto max-w-4xl px-6 text-center">
         {/* Headline */}
         <h1 className="mb-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl md:leading-[1.2] lg:text-6xl animate-fade-in-up">
-          Your Stripe account is
+          Your billing account is
           <br className="hidden md:block" />
           {" "}leaking money right now.
         </h1>
+        <div className="mb-6 flex items-center justify-center gap-3 text-sm text-text-muted animate-fade-in-up animate-delay-100">
+          <span className="rounded-full border border-border px-3 py-1 font-medium text-text-secondary">Stripe</span>
+          <span className="rounded-full border border-border px-3 py-1 font-medium text-text-secondary">Polar</span>
+          <span className="rounded-full border border-border px-3 py-1 font-medium text-text-secondary">Paddle</span>
+        </div>
 
-        {/* Sub — plain language, human voice */}
+        {/* Sub — one line, 5-second clarity */}
         <p className="mx-auto mb-10 max-w-2xl text-lg text-text-muted md:text-xl leading-relaxed animate-fade-in-up animate-delay-200">
-          Failed payments nobody retried. Coupons from that promo you ran
-          last year, still active. Cards expiring next month that nobody
-          will notice until the charge bounces.
-          <br /><br />
-          <span className="text-text-secondary">
-            Most SaaS founders don&apos;t know this stuff exists. And honestly,
-            why would you? You&apos;re busy building.
-            We built a tool that finds all of it. Takes 90 seconds. Costs nothing.
-          </span>
+          We scan your billing account and find the revenue you&apos;re losing to failed payments, expired coupons, and billing mistakes. 90 seconds. Free.
         </p>
 
         {/* Primary CTA */}
@@ -43,7 +40,7 @@ export function Hero() {
             }}
             className="group flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-lg font-bold text-black min-h-[56px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
           >
-            Show Me My Leaks
+            Show Me The Money
             <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
