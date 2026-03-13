@@ -47,10 +47,10 @@ export function DailyLossCalculator() {
           The cost of waiting
         </div>
         <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
-          Every day you wait, you lose more.
+          While you&apos;re reading this, money is leaving your account.
         </h2>
         <p className="mx-auto mb-12 max-w-xl text-center text-lg text-text-muted">
-          Move the slider to your MRR. See what you&apos;re probably losing.
+          Slide to your MRR. See the math. It&apos;s not pretty, but it&apos;s honest.
         </p>
 
         {/* Calculator card */}
@@ -121,7 +121,7 @@ export function DailyLossCalculator() {
               }}
               className="group inline-flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black min-h-[52px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
             >
-              Stop the leak. 90 seconds. Free.
+              Show Me My Leaks
               <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>

@@ -42,20 +42,20 @@ export function FinalCTA() {
 
         {/* Headline */}
         <h2 className="relative mb-4 text-3xl font-bold text-white md:text-5xl lg:text-6xl">
-          You probably have billing leaks.
+          Your billing has holes.
           <br />
-          <span className="text-text-muted">There&apos;s one way to find out.</span>
+          <span className="text-text-muted">This finds them.</span>
         </h2>
 
         {/* Sub */}
         <p className="relative mb-10 text-base md:text-lg text-text-muted leading-relaxed">
-          No new customers needed. No new features to build. Just money
-          that&apos;s already yours, sitting in your billing account,
-          waiting for someone to notice.
+          No new customers to acquire. No new features to build.
+          Just money that&apos;s already yours, sitting in your billing
+          account, waiting for someone to look.
           <br />
           <span className="text-text-secondary">
-            The scan is free. It takes 90 seconds. And honestly, even if
-            we find nothing, at least you&apos;ll know.
+            The scan takes 90 seconds. It&apos;s free. And honestly,
+            even if we find nothing, at least you&apos;ll stop wondering.
           </span>
         </p>
 
@@ -84,7 +84,7 @@ export function FinalCTA() {
                 }}
                 className="group inline-flex items-center gap-2 rounded-lg bg-brand px-5 py-3 text-sm font-bold text-black min-h-[44px] transition-all hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
               >
-                Run a Free Scan
+                Show Me My Leaks
                 <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -139,15 +139,17 @@ export function FinalCTA() {
         {/* P.S. — honest, founder voice */}
         <div className="mt-12 mx-auto max-w-lg px-4 md:px-0 text-left">
           <p className="text-sm md:text-base text-text-muted leading-relaxed">
-            <span className="font-semibold text-white">P.S.</span> I built this because I couldn&apos;t find
-            a tool that just checks a Stripe account for billing mistakes. No dashboards,
-            no integrations, no onboarding calls. Just paste a key, see what&apos;s leaking, and
-            decide what to do about it.
+            <span className="font-semibold text-white">P.S.</span> I built RevReclaim because I couldn&apos;t find
+            a tool that just checks a Stripe account for billing mistakes. Not a
+            dashboard. Not an analytics platform. Not something that takes a week to set up.
           </p>
           <p className="mt-4 text-sm md:text-base text-text-muted leading-relaxed">
-            We support Stripe, Polar, and Paddle. The free scan costs nothing.
-            If we don&apos;t find at least $1,000/mo in leaks, every paid plan is free.
-            That&apos;s a real guarantee.
+            Just paste a key, see what&apos;s leaking, decide what to do about it. That&apos;s it.
+          </p>
+          <p className="mt-4 text-sm md:text-base text-text-muted leading-relaxed">
+            We support Stripe, Polar, and Paddle. The scan is free. If we
+            can&apos;t find $1,000/month in leaks, paid plans are free too.
+            I don&apos;t know how to make this lower risk.
           </p>
         </div>
       </div>

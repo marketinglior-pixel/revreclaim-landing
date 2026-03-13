@@ -17,18 +17,19 @@ export function Hero() {
         <h1 className="mb-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl md:leading-[1.2] lg:text-6xl animate-fade-in-up">
           Your Stripe account is
           <br className="hidden md:block" />
-          {" "}probably leaking money.
+          {" "}leaking money right now.
         </h1>
 
         {/* Sub — plain language, human voice */}
         <p className="mx-auto mb-10 max-w-2xl text-lg text-text-muted md:text-xl leading-relaxed animate-fade-in-up animate-delay-200">
-          Failed payments nobody retried. Coupons from a promo you ran last year, still
-          giving discounts. Cards expiring next week that nobody will notice until the
-          charge fails.
+          Failed payments nobody retried. Coupons from that promo you ran
+          last year, still active. Cards expiring next month that nobody
+          will notice until the charge bounces.
           <br /><br />
           <span className="text-text-secondary">
-            The stuff that slips through when you&apos;re busy building.
-            We built a tool that finds all of it in 90 seconds.
+            Most SaaS founders don&apos;t know this stuff exists. And honestly,
+            why would you? You&apos;re busy building.
+            We built a tool that finds all of it. Takes 90 seconds. Costs nothing.
           </span>
         </p>
 
@@ -42,14 +43,14 @@ export function Hero() {
             }}
             className="group flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-lg font-bold text-black min-h-[56px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
           >
-            Run a Free Scan
+            Show Me My Leaks
             <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </a>
           {/* Trust line — all verifiable facts */}
           <span className="text-sm text-text-muted">
-            Read-only access &middot; Key deleted after scan &middot; 90 seconds
+            Read-only access &middot; Key deleted after scan &middot; Free forever &middot; No credit card
           </span>
         </div>
 

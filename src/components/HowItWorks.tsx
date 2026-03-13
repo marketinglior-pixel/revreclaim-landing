@@ -1,24 +1,24 @@
 const steps = [
   {
     number: "01",
-    title: "Create a read-only API key",
+    title: "Grab a read-only key from Stripe",
     description:
-      "Go to your Stripe, Polar, or Paddle dashboard and create a restricted key with read-only access. It can view data but can't change anything. That's enforced by the platform, not by us.",
-    detail: "Takes about 60 seconds. We show you how.",
+      "4 clicks. We show you exactly which buttons to press. The key can view data but can't change anything. That's enforced by Stripe, Polar, or Paddle at the platform level, not by us.",
+    detail: "Takes about 60 seconds. Seriously.",
   },
   {
     number: "02",
-    title: "Paste it and hit scan",
+    title: "Paste it. Hit scan. Wait 90 seconds.",
     description:
-      "We check every subscription, invoice, coupon, and payment method across 10 categories. The scan takes about 90 seconds. Your key is used once and deleted immediately after.",
+      "We check everything: subscriptions, invoices, coupons, cards, payment methods. 10 categories. Your key gets deleted the moment we're done.",
     detail: "Your key disappears. Your leak report stays.",
   },
   {
     number: "03",
-    title: "See your leaks, with fix instructions",
+    title: "See every leak, with instructions on how to fix each one",
     description:
-      "Every leak shows the customer, the dollar amount, and a clear explanation of how to fix it. Links take you straight to the right place in your billing dashboard. Connect HubSpot (optional) and each leak also gets customer context so you know which ones are worth chasing.",
-    detail: "Fix the easy ones first. Usually takes minutes.",
+      "Dollar amounts. Customer names (masked). Fix links that take you straight to the right place in Stripe. Connect HubSpot (optional) and each leak also gets customer context so you know which ones are worth chasing.",
+    detail: "Most founders fix the easy ones before lunch.",
   },
 ];
 
@@ -30,11 +30,11 @@ export function HowItWorks() {
           How it works
         </div>
         <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
-          Three steps. About two minutes total.
+          Three steps. Two minutes. Zero risk.
         </h2>
         <p className="mb-16 max-w-2xl text-lg text-text-muted">
-          Your billing data is already in Stripe, Polar, or Paddle.
-          We just read it and tell you what&apos;s leaking. Here&apos;s how.
+          Your billing data already exists in Stripe, Polar, or Paddle.
+          We just read it and tell you what&apos;s leaking. That&apos;s it.
         </p>
 
         <div className="relative">

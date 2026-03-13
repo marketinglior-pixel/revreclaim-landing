@@ -78,12 +78,12 @@ const valueItems = [
   {
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
       </svg>
     ),
-    name: "Monthly Re-scan",
-    description: "Come back every month to catch new leaks as they appear",
-    value: "$400",
+    name: "Priority Fix Ranking",
+    description: "We sort your leaks by impact so you fix the $500/mo ones first, not the $12 ones",
+    value: "$200",
   },
 ];
 
@@ -98,11 +98,13 @@ export function FreeValueStack() {
         </div>
         <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl lg:text-5xl">
           Here&apos;s everything you get.{" "}
-          <span className="text-text-muted">For free. Right now.</span>
+          <span className="text-text-muted">For free.</span>
         </h2>
         <p className="mx-auto mb-12 max-w-2xl text-center text-lg text-text-muted">
-          Most billing consultants charge $2,000+ for this kind of audit.
-          We built software that does it in 90 seconds.
+          Billing consultants charge $2,000+ for a manual version of this.
+          We automated it. The scan is free because we think once you see
+          what&apos;s leaking, you&apos;ll want to fix it automatically. And that&apos;s
+          what the paid plans do.
         </p>
 
         {/* Value stack grid */}
@@ -129,12 +131,12 @@ export function FreeValueStack() {
         {/* Total */}
         <div className="mt-8 rounded-xl border border-brand/30 bg-brand/5 p-6 text-center">
           <div className="mb-1 text-sm text-text-muted">
-            Total value: <span className="font-semibold text-text-dim line-through">$2,847</span>
+            Total value: <span className="font-semibold text-text-dim line-through">$2,647</span>
           </div>
           <div className="text-4xl font-extrabold text-brand">$0</div>
           <p className="mt-3 text-sm text-text-muted">
-            Why free? Because <span className="text-white font-semibold">94% of founders who see their leaks</span>{" "}
-            upgrade to fix them automatically. The scan usually sells itself.
+            Why free? Because once you see $2,000/month sitting in your billing account,
+            you&apos;ll want it back. The free scan makes the case better than we ever could.
           </p>
         </div>
 
@@ -170,7 +172,7 @@ export function FreeValueStack() {
             }}
             className="group inline-flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-lg font-bold text-black min-h-[56px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
           >
-            Get My Free $2,847 Audit
+            Show Me My Leaks
             <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>

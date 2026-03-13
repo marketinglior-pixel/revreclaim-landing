@@ -6,11 +6,11 @@ export function DashboardPreview() {
           Example report
         </div>
         <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
-          Here&apos;s what a scan report looks like.
+          This is what you&apos;ll see in 90 seconds.
         </h2>
         <p className="mx-auto mb-12 max-w-2xl text-center text-lg text-text-muted">
-          Every leak shows the customer, the dollar amount, and exactly how to fix it.
-          This is sample data, but the structure is identical to what you&apos;ll see.
+          Real leaks. Real dollar amounts. Real fix instructions.
+          This is sample data, but the format is identical to your actual report.
         </p>
 
         {/* Dashboard mockup */}
@@ -82,7 +82,7 @@ export function DashboardPreview() {
                 impact="$499/mo"
                 detail="Invoice #INV-2847 unpaid for 12 days. Payment attempted but failed."
                 fix="Retry payment or contact customer"
-                crmInsight="Inactive 52 days — likely churning"
+                crmInsight="Inactive 52 days, likely churning"
               />
               <LeakTableRow
                 severity="CRITICAL"
@@ -115,7 +115,7 @@ export function DashboardPreview() {
                 impact="$100/mo"
                 detail="Paying $149/mo (2023 pricing). Current price: $249/mo. 40% below rate."
                 fix="Migrate to current plan"
-                crmInsight="Active, 2 open deals — upsell candidate"
+                crmInsight="Active, 2 open deals. Upsell candidate"
               />
 
               <LeakTableRow
@@ -125,7 +125,7 @@ export function DashboardPreview() {
                 impact="$199/mo"
                 detail="Customer has 2 active subscriptions for the same product. Old plan not canceled after upgrade."
                 fix="Cancel duplicate & refund overlap"
-                crmInsight="Last activity: 3 days ago — reach out now"
+                crmInsight="Last activity: 3 days ago. Reach out now"
               />
 
               <div className="px-5 py-3 text-center text-xs text-text-muted">
@@ -144,7 +144,7 @@ export function DashboardPreview() {
             href="/scan"
             className="group inline-flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black min-h-[52px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
           >
-            Run a Free Scan
+            Show Me My Leaks
             <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>

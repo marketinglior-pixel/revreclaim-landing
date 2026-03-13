@@ -14,7 +14,7 @@ const plans = [
     annualPrice: "$0",
     annualMonthly: "$0",
     period: "",
-    description: "See exactly how much you could recover. No strings.",
+    description: "Your complete billing audit. Every leak, every dollar amount, every fix. In 90 seconds.",
     features: [
       "Full 10-category revenue audit",
       "Customer-level leak report with amounts",
@@ -38,7 +38,7 @@ const plans = [
     annualPrice: "$790",
     annualMonthly: "$66",
     period: "/month",
-    description: "Your billing gets checked every month. You get alerts. No surprises.",
+    description: "We check your billing every month so you don't have to. New leaks show up in your inbox.",
     features: [
       "Everything in Revenue X-Ray",
       "Monthly automated re-scan",
@@ -60,13 +60,13 @@ const plans = [
     annualPrice: "$2,990",
     annualMonthly: "$249",
     period: "/month",
-    description: "Runs in the background. You build, it watches your billing.",
+    description: "Set it and forget it. We find leaks, fix what we can automatically, and alert you about the rest.",
     features: [
       "Everything in Leak Watch",
       "Weekly scans (not just monthly)",
       "Auto-recovery on failed payments",
       "Pre-churn alerts on expiring cards",
-      "HubSpot CRM integration — see WHY each leak matters",
+      "HubSpot CRM integration (see WHY each leak matters)",
       "Leak priority ranking based on customer activity",
       "Privacy Mode: customers stay anonymous",
       "Slack + email alerts",
@@ -86,7 +86,7 @@ const plans = [
     annualPrice: "$4,990",
     annualMonthly: "$416",
     period: "/month",
-    description: "Everything your revenue team needs in one dashboard.",
+    description: "One dashboard for your entire revenue team. Everyone sees the same leaks. Nobody drops the ball.",
     features: [
       "Everything in Revenue Shield",
       "HubSpot CRM integration for every team member",
@@ -154,10 +154,11 @@ export function Pricing() {
           Pricing
         </div>
         <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
-          The scan is free. Monitoring is optional.
+          The scan is free. The recovery is optional.
         </h2>
         <p className="mx-auto mb-10 max-w-2xl text-center text-lg text-text-muted">
-          Run a free scan to find your leaks. If you want ongoing monitoring and auto-recovery, pick a plan.
+          Run a free scan. See your leaks. Fix the easy ones yourself (we show you how).
+          If you want automated recovery, pick a plan.
           <br />
           Find less than $1,000/mo? Every paid plan is free.
         </p>
@@ -310,6 +311,20 @@ export function Pricing() {
               </div>
             );
           })}
+        </div>
+
+        {/* Guarantee banner */}
+        <div className="mt-10 rounded-2xl border border-brand/30 bg-brand/5 p-6 md:p-8 text-center">
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <svg className="h-6 w-6 text-brand" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+            </svg>
+            <span className="text-lg font-bold text-white">The $1,000/mo Revenue Guarantee</span>
+          </div>
+          <p className="text-sm text-text-muted">
+            We find at least $1,000/month in recoverable revenue, or every paid plan is free.
+            No fine print. Cancel anytime.
+          </p>
         </div>
       </div>
     </section>

@@ -12,15 +12,21 @@ export function Problem() {
           The problem
         </div>
         <h2 className="mb-6 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
-          Billing mistakes are invisible.
+          You&apos;re losing money every month.
           <br />
-          <span className="text-text-muted">Until you actually look.</span>
+          <span className="text-text-muted">You just can&apos;t see it.</span>
         </h2>
         <p className="mb-12 max-w-2xl text-lg leading-relaxed text-text-muted">
-          You track churn. You track MRR. But nobody tracks the money
-          that&apos;s already yours and just... isn&apos;t arriving.
-          Stripe tells you &ldquo;payment failed.&rdquo; It doesn&apos;t tell you
-          why, or whether it&apos;s worth chasing.
+          You track churn. You track MRR. You check your Stripe
+          dashboard every morning like the rest of us.
+          <br /><br />
+          But here&apos;s what Stripe doesn&apos;t show you: the money that&apos;s already
+          yours and just... isn&apos;t arriving. Failed payments sitting there for
+          weeks. Coupons you forgot to turn off. Customers on pricing from
+          2023 that you raised 6 months ago.
+          <br /><br />
+          Nobody&apos;s stealing from you. Your billing system just has holes.
+          And until you look, you won&apos;t know how many.
         </p>
 
         {/* Common leak types — framed as examples, not fake data */}
@@ -74,11 +80,11 @@ export function Problem() {
             <div className="rounded-xl border border-border bg-surface-dim p-5">
               <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-text-dim">What Stripe tells you</div>
               <p className="text-sm text-text-muted">&ldquo;Payment failed for customer a***@acmecorp.com&rdquo;</p>
-              <div className="mt-3 inline-block rounded-full bg-danger/10 px-3 py-1 text-xs text-danger">No context. No priority.</div>
+              <div className="mt-3 inline-block rounded-full bg-danger/10 px-3 py-1 text-xs text-danger">That&apos;s it. No context. No priority.</div>
             </div>
             <div className="rounded-xl border border-brand/30 bg-brand/5 p-5">
               <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-brand">What RevReclaim tells you</div>
-              <p className="text-sm text-text-secondary">&ldquo;Payment failed + customer inactive 52 days + no CRM activity = likely churning. Don&apos;t chase. Write it off.&rdquo;</p>
+              <p className="text-sm text-text-secondary">&ldquo;Payment failed, customer inactive 52 days, no CRM activity. Likely churning. Don&apos;t chase this one. Write it off.&rdquo;</p>
               <div className="mt-3 inline-block rounded-full bg-brand/10 px-3 py-1 text-xs text-brand">Context. Priority. Action.</div>
             </div>
           </div>

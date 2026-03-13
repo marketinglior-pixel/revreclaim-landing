@@ -3,8 +3,12 @@ import { PageViewTracker } from "@/components/PageViewTracker";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Problem } from "@/components/Problem";
+import { DailyLossCalculator } from "@/components/DailyLossCalculator";
 import { DashboardPreview } from "@/components/DashboardPreview";
 import { HowItWorks } from "@/components/HowItWorks";
+import { FreeValueStack } from "@/components/FreeValueStack";
+import { GuaranteeSection } from "@/components/GuaranteeSection";
+import { ObstacleSection } from "@/components/ObstacleSection";
 import { Pricing } from "@/components/Pricing";
 import { FAQ } from "@/components/FAQ";
 import { FinalCTA } from "@/components/FinalCTA";
@@ -46,8 +50,12 @@ export default function Home() {
       <Header />
       <Hero />
       <Problem />
+      <DailyLossCalculator />
       <DashboardPreview />
       <HowItWorks />
+      <FreeValueStack />
+      <GuaranteeSection />
+      <ObstacleSection />
       <Pricing />
       <FAQ />
       <FinalCTA />
