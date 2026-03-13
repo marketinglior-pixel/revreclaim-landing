@@ -12,26 +12,28 @@ import ReportCTA from "@/components/report/ReportCTA";
 import RecoveryBanner from "@/components/report/RecoveryBanner";
 import QuickWins from "@/components/report/QuickWins";
 import AgentSimulation from "@/components/report/AgentSimulation";
+import PlaybookSection from "@/components/report/PlaybookSection";
 
 // ──────────────────────────────────────────────────────────────
 // DEMO SCENARIO: ScaleFlow — A B2B SaaS doing $187K MRR
-// They ran RevReclaim and found $5,728/mo ($68,736/yr) in leaks
-// across 27 issues. Health score: 56 ("Needs Attention").
+// They ran RevReclaim and found $4,716/mo risk-adjusted leaks
+// across 27 issues. Health score: 62 ("Fair").
+// Amounts are probability-weighted (not full subscription values).
 // ──────────────────────────────────────────────────────────────
 
 const DEMO_REPORT: ScanReport = {
   id: "demo-scaleflow-2026",
   scannedAt: new Date().toISOString(),
   summary: {
-    mrrAtRisk: 311500,        // $3,115/mo (weighted by recovery rates)
-    rawMrrAtRisk: 572800,     // $5,728/mo (unweighted max)
+    mrrAtRisk: 225400,        // $2,254/mo (weighted by recovery rates)
+    rawMrrAtRisk: 471600,     // $4,716/mo (risk-adjusted, unweighted)
     leaksFound: 27,
-    recoveryPotential: 2322960, // $23,230/yr (weighted)
+    recoveryPotential: 1692000, // $16,920/yr (weighted)
     totalSubscriptions: 312,
     totalCustomers: 287,
     totalMRR: 18700000,      // $187,000/mo (active only)
     trialingMRR: 0,
-    healthScore: 56,
+    healthScore: 62,
   },
   categories: [
     {
@@ -59,15 +61,15 @@ const DEMO_REPORT: ScanReport = {
       type: "stuck_subscription",
       label: "Stuck Subscriptions",
       count: 4,
-      totalMonthlyImpact: 89700, // $897/mo
-      percentage: 18.6,
+      totalMonthlyImpact: 44800, // $448/mo (risk-adjusted ×0.5)
+      percentage: 9.5,
     },
     {
       type: "expiring_card",
       label: "Expiring Cards",
       count: 5,
-      totalMonthlyImpact: 54200, // $542/mo
-      percentage: 11.2,
+      totalMonthlyImpact: 16260, // $163/mo (risk-adjusted ×0.3)
+      percentage: 3.4,
     },
     {
       type: "failed_payment",
@@ -80,7 +82,7 @@ const DEMO_REPORT: ScanReport = {
       type: "missing_payment_method",
       label: "Missing Payment Methods",
       count: 2,
-      totalMonthlyImpact: 12200, // $122/mo
+      totalMonthlyImpact: 9760, // $98/mo (risk-adjusted ×0.8)
       percentage: 2.1,
     },
     {
@@ -94,8 +96,8 @@ const DEMO_REPORT: ScanReport = {
       type: "trial_expired",
       label: "Expired Trials",
       count: 1,
-      totalMonthlyImpact: 19900, // $199/mo
-      percentage: 3.4,
+      totalMonthlyImpact: 3980, // $40/mo (risk-adjusted ×0.2)
+      percentage: 0.8,
     },
     {
       type: "duplicate_subscription",
@@ -235,12 +237,12 @@ const DEMO_REPORT: ScanReport = {
       severity: "critical",
       title: "Enterprise sub in 'past_due' for 45 days — likely churned",
       description:
-        "Subscription sub_8ScI4pQ6rX has been in 'past_due' status for 45 days with no successful payment. All 4 retry attempts failed. Customer hasn't logged in for 38 days. This is effectively a stuck subscription consuming resources.",
+        "Subscription sub_8ScI4pQ6rX ($349/mo) has been in 'past_due' status for 45 days with no successful payment. All 4 retry attempts failed. Customer hasn't logged in for 38 days. Estimated 50% chance of permanent loss.",
       customerEmail: "d***@bigcorp.com",
       customerId: "cus_O8qQ0sQr7aW",
       subscriptionId: "sub_8ScI4pQ6rX",
-      monthlyImpact: 34900,
-      annualImpact: 418800,
+      monthlyImpact: 17450,
+      annualImpact: 209400,
       recoveryRate: 0.4,
       isRecurring: true,
       fixSuggestion:
@@ -255,12 +257,12 @@ const DEMO_REPORT: ScanReport = {
       severity: "high",
       title: "Pro sub 'past_due' 22 days — no login in 3 weeks",
       description:
-        "Subscription for Pro plan ($249/mo) stuck in 'past_due' for 22 days. Customer's last API call was 19 days ago. Payment method expired. Subscription is consuming a Pro seat license.",
+        "Subscription for Pro plan ($249/mo) stuck in 'past_due' for 22 days. Customer's last API call was 19 days ago. Payment method expired. Estimated 50% chance of permanent loss.",
       customerEmail: "k***@medtech.io",
       customerId: "cus_P9rR1tRs8bX",
       subscriptionId: "sub_9TdJ5qR7sY",
-      monthlyImpact: 24900,
-      annualImpact: 298800,
+      monthlyImpact: 12450,
+      annualImpact: 149400,
       recoveryRate: 0.4,
       isRecurring: true,
       fixSuggestion:
@@ -275,12 +277,12 @@ const DEMO_REPORT: ScanReport = {
       severity: "high",
       title: "Growth plan stuck — 30 days past due",
       description:
-        "Subscription sub_0UeK6rS8tZ ($199/mo Growth) has been past due for 30 days. Customer email bounces. No login activity in 28 days. All automatic retries exhausted.",
+        "Subscription sub_0UeK6rS8tZ ($199/mo Growth) has been past due for 30 days. Customer email bounces. No login activity in 28 days. Estimated 50% chance of permanent loss.",
       customerEmail: "t***@defunct-startup.com",
       customerId: "cus_Q0sS2uSt9cY",
       subscriptionId: "sub_0UeK6rS8tZ",
-      monthlyImpact: 19900,
-      annualImpact: 238800,
+      monthlyImpact: 9950,
+      annualImpact: 119400,
       recoveryRate: 0.4,
       isRecurring: true,
       fixSuggestion:
@@ -295,12 +297,12 @@ const DEMO_REPORT: ScanReport = {
       severity: "medium",
       title: "Starter plan — 14 days past due, low usage",
       description:
-        "Subscription sub_1VfL7sT9uA ($99/mo Starter) past due for 14 days. Customer had very low API usage (3 calls last month). Likely forgotten subscription.",
+        "Subscription sub_1VfL7sT9uA ($99/mo Starter) past due for 14 days. Customer had very low API usage (3 calls last month). Estimated 50% chance of permanent loss.",
       customerEmail: "p***@freelancer.com",
       customerId: "cus_R1tT3vTu0dZ",
       subscriptionId: "sub_1VfL7sT9uA",
-      monthlyImpact: 9900,
-      annualImpact: 118800,
+      monthlyImpact: 4950,
+      annualImpact: 59400,
       recoveryRate: 0.4,
       isRecurring: true,
       fixSuggestion:
@@ -397,14 +399,14 @@ const DEMO_REPORT: ScanReport = {
       id: "leak-015",
       type: "expiring_card",
       severity: "high",
-      title: "Enterprise customer card expires this month",
+      title: "Enterprise customer card expires this month — $270/mo at risk",
       description:
-        "Card ending 7891 (Visa) on the $899/mo Enterprise subscription expires 03/2026. Next billing date is March 15. If the card isn't updated, the payment will fail.",
+        "Card ending 7891 (Visa) on the $899/mo Enterprise subscription expires 03/2026. Next billing date is March 15. 30% chance of payment failure (Stripe auto-updater handles most).",
       customerEmail: "e***@enterprise.com",
       customerId: "cus_W6yY8aYz5iE",
       subscriptionId: "sub_6AkQ2xY4zF",
-      monthlyImpact: 14200,
-      annualImpact: 14200,
+      monthlyImpact: 4260,
+      annualImpact: 4260,
       recoveryRate: 0.5,
       isRecurring: false,
       fixSuggestion:
@@ -417,14 +419,14 @@ const DEMO_REPORT: ScanReport = {
       id: "leak-016",
       type: "expiring_card",
       severity: "high",
-      title: "Pro plan card expires next month",
+      title: "Pro plan card expires next month — $105/mo at risk",
       description:
-        "Card ending 3456 (Mastercard) on $349/mo Pro plan expires 04/2026. Customer has been with you for 11 months. High lifetime value at risk.",
+        "Card ending 3456 (Mastercard) on $349/mo Pro plan expires 04/2026. Customer has been with you for 11 months. 30% chance of payment failure.",
       customerEmail: "h***@analytics.io",
       customerId: "cus_X7zZ9bZa6jF",
       subscriptionId: "sub_7BlR3yZ5aG",
-      monthlyImpact: 11200,
-      annualImpact: 11200,
+      monthlyImpact: 3360,
+      annualImpact: 3360,
       recoveryRate: 0.5,
       isRecurring: false,
       fixSuggestion:
@@ -437,14 +439,14 @@ const DEMO_REPORT: ScanReport = {
       id: "leak-017",
       type: "expiring_card",
       severity: "medium",
-      title: "Growth plan card expiring in 2 months",
+      title: "Growth plan card expiring in 2 months — $60/mo at risk",
       description:
-        "Card ending 6789 (Visa) on $199/mo Growth plan expires 05/2026. Early warning — plenty of time to get the customer to update.",
+        "Card ending 6789 (Visa) on $199/mo Growth plan expires 05/2026. Early warning — 30% chance of failure if not updated.",
       customerEmail: "w***@webdev.co",
       customerId: "cus_Y8aA0cAb7kG",
       subscriptionId: "sub_8CmS4zA6bH",
-      monthlyImpact: 9900,
-      annualImpact: 9900,
+      monthlyImpact: 2970,
+      annualImpact: 2970,
       recoveryRate: 0.5,
       isRecurring: false,
       fixSuggestion:
@@ -457,14 +459,14 @@ const DEMO_REPORT: ScanReport = {
       id: "leak-018",
       type: "expiring_card",
       severity: "medium",
-      title: "Two Starter plan cards expiring soon",
+      title: "Two Starter plan cards expiring soon — $30/mo at risk",
       description:
-        "Cards on 2 Starter subscriptions ($99/mo each) expire within the next 2 months. Combined risk of $198/mo if both fail.",
+        "Cards on 2 Starter subscriptions ($99/mo each) expire within the next 2 months. 30% chance of failure per card.",
       customerEmail: "g***@indie.dev",
       customerId: "cus_Z9bB1dBc8lH",
       subscriptionId: "sub_9DnT5aB7cI",
-      monthlyImpact: 9900,
-      annualImpact: 9900,
+      monthlyImpact: 2970,
+      annualImpact: 2970,
       recoveryRate: 0.5,
       isRecurring: false,
       fixSuggestion:
@@ -477,14 +479,14 @@ const DEMO_REPORT: ScanReport = {
       id: "leak-019",
       type: "expiring_card",
       severity: "low",
-      title: "Starter plan card expires in 3 months",
+      title: "Starter plan card expires in 3 months — $27/mo at risk",
       description:
-        "Card ending 2345 on $99/mo subscription expires 06/2026. Low urgency — Stripe auto-updater will likely handle this.",
+        "Card ending 2345 on $99/mo subscription expires 06/2026. Low urgency — Stripe auto-updater will likely handle this. 30% chance of failure.",
       customerEmail: "t***@startup.co",
       customerId: "cus_A0cC2eCd9mI",
       subscriptionId: "sub_0EoU6bC8dJ",
-      monthlyImpact: 9000,
-      annualImpact: 9000,
+      monthlyImpact: 2700,
+      annualImpact: 2700,
       recoveryRate: 0.5,
       isRecurring: false,
       fixSuggestion:
@@ -541,14 +543,14 @@ const DEMO_REPORT: ScanReport = {
       id: "leak-022",
       type: "missing_payment_method",
       severity: "medium",
-      title: "Active subscription with no payment method",
+      title: "Active subscription with no payment method — $79/mo at risk",
       description:
-        "Customer cus_D3fF5hFg2pL has an active Pro subscription ($99/mo) but no valid payment method on file. This subscription was likely created via API or trial conversion without collecting payment. Next billing will fail.",
+        "Customer cus_D3fF5hFg2pL has an active Pro subscription ($99/mo) but no valid payment method on file. 80% chance next billing will fail.",
       customerEmail: "j***@newcustomer.io",
       customerId: "cus_D3fF5hFg2pL",
       subscriptionId: "sub_3HrX9eF1gM",
-      monthlyImpact: 9900,
-      annualImpact: 9900,
+      monthlyImpact: 7920,
+      annualImpact: 7920,
       recoveryRate: 0.3,
       isRecurring: false,
       fixSuggestion:
@@ -561,14 +563,14 @@ const DEMO_REPORT: ScanReport = {
       id: "leak-023",
       type: "missing_payment_method",
       severity: "low",
-      title: "Trial conversion missing card — billing in 5 days",
+      title: "Trial conversion missing card — $37/mo at risk",
       description:
-        "Customer signed up for trial 9 days ago. Trial ends in 5 days but no card on file. If they don't add a payment method, the $49/mo Starter subscription will fail to convert.",
+        "Customer signed up for trial 9 days ago. Trial ends in 5 days but no card on file. 80% chance the $49/mo subscription will fail to convert.",
       customerEmail: "m***@trialuser.com",
       customerId: "cus_E4gG6iGh3qM",
       subscriptionId: "sub_4IsY0fG2hN",
-      monthlyImpact: 2300,
-      annualImpact: 2300,
+      monthlyImpact: 1840,
+      annualImpact: 1840,
       recoveryRate: 0.3,
       isRecurring: false,
       fixSuggestion:
@@ -605,14 +607,14 @@ const DEMO_REPORT: ScanReport = {
       id: "leak-026",
       type: "trial_expired",
       severity: "high",
-      title: "Trial subscription active for 67 days",
+      title: "Trial subscription active for 67 days — $40/mo potential",
       description:
-        "This subscription has been in 'trialing' status for 67 days. Your trial period is 14 days. The customer is using the Growth plan ($199/mo) for free. The trial-to-paid webhook likely failed, and the subscription was never converted.",
+        "This subscription has been in 'trialing' status for 67 days. The $199/mo Growth plan has a 20% chance of converting at this stage. The trial-to-paid webhook likely failed.",
       customerEmail: "d***@freetrial.com",
       customerId: "cus_H7jJ9lJk6tP",
       subscriptionId: "sub_7LvB3iJ5kQ",
-      monthlyImpact: 19900,
-      annualImpact: 19900,
+      monthlyImpact: 3980,
+      annualImpact: 3980,
       recoveryRate: 0.5,
       isRecurring: false,
       fixSuggestion:
@@ -851,6 +853,9 @@ export default function DemoReportPage() {
 
         {/* Quick Wins — start here summary */}
         <QuickWins leaks={DEMO_REPORT.leaks} />
+
+        {/* Recovery Playbooks — step-by-step fix guides */}
+        <PlaybookSection leaks={DEMO_REPORT.leaks} />
 
         {/* All Leaks Table */}
         <div id="leak-table">

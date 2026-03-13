@@ -20,10 +20,11 @@ export function Problem() {
           You track churn. You track MRR. You check your Stripe
           dashboard every morning like the rest of us.
           <br /><br />
-          But here&apos;s what Stripe doesn&apos;t show you: the money that&apos;s already
-          yours and just... isn&apos;t arriving. Failed payments sitting there for
-          weeks. Coupons you forgot to turn off. Customers on pricing from
-          2023 that you raised 6 months ago.
+          But here&apos;s what Stripe doesn&apos;t show you: a $899 charge that failed
+          18 days ago and nobody retried. A 50% &ldquo;launch discount&rdquo; coupon that
+          expired 4 months ago but is still active on 3 subscriptions. A trial
+          user who&apos;s been on your product for free for 67 days because the
+          webhook didn&apos;t fire.
           <br /><br />
           Nobody&apos;s stealing from you. Your billing system just has holes.
           And until you look, you won&apos;t know how many.
@@ -37,25 +38,25 @@ export function Problem() {
 
           <div className="grid gap-4 md:grid-cols-2">
             <LeakRow
-              label="Expired coupons still giving discounts"
+              label="Discounts you forgot to turn off"
               percentage="1-3%"
               color="bg-danger"
               width="72%"
             />
             <LeakRow
-              label="Failed payments nobody retried"
+              label="Failed charges sitting in Stripe for weeks"
               percentage="1-2%"
               color="bg-warning"
               width="52%"
             />
             <LeakRow
-              label="Old customers on old prices you already raised"
+              label="Customers still on last year's pricing"
               percentage="0.5-2%"
               color="bg-orange"
               width="44%"
             />
             <LeakRow
-              label="Subscriptions stuck in limbo (not active, not canceled)"
+              label="Subscriptions stuck in 'past due' for 30+ days"
               percentage="0.5-1%"
               color="bg-purple"
               width="32%"
@@ -86,6 +87,7 @@ export function Problem() {
               <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-brand">What RevReclaim tells you</div>
               <p className="text-sm text-text-secondary">&ldquo;Payment failed, customer inactive 52 days, no CRM activity. Likely churning. Don&apos;t chase this one. Write it off.&rdquo;</p>
               <div className="mt-3 inline-block rounded-full bg-brand/10 px-3 py-1 text-xs text-brand">Context. Priority. Action.</div>
+              <p className="mt-2 text-xs text-brand/70">+ Track what you actually recovered over 30 days</p>
             </div>
           </div>
           <p className="mt-4 text-center text-xs text-text-muted">

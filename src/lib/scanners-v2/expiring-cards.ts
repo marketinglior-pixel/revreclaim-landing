@@ -5,6 +5,7 @@ import {
 } from "../platforms/types";
 import { Leak, LeakSeverity } from "../types";
 import { generateLeakId, maskEmail } from "../utils";
+import { RISK_MULTIPLIERS } from "./risk-multipliers";
 
 export function scanExpiringCards(
   subscriptions: NormalizedSubscription[],
@@ -61,18 +62,19 @@ export function scanExpiringCards(
     }
 
     const platformLabel = PLATFORM_LABELS[sub.platform];
+    const riskAdjusted = Math.round(sub.monthlyAmountCents * RISK_MULTIPLIERS.expiring_card);
 
     leaks.push({
       id: generateLeakId(),
       type: "expiring_card",
       severity,
-      title: `${urgency} - ${formatCents(sub.monthlyAmountCents)}/mo at risk`,
-      description: `The card ending in ${cardToCheck.cardLast4} (${cardToCheck.cardBrand}) expires ${cardToCheck.cardExpMonth}/${cardToCheck.cardExpYear}. This subscription of ${formatCents(sub.monthlyAmountCents)}/mo will fail at the next billing cycle.`,
+      title: `${urgency} - ${formatCents(riskAdjusted)}/mo at risk`,
+      description: `The card ending in ${cardToCheck.cardLast4} (${cardToCheck.cardBrand}) expires ${cardToCheck.cardExpMonth}/${cardToCheck.cardExpYear}. This ${formatCents(sub.monthlyAmountCents)}/mo subscription has a ${Math.round(RISK_MULTIPLIERS.expiring_card * 100)}% chance of failing at the next billing cycle.`,
       customerEmail: sub.customerEmail ? maskEmail(sub.customerEmail) : null,
       customerId: sub.customerId,
       subscriptionId: sub.id,
-      monthlyImpact: sub.monthlyAmountCents,
-      annualImpact: sub.monthlyAmountCents, // One-time risk: one billing cycle, not 12 months
+      monthlyImpact: riskAdjusted,
+      annualImpact: riskAdjusted, // One-time risk: one billing cycle, not 12 months
       recoveryRate: 0.5,
       isRecurring: false,
       fixSuggestion: `Contact the customer to update their payment method before it expires. ${platformLabel} Dashboard → Customers → Send update payment method email.`,
@@ -86,6 +88,8 @@ export function scanExpiringCards(
         expYear: cardToCheck.cardExpYear,
         monthsUntilExpiry,
         platform: sub.platform,
+        rawMonthlyAmountCents: sub.monthlyAmountCents,
+        riskMultiplier: RISK_MULTIPLIERS.expiring_card,
       },
     });
   }

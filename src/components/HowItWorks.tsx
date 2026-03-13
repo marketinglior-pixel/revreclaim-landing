@@ -17,7 +17,7 @@ const steps = [
     number: "03",
     title: "See every leak, with instructions on how to fix each one",
     description:
-      "Dollar amounts. Customer names (masked). Fix links that take you straight to the right place in your billing platform. Connect HubSpot (optional) and each leak also gets customer context so you know which ones are worth chasing.",
+      "Dollar amounts. Customer names (masked). Fix links that take you straight to the right place in your billing platform. Track your recovered MRR over 30 days. Connect HubSpot (optional) and each leak also gets customer context so you know which ones are worth chasing.",
     detail: "Most founders fix the easy ones before lunch.",
   },
 ];

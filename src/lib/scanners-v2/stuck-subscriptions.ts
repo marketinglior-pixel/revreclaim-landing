@@ -1,6 +1,7 @@
 import { NormalizedSubscription, PLATFORM_LABELS } from "../platforms/types";
 import { Leak, LeakSeverity } from "../types";
 import { generateLeakId, maskEmail } from "../utils";
+import { RISK_MULTIPLIERS } from "./risk-multipliers";
 
 export function scanStuckSubscriptions(
   subscriptions: NormalizedSubscription[]
@@ -24,16 +25,20 @@ export function scanStuckSubscriptions(
     switch (sub.status) {
       case "past_due":
         severity = "critical";
-        title = `Past due subscription - ${amountStr}/mo uncollected`;
-        description = `This subscription is past due. The customer's payment failed and hasn't been recovered. You're losing ${amountStr}/mo in uncollected revenue.`;
+        monthlyImpactOverride = Math.round(sub.monthlyAmountCents * RISK_MULTIPLIERS.stuck_subscription);
+        annualImpactOverride = monthlyImpactOverride * 12;
+        title = `Past due subscription - ${formatCents(monthlyImpactOverride)}/mo at risk`;
+        description = `This subscription (${amountStr}/mo) is past due. The customer's payment failed and hasn't been recovered. Estimated ${Math.round(RISK_MULTIPLIERS.stuck_subscription * 100)}% chance of permanent loss.`;
         fixSuggestion = `Contact the customer to update their payment method. Go to ${platformLabel} Dashboard → Subscriptions → Filter by 'Past due' → Retry payment or send reminder.`;
         recoveryRate = 0.4;
         break;
 
       case "unpaid":
         severity = "high";
-        title = `Unpaid subscription - ${amountStr}/mo at risk`;
-        description = `This subscription has exhausted all retry attempts and is marked as unpaid. The invoices remain open but no further automatic retries will occur.`;
+        monthlyImpactOverride = Math.round(sub.monthlyAmountCents * RISK_MULTIPLIERS.stuck_subscription);
+        annualImpactOverride = monthlyImpactOverride * 12;
+        title = `Unpaid subscription - ${formatCents(monthlyImpactOverride)}/mo at risk`;
+        description = `This subscription (${amountStr}/mo) has exhausted all retry attempts and is marked as unpaid. The invoices remain open but no further automatic retries will occur.`;
         fixSuggestion = `Decide whether to cancel this subscription or contact the customer directly. Go to ${platformLabel} Dashboard → Subscriptions → Take action.`;
         recoveryRate = 0.2;
         break;
@@ -61,8 +66,10 @@ export function scanStuckSubscriptions(
       case "paused":
         if (!sub.pauseResumesAt) {
           severity = "medium";
-          title = `Indefinitely paused subscription - ${amountStr}/mo on hold`;
-          description = `This subscription is paused with no resume date set. Revenue of ${amountStr}/mo is on hold indefinitely.`;
+          monthlyImpactOverride = Math.round(sub.monthlyAmountCents * RISK_MULTIPLIERS.stuck_subscription);
+          annualImpactOverride = monthlyImpactOverride * 12;
+          title = `Indefinitely paused subscription - ${formatCents(monthlyImpactOverride)}/mo at risk`;
+          description = `This subscription (${amountStr}/mo) is paused with no resume date set. Revenue on hold indefinitely.`;
           fixSuggestion = `Review if this pause is still needed. Set a resume date or contact the customer. Go to ${platformLabel} Dashboard → Subscriptions → Resume.`;
           recoveryRate = 0.6;
         } else {
@@ -96,6 +103,8 @@ export function scanStuckSubscriptions(
         canceledAt: sub.canceledAt,
         pauseResumesAt: sub.pauseResumesAt,
         platform: sub.platform,
+        rawMonthlyAmountCents: sub.monthlyAmountCents,
+        riskMultiplier: RISK_MULTIPLIERS.stuck_subscription,
       },
     });
   }

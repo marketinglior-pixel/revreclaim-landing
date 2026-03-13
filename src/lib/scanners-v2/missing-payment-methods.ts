@@ -5,6 +5,7 @@ import {
 } from "../platforms/types";
 import { Leak } from "../types";
 import { generateLeakId, maskEmail } from "../utils";
+import { RISK_MULTIPLIERS } from "./risk-multipliers";
 
 export function scanMissingPaymentMethods(
   subscriptions: NormalizedSubscription[],
@@ -29,18 +30,19 @@ export function scanMissingPaymentMethods(
     if (sub.monthlyAmountCents <= 0) continue;
 
     const platformLabel = PLATFORM_LABELS[sub.platform];
+    const riskAdjusted = Math.round(sub.monthlyAmountCents * RISK_MULTIPLIERS.missing_payment_method);
 
     leaks.push({
       id: generateLeakId(),
       type: "missing_payment_method",
       severity: "critical",
-      title: `No payment method - ${formatCents(sub.monthlyAmountCents)}/mo will fail`,
-      description: `This active subscription has no valid payment method attached. The next billing attempt will fail, causing involuntary churn.`,
+      title: `No payment method - ${formatCents(riskAdjusted)}/mo at risk`,
+      description: `This active subscription (${formatCents(sub.monthlyAmountCents)}/mo) has no valid payment method attached. The next billing attempt will almost certainly fail, causing involuntary churn.`,
       customerEmail: sub.customerEmail ? maskEmail(sub.customerEmail) : null,
       customerId: sub.customerId,
       subscriptionId: sub.id,
-      monthlyImpact: sub.monthlyAmountCents,
-      annualImpact: sub.monthlyAmountCents, // One-time risk: one billing cycle, not 12 months
+      monthlyImpact: riskAdjusted,
+      annualImpact: riskAdjusted, // One-time risk: one billing cycle, not 12 months
       recoveryRate: 0.3,
       isRecurring: false,
       fixSuggestion: `This is urgent. Contact the customer immediately to add a payment method. Go to ${platformLabel} Dashboard → Customers → Send 'Update payment method' email.`,
@@ -51,6 +53,8 @@ export function scanMissingPaymentMethods(
         hasSubDefault,
         customerPaymentMethodCount: customerMethods.length,
         platform: sub.platform,
+        rawMonthlyAmountCents: sub.monthlyAmountCents,
+        riskMultiplier: RISK_MULTIPLIERS.missing_payment_method,
       },
     });
   }

@@ -62,9 +62,9 @@ export function DashboardPreview() {
                 sub="/year"
               />
               <StatCard
-                label="CRM Enriched"
-                value="14"
-                sub="of 23 leaks"
+                label="Recovered MRR"
+                value="$840"
+                sub="/mo tracked"
                 info
               />
             </div>

@@ -1,6 +1,7 @@
 import { NormalizedSubscription, PLATFORM_LABELS } from "../platforms/types";
 import { Leak } from "../types";
 import { generateLeakId, maskEmail } from "../utils";
+import { RISK_MULTIPLIERS } from "./risk-multipliers";
 
 /**
  * Trial Expired Still Active Scanner
@@ -35,18 +36,19 @@ export function scanTrialExpired(
 
       if (daysSinceCreation > 45) {
         const platformLabel = PLATFORM_LABELS[sub.platform];
+        const riskAdjusted = Math.round(sub.monthlyAmountCents * RISK_MULTIPLIERS.trial_expired);
 
         leaks.push({
           id: generateLeakId(),
           type: "trial_expired",
           severity: sub.monthlyAmountCents > 5000 ? "high" : "medium",
-          title: `Trial subscription active for ${daysSinceCreation} days`,
-          description: `This subscription has been in "trialing" status for ${daysSinceCreation} days. Most trials are 7-30 days. This customer may be using the product for free without converting to a paid plan.`,
+          title: `Trial subscription active for ${daysSinceCreation} days - ${formatCents(riskAdjusted)}/mo potential`,
+          description: `This subscription has been in "trialing" status for ${daysSinceCreation} days. Most trials are 7-30 days. The ${formatCents(sub.monthlyAmountCents)}/mo plan has a ${Math.round(RISK_MULTIPLIERS.trial_expired * 100)}% chance of converting at this stage.`,
           customerEmail: sub.customerEmail ? maskEmail(sub.customerEmail) : null,
           customerId: sub.customerId,
           subscriptionId: sub.id,
-          monthlyImpact: sub.monthlyAmountCents,
-          annualImpact: sub.monthlyAmountCents, // One-time: either converts or doesn't
+          monthlyImpact: riskAdjusted,
+          annualImpact: riskAdjusted, // One-time: either converts or doesn't
           recoveryRate: 0.5,
           isRecurring: false,
           fixSuggestion: `Check this subscription in ${platformLabel} Dashboard. If the trial should have ended, either convert the customer to a paid plan or cancel the subscription.`,
@@ -59,6 +61,8 @@ export function scanTrialExpired(
             createdAt: new Date(sub.createdAt * 1000).toISOString(),
             hasPaymentMethod: sub.defaultPaymentMethod !== null,
             platform: sub.platform,
+            rawMonthlyAmountCents: sub.monthlyAmountCents,
+            riskMultiplier: RISK_MULTIPLIERS.trial_expired,
           },
         });
       }
@@ -79,6 +83,7 @@ export function scanTrialExpired(
 
       if (expectedMonthly > 0) {
         const platformLabel = PLATFORM_LABELS[sub.platform];
+        const riskAdjusted = Math.round(expectedMonthly * RISK_MULTIPLIERS.trial_expired);
 
         leaks.push({
           id: generateLeakId(),
@@ -89,8 +94,8 @@ export function scanTrialExpired(
           customerEmail: sub.customerEmail ? maskEmail(sub.customerEmail) : null,
           customerId: sub.customerId,
           subscriptionId: sub.id,
-          monthlyImpact: expectedMonthly,
-          annualImpact: expectedMonthly, // One-time: billing configuration fix
+          monthlyImpact: riskAdjusted,
+          annualImpact: riskAdjusted, // One-time: billing configuration fix
           recoveryRate: 0.5,
           isRecurring: false,
           fixSuggestion: `Review this subscription in ${platformLabel} Dashboard. Check for 100% discounts, trial configurations, or pricing overrides that are zeroing out the amount.`,
@@ -102,6 +107,8 @@ export function scanTrialExpired(
             actualMonthlyCents: 0,
             itemCount: sub.items.length,
             platform: sub.platform,
+            rawMonthlyAmountCents: expectedMonthly,
+            riskMultiplier: RISK_MULTIPLIERS.trial_expired,
           },
         });
       }
