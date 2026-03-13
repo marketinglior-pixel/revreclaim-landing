@@ -4,25 +4,22 @@ import Link from "next/link";
 import { useAnimatedNumber } from "@/lib/useAnimatedNumber";
 
 interface RecoveryBannerProps {
-  recoveryPotential: number; // in cents (weighted)
-  rawRecoveryPotential?: number; // in cents (unweighted max)
+  mrrAtRisk: number; // in cents (weighted, monthly)
   isLoggedIn?: boolean;
   pendingActionsCount?: number;
+  recoveryPotential?: number; // kept for backwards compat, not displayed
 }
 
 export default function RecoveryBanner({
-  recoveryPotential,
-  rawRecoveryPotential,
+  mrrAtRisk,
   isLoggedIn = false,
   pendingActionsCount = 0,
 }: RecoveryBannerProps) {
-  const dollars = Math.round(recoveryPotential / 100);
-  const animatedDollars = useAnimatedNumber(dollars, 1500, 200);
-  const rawDollars = rawRecoveryPotential
-    ? Math.round(rawRecoveryPotential / 100)
-    : undefined;
+  // Show monthly at-risk amount (more believable, easier to verify)
+  const monthlyDollars = Math.round(mrrAtRisk / 100);
+  const animatedDollars = useAnimatedNumber(monthlyDollars, 1500, 200);
 
-  if (recoveryPotential <= 0) return null;
+  if (mrrAtRisk <= 0) return null;
 
   const hasActions = isLoggedIn && pendingActionsCount > 0;
 
@@ -44,23 +41,18 @@ export default function RecoveryBanner({
           <div className="mb-1 flex items-center justify-center gap-2 md:justify-start">
             <div className="h-2 w-2 rounded-full bg-brand animate-pulse" />
             <span className="text-xs font-semibold uppercase tracking-wider text-brand">
-              Likely Recoverable Revenue
+              Monthly Revenue at Risk
             </span>
           </div>
           <p className="text-3xl font-bold text-white md:text-4xl">
             ${animatedDollars.toLocaleString()}
-            <span className="text-lg font-medium text-brand">/year</span>
+            <span className="text-lg font-medium text-brand">/mo</span>
           </p>
           <p className="mt-1 text-sm text-text-muted">
             {hasActions
               ? "We generated recovery actions you can execute with one click."
               : "Based on typical recovery rates for each leak type."}
           </p>
-          {rawDollars && rawDollars > dollars && (
-            <p className="mt-0.5 text-xs text-text-dim">
-              Max potential: ${rawDollars.toLocaleString()}/yr before adjusting for recovery likelihood
-            </p>
-          )}
         </div>
         <div className="mt-4 flex flex-col items-center gap-2 sm:flex-row md:mt-0">
           {hasActions ? (
@@ -89,7 +81,7 @@ export default function RecoveryBanner({
               onClick={scrollToLeaks}
               className="inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-bold text-black transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] cursor-pointer"
             >
-              Fix these leaks
+              See fix instructions
               <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>

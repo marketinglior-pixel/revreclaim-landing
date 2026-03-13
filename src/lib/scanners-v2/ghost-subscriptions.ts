@@ -86,6 +86,7 @@ export function scanGhostSubscriptions(
       monthlyImpact: monthlyImpactOverride !== null ? monthlyImpactOverride : sub.monthlyAmountCents,
       annualImpact: annualImpactOverride !== null ? annualImpactOverride : sub.monthlyAmountCents * 12,
       recoveryRate,
+      isRecurring: true, // Revenue lost every month until resolved
       fixSuggestion,
       platformUrl: sub.platformUrl,
       stripeUrl: sub.platform === "stripe" ? sub.platformUrl : undefined,

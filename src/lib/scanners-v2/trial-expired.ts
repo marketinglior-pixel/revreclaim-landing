@@ -46,8 +46,9 @@ export function scanTrialExpired(
           customerId: sub.customerId,
           subscriptionId: sub.id,
           monthlyImpact: sub.monthlyAmountCents,
-          annualImpact: sub.monthlyAmountCents * 12,
+          annualImpact: sub.monthlyAmountCents, // One-time: either converts or doesn't
           recoveryRate: 0.5,
+          isRecurring: false,
           fixSuggestion: `Check this subscription in ${platformLabel} Dashboard. If the trial should have ended, either convert the customer to a paid plan or cancel the subscription.`,
           platformUrl: sub.platformUrl,
           stripeUrl: sub.platform === "stripe" ? sub.platformUrl : undefined,
@@ -89,8 +90,9 @@ export function scanTrialExpired(
           customerId: sub.customerId,
           subscriptionId: sub.id,
           monthlyImpact: expectedMonthly,
-          annualImpact: expectedMonthly * 12,
+          annualImpact: expectedMonthly, // One-time: billing configuration fix
           recoveryRate: 0.5,
+          isRecurring: false,
           fixSuggestion: `Review this subscription in ${platformLabel} Dashboard. Check for 100% discounts, trial configurations, or pricing overrides that are zeroing out the amount.`,
           platformUrl: sub.platformUrl,
           stripeUrl: sub.platform === "stripe" ? sub.platformUrl : undefined,

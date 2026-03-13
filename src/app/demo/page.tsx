@@ -120,6 +120,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 89900, // $899/mo
       annualImpact: 89900,
       recoveryRate: 0.6,
+      isRecurring: false,
       fixSuggestion:
         "Contact the customer immediately via email and phone. Offer to update their payment method. Consider a 3-day grace period before pausing the account. This is your highest-value at-risk customer.",
       stripeUrl: "https://dashboard.stripe.com/invoices/in_1NvB7kL9mQ",
@@ -139,6 +140,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 49900,
       annualImpact: 49900,
       recoveryRate: 0.6,
+      isRecurring: false,
       fixSuggestion:
         "Send a personalized email from the founder. Include a direct payment link. This customer has high team usage — they're unlikely to intentionally churn.",
       stripeUrl: "https://dashboard.stripe.com/invoices/in_2MwC8jK0nR",
@@ -158,6 +160,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 34900,
       annualImpact: 34900,
       recoveryRate: 0.6,
+      isRecurring: false,
       fixSuggestion:
         "This customer's card is expired — automatic retries will continue to fail. Send an immediate card update request email with a Stripe-hosted payment link.",
       stripeUrl: "https://dashboard.stripe.com/invoices/in_3NxD9kL1mS",
@@ -177,6 +180,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 19900,
       annualImpact: 19900,
       recoveryRate: 0.6,
+      isRecurring: false,
       fixSuggestion:
         "Send a payment reminder. For ACH failures, suggest switching to card payment for more reliable billing. Offer to help update payment method.",
       stripeUrl: "https://dashboard.stripe.com/invoices/in_4OyE0lM2nT",
@@ -196,6 +200,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 9900,
       annualImpact: 9900,
       recoveryRate: 0.6,
+      isRecurring: false,
       fixSuggestion:
         "Monitor the automatic retry. If it fails again, send a friendly payment update reminder. 'Do not honor' often resolves on retry with the same card.",
       stripeUrl: "https://dashboard.stripe.com/invoices/in_5PzF1mN3oU",
@@ -215,6 +220,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 9900,
       annualImpact: 9900,
       recoveryRate: 0.6,
+      isRecurring: false,
       fixSuggestion:
         "Send the customer a direct link to complete 3D Secure authentication. Include clear instructions. European customers often hit this with SCA requirements.",
       stripeUrl: "https://dashboard.stripe.com/invoices/in_6QaG2nO4pV",
@@ -236,6 +242,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 34900,
       annualImpact: 418800,
       recoveryRate: 0.4,
+      isRecurring: true,
       fixSuggestion:
         "This subscription should be canceled or paused. The customer has effectively churned. Cancel the subscription and send a win-back campaign in 30 days.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_8ScI4pQ6rX",
@@ -255,6 +262,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 24900,
       annualImpact: 298800,
       recoveryRate: 0.4,
+      isRecurring: true,
       fixSuggestion:
         "Reach out to the customer personally. If no response in 7 days, pause the subscription to stop resource allocation. Keep the account data for 90 days in case they return.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_9TdJ5qR7sY",
@@ -274,6 +282,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 19900,
       annualImpact: 238800,
       recoveryRate: 0.4,
+      isRecurring: true,
       fixSuggestion:
         "Email is bouncing — this company may have shut down. Cancel the subscription immediately. Mark as 'churned - company closed' for your records.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_0UeK6rS8tZ",
@@ -293,6 +302,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 9900,
       annualImpact: 118800,
       recoveryRate: 0.4,
+      isRecurring: true,
       fixSuggestion:
         "Send a friendly 'are you still using us?' email. If no response, cancel and offer a free month to come back.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_1VfL7sT9uA",
@@ -314,6 +324,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 20000,
       annualImpact: 240000,
       recoveryRate: 0.8,
+      isRecurring: true,
       fixSuggestion:
         "Remove the expired coupon from the subscription. Send the customer a heads-up email: 'Your promotional rate has ended. Your plan will renew at the standard rate of $399/mo.' Offer a 20% loyalty discount if needed for retention.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_2WgM8tU0vB",
@@ -333,6 +344,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 20000,
       annualImpact: 240000,
       recoveryRate: 0.8,
+      isRecurring: true,
       fixSuggestion:
         "Contact the customer before removing the discount. Thank them for being a beta tester. Offer a 15% 'Early Adopter' discount as a bridge to full pricing.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_3XhN9uV1wC",
@@ -352,6 +364,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 6000,
       annualImpact: 72000,
       recoveryRate: 0.8,
+      isRecurring: true,
       fixSuggestion:
         "Remove the expired promo code. Notify the customer their conference discount has ended. Standard pricing resumes next billing cycle.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_4YiO0vW2xD",
@@ -371,6 +384,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 5000,
       annualImpact: 60000,
       recoveryRate: 0.8,
+      isRecurring: true,
       fixSuggestion:
         "This is a coupon configuration error. Remove the coupon from this subscription. Going forward, set referral coupons to 'repeating' duration with a 3-month limit.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_5ZjP1wX3yE",
@@ -390,8 +404,9 @@ const DEMO_REPORT: ScanReport = {
       customerId: "cus_W6yY8aYz5iE",
       subscriptionId: "sub_6AkQ2xY4zF",
       monthlyImpact: 14200,
-      annualImpact: 170400,
+      annualImpact: 14200,
       recoveryRate: 0.5,
+      isRecurring: false,
       fixSuggestion:
         "Send an urgent card update reminder. Stripe may auto-update via card network updater, but don't rely on it for this high-value account. Personal outreach recommended.",
       stripeUrl: "https://dashboard.stripe.com/customers/cus_W6yY8aYz5iE",
@@ -409,8 +424,9 @@ const DEMO_REPORT: ScanReport = {
       customerId: "cus_X7zZ9bZa6jF",
       subscriptionId: "sub_7BlR3yZ5aG",
       monthlyImpact: 11200,
-      annualImpact: 134400,
+      annualImpact: 11200,
       recoveryRate: 0.5,
+      isRecurring: false,
       fixSuggestion:
         "Send a proactive card update email. Mention the exact last 4 digits so they know which card to update. Include a direct link to update payment method.",
       stripeUrl: "https://dashboard.stripe.com/customers/cus_X7zZ9bZa6jF",
@@ -428,8 +444,9 @@ const DEMO_REPORT: ScanReport = {
       customerId: "cus_Y8aA0cAb7kG",
       subscriptionId: "sub_8CmS4zA6bH",
       monthlyImpact: 9900,
-      annualImpact: 118800,
+      annualImpact: 9900,
       recoveryRate: 0.5,
+      isRecurring: false,
       fixSuggestion:
         "Queue a card expiration reminder email for 30 days before expiry. Stripe's Smart Retries may handle this automatically, but proactive communication reduces churn.",
       stripeUrl: "https://dashboard.stripe.com/customers/cus_Y8aA0cAb7kG",
@@ -447,8 +464,9 @@ const DEMO_REPORT: ScanReport = {
       customerId: "cus_Z9bB1dBc8lH",
       subscriptionId: "sub_9DnT5aB7cI",
       monthlyImpact: 9900,
-      annualImpact: 118800,
+      annualImpact: 9900,
       recoveryRate: 0.5,
+      isRecurring: false,
       fixSuggestion:
         "Send batch card update reminders. Consider enabling Stripe's automatic card updater if not already enabled.",
       stripeUrl: "https://dashboard.stripe.com/customers/cus_Z9bB1dBc8lH",
@@ -466,8 +484,9 @@ const DEMO_REPORT: ScanReport = {
       customerId: "cus_A0cC2eCd9mI",
       subscriptionId: "sub_0EoU6bC8dJ",
       monthlyImpact: 9000,
-      annualImpact: 108000,
+      annualImpact: 9000,
       recoveryRate: 0.5,
+      isRecurring: false,
       fixSuggestion:
         "No immediate action needed. Monitor and send a reminder 30 days before expiry.",
       stripeUrl: "https://dashboard.stripe.com/customers/cus_A0cC2eCd9mI",
@@ -489,6 +508,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 20000,
       annualImpact: 240000,
       recoveryRate: 0.3,
+      isRecurring: true,
       fixSuggestion:
         "Schedule a pricing migration. Best approach: Email the customer about the price change, give 30 days notice, offer to lock in a 10% 'loyalty discount' on the new price ($179/mo). Most customers accept when framed positively.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_1FpV7cD9eK",
@@ -508,6 +528,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 12000,
       annualImpact: 144000,
       recoveryRate: 0.3,
+      isRecurring: true,
       fixSuggestion:
         "Migrate to current pricing with advance notice. Grandfather for one more billing cycle, then transition. Highlight any new features added since they signed up to justify the increase.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_2GqW8dE0fL",
@@ -527,8 +548,9 @@ const DEMO_REPORT: ScanReport = {
       customerId: "cus_D3fF5hFg2pL",
       subscriptionId: "sub_3HrX9eF1gM",
       monthlyImpact: 9900,
-      annualImpact: 118800,
+      annualImpact: 9900,
       recoveryRate: 0.3,
+      isRecurring: false,
       fixSuggestion:
         "Send an immediate email asking the customer to add a payment method. Include a Stripe Checkout link for easy card entry. This must be resolved before the next billing date.",
       stripeUrl: "https://dashboard.stripe.com/customers/cus_D3fF5hFg2pL",
@@ -546,8 +568,9 @@ const DEMO_REPORT: ScanReport = {
       customerId: "cus_E4gG6iGh3qM",
       subscriptionId: "sub_4IsY0fG2hN",
       monthlyImpact: 2300,
-      annualImpact: 27600,
+      annualImpact: 2300,
       recoveryRate: 0.3,
+      isRecurring: false,
       fixSuggestion:
         "Send a trial ending reminder with a clear CTA to add payment. Consider an in-app notification too. Trial-to-paid conversion is a critical moment.",
       stripeUrl: "https://dashboard.stripe.com/customers/cus_E4gG6iGh3qM",
@@ -569,6 +592,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 45000,
       annualImpact: 540000,
       recoveryRate: 0.7,
+      isRecurring: true,
       fixSuggestion:
         "Review this subscription's quantity and pricing in Stripe Dashboard. The customer has 8 seats — verify the billing reflects per-seat pricing. Check for any 100% coupons or manual overrides.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_6KuA2hI4jP",
@@ -588,8 +612,9 @@ const DEMO_REPORT: ScanReport = {
       customerId: "cus_H7jJ9lJk6tP",
       subscriptionId: "sub_7LvB3iJ5kQ",
       monthlyImpact: 19900,
-      annualImpact: 238800,
+      annualImpact: 19900,
       recoveryRate: 0.5,
+      isRecurring: false,
       fixSuggestion:
         "Check this subscription in Stripe Dashboard. If the trial should have ended, either convert the customer to a paid plan or cancel the subscription. Review your trial_end webhook handling.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_7LvB3iJ5kQ",
@@ -611,6 +636,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 24900,
       annualImpact: 298800,
       recoveryRate: 0.9,
+      isRecurring: true,
       fixSuggestion:
         "Cancel the old Growth subscription immediately. Proactively refund the overlap charges ($199 for the current period). Send the customer a note explaining the fix. Review your upgrade flow to auto-cancel old subscriptions.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_8MwC4jK6lR",
@@ -632,6 +658,7 @@ const DEMO_REPORT: ScanReport = {
       monthlyImpact: 5000,
       annualImpact: 60000,
       recoveryRate: 0.4,
+      isRecurring: true,
       fixSuggestion:
         "Review whether this coupon should have had a time limit. If it was an error, contact the customer, explain the situation, and offer a 20% ongoing discount as a compromise. Update the coupon configuration to prevent this for future customers.",
       stripeUrl: "https://dashboard.stripe.com/subscriptions/sub_5JtZ1gH3iO",
@@ -808,8 +835,9 @@ export default function DemoReportPage() {
       <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
         {/* Recovery Banner */}
         <RecoveryBanner
-          recoveryPotential={DEMO_REPORT.summary.recoveryPotential}
-          rawRecoveryPotential={DEMO_REPORT.summary.rawMrrAtRisk * 12}
+          mrrAtRisk={DEMO_REPORT.summary.mrrAtRisk}
+          isLoggedIn={true}
+          pendingActionsCount={0}
         />
 
         {/* Summary Cards + Health Score */}

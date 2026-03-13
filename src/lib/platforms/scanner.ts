@@ -109,27 +109,83 @@ export async function runPlatformScan(
   );
 
   // Step 5: Calculate metrics
+  // Only count active subscriptions in MRR (trialing = $0 revenue)
   const totalMRR = data.subscriptions
-    .filter((s) => s.status === "active" || s.status === "trialing")
+    .filter((s) => s.status === "active")
     .reduce((sum, s) => sum + s.monthlyAmountCents, 0);
 
-  const rawMrrAtRisk = allLeaks.reduce((sum, l) => sum + l.monthlyImpact, 0);
-  const mrrAtRisk = allLeaks.reduce((sum, l) => sum + Math.round(l.monthlyImpact * (l.recoveryRate ?? 1)), 0);
+  // Track trialing MRR separately for display
+  const trialingMRR = data.subscriptions
+    .filter((s) => s.status === "trialing")
+    .reduce((sum, s) => sum + s.monthlyAmountCents, 0);
+
+  // Step 5b: Deduplicate MRR-at-risk by subscriptionId
+  // The same subscription can appear in multiple scanners (e.g., expiring card +
+  // missing payment method + ghost subscription). For totals, only count the
+  // highest-impact leak per subscription to avoid inflating the numbers.
+  // Leaks without a subscriptionId (e.g., invoice-level) are always counted.
+  const subMaxImpact = new Map<string, { raw: number; weighted: number }>();
+  let rawMrrAtRisk = 0;
+  let mrrAtRisk = 0;
+
+  for (const leak of allLeaks) {
+    const weighted = Math.round(leak.monthlyImpact * (leak.recoveryRate ?? 1));
+
+    if (!leak.subscriptionId) {
+      // No subscription ID (invoice-level leaks) — always count
+      rawMrrAtRisk += leak.monthlyImpact;
+      mrrAtRisk += weighted;
+    } else {
+      // Track the max impact per subscription (don't sum duplicates)
+      const existing = subMaxImpact.get(leak.subscriptionId);
+      if (!existing || leak.monthlyImpact > existing.raw) {
+        subMaxImpact.set(leak.subscriptionId, { raw: leak.monthlyImpact, weighted });
+      }
+    }
+  }
+
+  // Add the deduplicated subscription impacts
+  for (const { raw, weighted } of subMaxImpact.values()) {
+    rawMrrAtRisk += raw;
+    mrrAtRisk += weighted;
+  }
+
   const healthScore = calculateHealthScore(allLeaks, totalMRR);
 
-  // Step 6: Build category summaries
+  // Step 6: Build category summaries (uses individual leak data, not deduped)
   const categories = buildCategorySummaries(allLeaks, mrrAtRisk);
 
   // Step 7: Count unique customers
   const uniqueCustomers = new Set(data.subscriptions.map((s) => s.customerId));
 
-  // Step 8: Build summary
+  // Step 8: Build summary — recovery potential also uses deduped amounts
+  // For recovery potential: sum annualImpact per subscription (max only), not across all leaks
+  const subMaxAnnual = new Map<string, number>();
+  let recoveryPotential = 0;
+
+  for (const leak of allLeaks) {
+    const weightedAnnual = Math.round(leak.annualImpact * (leak.recoveryRate ?? 1));
+
+    if (!leak.subscriptionId) {
+      recoveryPotential += weightedAnnual;
+    } else {
+      const existing = subMaxAnnual.get(leak.subscriptionId) ?? 0;
+      if (weightedAnnual > existing) {
+        subMaxAnnual.set(leak.subscriptionId, weightedAnnual);
+      }
+    }
+  }
+
+  for (const annual of subMaxAnnual.values()) {
+    recoveryPotential += annual;
+  }
+
   const summary = {
     mrrAtRisk,
     rawMrrAtRisk,
-    trialingMRR: 0,
+    trialingMRR,
     leaksFound: allLeaks.length,
-    recoveryPotential: allLeaks.reduce((sum, l) => sum + Math.round(l.annualImpact * (l.recoveryRate ?? 1)), 0),
+    recoveryPotential,
     totalSubscriptions: data.subscriptions.length,
     totalCustomers: uniqueCustomers.size,
     totalMRR: totalMRR,

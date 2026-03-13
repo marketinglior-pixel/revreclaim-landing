@@ -45,8 +45,9 @@ export function scanMissingPaymentMethods(
       customerId,
       subscriptionId: sub.id,
       monthlyImpact: monthlyAmount,
-      annualImpact: monthlyAmount * 12,
+      annualImpact: monthlyAmount, // One-time risk: one billing cycle
       recoveryRate: 0.3, // Many missing PM accounts are inactive/test accounts
+      isRecurring: false, // One-time event: payment method update needed once
       fixSuggestion:
         "This is urgent. Contact the customer immediately to add a payment method. Go to Stripe Dashboard → Customers → Select customer → Send 'Update payment method' email.",
       stripeUrl: `https://dashboard.stripe.com/customers/${customerId}`,

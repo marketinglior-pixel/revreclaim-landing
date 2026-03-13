@@ -71,6 +71,7 @@ export function scanLegacyPricing(
           monthlyImpact: 0, // Can't calculate without knowing the new price
           annualImpact: 0,
           recoveryRate: 0.3,
+          isRecurring: true, // Price difference continues every month
           fixSuggestion:
             "Migrate this customer to your current pricing plan. Go to Stripe Dashboard → Subscriptions → Select subscription → Update subscription → Choose new price.",
           stripeUrl: `https://dashboard.stripe.com/subscriptions/${sub.id}`,
@@ -126,6 +127,7 @@ export function scanLegacyPricing(
         monthlyImpact: priceDifference,
         annualImpact: priceDifference * 12,
         recoveryRate: 0.3, // Only ~30% of customers will accept a price increase without churning
+        isRecurring: true, // Price difference continues every month
         fixSuggestion: `Consider migrating this customer to the current price (${formatCents(newestMonthly)}/mo). You can grandfather them or offer a gradual increase. Go to Stripe Dashboard → Subscriptions → Update subscription.`,
         stripeUrl: `https://dashboard.stripe.com/subscriptions/${sub.id}`,
         detectedAt: new Date().toISOString(),

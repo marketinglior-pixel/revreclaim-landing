@@ -40,8 +40,9 @@ export function scanMissingPaymentMethods(
       customerId: sub.customerId,
       subscriptionId: sub.id,
       monthlyImpact: sub.monthlyAmountCents,
-      annualImpact: sub.monthlyAmountCents * 12,
+      annualImpact: sub.monthlyAmountCents, // One-time risk: one billing cycle, not 12 months
       recoveryRate: 0.3,
+      isRecurring: false,
       fixSuggestion: `This is urgent. Contact the customer immediately to add a payment method. Go to ${platformLabel} Dashboard → Customers → Send 'Update payment method' email.`,
       platformUrl: sub.platformUrl,
       stripeUrl: sub.platform === "stripe" ? sub.platformUrl : undefined,

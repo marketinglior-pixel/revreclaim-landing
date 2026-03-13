@@ -258,10 +258,7 @@ export default function ReportPage() {
 
         {/* Recovery Banner */}
         <RecoveryBanner
-          recoveryPotential={adjustedSummary?.recoveryPotential ?? report.summary.recoveryPotential}
-          rawRecoveryPotential={
-            (adjustedSummary?.rawMrrAtRisk ?? report.summary.rawMrrAtRisk ?? 0) * 12
-          }
+          mrrAtRisk={adjustedSummary?.mrrAtRisk ?? report.summary.mrrAtRisk}
           isLoggedIn={isLoggedIn}
           pendingActionsCount={pendingActionsCount}
         />

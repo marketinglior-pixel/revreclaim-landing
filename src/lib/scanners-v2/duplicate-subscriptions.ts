@@ -90,6 +90,7 @@ export function scanDuplicateSubscriptions(
         monthlyImpact: duplicateAmount,
         annualImpact: duplicateAmount * 12,
         recoveryRate: 0.9,
+        isRecurring: true, // Double-charge continues every month
         fixSuggestion: `Review this customer's subscriptions in ${platformLabel} Dashboard. If one is a duplicate from a failed upgrade or migration, cancel it and consider issuing a proactive refund to prevent a chargeback.`,
         platformUrl: newer.platformUrl,
         stripeUrl: newer.platform === "stripe" ? newer.platformUrl : undefined,
@@ -147,6 +148,7 @@ export function scanDuplicateSubscriptions(
           monthlyImpact: olderSub.monthlyAmountCents,
           annualImpact: olderSub.monthlyAmountCents * 12,
           recoveryRate: 0.9,
+          isRecurring: true, // Double-charge continues every month
           fixSuggestion: `Check if this customer upgraded their plan in ${platformLabel} Dashboard. If so, cancel the older subscription (${formatCents(olderSub.monthlyAmountCents)}/mo) and consider refunding any overlap charges.`,
           platformUrl: olderSub.platformUrl,
           stripeUrl:

@@ -43,9 +43,10 @@ export interface Leak {
   customerEmail: string | null;
   customerId: string;
   subscriptionId: string | null;
-  monthlyImpact: number; // in cents
-  annualImpact: number; // in cents
+  monthlyImpact: number; // in cents — the amount at risk per occurrence
+  annualImpact: number; // in cents — monthlyImpact * 12 for recurring, or = monthlyImpact for one-time
   recoveryRate: number; // 0-1 probability of actually recovering this amount
+  isRecurring: boolean; // true = leak compounds monthly (discounts, legacy pricing), false = one-time event (failed payment, expiring card)
   fixSuggestion: string;
   platformUrl?: string; // Direct link to platform dashboard
   stripeUrl?: string; // @deprecated — use platformUrl. Kept for backward compat.

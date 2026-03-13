@@ -79,6 +79,7 @@ export function scanUnbilledOverages(
           monthlyImpact: missedRevenue,
           annualImpact: missedRevenue * 12,
           recoveryRate: 0.7,
+          isRecurring: true, // Underbilling continues every billing cycle
           fixSuggestion: `Review the subscription quantity and pricing in ${platformLabel} Dashboard. The customer has ${item.quantity} seats — verify the billing reflects this.`,
           platformUrl: sub.platformUrl,
           stripeUrl: sub.platform === "stripe" ? sub.platformUrl : undefined,
@@ -129,6 +130,7 @@ export function scanUnbilledOverages(
         monthlyImpact: overage,
         annualImpact: overage * 12,
         recoveryRate: 0.7,
+        isRecurring: true, // Usage pattern likely continues
         fixSuggestion: `Review this customer's usage and consider upgrading them to a higher plan in ${platformLabel} Dashboard, or verify overage billing is configured correctly.`,
         platformUrl: sub.platformUrl,
         stripeUrl: sub.platform === "stripe" ? sub.platformUrl : undefined,

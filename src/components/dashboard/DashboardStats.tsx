@@ -14,7 +14,7 @@ export default function DashboardStats({ report }: { report: ScanReport }) {
   );
   const animatedLeaks = useAnimatedNumber(summary.leaksFound, 800, 200);
   const animatedRecovery = useAnimatedNumber(
-    Math.round(summary.recoveryPotential / 100),
+    Math.round(summary.mrrAtRisk / 100),
     1400,
     300
   );
@@ -60,20 +60,20 @@ export default function DashboardStats({ report }: { report: ScanReport }) {
         </p>
       </div>
 
-      {/* Annual Recovery */}
+      {/* Monthly Recoverable */}
       <div className="rounded-xl border-t-2 border-t-brand border border-border bg-surface/80 backdrop-blur-sm p-5">
         <div className="mb-1 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-text-muted">
           <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" /></svg>
-          Annual Recovery
+          Recoverable
         </div>
         <div className="flex items-baseline gap-1">
           <span className="text-3xl font-bold text-brand">
             ${animatedRecovery.toLocaleString()}
           </span>
-          <span className="text-sm text-text-muted">/yr</span>
+          <span className="text-sm text-text-muted">/mo</span>
         </div>
         <p className="mt-1 text-xs text-text-muted">
-          Potential to recover
+          Weighted by recovery likelihood
         </p>
       </div>
 

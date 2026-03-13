@@ -63,6 +63,7 @@ export function scanLegacyPricing(
           monthlyImpact: 0,
           annualImpact: 0,
           recoveryRate: 0.3,
+          isRecurring: true, // Price difference continues every month
           fixSuggestion: `Migrate this customer to your current pricing plan. Go to ${platformLabel} Dashboard → Subscriptions → Update subscription.`,
           platformUrl: sub.platformUrl,
           stripeUrl: sub.platform === "stripe" ? sub.platformUrl : undefined,
@@ -116,6 +117,7 @@ export function scanLegacyPricing(
         monthlyImpact: priceDifference,
         annualImpact: priceDifference * 12,
         recoveryRate: 0.3,
+        isRecurring: true, // Price difference continues every month
         fixSuggestion: `Consider migrating this customer to the current price (${formatCents(newestMonthly)}/mo). Go to ${platformLabel} Dashboard → Subscriptions → Update subscription.`,
         platformUrl: sub.platformUrl,
         stripeUrl: sub.platform === "stripe" ? sub.platformUrl : undefined,

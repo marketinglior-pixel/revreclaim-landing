@@ -55,6 +55,7 @@ export function scanNeverExpiringDiscounts(
           monthlyImpact: discountAmount,
           annualImpact: discountAmount * 12,
           recoveryRate: 0.4, // Risky — customer may churn if discount removed
+          isRecurring: true, // Discount continues indefinitely
           fixSuggestion:
             "Consider replacing this forever coupon with a time-limited discount. Go to Stripe Dashboard → Subscriptions → Remove current discount → Apply a new coupon with an end date.",
           stripeUrl: `https://dashboard.stripe.com/subscriptions/${sub.id}`,

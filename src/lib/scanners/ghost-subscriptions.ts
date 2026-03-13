@@ -99,6 +99,7 @@ export function scanGhostSubscriptions(
       monthlyImpact: effectiveMonthlyImpact,
       annualImpact: effectiveMonthlyImpact * 12,
       recoveryRate,
+      isRecurring: true, // Revenue lost every month until resolved
       fixSuggestion,
       stripeUrl: `https://dashboard.stripe.com/subscriptions/${sub.id}`,
       detectedAt: new Date().toISOString(),

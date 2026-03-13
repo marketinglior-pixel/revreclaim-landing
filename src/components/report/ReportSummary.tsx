@@ -114,9 +114,9 @@ export default function ReportSummary({ summary, leaks }: ReportSummaryProps) {
             delay={200}
           />
           <AnimatedStatCard
-            label="Likely Recovery"
-            cents={summary.recoveryPotential}
-            suffix="/yr"
+            label="MRR Recoverable"
+            cents={summary.mrrAtRisk}
+            suffix="/mo"
             color="#10B981"
             description="Weighted by recovery likelihood"
             delay={300}

@@ -46,6 +46,7 @@ export function scanNeverExpiringDiscounts(
         monthlyImpact: discountAmount,
         annualImpact: discountAmount * 12,
         recoveryRate: 0.4,
+        isRecurring: true, // Discount continues indefinitely
         fixSuggestion: `Consider replacing this forever coupon with a time-limited discount. Go to ${platformLabel} Dashboard → Subscriptions → Remove current discount → Apply a new coupon with an end date.`,
         platformUrl: sub.platformUrl,
         stripeUrl: sub.platform === "stripe" ? sub.platformUrl : undefined,
