@@ -38,7 +38,7 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' https://polar.sh", // Next.js needs inline scripts
               "style-src 'self' 'unsafe-inline'", // Tailwind uses inline styles
-              "img-src 'self' data: blob: https://*.polar.sh",
+              "img-src 'self' data: blob: https://*.polar.sh https://api.producthunt.com",
               "font-src 'self'",
               "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.polar.sh https://*.polar.sh https://*.sentry.io",
               "frame-src 'self' https://*.polar.sh",
