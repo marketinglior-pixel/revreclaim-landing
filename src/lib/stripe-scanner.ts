@@ -414,16 +414,56 @@ export async function runFullScan(
   );
 
   // Step 5: Calculate metrics (weighted by recovery rates)
+  // Deduplicate by subscriptionId — same subscription can appear in multiple
+  // scanners (e.g., expiring card + missing payment method). Only count the
+  // highest-impact leak per subscription to avoid inflating numbers.
   const { activeMRR, trialingMRR } = calculateMRR(data.subscriptions);
-  const rawMrrAtRisk = allLeaks.reduce((sum, l) => sum + l.monthlyImpact, 0);
-  const mrrAtRisk = allLeaks.reduce(
-    (sum, l) => sum + Math.round(l.monthlyImpact * l.recoveryRate),
-    0
-  );
-  const recoveryPotential = allLeaks.reduce(
-    (sum, l) => sum + Math.round(l.annualImpact * l.recoveryRate),
-    0
-  );
+
+  const subMaxImpact = new Map<string, { raw: number; weighted: number }>();
+  let rawMrrAtRisk = 0;
+  let mrrAtRisk = 0;
+
+  for (const leak of allLeaks) {
+    const weighted = Math.round(leak.monthlyImpact * leak.recoveryRate);
+
+    if (!leak.subscriptionId) {
+      // Invoice-level leaks (no subscription) — always count
+      rawMrrAtRisk += leak.monthlyImpact;
+      mrrAtRisk += weighted;
+    } else {
+      const existing = subMaxImpact.get(leak.subscriptionId);
+      if (!existing || leak.monthlyImpact > existing.raw) {
+        subMaxImpact.set(leak.subscriptionId, { raw: leak.monthlyImpact, weighted });
+      }
+    }
+  }
+
+  for (const { raw, weighted } of subMaxImpact.values()) {
+    rawMrrAtRisk += raw;
+    mrrAtRisk += weighted;
+  }
+
+  // Recovery potential — deduplicated annual impact
+  const subMaxAnnual = new Map<string, number>();
+  let recoveryPotential = 0;
+
+  for (const leak of allLeaks) {
+    const weightedAnnual = Math.round(leak.annualImpact * leak.recoveryRate);
+
+    if (!leak.subscriptionId) {
+      recoveryPotential += weightedAnnual;
+    } else {
+      const existing = subMaxAnnual.get(leak.subscriptionId) ?? 0;
+      if (weightedAnnual > existing) {
+        subMaxAnnual.set(leak.subscriptionId, weightedAnnual);
+      }
+    }
+  }
+
+  for (const annual of subMaxAnnual.values()) {
+    recoveryPotential += annual;
+  }
+
   const healthScore = calculateHealthScore(allLeaks, activeMRR);
 
   // Step 6: Build category summaries

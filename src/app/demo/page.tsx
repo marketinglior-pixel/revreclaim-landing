@@ -866,7 +866,7 @@ export default function DemoReportPage() {
         <AgentSimulation leaks={DEMO_REPORT.leaks} />
 
         {/* CTA */}
-        <ReportCTA mrrAtRisk={DEMO_REPORT.summary.mrrAtRisk} />
+        <ReportCTA mrrAtRisk={DEMO_REPORT.summary.mrrAtRisk} recoveryPotential={DEMO_REPORT.summary.recoveryPotential} />
       </main>
     </div>
   );

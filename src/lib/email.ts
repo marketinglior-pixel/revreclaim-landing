@@ -223,14 +223,15 @@ export async function sendSocialProofEmail(to: string): Promise<void> {
  */
 export async function sendLastChanceEmail(
   to: string,
-  mrrAtRisk: number
+  mrrAtRisk: number,
+  recoveryPotential?: number
 ): Promise<void> {
   try {
     await getResend().emails.send({
       from: FROM,
       to,
       subject: "Your revenue leaks are growing",
-      html: lastChanceEmailHtml(mrrAtRisk),
+      html: lastChanceEmailHtml(mrrAtRisk, recoveryPotential),
     });
   } catch (err) {
     log.error("Failed to send last chance email:", err);

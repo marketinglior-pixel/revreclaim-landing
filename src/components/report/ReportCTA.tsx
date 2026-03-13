@@ -5,16 +5,20 @@ import { useAnimatedNumber } from "@/lib/useAnimatedNumber";
 
 interface ReportCTAProps {
   mrrAtRisk: number;
+  recoveryPotential: number; // annual, in cents — correctly handles one-time vs recurring
   isLoggedIn?: boolean;
   pendingActionsCount?: number;
 }
 
 export default function ReportCTA({
   mrrAtRisk,
+  recoveryPotential,
   isLoggedIn = false,
   pendingActionsCount = 0,
 }: ReportCTAProps) {
-  const annualRiskDollars = Math.round((mrrAtRisk * 12) / 100);
+  // Use recoveryPotential (not mrrAtRisk*12) — one-time leaks like failed
+  // payments should not be annualized
+  const annualRiskDollars = Math.round(recoveryPotential / 100);
   const monthlyRiskDollars = Math.round(mrrAtRisk / 100);
   const animatedRisk = useAnimatedNumber(annualRiskDollars, 1400, 300);
   const hasActions = isLoggedIn && pendingActionsCount > 0;

@@ -330,6 +330,7 @@ export default function ReportPage() {
         {/* CTA */}
         <ReportCTA
           mrrAtRisk={adjustedSummary?.mrrAtRisk ?? report.summary.mrrAtRisk}
+          recoveryPotential={adjustedSummary?.recoveryPotential ?? report.summary.recoveryPotential}
           isLoggedIn={isLoggedIn}
           pendingActionsCount={pendingActionsCount}
         />

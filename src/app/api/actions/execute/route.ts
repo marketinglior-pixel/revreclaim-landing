@@ -87,24 +87,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Atomically claim the action: update status from "approved" → "executing"
-    // This prevents double execution if two requests arrive simultaneously
-    const { data: claimedRows, error: claimError } = await supabase
+    // Pre-flight: check if write action has a required API key BEFORE claiming
+    // This prevents the action from being marked as "failed" just because the
+    // user hasn't added an Action API Key yet. The action stays "approved" so
+    // the user can retry after adding the key — no need to hunt in the Failed tab.
+    const { data: actionRow } = await supabase
       .from("recovery_actions")
-      .update({ status: "executing" as string })
+      .select("action_type")
       .eq("id", actionId)
       .eq("user_id", user.id)
       .eq("status", "approved")
-      .select("*");
+      .single();
 
-    if (claimError) {
-      return NextResponse.json(
-        { error: "Failed to claim action for execution." },
-        { status: 500 }
-      );
-    }
-
-    if (!claimedRows || claimedRows.length === 0) {
+    if (!actionRow) {
       // Check if already executed (idempotent response)
       const { data: existing } = await supabase
         .from("recovery_actions")
@@ -128,18 +123,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Cast to our typed interface
-    const action = claimedRows[0] as unknown as RecoveryAction;
-
-    log.info(
-      `Executing action ${actionId} (${action.action_type}) for user ${user.id}`
-    );
-
-    // For platform write actions, fetch and decrypt the action API key
-    let actionApiKey: string | null = null;
     const isWriteAction = ["retry_payment", "remove_coupon", "cancel_subscription"].includes(
-      action.action_type
+      actionRow.action_type
     );
+
+    // For write actions, fetch and decrypt the action API key
+    let actionApiKey: string | null = null;
 
     if (isWriteAction) {
       const { data: scanConfig } = await supabase
@@ -148,17 +137,57 @@ export async function POST(req: NextRequest) {
         .eq("user_id", user.id)
         .single();
 
-      if (scanConfig?.action_api_key_encrypted) {
-        try {
-          actionApiKey = decrypt(scanConfig.action_api_key_encrypted);
-        } catch {
-          return NextResponse.json(
-            { error: "Failed to decrypt Action API Key. Please re-save it in Settings." },
-            { status: 400 }
-          );
-        }
+      if (!scanConfig?.action_api_key_encrypted) {
+        // Return error WITHOUT changing action status — it stays "approved"
+        return NextResponse.json(
+          {
+            error: "Action API Key required. Go to Settings → Action API Key to add a write-capable key for your billing platform.",
+            errorType: "missing_api_key",
+          },
+          { status: 400 }
+        );
+      }
+
+      try {
+        actionApiKey = decrypt(scanConfig.action_api_key_encrypted);
+      } catch {
+        return NextResponse.json(
+          { error: "Failed to decrypt Action API Key. Please re-save it in Settings." },
+          { status: 400 }
+        );
       }
     }
+
+    // Atomically claim the action: update status from "approved" → "executing"
+    // This prevents double execution if two requests arrive simultaneously
+    const { data: claimedRows, error: claimError } = await supabase
+      .from("recovery_actions")
+      .update({ status: "executing" as string })
+      .eq("id", actionId)
+      .eq("user_id", user.id)
+      .eq("status", "approved")
+      .select("*");
+
+    if (claimError) {
+      return NextResponse.json(
+        { error: "Failed to claim action for execution." },
+        { status: 500 }
+      );
+    }
+
+    if (!claimedRows || claimedRows.length === 0) {
+      return NextResponse.json(
+        { error: "Action was already claimed by another request." },
+        { status: 409 }
+      );
+    }
+
+    // Cast to our typed interface
+    const action = claimedRows[0] as unknown as RecoveryAction;
+
+    log.info(
+      `Executing action ${actionId} (${action.action_type}) for user ${user.id}`
+    );
 
     // Execute the action
     const result = await executeAction(action, actionApiKey);

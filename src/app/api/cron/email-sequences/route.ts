@@ -187,10 +187,11 @@ export async function GET(req: NextRequest) {
           ) {
             const summary = reports[0].summary as unknown as {
               mrrAtRisk: number;
+              recoveryPotential?: number;
             };
             if (summary?.mrrAtRisk > 0) {
               if (await shouldSendEmail(user.id, "marketing_tips")) {
-                await sendLastChanceEmail(user.email, summary.mrrAtRisk);
+                await sendLastChanceEmail(user.email, summary.mrrAtRisk, summary.recoveryPotential);
                 lastChanceSent++;
                 log.info(`Last chance email sent to ${user.email}`);
               }

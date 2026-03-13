@@ -220,7 +220,13 @@ export function ActionQueue({ plan, privacyMode, hasActionKey = false }: ActionQ
         await fetchActions();
       } else {
         const data = await res.json();
-        setError(data.error || "Execution failed");
+        if (data.errorType === "missing_api_key") {
+          setError("Action API Key required — add one in Settings to execute write actions.");
+        } else {
+          setError(data.error || "Execution failed");
+        }
+        // Refresh list — action stays in "approved" status for missing_api_key
+        await fetchActions();
       }
     } catch {
       setError("Failed to execute action");

@@ -270,8 +270,12 @@ export function socialProofEmailHtml(): string {
   `);
 }
 
-export function lastChanceEmailHtml(mrrAtRisk: number): string {
+export function lastChanceEmailHtml(mrrAtRisk: number, recoveryPotential?: number): string {
   const amount = mrrAtRisk > 0 ? formatCentsAsDollars(mrrAtRisk) : "$2,000+";
+  // Use recoveryPotential (properly handles one-time vs recurring) instead of mrrAtRisk*12
+  const annualAmount = recoveryPotential && recoveryPotential > 0
+    ? formatCentsAsDollars(recoveryPotential)
+    : formatCentsAsDollars(mrrAtRisk * 12);
 
   return baseLayout("Your leaks are growing", `
     <h1 style="color:white;font-size:24px;margin:0 0 16px;">Two weeks of unchecked billing leaks</h1>
@@ -283,7 +287,7 @@ export function lastChanceEmailHtml(mrrAtRisk: number): string {
 
     <div style="background:#0A0A0A;border:1px solid #EF444430;border-radius:12px;padding:20px;margin-bottom:24px;">
       <div style="color:#EF4444;font-weight:bold;font-size:18px;margin-bottom:4px;">
-        ~${formatCentsAsDollars(mrrAtRisk * 12)} lost per year
+        ~${annualAmount} lost per year
       </div>
       <div style="color:#999;font-size:14px;">
         That's how much your billing leaks cost if left unchecked
