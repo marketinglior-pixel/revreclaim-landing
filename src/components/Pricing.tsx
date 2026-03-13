@@ -6,39 +6,30 @@ import { trackEvent } from "@/lib/analytics";
 import { useSectionView } from "@/hooks/useSectionView";
 import { trackCheckoutStarted } from "@/lib/conversion-tracking";
 
-/* Grand Slam Offer naming ($100M Offers) + value stacking */
 const plans = [
   {
     name: "Revenue X-Ray",
-    badge: "FREE $2,847 AUDIT",
+    badge: "FREE FOREVER",
     monthlyPrice: "$0",
     annualPrice: "$0",
     annualMonthly: "$0",
     period: "",
     description: "See exactly how much you could recover. No strings.",
     features: [
-      "Full 10-scanner revenue audit ($500 value)",
-      "Customer-level leak report with names & amounts",
-      "Billing Health Score with industry comparison",
-      "1 AI recovery action: auto-fix your biggest leak",
-      "Step-by-step fix instructions for every leak found",
+      "Full 10-category revenue audit",
+      "Customer-level leak report with amounts",
+      "Billing Health Score",
+      "1 auto-fix action on your biggest leak",
+      "Step-by-step fix instructions for every leak",
       "PDF & CSV export to share with your team",
     ],
-    cta: "Get My Free $2,847 Audit",
+    cta: "Run a Free Scan",
     href: "/scan",
     highlighted: false,
     isPaid: false,
     planId: "free",
     valueStack: null,
-    freeValueStack: [
-      { name: "10-Scanner Revenue Audit", value: "$500" },
-      { name: "Customer-Level Leak Report", value: "$800" },
-      { name: "Billing Health Score", value: "$200" },
-      { name: "Fix Playbook", value: "$300" },
-      { name: "1 AI Recovery Action", value: "$297" },
-      { name: "PDF/CSV Export", value: "$150" },
-      { name: "Industry Benchmarks", value: "$200" },
-    ],
+    freeValueStack: null,
   },
   {
     name: "Leak Watch",
@@ -60,7 +51,7 @@ const plans = [
     highlighted: false,
     isPaid: true,
     planId: "watch",
-    valueStack: { recovery: "$2,340", crm: null as string | null, support: "$200", total: "$2,540", roi: "30x" },
+    valueStack: null,
   },
   {
     name: "Revenue Shield",
@@ -86,7 +77,7 @@ const plans = [
     highlighted: true,
     isPaid: true,
     planId: "pro",
-    valueStack: { recovery: "$2,340", crm: "$500", support: "$500", total: "$3,340", roi: "11x" },
+    valueStack: null,
   },
   {
     name: "Revenue Command Center",
@@ -109,7 +100,7 @@ const plans = [
     highlighted: false,
     isPaid: true,
     planId: "team",
-    valueStack: { recovery: "$2,340", crm: "$500", support: "$1,200", total: "$4,040", roi: "8x" },
+    valueStack: null,
   },
 ];
 
@@ -162,16 +153,13 @@ export function Pricing() {
         <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-brand">
           Pricing
         </div>
-        {/* Headline — ROI math upfront (Hormozi Hack #4: Reason Why) */}
         <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
-          Choose how much money you want back.
+          The scan is free. Monitoring is optional.
         </h2>
         <p className="mx-auto mb-10 max-w-2xl text-center text-lg text-text-muted">
-          The free audit finds your leaks. Paid plans watch and fix them automatically.
+          Run a free scan to find your leaks. If you want ongoing monitoring and auto-recovery, pick a plan.
           <br />
-          Average recovery: <span className="text-white font-semibold">$2,340/mo</span>.
-          Start monitoring for <span className="text-white font-semibold">{billing === "annual" ? "$66" : "$79"}/mo</span> or
-          auto-recover for <span className="text-white font-semibold">{billing === "annual" ? "$249" : "$299"}/mo</span>.
+          Find less than $1,000/mo? Every paid plan is free.
         </p>
 
         {/* Billing toggle */}
@@ -277,66 +265,6 @@ export function Pricing() {
                   ))}
                 </ul>
 
-                {/* Free plan value stack — Hormozi Grand Slam: show perceived value */}
-                {(plan as typeof plans[0] & { freeValueStack?: { name: string; value: string }[] }).freeValueStack && (
-                  <div className="mb-6 rounded-lg border border-brand/20 bg-brand/5 p-3 sm:p-4 text-xs md:text-sm">
-                    <div className="mb-2 font-semibold text-brand uppercase tracking-wider text-xs">What you get for free</div>
-                    <div className="space-y-1.5">
-                      {(plan as typeof plans[0] & { freeValueStack?: { name: string; value: string }[] }).freeValueStack!.map((item) => (
-                        <div key={item.name} className="flex justify-between gap-2 text-text-secondary">
-                          <span className="truncate">{item.name}</span>
-                          <span className="font-semibold shrink-0 line-through text-text-dim">{item.value}</span>
-                        </div>
-                      ))}
-                      <div className="border-t border-brand/20 my-2" />
-                      <div className="flex justify-between gap-2 text-white font-semibold">
-                        <span>Total value</span>
-                        <span className="shrink-0 line-through text-text-dim">$2,847</span>
-                      </div>
-                      <div className="flex justify-between gap-2">
-                        <span className="text-text-muted">You pay</span>
-                        <span className="font-bold text-brand text-lg">$0</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Value stacking ($100M Offers) */}
-                {plan.valueStack && (
-                  <div className="mb-6 rounded-lg border border-border bg-surface-dim p-3 sm:p-4 text-xs md:text-sm">
-                    <div className="mb-2 font-semibold text-text-muted uppercase tracking-wider text-xs">Value you get</div>
-                    <div className="space-y-1.5">
-                      <div className="flex justify-between gap-2 text-text-secondary">
-                        <span className="truncate">Avg. monthly recovery</span>
-                        <span className="font-semibold shrink-0">{plan.valueStack.recovery}/mo</span>
-                      </div>
-                      {plan.valueStack.crm && (
-                        <div className="flex justify-between gap-2 text-text-secondary">
-                          <span className="truncate">CRM leak intelligence</span>
-                          <span className="font-semibold shrink-0">{plan.valueStack.crm}/mo</span>
-                        </div>
-                      )}
-                      <div className="flex justify-between gap-2 text-text-secondary">
-                        <span className="truncate">Priority support</span>
-                        <span className="font-semibold shrink-0">{plan.valueStack.support}/mo</span>
-                      </div>
-                      <div className="border-t border-border my-2" />
-                      <div className="flex justify-between gap-2 text-white font-semibold">
-                        <span>Total value</span>
-                        <span className="shrink-0">{plan.valueStack.total}/mo</span>
-                      </div>
-                      <div className="flex justify-between gap-2">
-                        <span className="text-text-muted">You pay</span>
-                        <span className="font-semibold text-brand shrink-0">{displayPrice}/mo</span>
-                      </div>
-                      <div className="flex justify-between gap-2">
-                        <span className="text-text-muted">Your ROI</span>
-                        <span className="font-bold text-brand">{plan.valueStack.roi}</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
                 {/* CTA Button */}
                 {plan.isPaid ? (
                   <>
@@ -361,7 +289,7 @@ export function Pricing() {
                         plan.cta
                       )}
                     </button>
-                    {/* $1,000/mo guarantee — Hormozi risk reversal at decision point */}
+                    {/* $1,000/mo guarantee */}
                     <p className="mt-3 text-center text-xs text-text-muted">
                       Find less than $1,000/mo? You pay nothing. Cancel anytime.
                     </p>

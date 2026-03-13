@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "RevReclaim | Find SaaS Revenue Leaks in 90 Seconds",
     description:
-      "See every revenue leak, real dollar amounts, and one-click fixes in 90 seconds. 94% of SaaS accounts have leaks. Free scan.",
+      "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find expired coupons, failed payments, and ghost subscriptions. Free. No credit card.",
     url: "https://revreclaim.com",
     siteName: "RevReclaim",
     type: "website",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "RevReclaim | Find SaaS Revenue Leaks in 90 Seconds",
     description:
-      "See every revenue leak, real dollar amounts, and one-click fixes in 90 seconds. 94% of SaaS accounts have leaks. Free scan.",
+      "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find expired coupons, failed payments, and ghost subscriptions. Free. No credit card.",
     images: ["/og-image.png"],
   },
 };
@@ -174,7 +174,7 @@ const jsonLd = {
           name: "What if you don't find any leaks?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Then your billing is in better shape than 94% of the SaaS accounts we've scanned. You'll get a perfect health score and genuine peace of mind. The free scan costs you nothing either way. If you're on a paid plan and we find less than $1,000/mo, you pay nothing.",
+            text: "Then your billing is clean. You get a perfect health score and some peace of mind. The free scan costs you nothing either way. If you're on a paid plan and we find less than $1,000/mo, you pay nothing.",
           },
         },
         {

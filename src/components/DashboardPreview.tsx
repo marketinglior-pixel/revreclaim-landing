@@ -2,16 +2,15 @@ export function DashboardPreview() {
   return (
     <section className="border-t border-border-light py-20 md:py-28">
       <div className="mx-auto max-w-5xl px-6">
-        <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-brand">
-          Your leak report
+        <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-text-muted">
+          Example report
         </div>
         <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
-          In 90 seconds, this will be your screen.
+          Here&apos;s what a scan report looks like.
         </h2>
         <p className="mx-auto mb-12 max-w-2xl text-center text-lg text-text-muted">
-          Every customer who owes you money. Dollar amounts. Priority ranking. Fix instructions, one click away.
-          {" "}<span className="text-white font-semibold">Connect HubSpot and see WHY each leak matters.</span>{" "}
-          This is what 90 seconds gets you.
+          Every leak shows the customer, the dollar amount, and exactly how to fix it.
+          This is sample data, but the structure is identical to what you&apos;ll see.
         </p>
 
         {/* Dashboard mockup */}
@@ -145,13 +144,13 @@ export function DashboardPreview() {
             href="/scan"
             className="group inline-flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black min-h-[52px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
           >
-            Get My Free Revenue Audit &rarr;
+            Run a Free Scan
             <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </a>
           <p className="mt-3 text-sm text-text-muted">
-            This is what 90 seconds of your time gets you.
+            Or <a href="/demo" className="text-brand hover:underline">explore the demo</a> with sample data first.
           </p>
         </div>
       </div>

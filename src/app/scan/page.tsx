@@ -66,7 +66,7 @@ export default function ScanPage() {
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand/10 border border-brand/20 rounded-full mb-6">
             <span className="w-2 h-2 bg-brand rounded-full animate-pulse" />
             <span className="text-xs font-medium text-brand">
-              Free forever &middot; Avg. recovery: $2,340/mo
+              Free forever &middot; 10 checks &middot; 90 seconds
             </span>
           </div>
 
@@ -76,7 +76,6 @@ export default function ScanPage() {
           <p className="text-text-muted max-w-md mx-auto">
             In 90 seconds, you&apos;ll see every leak identified, every dollar amount,
             and exactly where to click to fix each leak.
-            The average founder finds $2,340/month they weren&apos;t collecting.
           </p>
         </div>
 

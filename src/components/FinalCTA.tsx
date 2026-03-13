@@ -40,26 +40,22 @@ export function FinalCTA() {
         {/* Glow */}
         <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 h-[300px] w-[500px] rounded-full bg-brand/5 blur-[100px]" />
 
-        {/* Mini stat */}
-        <div className="relative mb-8 inline-flex items-center gap-3 rounded-full border border-danger/20 bg-danger/5 px-5 py-2.5">
-          <span className="text-sm font-bold text-danger">94% of SaaS accounts</span>
-          <span className="text-sm text-text-muted">have at least one revenue leak</span>
-        </div>
-
-        {/* Headline — future-focused (85/15 Rule) */}
+        {/* Headline */}
         <h2 className="relative mb-4 text-3xl font-bold text-white md:text-5xl lg:text-6xl">
-          Stop guessing which leaks matter.
+          You probably have billing leaks.
           <br />
-          <span className="text-text-muted">Start knowing.</span>
+          <span className="text-text-muted">There&apos;s one way to find out.</span>
         </h2>
 
-        {/* Future outcome + urgency (85/15 Rule + Hormozi Hack #8) */}
+        {/* Sub */}
         <p className="relative mb-10 text-base md:text-lg text-text-muted leading-relaxed">
-          No new customers. No new features. Just money that was always yours,
-          finally hitting your account.
+          No new customers needed. No new features to build. Just money
+          that&apos;s already yours, sitting in your billing account,
+          waiting for someone to notice.
           <br />
-          <span className="text-white font-semibold break-words">
-            The average founder recovers $2,340/mo. The scan takes 90 seconds.
+          <span className="text-text-secondary">
+            The scan is free. It takes 90 seconds. And honestly, even if
+            we find nothing, at least you&apos;ll know.
           </span>
         </p>
 
@@ -88,7 +84,7 @@ export function FinalCTA() {
                 }}
                 className="group inline-flex items-center gap-2 rounded-lg bg-brand px-5 py-3 text-sm font-bold text-black min-h-[44px] transition-all hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
               >
-                Get My Free $2,847 Audit
+                Run a Free Scan
                 <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -129,21 +125,8 @@ export function FinalCTA() {
           )}
         </div>
 
-        {/* Recovery agent callout — Hormozi: give them a taste */}
-        <div className="mt-10 mx-auto max-w-lg rounded-xl border border-brand/20 bg-brand/5 p-5 text-left">
-          <p className="text-sm text-text-secondary leading-relaxed">
-            <span className="font-semibold text-brand">Your first fix is free.</span>{" "}
-            See a $499 failed payment sitting there for 12 days? Hit one button.
-            Our AI agent retries the charge. That money hits your account next billing cycle.
-            <br /><br />
-            <span className="font-semibold text-info">Pro upgrade:</span>{" "}
-            Connect HubSpot and we&apos;ll tell you if that $499 customer is active (worth chasing)
-            or inactive for 52 days (probably gone). Same leak. Totally different response.
-          </p>
-        </div>
-
         {/* Guarantee badge */}
-        <div className="mt-8 inline-flex items-center gap-3 rounded-xl border border-border bg-surface px-6 py-4">
+        <div className="mt-10 inline-flex items-center gap-3 rounded-xl border border-border bg-surface px-6 py-4">
           <svg className="h-8 w-8 text-brand" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
           </svg>
@@ -153,34 +136,18 @@ export function FinalCTA() {
           </div>
         </div>
 
-        {/* Mini testimonial */}
-        <div className="mt-8 mx-auto max-w-lg rounded-xl border border-border bg-surface p-5">
-          <p className="text-sm text-text-secondary italic leading-relaxed">
-            &ldquo;I pasted the key expecting nothing. 90 seconds later I&apos;m staring at a list of 23 expired coupons. $3,200/month we were just giving away.&rdquo;
-          </p>
-          <div className="mt-3 flex items-center justify-center gap-2">
-            <span className="text-xs font-semibold text-white">Sarah M.</span>
-            <span className="text-xs text-text-muted">Co-founder, CloudMetrics</span>
-            <span className="text-xs text-text-muted">&middot;</span>
-            <span className="text-xs font-semibold text-brand">$85K MRR</span>
-          </div>
-        </div>
-
-        {/* P.S. section — second most-read element (Hormozi Hack #10) */}
-        <div className="mt-16 mx-auto max-w-lg px-4 md:px-0 text-left">
+        {/* P.S. — honest, founder voice */}
+        <div className="mt-12 mx-auto max-w-lg px-4 md:px-0 text-left">
           <p className="text-sm md:text-base text-text-muted leading-relaxed">
-            <span className="font-semibold text-white">P.S.</span> Imagine opening your
-            billing dashboard tomorrow knowing that every subscription is collecting,
-            coupons are correct, cards are current, and you know exactly which customers are
-            worth chasing. That&apos;s what our founders tell us after connecting their CRM.
-            Not just &ldquo;I have leaks&rdquo; but &ldquo;I know which ones to fix first.&rdquo;
-            Run the free scan. 90 seconds. See the leaks. Then decide if you want the intelligence.
+            <span className="font-semibold text-white">P.S.</span> I built this because I couldn&apos;t find
+            a tool that just checks a Stripe account for billing mistakes. No dashboards,
+            no integrations, no onboarding calls. Just paste a key, see what&apos;s leaking, and
+            decide what to do about it.
           </p>
           <p className="mt-4 text-sm md:text-base text-text-muted leading-relaxed">
-            <span className="font-semibold text-white">P.P.S.</span> We scan
-            Stripe, Polar, and Paddle. If
-            your SaaS is doing $30K–$500K MRR, I&apos;d bet money
-            (literally, that&apos;s our $1,000/mo guarantee) that you have leaks right now.
+            We support Stripe, Polar, and Paddle. The free scan costs nothing.
+            If we don&apos;t find at least $1,000/mo in leaks, every paid plan is free.
+            That&apos;s a real guarantee.
           </p>
         </div>
       </div>
