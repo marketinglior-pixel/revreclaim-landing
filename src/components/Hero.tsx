@@ -15,9 +15,12 @@ export function Hero() {
       <div className="relative mx-auto max-w-4xl px-6 text-center">
         {/* Headline */}
         <h1 className="mb-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl md:leading-[1.2] lg:text-6xl animate-fade-in-up">
-          Your billing account is
-          <br className="hidden md:block" />
-          {" "}leaking money right now.
+          We help SaaS founders find hidden billing leaks and{" "}
+          <span className="text-brand">turn lost revenue into recovered MRR.</span>
+          <br />
+          <span className="text-text-muted font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
+            Without touching your code or reading a single invoice.
+          </span>
         </h1>
         <div className="mb-6 flex items-center justify-center gap-3 text-sm text-text-muted animate-fade-in-up animate-delay-100">
           <span className="rounded-full border border-border px-3 py-1 font-medium text-text-secondary">Stripe</span>
@@ -25,10 +28,9 @@ export function Hero() {
           <span className="rounded-full border border-border px-3 py-1 font-medium text-text-secondary">Paddle</span>
         </div>
 
-        {/* Sub — one line, 5-second clarity */}
+        {/* Sub — specifics + urgency */}
         <p className="mx-auto mb-10 max-w-2xl text-lg text-text-muted md:text-xl leading-relaxed animate-fade-in-up animate-delay-200">
-          <span className="font-medium text-brand/80">For B2B SaaS doing $30K&#8211;$500K MRR.</span>
-          {" "}Expired coupons, failed payments, legacy pricing — your billing has holes you can&apos;t see in Stripe. We find them in 90 seconds. Free.
+          Expired coupons, failed payments, legacy pricing. Your billing has holes you can&apos;t see in Stripe. We find them in 90 seconds. Free.
         </p>
 
         {/* Primary CTA */}
