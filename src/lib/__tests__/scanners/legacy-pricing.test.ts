@@ -77,8 +77,8 @@ describe("scanLegacyPricing", () => {
     const leaks = scanLegacyPricing([sub], prices, products);
     expect(leaks).toHaveLength(1);
     expect(leaks[0].type).toBe("legacy_pricing");
-    expect(leaks[0].monthlyImpact).toBe(2000); // 6900 - 4900
-    expect(leaks[0].annualImpact).toBe(24000);
+    expect(leaks[0].monthlyImpact).toBe(500); // (6900 - 4900) × 0.25 risk
+    expect(leaks[0].annualImpact).toBe(6000);
   });
 
   it("ignores when customer is already on newest price", () => {

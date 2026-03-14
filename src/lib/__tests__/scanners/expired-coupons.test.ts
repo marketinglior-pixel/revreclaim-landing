@@ -46,8 +46,8 @@ describe("scanExpiredCoupons", () => {
     const leaks = scanExpiredCoupons([sub]);
     expect(leaks).toHaveLength(1);
     expect(leaks[0].type).toBe("expired_coupon");
-    expect(leaks[0].monthlyImpact).toBe(2000); // 20% of 10000
-    expect(leaks[0].annualImpact).toBe(24000);
+    expect(leaks[0].monthlyImpact).toBe(1400); // 20% of 10000 × 0.7 risk
+    expect(leaks[0].annualImpact).toBe(16800);
     expect(leaks[0].customerId).toBe(sub.customerId);
   });
 
@@ -65,7 +65,7 @@ describe("scanExpiredCoupons", () => {
 
     const leaks = scanExpiredCoupons([sub]);
     expect(leaks).toHaveLength(1);
-    expect(leaks[0].monthlyImpact).toBe(2500); // 50% of 5000
+    expect(leaks[0].monthlyImpact).toBe(1750); // 50% of 5000 × 0.7 risk
   });
 
   it("ignores coupons that haven't expired yet", () => {
@@ -105,7 +105,7 @@ describe("scanExpiredCoupons", () => {
 
     const leaks = scanExpiredCoupons([sub]);
     expect(leaks).toHaveLength(1);
-    expect(leaks[0].monthlyImpact).toBe(3000);
+    expect(leaks[0].monthlyImpact).toBe(2100); // 3000 × 0.7 risk
   });
 
   it("assigns high severity for large discounts (>$100/mo)", () => {

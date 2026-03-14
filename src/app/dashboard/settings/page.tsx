@@ -1284,8 +1284,8 @@ export default function SettingsPage() {
         </div>
       )}
 
-      {/* Action API Key — for write operations */}
-      {hasExistingConfig && (
+      {/* Action API Key — for write operations (always visible so users
+          landing here from the Actions "Add API Key" link can find it) */}
         <div id="action-api-key" className="rounded-2xl border border-border bg-surface p-6 scroll-mt-8">
           <div className="flex items-center gap-3 mb-1">
             <h2 className="text-lg font-bold text-white">Action API Key</h2>
@@ -1395,7 +1395,6 @@ export default function SettingsPage() {
             </div>
           </form>
         </div>
-      )}
 
       {/* Change Password */}
       <div className="rounded-2xl border border-border bg-surface p-6">

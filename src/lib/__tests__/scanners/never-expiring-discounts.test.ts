@@ -45,8 +45,8 @@ describe("scanNeverExpiringDiscounts", () => {
     const leaks = scanNeverExpiringDiscounts([sub]);
     expect(leaks).toHaveLength(1);
     expect(leaks[0].type).toBe("never_expiring_discount");
-    expect(leaks[0].monthlyImpact).toBe(2500); // 25% of 10000
-    expect(leaks[0].annualImpact).toBe(30000);
+    expect(leaks[0].monthlyImpact).toBe(750); // 25% of 10000 × 0.3 risk
+    expect(leaks[0].annualImpact).toBe(9000);
   });
 
   it("detects forever discount with redeemBy but no endsAt (redeemBy is not an end date)", () => {
