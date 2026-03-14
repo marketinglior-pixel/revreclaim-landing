@@ -37,11 +37,15 @@ export function maskEmail(email: string | null): string {
 
 export function calculateHealthScore(
   leaks: Leak[],
-  totalMRR: number
+  totalMRR: number,
+  dedupedMrrAtRisk?: number
 ): number {
   if (totalMRR === 0) return 100;
 
-  const mrrAtRisk = leaks.reduce((sum, l) => sum + l.monthlyImpact, 0);
+  // Use deduped MRR at risk when available (avoids double-counting
+  // subscriptions flagged by multiple scanners)
+  const mrrAtRisk =
+    dedupedMrrAtRisk ?? leaks.reduce((sum, l) => sum + l.monthlyImpact, 0);
   const leakPercentage = mrrAtRisk / totalMRR;
 
   let score = 100;

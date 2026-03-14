@@ -150,7 +150,7 @@ export async function runPlatformScan(
     mrrAtRisk += weighted;
   }
 
-  const healthScore = calculateHealthScore(allLeaks, totalMRR);
+  const healthScore = calculateHealthScore(allLeaks, totalMRR, rawMrrAtRisk);
 
   // Step 6: Build category summaries (uses individual leak data, not deduped)
   const categories = buildCategorySummaries(allLeaks, mrrAtRisk);

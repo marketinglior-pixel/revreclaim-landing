@@ -464,7 +464,7 @@ export async function runFullScan(
     recoveryPotential += annual;
   }
 
-  const healthScore = calculateHealthScore(allLeaks, activeMRR);
+  const healthScore = calculateHealthScore(allLeaks, activeMRR, rawMrrAtRisk);
 
   // Step 6: Build category summaries
   const categories = buildCategorySummaries(allLeaks, rawMrrAtRisk);
