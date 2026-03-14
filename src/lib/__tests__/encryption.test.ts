@@ -36,21 +36,23 @@ describe("encryption", () => {
 
   it("encrypting empty string produces valid format but decrypt rejects empty data", () => {
     const encrypted = encrypt("");
-    // Empty string encrypts to iv:authTag: (empty data segment)
+    // Empty string encrypts to salt:iv:authTag: (empty data segment)
     // decrypt's validation rejects this as invalid format, which is correct behavior
     const parts = encrypted.split(":");
-    expect(parts).toHaveLength(3);
-    expect(parts[2]).toBe(""); // empty encrypted data
+    expect(parts).toHaveLength(4);
+    expect(parts[3]).toBe(""); // empty encrypted data
     expect(() => decrypt(encrypted)).toThrow("Invalid encrypted string format");
   });
 
-  it("encrypted output has iv:authTag:data format", () => {
+  it("encrypted output has salt:iv:authTag:data format", () => {
     const encrypted = encrypt("test");
     const parts = encrypted.split(":");
-    expect(parts).toHaveLength(3);
-    // IV is 16 bytes = 32 hex chars
+    expect(parts).toHaveLength(4);
+    // Salt is 16 bytes = 32 hex chars
     expect(parts[0]).toHaveLength(32);
-    // Auth tag is 16 bytes = 32 hex chars
+    // IV is 16 bytes = 32 hex chars
     expect(parts[1]).toHaveLength(32);
+    // Auth tag is 16 bytes = 32 hex chars
+    expect(parts[2]).toHaveLength(32);
   });
 });

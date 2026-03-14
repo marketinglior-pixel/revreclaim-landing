@@ -49,8 +49,9 @@ describe("scanNeverExpiringDiscounts", () => {
     expect(leaks[0].annualImpact).toBe(30000);
   });
 
-  it("ignores forever discount WITH end date (redeemBy)", () => {
+  it("detects forever discount with redeemBy but no endsAt (redeemBy is not an end date)", () => {
     const sub = mockSubscription({
+      monthlyAmountCents: 4900,
       discounts: [
         mockDiscount({
           duration: "forever",
@@ -59,7 +60,11 @@ describe("scanNeverExpiringDiscounts", () => {
         }),
       ],
     });
-    expect(scanNeverExpiringDiscounts([sub])).toEqual([]);
+    // redeemBy only prevents NEW subscriptions from using the coupon;
+    // it does NOT end the discount on existing subscriptions.
+    const leaks = scanNeverExpiringDiscounts([sub]);
+    expect(leaks).toHaveLength(1);
+    expect(leaks[0].type).toBe("never_expiring_discount");
   });
 
   it("ignores forever discount WITH endsAt", () => {

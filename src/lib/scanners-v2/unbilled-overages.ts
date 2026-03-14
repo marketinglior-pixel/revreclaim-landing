@@ -29,10 +29,14 @@ export function scanUnbilledOverages(
 ): Leak[] {
   const leaks: Leak[] = [];
 
-  // Build map: subscriptionId -> paid invoices (sorted newest first)
+  // Build map: subscriptionId -> invoices with non-zero amounts (sorted newest first).
+  // Accepts any status (open, paid, etc.) — the current pipeline only fetches open
+  // invoices, so Check 2 below will only trigger when 3+ open invoices exist for
+  // the same subscription. Once paid invoice history is added to the data pipeline,
+  // this will automatically start analyzing historical billing patterns too.
   const invoicesBySubscription = new Map<string, NormalizedInvoice[]>();
   for (const inv of invoices) {
-    if (inv.status !== "paid" || !inv.subscriptionId) continue;
+    if (!inv.subscriptionId || inv.amountDueCents <= 0) continue;
     if (!invoicesBySubscription.has(inv.subscriptionId)) {
       invoicesBySubscription.set(inv.subscriptionId, []);
     }
@@ -54,10 +58,6 @@ export function scanUnbilledOverages(
 
       const expectedMonthly = normalizeIntervalToMonthly(
         item.unitAmountCents * item.quantity,
-        item.interval
-      );
-      const baseMonthly = normalizeIntervalToMonthly(
-        item.unitAmountCents,
         item.interval
       );
 
@@ -89,7 +89,6 @@ export function scanUnbilledOverages(
             unitAmountCents: item.unitAmountCents,
             expectedMonthly,
             actualMonthly: sub.monthlyAmountCents,
-            baseMonthly,
             platform: sub.platform,
           },
         });

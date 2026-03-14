@@ -15,7 +15,7 @@ describe("canRunScan", () => {
   it("blocks free plan user who already scanned once", () => {
     const result = canRunScan("free", 1);
     expect(result.allowed).toBe(false);
-    expect(result.reason).toContain("Upgrade to Pro");
+    expect(result.reason).toContain("Upgrade to Leak Watch");
   });
 
   it("allows pro plan user with many scans", () => {

@@ -36,7 +36,7 @@ describe("scanStuckSubscriptions", () => {
     expect(leaks).toHaveLength(1);
     expect(leaks[0].type).toBe("stuck_subscription");
     expect(leaks[0].severity).toBe("critical");
-    expect(leaks[0].monthlyImpact).toBe(9900);
+    expect(leaks[0].monthlyImpact).toBe(Math.round(9900 * 0.5)); // Risk multiplier: 0.5
     expect(leaks[0].title).toContain("Past due");
   });
 

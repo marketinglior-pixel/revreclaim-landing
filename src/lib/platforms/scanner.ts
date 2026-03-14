@@ -71,7 +71,7 @@ export async function runPlatformScan(
   }
 
   if (caps.failedPayments) {
-    runScanner("failedPayments", () => scanFailedPayments(data.invoices));
+    runScanner("failedPayments", () => scanFailedPayments(data.invoices, data.subscriptions));
   }
   if (caps.stuckSubscriptions) {
     runScanner("stuckSubscriptions", () => scanStuckSubscriptions(data.subscriptions));

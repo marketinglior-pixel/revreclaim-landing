@@ -12,9 +12,11 @@ export function scanNeverExpiringDiscounts(
     if (sub.discounts.length === 0) continue;
 
     for (const discount of sub.discounts) {
-      // Check for "forever" duration with no end date
+      // Check for "forever" duration with no end date on this subscription.
+      // Note: redeemBy = coupon unavailable for NEW subs (irrelevant here).
+      // Only endsAt matters — it means the discount will stop applying.
       if (discount.duration !== "forever") continue;
-      if (discount.redeemBy || discount.endsAt) continue;
+      if (discount.endsAt) continue;
 
       const discountAmount = calculateDiscountAmount(
         discount.percentOff,

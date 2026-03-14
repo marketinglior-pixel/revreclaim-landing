@@ -47,7 +47,7 @@ describe("scanExpiringCards", () => {
     expect(leaks).toHaveLength(1);
     expect(leaks[0].type).toBe("expiring_card");
     expect(leaks[0].severity).toBe("critical");
-    expect(leaks[0].monthlyImpact).toBe(9900);
+    expect(leaks[0].monthlyImpact).toBe(Math.round(9900 * 0.3)); // Risk multiplier: 0.3
   });
 
   it("detects already expired card (critical)", () => {

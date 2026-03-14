@@ -13,8 +13,10 @@ export function scanExpiredCoupons(
     if (sub.discounts.length === 0) continue;
 
     for (const discount of sub.discounts) {
-      // Check if discount has expired (redeemBy or endsAt in the past)
-      const expiredAt = discount.redeemBy || discount.endsAt;
+      // Check if the discount itself has ended on this subscription.
+      // Note: redeemBy = coupon no longer available for NEW subscriptions (irrelevant here).
+      // endsAt = when the discount stops applying to THIS subscription.
+      const expiredAt = discount.endsAt;
       if (!expiredAt || expiredAt >= now) continue;
 
       const discountAmount = calculateDiscountAmount(

@@ -42,7 +42,7 @@ describe("scanFailedPayments", () => {
     expect(leaks).toHaveLength(1);
     expect(leaks[0].type).toBe("failed_payment");
     expect(leaks[0].monthlyImpact).toBe(4900);
-    expect(leaks[0].annualImpact).toBe(4900 * 12);
+    expect(leaks[0].annualImpact).toBe(4900); // One-time: actual invoice amount
   });
 
   it("assigns critical severity for invoices > $500", () => {

@@ -15,6 +15,20 @@ import { scanExpiringCards } from "./scanners/expiring-cards";
 import { scanStuckSubscriptions } from "./scanners/stuck-subscriptions";
 import { scanLegacyPricing } from "./scanners/legacy-pricing";
 import { scanMissingPaymentMethods } from "./scanners/missing-payment-methods";
+import { scanTrialExpired } from "./scanners-v2/trial-expired";
+import { scanDuplicateSubscriptions } from "./scanners-v2/duplicate-subscriptions";
+import { scanUnbilledOverages } from "./scanners-v2/unbilled-overages";
+import type {
+  NormalizedSubscription,
+  NormalizedInvoice as NormalizedInv,
+  NormalizedPaymentMethod,
+  NormalizedSubscriptionStatus,
+  NormalizedDiscount,
+} from "./platforms/types";
+import { normalizeIntervalToMonthly } from "./platforms/types";
+import { createLogger } from "./logger";
+
+const log = createLogger("STRIPE_SCAN");
 
 export interface ScanProgress {
   step: string;
@@ -341,6 +355,133 @@ function buildCategorySummaries(
 }
 
 /**
+ * Normalize Stripe subscriptions to the V2 NormalizedSubscription format.
+ * Used to run the 3 V2-only scanners (trial_expired, duplicate, unbilled_overage).
+ */
+function normalizeStripeSubscriptions(
+  subscriptions: Stripe.Subscription[]
+): NormalizedSubscription[] {
+  return subscriptions.map((sub) => {
+    const customerId =
+      typeof sub.customer === "string" ? sub.customer : sub.customer.id;
+    const customerEmail =
+      typeof sub.customer !== "string" && sub.customer && !("deleted" in sub.customer && sub.customer.deleted)
+        ? sub.customer.email || null
+        : null;
+
+    const items = sub.items.data.map((item) => {
+      const price = item.price;
+      return {
+        priceId: price.id,
+        productId: typeof price.product === "string" ? price.product : price.product?.id || "",
+        unitAmountCents: price.unit_amount || 0,
+        quantity: item.quantity || 1,
+        interval: (price.recurring?.interval || "month") as "day" | "week" | "month" | "year",
+      };
+    });
+
+    const monthlyAmountCents = items.reduce(
+      (sum, item) =>
+        sum + normalizeIntervalToMonthly(item.unitAmountCents * item.quantity, item.interval),
+      0
+    );
+
+    // Normalize discounts
+    const discounts: NormalizedDiscount[] = [];
+    if (sub.discounts) {
+      for (const discountRef of sub.discounts) {
+        const d = typeof discountRef === "string" ? null : discountRef;
+        if (!d || !d.source?.coupon || typeof d.source.coupon === "string") continue;
+        const coupon = d.source.coupon;
+        discounts.push({
+          id: d.id,
+          couponId: coupon.id,
+          couponName: coupon.name,
+          percentOff: coupon.percent_off,
+          amountOffCents: coupon.amount_off,
+          duration: coupon.duration as "once" | "repeating" | "forever",
+          durationInMonths: coupon.duration_in_months,
+          redeemBy: coupon.redeem_by,
+          endsAt: d.end,
+        });
+      }
+    }
+
+    // Normalize default payment method
+    let defaultPaymentMethod: NormalizedPaymentMethod | null = null;
+    const pm = sub.default_payment_method;
+    if (pm && typeof pm !== "string" && pm.type === "card" && pm.card) {
+      defaultPaymentMethod = {
+        id: pm.id,
+        type: "card",
+        cardLast4: pm.card.last4 || null,
+        cardBrand: pm.card.brand || null,
+        cardExpMonth: pm.card.exp_month || null,
+        cardExpYear: pm.card.exp_year || null,
+      };
+    }
+
+    const status: NormalizedSubscriptionStatus =
+      (sub.status as NormalizedSubscriptionStatus) || "canceled";
+
+    return {
+      id: sub.id,
+      platform: "stripe" as const,
+      status,
+      customerId,
+      customerEmail,
+      monthlyAmountCents,
+      items,
+      discounts,
+      defaultPaymentMethod,
+      createdAt: sub.created,
+      canceledAt: sub.canceled_at,
+      pauseResumesAt: sub.pause_collection?.resumes_at ?? null,
+      platformUrl: `https://dashboard.stripe.com/subscriptions/${sub.id}`,
+    };
+  });
+}
+
+/**
+ * Normalize Stripe invoices to NormalizedInvoice format (for V2 scanners).
+ */
+function normalizeStripeInvoices(
+  invoices: Stripe.Invoice[]
+): NormalizedInv[] {
+  return invoices.map((inv) => {
+    const customerId =
+      typeof inv.customer === "string"
+        ? inv.customer
+        : inv.customer?.id || "";
+    const customerEmail =
+      typeof inv.customer !== "string" && inv.customer && !("deleted" in inv.customer && inv.customer.deleted)
+        ? inv.customer.email || null
+        : inv.customer_email || null;
+
+    return {
+      id: inv.id,
+      platform: "stripe" as const,
+      number: inv.number,
+      status: (inv.status || "open") as "open" | "paid" | "void" | "uncollectible",
+      amountDueCents: inv.amount_due || 0,
+      amountRemainingCents: inv.amount_remaining || 0,
+      customerId,
+      customerEmail,
+      subscriptionId: (() => {
+        const subRef = inv.parent?.subscription_details?.subscription;
+        if (!subRef) return null;
+        return typeof subRef === "string" ? subRef : subRef.id;
+      })(),
+      attempted: inv.attempted || false,
+      dueDate: inv.due_date,
+      createdAt: inv.created,
+      nextPaymentAttempt: inv.next_payment_attempt,
+      platformUrl: `https://dashboard.stripe.com/invoices/${inv.id}`,
+    };
+  });
+}
+
+/**
  * Main scan function. Orchestrates the full Stripe billing audit.
  */
 export interface StripeScanResult {
@@ -363,6 +504,7 @@ export async function runFullScan(
   // Step 3: Run all 10 scanners
   onProgress?.({ step: "Analyzing subscriptions...", progress: 70 });
 
+  // V1 scanners (use raw Stripe types)
   const allLeaks: Leak[] = [
     ...scanExpiredCoupons(data.subscriptions),
     ...scanNeverExpiringDiscounts(data.subscriptions),
@@ -372,6 +514,22 @@ export async function runFullScan(
     ...scanLegacyPricing(data.subscriptions, data.prices, data.products),
     ...scanMissingPaymentMethods(data.subscriptions, data.paymentMethods),
   ];
+
+  // V2 scanners (use normalized types) — run in isolation
+  const normalizedSubs = normalizeStripeSubscriptions(data.subscriptions);
+  const normalizedInvoices = normalizeStripeInvoices(data.invoices);
+
+  for (const [name, fn] of [
+    ["trialExpired", () => scanTrialExpired(normalizedSubs)],
+    ["duplicateSubscriptions", () => scanDuplicateSubscriptions(normalizedSubs)],
+    ["unbilledOverages", () => scanUnbilledOverages(normalizedSubs, normalizedInvoices)],
+  ] as const) {
+    try {
+      allLeaks.push(...(fn as () => Leak[])());
+    } catch (err) {
+      log.error(`${name} scanner failed:`, err);
+    }
+  }
 
   // Step 3b: Build emailMap from available customer data
   const emailMap = new Map<string, string>();

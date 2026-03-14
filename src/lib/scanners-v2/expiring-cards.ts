@@ -47,9 +47,12 @@ export function scanExpiringCards(
     let severity: LeakSeverity;
     let urgency: string;
 
-    if (monthsUntilExpiry <= 0) {
+    if (monthsUntilExpiry < 0) {
       severity = "critical";
       urgency = "Card has already expired!";
+    } else if (monthsUntilExpiry === 0) {
+      severity = "critical";
+      urgency = "Card expires this month";
     } else if (monthsUntilExpiry <= 1) {
       severity = "critical";
       urgency = "Card expires within 30 days";

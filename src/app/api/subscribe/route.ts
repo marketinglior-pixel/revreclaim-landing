@@ -6,7 +6,12 @@ import { createLogger } from "@/lib/logger";
 
 const log = createLogger("SUBSCRIBE");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let _resend: Resend | null = null;
+function getResend(): Resend | null {
+  if (!process.env.RESEND_API_KEY) return null;
+  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
+  return _resend;
+}
 
 export async function POST(req: NextRequest) {
   const guard = guardMutation(req);
@@ -31,7 +36,8 @@ export async function POST(req: NextRequest) {
 
     // Add to Resend audience if configured
     const audienceId = process.env.RESEND_AUDIENCE_ID;
-    if (audienceId && process.env.RESEND_API_KEY) {
+    const resend = getResend();
+    if (audienceId && resend) {
       try {
         await resend.contacts.create({
           audienceId,

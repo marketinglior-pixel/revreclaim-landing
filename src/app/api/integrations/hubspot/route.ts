@@ -244,6 +244,9 @@ export async function DELETE(req: NextRequest) {
 // ── PATCH — Toggle enable/disable ───────────────────────────
 
 export async function PATCH(req: NextRequest) {
+  const guard = guardMutation(req);
+  if (guard) return guard;
+
   try {
     const supabase = await createClient();
     const {

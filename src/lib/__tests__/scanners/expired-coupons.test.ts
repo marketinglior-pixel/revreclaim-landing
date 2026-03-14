@@ -32,13 +32,13 @@ describe("scanExpiredCoupons", () => {
     expect(scanExpiredCoupons([sub])).toEqual([]);
   });
 
-  it("detects expired coupon on active subscription (redeemBy in past)", () => {
+  it("detects expired coupon on active subscription (endsAt in past)", () => {
     const sub = mockSubscription({
       monthlyAmountCents: 10000,
       discounts: [
         mockDiscount({
           percentOff: 20,
-          redeemBy: Math.floor(Date.now() / 1000) - 86400 * 30, // expired 30 days ago
+          endsAt: Math.floor(Date.now() / 1000) - 86400 * 30, // expired 30 days ago
         }),
       ],
     });
@@ -98,7 +98,7 @@ describe("scanExpiredCoupons", () => {
         mockDiscount({
           percentOff: null,
           amountOffCents: 3000,
-          redeemBy: Math.floor(Date.now() / 1000) - 86400,
+          endsAt: Math.floor(Date.now() / 1000) - 86400,
         }),
       ],
     });
@@ -114,7 +114,7 @@ describe("scanExpiredCoupons", () => {
       discounts: [
         mockDiscount({
           percentOff: 20, // $200/mo impact
-          redeemBy: Math.floor(Date.now() / 1000) - 86400,
+          endsAt: Math.floor(Date.now() / 1000) - 86400,
         }),
       ],
     });
@@ -129,7 +129,7 @@ describe("scanExpiredCoupons", () => {
       discounts: [
         mockDiscount({
           percentOff: 10, // $4.90/mo impact
-          redeemBy: Math.floor(Date.now() / 1000) - 86400,
+          endsAt: Math.floor(Date.now() / 1000) - 86400,
         }),
       ],
     });
@@ -144,7 +144,7 @@ describe("scanExpiredCoupons", () => {
       discounts: [
         mockDiscount({
           percentOff: 10,
-          redeemBy: Math.floor(Date.now() / 1000) - 86400,
+          endsAt: Math.floor(Date.now() / 1000) - 86400,
         }),
       ],
     });

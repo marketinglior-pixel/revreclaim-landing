@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { trackEvent, type AnalyticsEvent } from "@/lib/analytics";
+import { rateLimit, getClientIP } from "@/lib/rate-limit";
 import { createLogger } from "@/lib/logger";
 
 const log = createLogger("FEEDBACK");
@@ -19,6 +20,16 @@ const ALLOWED_EVENTS: AnalyticsEvent[] = [
  */
 export async function POST(req: NextRequest) {
   try {
+    // Rate limit: 30 events per IP per hour
+    const ip = getClientIP(req);
+    const rl = await rateLimit({ name: "feedback", maxRequests: 30, windowSeconds: 3600 }, ip);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: "Too many requests." },
+        { status: 429, headers: { "Retry-After": String(rl.retryAfterSeconds) } }
+      );
+    }
+
     const body = await req.json();
     const { event_name, event_data } = body;
 

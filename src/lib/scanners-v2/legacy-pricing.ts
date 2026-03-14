@@ -90,6 +90,8 @@ export function scanLegacyPricing(
         item.unitAmountCents,
         item.interval
       );
+      if (currentMonthly <= 0) continue; // Free plan — no pricing gap to report
+
       const newestMonthly = normalizeIntervalToMonthly(
         newestPrice.unitAmountCents,
         newestPrice.interval

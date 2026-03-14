@@ -47,7 +47,7 @@ describe("scanMissingPaymentMethods", () => {
     expect(leaks).toHaveLength(1);
     expect(leaks[0].type).toBe("missing_payment_method");
     expect(leaks[0].severity).toBe("critical");
-    expect(leaks[0].monthlyImpact).toBe(4900);
+    expect(leaks[0].monthlyImpact).toBe(Math.round(4900 * 0.8)); // Risk multiplier: 0.8
   });
 
   it("detects subscription when customer methods exist but no valid card", () => {
