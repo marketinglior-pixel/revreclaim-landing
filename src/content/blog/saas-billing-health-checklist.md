@@ -1,10 +1,10 @@
 ---
 title: "The SaaS Billing Health Checklist: 15 Leaks Hiding in Your Stripe Account"
-description: "Most SaaS founders lose $2,500/mo to billing blind spots they don't know exist. Use this 15-point checklist to audit your Stripe, Paddle, or Polar account and plug revenue leaks before they compound."
+description: "Most SaaS founders lose $2,500/mo to billing blind spots. Use this 15-point checklist to audit your Stripe account for revenue leakage — expired coupons, failed subscription payments, legacy pricing, and more."
 date: "2026-03-08"
-lastModified: "2026-03-08"
+lastModified: "2026-03-14"
 author: "RevReclaim Team"
-tags: ["billing audit", "Stripe", "revenue leaks", "SaaS billing", "billing health"]
+tags: ["SaaS billing audit", "Stripe revenue leaks", "billing health checklist", "revenue leakage", "SaaS billing"]
 canonical: "https://revreclaim.com/blog/saas-billing-health-checklist"
 ---
 
@@ -30,7 +30,7 @@ When a customer's card fails, does your billing platform automatically email the
 
 **What to check:** Go to Stripe Dashboard → Settings → Subscriptions and emails → Manage failed payments. Is Smart Retries enabled? Are customer emails turned on?
 
-**The leak:** Without proper dunning, a single failed $99/mo subscription means $1,188/year lost — from just one customer.
+**The leak:** Without proper dunning, a single failed $99/mo subscription means $1,188/year lost — from just one customer. See our [complete guide to Stripe Smart Retries and dunning configuration](/blog/payment-failed-stripe-smart-retries).
 
 ### 2. You're monitoring failed payment rates weekly
 
@@ -126,7 +126,7 @@ Involuntary churn (failed payments) and voluntary churn (customer cancels) requi
 
 **What to check:** Can you pull a report showing churn broken down by reason? Do you know what percentage of your churn is payment failures vs. deliberate cancellations?
 
-**The leak:** Involuntary churn is typically 20-40% of total churn for SaaS businesses. It's also the easiest to fix. If you don't measure it, you can't improve it.
+**The leak:** Involuntary churn is typically 20-40% of total churn for SaaS businesses. It's also the easiest to fix. If you don't measure it, you can't improve it. See [why Stripe subscriptions get cancelled](/blog/stripe-subscription-cancel-reasons) for the full breakdown of voluntary vs. involuntary churn, and [SaaS churn vs revenue leakage](/blog/saas-churn-vs-revenue-leakage) for a framework on which to fix first.
 
 ### 12. Trial-to-paid conversion is tracked and above 15%
 

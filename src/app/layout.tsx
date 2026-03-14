@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   title: "RevReclaim | Find SaaS Revenue Leaks in 90 Seconds",
   description:
-    "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find expired coupons, failed payments, and stuck subscriptions. Free. No credit card.",
+    "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find revenue leakage from expired coupons, failed subscription payments, and stuck subscriptions. Free. No credit card.",
   icons: {
     icon: "/icon.svg",
   },
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "RevReclaim | Find SaaS Revenue Leaks in 90 Seconds",
     description:
-      "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find expired coupons, failed payments, and stuck subscriptions. Free. No credit card.",
+      "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find revenue leakage from expired coupons, failed subscription payments, and stuck subscriptions. Free. No credit card.",
     url: "https://revreclaim.com",
     siteName: "RevReclaim",
     type: "website",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "RevReclaim | Find SaaS Revenue Leaks in 90 Seconds",
     description:
-      "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find expired coupons, failed payments, and stuck subscriptions. Free. No credit card.",
+      "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find revenue leakage from expired coupons, failed subscription payments, and stuck subscriptions. Free. No credit card.",
     images: ["/og-image.png"],
   },
 };
@@ -175,6 +175,14 @@ const jsonLd = {
           acceptedAnswer: {
             "@type": "Answer",
             text: "Then your billing is clean. You get a perfect health score and some peace of mind. The free scan costs you nothing either way. If you're on a paid plan and we find less than $1,000/mo, you pay nothing.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What happens when a Stripe coupon expires?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "When a Stripe coupon's redeem_by date passes, the coupon stops accepting new redemptions — but existing subscriptions keep the discount indefinitely. Stripe does not auto-remove expired coupons from active subscriptions. RevReclaim scans for these zombie discounts and shows you exactly which subscriptions are affected and how much they're costing you.",
           },
         },
         {

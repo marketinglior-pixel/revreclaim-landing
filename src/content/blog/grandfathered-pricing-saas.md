@@ -1,10 +1,10 @@
 ---
-title: "Grandfathered Pricing: Should You Force Legacy Customers to Upgrade?"
-description: "40% of your customers may be on old pricing. Learn 3 approaches to legacy pricing migration — full grandfather, forced migration, and loyalty rate — with email templates, Stripe code, and churn projections."
+title: "Grandfathered Pricing in SaaS: How to Audit Legacy Customers and Recover Revenue"
+description: "40% of your SaaS customers may be on old pricing. Learn how to audit grandfathered pricing, calculate the revenue gap, and migrate legacy customers with email templates, Stripe code, and churn projections."
 date: "2026-03-09"
-lastModified: "2026-03-09"
+lastModified: "2026-03-14"
 author: "RevReclaim Team"
-tags: ["pricing", "legacy pricing", "grandfathered pricing", "price migration", "revenue optimization"]
+tags: ["grandfathered pricing SaaS", "legacy pricing", "SaaS pricing audit", "price migration", "revenue optimization"]
 canonical: "https://revreclaim.com/blog/grandfathered-pricing-saas"
 ---
 
@@ -16,7 +16,7 @@ Force everyone to the new price and risk a churn spike. Keep everyone grandfathe
 
 This guide breaks down all three options with real numbers, churn projections, and the exact steps to execute each one.
 
-## How Legacy Pricing Happens
+## How Grandfathered Pricing Happens in SaaS
 
 The pattern is always the same:
 
@@ -30,7 +30,7 @@ This is grandfathered pricing. It's the default behavior in every billing system
 
 Every month the gap compounds. You ship features, improve infrastructure, expand support -- and legacy customers get all of it at the old rate. The product they're paying $49/mo for today is worth significantly more than the product they originally bought at $49/mo.
 
-## The Real Cost of Grandfathering
+## The Real Cost of Grandfathered Pricing in SaaS
 
 ### Direct Revenue Gap
 
@@ -73,7 +73,7 @@ New customers paying $79/mo are getting the same product as legacy customers pay
 
 This perception risk grows as your customer base grows. The more customers you have, the more likely the pricing gap becomes visible.
 
-## 3 Approaches to Legacy Pricing
+## 3 Approaches to SaaS Pricing Migration
 
 There is no universally correct answer. The right approach depends on your gap size, customer relationship, and product trajectory. Here are the three options with honest tradeoffs.
 
@@ -175,7 +175,7 @@ Compare to forced migration:
 
 The loyalty rate recovers less per customer but retains more customers. Over 12 months, the cumulative revenue often converges because you avoid the churn recovery period.
 
-## How to Execute a Price Migration
+## How to Audit and Execute a SaaS Pricing Migration
 
 Regardless of which approach you choose, the execution matters as much as the strategy. A well-communicated price increase retains more customers than a poorly communicated one at any price point.
 
@@ -318,7 +318,7 @@ This template works because it:
 - Comes from a person, not "the billing team."
 - Gives a clear timeline and specific numbers.
 
-## How to Find Your Legacy Pricing Gap
+## How to Find Your Grandfathered Pricing Gap
 
 You have two options.
 
@@ -339,7 +339,7 @@ RevReclaim scans your billing account and surfaces the legacy pricing gap automa
 
 The scan takes 60 seconds. Read-only access. No stored keys.
 
-Legacy pricing is one of [5 types of revenue leaks](/blog/five-types-revenue-leaks-saas) that RevReclaim detects. The others -- [stuck subscriptions](/blog/ghost-subscriptions-saas), [failed payments](/blog/find-failed-payments-stripe), expired coupons, and missing payment methods -- compound on top of the pricing gap.
+Legacy pricing is one of [5 types of revenue leaks](/blog/five-types-revenue-leaks-saas) that RevReclaim detects. The others -- [stuck subscriptions](/blog/ghost-subscriptions-saas), [failed payments](/blog/find-failed-payments-stripe), [expired coupons](/blog/zombie-discounts-stripe), and missing payment methods -- compound on top of the pricing gap. See [SaaS churn vs revenue leakage](/blog/saas-churn-vs-revenue-leakage) to understand whether fixing pricing gaps or reducing churn should be your priority.
 
 [Run a free scan to find your legacy pricing gap -->](/scan)
 

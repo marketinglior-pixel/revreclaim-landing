@@ -1,10 +1,10 @@
 ---
 title: "Stuck Subscriptions: When Customers Stop Paying But Don't Cancel"
-description: "Stuck subscriptions silently inflate your MRR. Learn how to detect zombie subscribers in Stripe, Paddle, and Polar — and how to recover the revenue or clean up your metrics."
+description: "Stuck subscriptions silently inflate your MRR and contribute to involuntary churn. Learn how to detect ghost subscribers in Stripe, Paddle, and Polar — and how to recover the revenue or clean up your metrics."
 date: "2026-03-06"
-lastModified: "2026-03-08"
+lastModified: "2026-03-14"
 author: "RevReclaim Team"
-tags: ["stuck subscriptions", "MRR", "churn", "Stripe", "revenue leaks"]
+tags: ["stuck subscriptions", "ghost subscriptions", "MRR", "involuntary churn", "Stripe revenue leaks"]
 canonical: "https://revreclaim.com/blog/ghost-subscriptions-saas"
 ---
 
@@ -30,7 +30,7 @@ When you're making decisions about hiring, marketing spend, or runway based on M
 
 If you have 200 active subscriptions but 15 are ghosts, your real customer count is 185. When one of those ghosts finally gets canceled (or you clean them up), it looks like churn — even though the customer actually left months ago.
 
-This creates spiky, unpredictable churn numbers that make it impossible to identify real trends.
+This creates spiky, unpredictable churn numbers that make it impossible to identify real trends. For more on why subscriptions get cancelled and which ones you can save, see [why Stripe subscriptions get cancelled](/blog/stripe-subscription-cancel-reasons).
 
 ### They Waste Your Resources
 

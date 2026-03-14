@@ -27,7 +27,7 @@ export function Hero() {
 
         {/* Sub — one line, 5-second clarity */}
         <p className="mx-auto mb-10 max-w-2xl text-lg text-text-muted md:text-xl leading-relaxed animate-fade-in-up animate-delay-200">
-          Failed payments nobody retried. Trials stuck on free for 60+ days. Coupons you forgot to turn off. Customers on last year&apos;s pricing. We find all of it in 90 seconds. Free.
+          Failed subscription payments nobody retried. Expired coupons still giving discounts. Trials stuck on free for 60+ days. Customers on last year&apos;s pricing. We find all of it in 90 seconds. Free.
         </p>
 
         {/* Primary CTA */}

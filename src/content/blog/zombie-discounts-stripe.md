@@ -1,14 +1,14 @@
 ---
-title: "Zombie Discounts: The Most Common Revenue Leak in SaaS"
-description: "Zombie discounts are coupons that should be dead but are still alive — silently discounting subscriptions months after they were supposed to expire. Learn how to find them in Stripe, fix them, and prevent them."
+title: "Stripe Coupon Expired? Why Your Discounts Are Still Running (And Costing You Money)"
+description: "Your Stripe coupon expired but discounts are still active on existing subscriptions. Learn how expired discount codes silently leak revenue and how to remove them."
 date: "2026-03-09"
-lastModified: "2026-03-09"
+lastModified: "2026-03-14"
 author: "RevReclaim Team"
-tags: ["zombie discounts", "Stripe coupons", "revenue leaks", "SaaS billing", "discount management"]
+tags: ["stripe coupon expired", "expired discount code", "zombie discounts", "revenue leaks", "Stripe coupons"]
 canonical: "https://revreclaim.com/blog/zombie-discounts-stripe"
 ---
 
-A zombie discount is a coupon that should be dead but is still alive. It sits on active subscriptions, silently reducing revenue months or years after it was supposed to expire. Stripe does not remove coupons from existing subscriptions when the coupon expires. This is by design. It catches most founders off guard. In RevReclaim's scans, 67% of SaaS accounts have at least one zombie discount. Average cost: $340/month.
+If you've searched "Stripe coupon expired" wondering why a discount is still running on a subscription, you're not alone. A zombie discount is a coupon that should be dead but is still alive. It sits on active subscriptions, silently reducing revenue months or years after it was supposed to expire. Stripe does not remove coupons from existing subscriptions when the coupon expires. This is by design. It catches most founders off guard. In RevReclaim's scans, 67% of SaaS accounts have at least one zombie discount. Average cost: $340/month.
 
 ## What Is a Zombie Discount?
 
@@ -28,7 +28,7 @@ From your perspective, it means that every promotional coupon you've ever create
 
 These are zombie discounts. Dead coupons that are still walking.
 
-## How Zombie Discounts Happen
+## How Expired Stripe Coupons Keep Costing You Money
 
 Here's the lifecycle. It takes about 3 minutes to create a zombie discount. It takes months to notice.
 
@@ -48,7 +48,7 @@ But what if someone set `duration: forever` by accident? Or what if they set `du
 
 Nobody checked. Nobody noticed. The zombie walks.
 
-## The Three Types of Zombie Discounts
+## 3 Types of Expired Discount Codes in Stripe
 
 Not all zombie discounts are created equal. RevReclaim categorizes them by how they got there and how hard they are to find.
 
@@ -84,7 +84,7 @@ Manual discounts added directly to a subscription through the Stripe dashboard. 
 
 **Typical cost:** $50-$300/month. Lower volume but higher per-subscription impact.
 
-## How to Find Zombie Discounts in Stripe
+## How to Find Expired Coupons Still Active in Stripe
 
 ### Manual Method: Stripe Dashboard
 
@@ -203,7 +203,7 @@ Run it against your live Stripe account. The output shows every zombie discount,
 
 Takes 60 seconds. Read-only access.
 
-## How to Fix Zombie Discounts
+## How to Remove Expired Discount Codes from Stripe Subscriptions
 
 Finding them is step one. Removing them requires care — you're changing what a customer pays.
 
@@ -260,7 +260,7 @@ Direct. No apology. The discount was always temporary — you're just following 
 
 **Response rate from RevReclaim customers who've done this:** Less than 5% of notified customers respond. Less than 1% cancel. Most customers either forgot about the discount or expected it to end eventually.
 
-## How to Prevent Zombie Discounts
+## How to Prevent Stripe Coupons from Becoming Revenue Leaks
 
 Fixing existing zombies recovers revenue today. Preventing new ones protects revenue permanently.
 
@@ -312,7 +312,7 @@ Maintain a simple log — a spreadsheet, a Notion table, whatever you'll actuall
 
 When someone asks "why does this customer have a discount?" — you have the answer in 10 seconds instead of 10 minutes of digging through Slack threads.
 
-## The Real Cost of Zombie Discounts
+## The Real Cost of Expired Stripe Coupons
 
 RevReclaim has scanned hundreds of SaaS billing accounts. Here's what the data shows:
 
@@ -322,11 +322,11 @@ RevReclaim has scanned hundreds of SaaS billing accounts. Here's what the data s
 - **Average age of zombie discounts:** 7.4 months (the discount has been running 7+ months past its intended end date)
 - **Average number of zombie discounts per affected account:** 3.2
 
-For a SaaS company at $50K MRR, zombie discounts are typically the second or third largest leak type — behind failed payment gaps but often ahead of [stuck subscriptions](/blog/ghost-subscriptions-saas).
+For a SaaS company at $50K MRR, zombie discounts are typically the second or third largest leak type — behind [failed subscription payment gaps](/blog/payment-failed-stripe-smart-retries) but often ahead of [stuck subscriptions](/blog/ghost-subscriptions-saas).
 
 The insidious part: zombie discounts don't show up as failed revenue. The invoices succeed. The customers pay. The money just arrives at a lower amount than it should. There's no alert, no error, no notification. The revenue quietly doesn't exist.
 
-## Find Your Zombie Discounts
+## Find Your Expired Stripe Coupons
 
 You have two options.
 

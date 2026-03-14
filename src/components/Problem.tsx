@@ -38,13 +38,13 @@ export function Problem() {
 
           <div className="grid gap-4 md:grid-cols-2">
             <LeakRow
-              label="Discounts you forgot to turn off"
+              label="Expired coupons still giving discounts"
               percentage="1-3%"
               color="bg-danger"
               width="72%"
             />
             <LeakRow
-              label="Failed charges sitting in Stripe for weeks"
+              label="Failed subscription payments with no recovery"
               percentage="1-2%"
               color="bg-warning"
               width="52%"

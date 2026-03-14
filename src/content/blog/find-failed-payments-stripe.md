@@ -1,16 +1,16 @@
 ---
-title: "How to Find Failed Payments in Your Stripe Dashboard (Step-by-Step)"
-description: "A step-by-step guide to finding, analyzing, and recovering failed payments in Stripe. Learn how to reduce involuntary churn and recover thousands in lost SaaS revenue."
+title: "Failed Payments in Subscriptions: How to Find and Recover Them in Stripe"
+description: "Failed payments in subscriptions cost SaaS companies $1,200-$2,400/month on $30K MRR. Step-by-step guide to finding failed subscription payments in Stripe, configuring dunning, and recovering lost revenue."
 date: "2026-03-04"
-lastModified: "2026-03-08"
+lastModified: "2026-03-14"
 author: "RevReclaim Team"
-tags: ["Stripe", "failed payments", "dunning", "involuntary churn", "payment recovery"]
+tags: ["failed payments subscription", "Stripe failed payments", "dunning", "involuntary churn", "payment recovery", "subscription billing"]
 canonical: "https://revreclaim.com/blog/find-failed-payments-stripe"
 ---
 
-A failed payment in Stripe occurs when a customer's card is declined during a subscription renewal or one-time charge. The average SaaS business has a 4-8% failed payment rate, meaning $1,200-$2,400 per month goes uncollected on $30K MRR. Most failed payments are recoverable through proper dunning configuration and customer notification. RevReclaim scans failed payments, categorizes them by decline reason, and provides a prioritized recovery list.
+Failed payments in subscriptions are the #1 source of involuntary churn in SaaS. A failed payment in Stripe occurs when a customer's card is declined during a subscription renewal or one-time charge. The average SaaS business has a 4-8% failed payment rate, meaning $1,200-$2,400 per month goes uncollected on $30K MRR. Most failed payments are recoverable through proper dunning configuration and customer notification. RevReclaim scans failed payments, categorizes them by decline reason, and provides a prioritized recovery list.
 
-## How Do You Find Failed Payments in Stripe?
+## How to Find Failed Subscription Payments in Stripe
 
 ### In the Stripe Dashboard
 
@@ -44,7 +44,7 @@ const failedCharges = await stripe.charges.list({
 });
 ```
 
-## Why Do Payments Fail in Stripe?
+## Why Do Subscription Payments Fail in Stripe?
 
 Not all failures are the same. Stripe provides specific decline codes that tell you why a payment failed. Here are the most common ones and what they mean:
 
@@ -102,9 +102,9 @@ Here's what works best for most SaaS businesses:
 
 Stripe's default configuration will retry 3-4 times and then either cancel the subscription or leave it in an "unpaid" state. The customer never gets an email. They have no idea their card failed.
 
-**Enabling customer emails alone can recover 20-30% more failed payments** — because the customer finds out there's a problem and updates their card.
+**Enabling customer emails alone can recover 20-30% more failed payments** — because the customer finds out there's a problem and updates their card. For a deeper dive into Smart Retries and building a complete dunning sequence, see our [guide to why Stripe payments fail and how Smart Retries work](/blog/payment-failed-stripe-smart-retries).
 
-## How Much Revenue Do Failed Payments Cost?
+## How Much Do Failed Subscription Payments Cost Your SaaS?
 
 Now let's quantify the damage. Here's a simple formula:
 
@@ -131,7 +131,7 @@ That's nearly $30,000/year.
 
 Most founders are stuck at 15-25% because they never turned on customer emails.
 
-## How Do You Set Up Failed Payment Alerts in Stripe?
+## How to Set Up Failed Subscription Payment Alerts in Stripe
 
 Don't wait for month-end reviews. Set up alerts so you know about failed payments in real-time.
 
@@ -163,7 +163,7 @@ At minimum, add this to your weekly founder review:
 - Recovery rate (retried successfully / total failed)
 - Net revenue lost
 
-## How Do You Recover High-Value Failed Payments?
+## How to Recover High-Value Failed Subscription Payments
 
 Not all failed payments are equal. A $499/mo enterprise customer is worth more recovery effort than a $9/mo individual plan.
 
@@ -201,7 +201,7 @@ Here's what actually works:
 
 Keep it short, personal, and make the fix easy.
 
-## How Can RevReclaim Automate Failed Payment Recovery?
+## Automate Failed Subscription Payment Recovery with RevReclaim
 
 Manual review works — but it takes hours of manual work. Exporting data, analyzing decline codes, cross-referencing recovery rates, following up on individual customers.
 
@@ -216,6 +216,8 @@ RevReclaim does all of this automatically:
 RevReclaim completes the scan in 60 seconds using read-only access.
 
 [See how much you're losing to failed payments →](/scan)
+
+Failed payments that go unrecovered are the #1 cause of [involuntary subscription cancellations](/blog/stripe-subscription-cancel-reasons). To understand the full picture of how failed payments compare to other revenue losses, see [SaaS churn vs revenue leakage](/blog/saas-churn-vs-revenue-leakage).
 
 ---
 

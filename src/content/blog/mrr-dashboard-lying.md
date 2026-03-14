@@ -1,10 +1,10 @@
 ---
 title: "Why Your MRR Dashboard Is Lying to You"
-description: "Your MRR dashboard counts revenue you'll never collect. Learn 5 ways dashboards inflate MRR, how to calculate your real collected MRR, and how to close the gap."
+description: "Your MRR dashboard counts revenue you'll never collect — from stuck subscriptions, expired coupons, and failed subscription payments. Learn 5 ways Stripe dashboards inflate MRR and how to find the real number."
 date: "2026-03-09"
-lastModified: "2026-03-09"
+lastModified: "2026-03-14"
 author: "RevReclaim Team"
-tags: ["MRR", "dashboard accuracy", "revenue leakage", "SaaS metrics", "billing audit"]
+tags: ["MRR", "Stripe dashboard", "revenue leakage", "SaaS metrics", "failed payments subscription"]
 canonical: "https://revreclaim.com/blog/mrr-dashboard-lying"
 ---
 
@@ -43,7 +43,7 @@ Your bank sees: $0 collected for the last 2 months.
 
 These are [stuck subscriptions](/blog/ghost-subscriptions-saas). They inflate MRR by 1-3% on average. On a $50K MRR account, that's $500-$1,500/month in phantom revenue.
 
-The fix: configure Stripe to auto-cancel subscriptions after a maximum dunning period (we recommend 30 days). Don't let ghosts accumulate.
+The fix: configure Stripe to auto-cancel subscriptions after a maximum [dunning period with Smart Retries](/blog/payment-failed-stripe-smart-retries) (we recommend 30 days). Don't let ghosts accumulate. See [SaaS churn vs revenue leakage](/blog/saas-churn-vs-revenue-leakage) for why cleaning up phantom MRR matters as much as reducing churn.
 
 ### 2. It Ignores Discount Impact on Effective Rate
 

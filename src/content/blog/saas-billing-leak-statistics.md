@@ -1,10 +1,10 @@
 ---
 title: "We Scanned 50 SaaS Billing Accounts — Here's What We Found"
-description: "Data from 50 real SaaS billing scans reveals the most common revenue leaks, average losses by company size, and the fastest fixes. See how your billing stack compares."
+description: "Data from 50 real SaaS billing scans reveals the most common Stripe revenue leaks — expired coupons, failed subscription payments, stuck subscriptions. See average losses by company size and the fastest fixes."
 date: "2026-02-28"
-lastModified: "2026-03-08"
+lastModified: "2026-03-14"
 author: "RevReclaim Team"
-tags: ["billing data", "SaaS metrics", "revenue leakage", "billing health", "case study"]
+tags: ["Stripe revenue leaks", "SaaS billing statistics", "revenue leakage", "billing health", "failed payments subscription"]
 canonical: "https://revreclaim.com/blog/saas-billing-leak-statistics"
 ---
 
@@ -43,6 +43,8 @@ Accounts with customer emails enabled recovered **2.3x more** failed payments th
 **Median failure rate:** 5.8% of charges
 **Best performer:** 1.2% failure rate (proper dunning + proactive card updates)
 **Worst performer:** 14.7% failure rate (no dunning configuration at all)
+
+See our [complete guide to Stripe Smart Retries and dunning](/blog/payment-failed-stripe-smart-retries) for the exact configuration that top performers use.
 
 ### 2. Stuck Subscriptions (78% of accounts, $620/mo avg)
 

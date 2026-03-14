@@ -1,10 +1,10 @@
 ---
 title: "How We Found $2,500/mo Leaking from a $50K MRR SaaS (Case Study)"
-description: "A composite case study showing how RevReclaim's scan found $2,487/mo in billing leaks across 23 issues in 6 categories — and how the founder recovered $1,876/mo in under a week."
+description: "A case study showing how RevReclaim found $2,487/mo in Stripe revenue leaks — expired coupons, failed subscription payments, and legacy pricing — across 23 issues. The founder recovered $1,876/mo in under a week."
 date: "2026-03-09"
-lastModified: "2026-03-09"
+lastModified: "2026-03-14"
 author: "RevReclaim Team"
-tags: ["case study", "revenue leaks", "SaaS billing", "MRR", "Stripe", "billing audit"]
+tags: ["case study", "Stripe revenue leaks", "revenue leakage", "SaaS billing audit", "expired coupons"]
 canonical: "https://revreclaim.com/blog/case-study-50k-mrr-revenue-leaks"
 ---
 
@@ -106,7 +106,7 @@ Not every leak needs the same response. Some are same-day fixes. Some require cu
 
 **Time invested:** ~2 hours.
 
-- **Enabled Smart Retries and dunning emails.** Stripe's optimized retry schedule was turned on. Customer failure notification emails were enabled. This alone puts the 7 failed invoices ($847/mo) on a recovery path.
+- **Enabled [Smart Retries and dunning emails](/blog/payment-failed-stripe-smart-retries).** Stripe's optimized retry schedule was turned on. Customer failure notification emails were enabled. This alone puts the 7 failed invoices ($847/mo) on a recovery path.
 - **Canceled 3 stuck subscriptions.** The past_due subscriptions were canceled after confirming the customers hadn't logged in during the past_due period. MRR dropped by $297 on paper — but that revenue was never real.
 - **Removed the expired "launch20" coupon from 8 subscriptions.** Each customer was sent a brief email explaining the promotional period had ended. No complaints. $412/mo recovered.
 

@@ -1,10 +1,10 @@
 ---
 title: "How to Audit Your Stripe Account for Revenue Leaks (2026)"
-description: "A complete guide to auditing your Stripe billing for revenue leaks. 10 checks across subscriptions, coupons, pricing, and payments — with exact steps and code examples."
+description: "A complete guide to auditing your Stripe account for revenue leakage. 10 checks for expired coupons, failed subscription payments, legacy pricing, and more — with exact steps and code examples."
 date: "2026-03-09"
-lastModified: "2026-03-09"
+lastModified: "2026-03-14"
 author: "RevReclaim Team"
-tags: ["Stripe", "billing audit", "revenue leakage", "SaaS billing", "MRR"]
+tags: ["Stripe billing audit", "Stripe revenue leaks", "revenue leakage", "SaaS pricing audit", "expired coupons"]
 canonical: "https://revreclaim.com/blog/audit-stripe-account-revenue-leaks"
 ---
 
@@ -119,7 +119,7 @@ console.log(`${expiringSoon.length} cards expiring within 90 days`);
 
 **Typical finding:** 5-15% of active cards expire within 90 days at any given time. Each one is a future failed payment waiting to happen.
 
-**Fix:** Send proactive card update emails before the card expires. This is pre-dunning — fixing the problem before it becomes a failed payment.
+**Fix:** Send proactive card update emails before the card expires. This is pre-dunning — fixing the problem before it becomes a failed payment. See our [complete guide to Smart Retries and dunning](/blog/payment-failed-stripe-smart-retries) for the full configuration.
 
 ---
 

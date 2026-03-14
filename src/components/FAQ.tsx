@@ -49,6 +49,10 @@ const faqs = [
     a: "You can. It takes 4-6 hours to go through every subscription, invoice, coupon, and payment method. RevReclaim does the same thing in 90 seconds across 10 categories. The math is pretty simple.",
   },
   {
+    q: "What happens when a Stripe coupon expires?",
+    a: "When a Stripe coupon's redeem_by date passes, the coupon stops accepting new redemptions — but existing subscriptions keep the discount indefinitely. Stripe does not auto-remove expired coupons from active subscriptions. This means you could have 'expired' coupons still reducing your revenue months or years later. RevReclaim scans for these zombie discounts and shows you exactly which subscriptions are affected and how much they're costing you.",
+  },
+  {
     q: "Is this the same as chargeback recovery?",
     a: "No. Chargeback tools handle disputed payments. We find revenue you earned but aren't collecting: expired discounts still running, subscriptions stuck in failed states, cards about to expire, pricing that was never updated. Different problem, different fix.",
   },

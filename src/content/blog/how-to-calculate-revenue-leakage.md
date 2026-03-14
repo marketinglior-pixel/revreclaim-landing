@@ -1,10 +1,10 @@
 ---
-title: "How to Calculate SaaS Revenue Leakage (With Real Data)"
-description: "Learn the exact formula to calculate revenue leakage in your SaaS billing. Break down 8 leak types with real numbers, industry benchmarks, and a free calculator."
+title: "Revenue Leakage in SaaS: How to Calculate It (With Real Data)"
+description: "Revenue leakage costs the average SaaS company 4.7% of MRR. Learn the exact formula to calculate revenue leakage, break down 8 leak types with real numbers, and use our free calculator."
 date: "2026-03-09"
-lastModified: "2026-03-09"
+lastModified: "2026-03-14"
 author: "RevReclaim Team"
-tags: ["revenue leakage", "SaaS metrics", "MRR", "billing audit", "revenue recovery"]
+tags: ["revenue leakage", "revenue leakage SaaS", "SaaS metrics", "MRR", "billing audit", "revenue recovery"]
 canonical: "https://revreclaim.com/blog/how-to-calculate-revenue-leakage"
 ---
 
@@ -14,7 +14,7 @@ The average SaaS company leaks 4.7% of MRR. On $50K MRR, that's $2,350/month —
 
 This post gives you the exact formula, the breakdown by leak type, and a way to calculate your own number in under 60 seconds.
 
-## The Revenue Leakage Formula
+## The Revenue Leakage Formula for SaaS
 
 Here's the formula RevReclaim uses to calculate total leakage as a percentage of MRR:
 
@@ -51,7 +51,7 @@ Here's what a real leakage calculation looks like for a SaaS company at $50,000 
 
 That's $59,100 per year. Not from losing customers. From billing configuration that nobody audits.
 
-## Calculating Each Component
+## Calculating Each Revenue Leakage Component
 
 Here's how to calculate each of the 8 leak types individually. You can do this manually with your billing data, or let the [revenue leakage calculator](/calculator) estimate it based on industry averages.
 
@@ -135,7 +135,7 @@ This requires comparing your internal usage data against what Stripe is billing.
 
 **Your number:** Sum of (actual_units - billed_units) x unit_price for all over-limit customers = Unbilled Overage Leakage.
 
-## Use Our Free Calculator
+## Use Our Free Revenue Leakage Calculator
 
 Don't want to pull all this data manually? The [revenue leakage calculator](/calculator) estimates your total leakage based on two inputs:
 
@@ -197,7 +197,7 @@ Every month you wait, the leaks compound. A $2,000/month leak is $24,000/year. T
 MGI Research puts the industry range at 1-5% of revenue. RevReclaim's data from 847+ billing scans shows an average of 4.7% of MRR. Companies with simple pricing (one plan, no coupons) tend to be at the low end. Companies with multiple tiers, frequent promotions, and price changes over time tend to be at the high end. Anything above 5% means there's significant money on the table.
 
 ### Is revenue leakage the same as revenue churn?
-No. Revenue churn is MRR lost from customers who intentionally downgrade or cancel. Revenue leakage is MRR lost from billing configuration issues — failed payments, expired coupons still running, customers on outdated pricing, stuck subscriptions. Churn is a customer decision. Leakage is a system problem. You track churn to improve retention. You track leakage to fix billing. Both reduce your effective MRR, but the solutions are completely different. For more on the specific types, see [5 Types of Revenue Leaks](/blog/five-types-revenue-leaks-saas).
+No. Revenue churn is MRR lost from customers who intentionally downgrade or cancel. Revenue leakage is MRR lost from billing configuration issues — failed payments, expired coupons still running, customers on outdated pricing, stuck subscriptions. Churn is a customer decision. Leakage is a system problem. You track churn to improve retention. You track leakage to fix billing. Both reduce your effective MRR, but the solutions are completely different. For a detailed comparison of which costs more and which to fix first, see [SaaS churn vs revenue leakage](/blog/saas-churn-vs-revenue-leakage). For more on the specific types, see [5 Types of Revenue Leaks](/blog/five-types-revenue-leaks-saas).
 
 ### How do I track revenue leakage over time?
 Run a leakage calculation monthly. Track the total dollar amount and leakage rate as a percentage of MRR. The goal is to keep it below 2%. RevReclaim's monitoring plans run automated scans on a weekly or daily schedule and alert you when new leaks appear, so your leakage rate trends down instead of compounding up.
