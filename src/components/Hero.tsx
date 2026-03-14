@@ -27,7 +27,7 @@ export function Hero() {
 
         {/* Sub — one line, 5-second clarity */}
         <p className="mx-auto mb-10 max-w-2xl text-lg text-text-muted md:text-xl leading-relaxed animate-fade-in-up animate-delay-200">
-          Failed subscription payments nobody retried. Expired coupons still giving discounts. Trials stuck on free for 60+ days. Customers on last year&apos;s pricing. We find all of it in 90 seconds. Free.
+          Expired coupons, failed payments, legacy pricing — your billing has holes you can&apos;t see in Stripe. We find them in 90 seconds. Free.
         </p>
 
         {/* Primary CTA */}
@@ -40,7 +40,7 @@ export function Hero() {
             }}
             className="group flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-lg font-bold text-black min-h-[56px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
           >
-            Show Me The Money
+            Show Me My Leaks
             <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>

@@ -11,19 +11,8 @@ const valueItems = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
       </svg>
     ),
-    name: "10-Point Revenue Audit",
-    description: "All 10 scanner checks across every subscription, invoice, and coupon",
-    value: "$500",
-  },
-  {
-    icon: (
-      <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-      </svg>
-    ),
-    name: "Billing Health Score",
-    description: "Like a credit score for your billing system, compared to industry benchmarks",
-    value: "$200",
+    name: "10-Category Revenue Audit",
+    description: "Every subscription, invoice, coupon, and payment method — checked automatically",
   },
   {
     icon: (
@@ -32,8 +21,7 @@ const valueItems = [
       </svg>
     ),
     name: "Customer-Level Leak Report",
-    description: "Names, emails, dollar amounts. Every customer who owes you money",
-    value: "$800",
+    description: "Every leak with dollar amounts, customer details, and direct fix links",
   },
   {
     icon: (
@@ -41,9 +29,8 @@ const valueItems = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
       </svg>
     ),
-    name: "Fix Playbook",
-    description: "How to fix each leak, step by step",
-    value: "$300",
+    name: "Fix Instructions for Every Leak",
+    description: "Step-by-step playbook — click the link, fix in your billing dashboard",
   },
   {
     icon: (
@@ -51,9 +38,8 @@ const valueItems = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     ),
-    name: "1 AI Recovery Action",
-    description: "Our agent sends a dunning email, retries a charge, or removes a coupon. Automatically.",
-    value: "$297",
+    name: "1 Auto-Recovery Action",
+    description: "We retry a charge, remove a coupon, or send a dunning email. Automatically.",
   },
   {
     icon: (
@@ -63,27 +49,6 @@ const valueItems = [
     ),
     name: "PDF & CSV Export",
     description: "Share your report with co-founders, investors, or your team",
-    value: "$150",
-  },
-  {
-    icon: (
-      <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-      </svg>
-    ),
-    name: "Industry Benchmark Comparison",
-    description: "See how your billing health compares to similar SaaS companies",
-    value: "$200",
-  },
-  {
-    icon: (
-      <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
-      </svg>
-    ),
-    name: "Priority Fix Ranking",
-    description: "We sort your leaks by impact so you fix the $500/mo ones first, not the $12 ones",
-    value: "$200",
   },
 ];
 
@@ -118,24 +83,18 @@ export function FreeValueStack() {
                 {item.icon}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-sm font-semibold text-white">{item.name}</h3>
-                  <span className="shrink-0 text-sm font-semibold text-text-dim line-through">{item.value}</span>
-                </div>
+                <h3 className="text-sm font-semibold text-white">{item.name}</h3>
                 <p className="mt-1 text-xs text-text-muted">{item.description}</p>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Total */}
+        {/* Why free */}
         <div className="mt-8 rounded-xl border border-brand/30 bg-brand/5 p-6 text-center">
-          <div className="mb-1 text-sm text-text-muted">
-            Total value: <span className="font-semibold text-text-dim line-through">$2,647</span>
-          </div>
-          <div className="text-4xl font-extrabold text-brand">$0</div>
+          <div className="text-4xl font-extrabold text-brand">All free. No catch.</div>
           <p className="mt-3 text-sm text-text-muted">
-            Why free? Because once you see $2,000/month sitting in your billing account,
+            Why? Because once you see $2,000/month sitting in your billing account,
             you&apos;ll want it back. The free scan makes the case better than we ever could.
           </p>
         </div>

@@ -5,6 +5,7 @@ import { Hero } from "@/components/Hero";
 import { Problem } from "@/components/Problem";
 import { DailyLossCalculator } from "@/components/DailyLossCalculator";
 import { DashboardPreview } from "@/components/DashboardPreview";
+import { SocialProof } from "@/components/SocialProof";
 import { HowItWorks } from "@/components/HowItWorks";
 import { FreeValueStack } from "@/components/FreeValueStack";
 import { GuaranteeSection } from "@/components/GuaranteeSection";
@@ -52,6 +53,7 @@ export default function Home() {
       <Problem />
       <DailyLossCalculator />
       <DashboardPreview />
+      <SocialProof />
       <HowItWorks />
       <FreeValueStack />
       <GuaranteeSection />

@@ -90,7 +90,7 @@ export function FinalCTA() {
                 </svg>
               </a>
               <p className="text-xs text-text-muted">
-                90 seconds from now, you&apos;ll know exactly where your money is going.
+                Two minutes from now, you&apos;ll know exactly where your money is going.
               </p>
 
               {/* Secondary: email capture */}

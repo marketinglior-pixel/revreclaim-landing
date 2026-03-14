@@ -14,7 +14,7 @@ const obstacles = [
   },
   {
     question: "I don't have time for this",
-    answer: "90 seconds. That's less time than this page took to load on a slow connection.",
+    answer: "Under two minutes, start to finish. Less time than reading this page took.",
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -50,7 +50,7 @@ const obstacles = [
   },
   {
     question: "I'll just audit manually",
-    answer: "You could. Takes 4-6 hours. Or 90 seconds. Your call.",
+    answer: "You could. Takes 4-6 hours. Or let us do it automatically. Your call.",
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
