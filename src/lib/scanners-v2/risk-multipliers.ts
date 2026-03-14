@@ -19,6 +19,24 @@ export const RISK_MULTIPLIERS = {
 
   /** 20% of expired trials can be saved. Most are already lost. */
   trial_expired: 0.2,
+
+  /** 70% — expired coupon is a definite leak, ~30% intentionally left for customer. */
+  expired_coupon: 0.7,
+
+  /** 30% — many "forever" discounts are intentional (early adopter, investor, partner). */
+  never_expiring_discount: 0.3,
+
+  /** 25% — legacy pricing is real but many founders intentionally grandfather old customers. */
+  legacy_pricing: 0.25,
+
+  /** 60% — unbilled overages are likely real, but usage-based billing can be intentional. */
+  unbilled_overage: 0.6,
+
+  /** 80% — a failed payment has a real invoice behind it. High certainty. */
+  failed_payment: 0.8,
+
+  /** 85% — duplicate subscriptions are almost certainly a bug/failed upgrade. */
+  duplicate_subscription: 0.85,
 } as const;
 
 export type RiskMultiplierKey = keyof typeof RISK_MULTIPLIERS;

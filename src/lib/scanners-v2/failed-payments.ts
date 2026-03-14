@@ -1,6 +1,7 @@
 import { NormalizedInvoice, NormalizedSubscription, PLATFORM_LABELS } from "../platforms/types";
 import { Leak } from "../types";
 import { generateLeakId, maskEmail } from "../utils";
+import { RISK_MULTIPLIERS } from "./risk-multipliers";
 
 /**
  * @param invoices - Open/unpaid invoices
@@ -40,6 +41,8 @@ export function scanFailedPayments(
         : 0;
 
     const platformLabel = PLATFORM_LABELS[invoice.platform];
+    const rawMonthly = normalizeToMonthly(invoice.amountDueCents, invoice.subscriptionId, subIntervals);
+    const riskAdjusted = Math.round(rawMonthly * RISK_MULTIPLIERS.failed_payment);
 
     leaks.push({
       id: generateLeakId(),
@@ -56,8 +59,8 @@ export function scanFailedPayments(
         : null,
       customerId: invoice.customerId,
       subscriptionId: invoice.subscriptionId,
-      monthlyImpact: normalizeToMonthly(invoice.amountDueCents, invoice.subscriptionId, subIntervals),
-      annualImpact: invoice.amountDueCents, // One-time: the actual invoice amount
+      monthlyImpact: riskAdjusted,
+      annualImpact: riskAdjusted, // One-time: risk-adjusted invoice amount
       recoveryRate: 0.6,
       isRecurring: false,
       fixSuggestion: invoice.attempted
@@ -74,6 +77,8 @@ export function scanFailedPayments(
         daysOverdue: Math.max(0, daysOverdue),
         attempted: invoice.attempted,
         nextPaymentAttempt: invoice.nextPaymentAttempt,
+        rawMonthlyAmountCents: rawMonthly,
+        riskMultiplier: RISK_MULTIPLIERS.failed_payment,
         platform: invoice.platform,
       },
     });

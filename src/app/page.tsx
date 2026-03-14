@@ -3,11 +3,9 @@ import { PageViewTracker } from "@/components/PageViewTracker";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Problem } from "@/components/Problem";
-import { DailyLossCalculator } from "@/components/DailyLossCalculator";
+import { BestFitSection } from "@/components/BestFitSection";
 import { DashboardPreview } from "@/components/DashboardPreview";
-import { SocialProof } from "@/components/SocialProof";
 import { HowItWorks } from "@/components/HowItWorks";
-import { FreeValueStack } from "@/components/FreeValueStack";
 import { GuaranteeSection } from "@/components/GuaranteeSection";
 import { ObstacleSection } from "@/components/ObstacleSection";
 import { Pricing } from "@/components/Pricing";
@@ -51,11 +49,9 @@ export default function Home() {
       <Header />
       <Hero />
       <Problem />
-      <DailyLossCalculator />
+      <BestFitSection />
       <DashboardPreview />
-      <SocialProof />
       <HowItWorks />
-      <FreeValueStack />
       <GuaranteeSection />
       <ObstacleSection />
       <Pricing />

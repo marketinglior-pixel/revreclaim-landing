@@ -27,7 +27,8 @@ export function Hero() {
 
         {/* Sub — one line, 5-second clarity */}
         <p className="mx-auto mb-10 max-w-2xl text-lg text-text-muted md:text-xl leading-relaxed animate-fade-in-up animate-delay-200">
-          Expired coupons, failed payments, legacy pricing — your billing has holes you can&apos;t see in Stripe. We find them in 90 seconds. Free.
+          <span className="font-medium text-brand/80">For B2B SaaS doing $30K&#8211;$500K MRR.</span>
+          {" "}Expired coupons, failed payments, legacy pricing — your billing has holes you can&apos;t see in Stripe. We find them in 90 seconds. Free.
         </p>
 
         {/* Primary CTA */}

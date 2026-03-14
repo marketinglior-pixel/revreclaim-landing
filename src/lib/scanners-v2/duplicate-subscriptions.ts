@@ -1,6 +1,7 @@
 import { NormalizedSubscription, PLATFORM_LABELS } from "../platforms/types";
 import { Leak } from "../types";
 import { generateLeakId, maskEmail } from "../utils";
+import { RISK_MULTIPLIERS } from "./risk-multipliers";
 
 /**
  * Duplicate Subscriptions Scanner
@@ -71,13 +72,15 @@ export function scanDuplicateSubscriptions(
 
       if (duplicateAmount <= 0) continue;
 
+      const riskAdjusted = Math.round(duplicateAmount * RISK_MULTIPLIERS.duplicate_subscription);
+
       leaks.push({
         id: generateLeakId(),
         type: "duplicate_subscription",
         severity:
-          duplicateAmount > 10000
+          riskAdjusted > 10000
             ? "critical"
-            : duplicateAmount > 3000
+            : riskAdjusted > 3000
               ? "high"
               : "medium",
         title: `Customer has ${productSubs.length} active subscriptions for the same product`,
@@ -87,8 +90,8 @@ export function scanDuplicateSubscriptions(
           : null,
         customerId,
         subscriptionId: newer.id, // Flag the newer sub as the likely duplicate
-        monthlyImpact: duplicateAmount,
-        annualImpact: duplicateAmount * 12,
+        monthlyImpact: riskAdjusted,
+        annualImpact: riskAdjusted * 12,
         recoveryRate: 0.9,
         isRecurring: true, // Double-charge continues every month
         fixSuggestion: `Review this customer's subscriptions in ${platformLabel} Dashboard. If one is a duplicate from a failed upgrade or migration, cancel it and consider issuing a proactive refund to prevent a chargeback.`,
@@ -103,6 +106,8 @@ export function scanDuplicateSubscriptions(
           newerSubId: newer.id,
           newerMonthlyCents: newer.monthlyAmountCents,
           newerCreatedAt: formatDate(newer.createdAt),
+          rawMonthlyAmountCents: duplicateAmount,
+          riskMultiplier: RISK_MULTIPLIERS.duplicate_subscription,
           platform: newer.platform,
         },
       });
@@ -132,12 +137,13 @@ export function scanDuplicateSubscriptions(
         newerSub.monthlyAmountCents > olderSub.monthlyAmountCents
       ) {
         const platformLabel = PLATFORM_LABELS[olderSub.platform];
+        const riskAdjustedUpgrade = Math.round(olderSub.monthlyAmountCents * RISK_MULTIPLIERS.duplicate_subscription);
 
         leaks.push({
           id: generateLeakId(),
           type: "duplicate_subscription",
           severity:
-            olderSub.monthlyAmountCents > 5000 ? "high" : "medium",
+            riskAdjustedUpgrade > 5000 ? "high" : "medium",
           title: `Possible failed upgrade — old subscription still active`,
           description: `This customer created a higher-tier subscription (${formatCents(newerSub.monthlyAmountCents)}/mo) within ${Math.round(hoursBetween)} hours of their existing one (${formatCents(olderSub.monthlyAmountCents)}/mo), but the old subscription was never canceled. They may be paying for both.`,
           customerEmail: olderSub.customerEmail
@@ -145,8 +151,8 @@ export function scanDuplicateSubscriptions(
             : null,
           customerId,
           subscriptionId: olderSub.id, // The old sub that should have been canceled
-          monthlyImpact: olderSub.monthlyAmountCents,
-          annualImpact: olderSub.monthlyAmountCents * 12,
+          monthlyImpact: riskAdjustedUpgrade,
+          annualImpact: riskAdjustedUpgrade * 12,
           recoveryRate: 0.9,
           isRecurring: true, // Double-charge continues every month
           fixSuggestion: `Check if this customer upgraded their plan in ${platformLabel} Dashboard. If so, cancel the older subscription (${formatCents(olderSub.monthlyAmountCents)}/mo) and consider refunding any overlap charges.`,
@@ -164,6 +170,8 @@ export function scanDuplicateSubscriptions(
             newerMonthlyCents: newerSub.monthlyAmountCents,
             newerCreatedAt: formatDate(newerSub.createdAt),
             hoursBetween: Math.round(hoursBetween),
+            rawMonthlyAmountCents: olderSub.monthlyAmountCents,
+            riskMultiplier: RISK_MULTIPLIERS.duplicate_subscription,
             platform: olderSub.platform,
           },
         });

@@ -7,6 +7,7 @@ import {
 } from "../platforms/types";
 import { Leak } from "../types";
 import { generateLeakId, maskEmail } from "../utils";
+import { RISK_MULTIPLIERS } from "./risk-multipliers";
 
 export function scanLegacyPricing(
   subscriptions: NormalizedSubscription[],
@@ -100,6 +101,7 @@ export function scanLegacyPricing(
       if (newestMonthly <= currentMonthly) continue; // New price is same or cheaper
 
       const priceDifference = newestMonthly - currentMonthly;
+      const riskAdjusted = Math.round(priceDifference * RISK_MULTIPLIERS.legacy_pricing);
       const percentDiff = Math.round(
         (priceDifference / currentMonthly) * 100
       );
@@ -116,8 +118,8 @@ export function scanLegacyPricing(
         customerEmail: sub.customerEmail ? maskEmail(sub.customerEmail) : null,
         customerId: sub.customerId,
         subscriptionId: sub.id,
-        monthlyImpact: priceDifference,
-        annualImpact: priceDifference * 12,
+        monthlyImpact: riskAdjusted,
+        annualImpact: riskAdjusted * 12,
         recoveryRate: 0.3,
         isRecurring: true, // Price difference continues every month
         fixSuggestion: `Consider migrating this customer to the current price (${formatCents(newestMonthly)}/mo). Go to ${platformLabel} Dashboard → Subscriptions → Update subscription.`,
@@ -129,6 +131,8 @@ export function scanLegacyPricing(
           newestPriceId: newestPrice.id,
           currentAmount: currentMonthly,
           newestAmount: newestMonthly,
+          rawMonthlyAmountCents: priceDifference,
+          riskMultiplier: RISK_MULTIPLIERS.legacy_pricing,
           percentDiff,
           platform: sub.platform,
         },

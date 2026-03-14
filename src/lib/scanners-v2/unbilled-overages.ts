@@ -6,6 +6,7 @@ import {
 } from "../platforms/types";
 import { Leak } from "../types";
 import { generateLeakId, maskEmail } from "../utils";
+import { RISK_MULTIPLIERS } from "./risk-multipliers";
 
 /**
  * Unbilled Overages Scanner
@@ -67,17 +68,19 @@ export function scanUnbilledOverages(
         const missedRevenue = expectedMonthly - sub.monthlyAmountCents;
         if (missedRevenue <= 0) continue;
 
+        const riskAdjusted = Math.round(missedRevenue * RISK_MULTIPLIERS.unbilled_overage);
+
         leaks.push({
           id: generateLeakId(),
           type: "unbilled_overage",
-          severity: missedRevenue > 10000 ? "high" : missedRevenue > 3000 ? "medium" : "low",
+          severity: riskAdjusted > 10000 ? "high" : riskAdjusted > 3000 ? "medium" : "low",
           title: `Quantity mismatch: ${item.quantity} seats but billing doesn't match`,
           description: `This subscription has ${item.quantity} seats at ${formatCents(item.unitAmountCents)}/seat but is only being charged ${formatCents(sub.monthlyAmountCents)}/mo instead of ${formatCents(expectedMonthly)}/mo.`,
           customerEmail: sub.customerEmail ? maskEmail(sub.customerEmail) : null,
           customerId: sub.customerId,
           subscriptionId: sub.id,
-          monthlyImpact: missedRevenue,
-          annualImpact: missedRevenue * 12,
+          monthlyImpact: riskAdjusted,
+          annualImpact: riskAdjusted * 12,
           recoveryRate: 0.7,
           isRecurring: true, // Underbilling continues every billing cycle
           fixSuggestion: `Review the subscription quantity and pricing in ${platformLabel} Dashboard. The customer has ${item.quantity} seats — verify the billing reflects this.`,
@@ -89,6 +92,8 @@ export function scanUnbilledOverages(
             unitAmountCents: item.unitAmountCents,
             expectedMonthly,
             actualMonthly: sub.monthlyAmountCents,
+            rawMonthlyAmountCents: missedRevenue,
+            riskMultiplier: RISK_MULTIPLIERS.unbilled_overage,
             platform: sub.platform,
           },
         });
@@ -117,17 +122,19 @@ export function scanUnbilledOverages(
       // Skip if already reported via quantity check
       if (leaks.some(l => l.subscriptionId === sub.id)) continue;
 
+      const riskAdjustedOverage = Math.round(overage * RISK_MULTIPLIERS.unbilled_overage);
+
       leaks.push({
         id: generateLeakId(),
         type: "unbilled_overage",
-        severity: overage > 10000 ? "high" : overage > 3000 ? "medium" : "low",
+        severity: riskAdjustedOverage > 10000 ? "high" : riskAdjustedOverage > 3000 ? "medium" : "low",
         title: `Customer consistently exceeding plan limits`,
         description: `Average recent invoice (${formatCents(avgInvoiceAmount)}) is ${Math.round((overage / sub.monthlyAmountCents) * 100)}% above the base plan (${formatCents(sub.monthlyAmountCents)}/mo). This customer may need a higher tier or overage billing review.`,
         customerEmail: sub.customerEmail ? maskEmail(sub.customerEmail) : null,
         customerId: sub.customerId,
         subscriptionId: sub.id,
-        monthlyImpact: overage,
-        annualImpact: overage * 12,
+        monthlyImpact: riskAdjustedOverage,
+        annualImpact: riskAdjustedOverage * 12,
         recoveryRate: 0.7,
         isRecurring: true, // Usage pattern likely continues
         fixSuggestion: `Review this customer's usage and consider upgrading them to a higher plan in ${platformLabel} Dashboard, or verify overage billing is configured correctly.`,
@@ -139,6 +146,8 @@ export function scanUnbilledOverages(
           avgInvoiceCents: avgInvoiceAmount,
           invoicesAnalyzed: recentInvoices.length,
           overagePercent: Math.round((overage / sub.monthlyAmountCents) * 100),
+          rawMonthlyAmountCents: overage,
+          riskMultiplier: RISK_MULTIPLIERS.unbilled_overage,
           platform: sub.platform,
         },
       });

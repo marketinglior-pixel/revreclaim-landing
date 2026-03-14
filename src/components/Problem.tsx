@@ -30,6 +30,34 @@ export function Problem() {
           And until you look, you won&apos;t know how many.
         </p>
 
+        {/* Micro-stories — realistic scenarios, not fabricated data */}
+        <div className="mb-12 grid gap-4 md:grid-cols-3">
+          <div className="rounded-xl border border-border bg-surface-dim p-5">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-danger">The pricing migration you forgot</div>
+            <p className="text-sm leading-relaxed text-text-muted">
+              You raised prices 6 months ago. You assumed everyone migrated.
+              Then you check: 40% of your customers are still on the old rate.
+              Nobody told you. Stripe certainly didn&apos;t.
+            </p>
+          </div>
+          <div className="rounded-xl border border-border bg-surface-dim p-5">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-warning">The silent discount bleed</div>
+            <p className="text-sm leading-relaxed text-text-muted">
+              A &ldquo;30-day launch discount&rdquo; coupon you created 8 months ago.
+              It expired. But it&apos;s still applied to 12 subscriptions.
+              Every month, they pay less than they should. You never noticed.
+            </p>
+          </div>
+          <div className="rounded-xl border border-border bg-surface-dim p-5">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-purple">The accidental double charge</div>
+            <p className="text-sm leading-relaxed text-text-muted">
+              A customer upgraded their plan. But the old subscription was never canceled.
+              They&apos;re paying for both. Right now, it&apos;s extra revenue.
+              Next month, it&apos;s a chargeback and a 1-star review.
+            </p>
+          </div>
+        </div>
+
         {/* Common leak types — framed as examples, not fake data */}
         <div className="relative rounded-2xl border border-border bg-surface p-8 md:p-12">
           <div className="mb-8 text-center">

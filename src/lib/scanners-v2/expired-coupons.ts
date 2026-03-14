@@ -1,6 +1,7 @@
 import { NormalizedSubscription, PLATFORM_LABELS } from "../platforms/types";
 import { Leak } from "../types";
 import { generateLeakId, maskEmail } from "../utils";
+import { RISK_MULTIPLIERS } from "./risk-multipliers";
 
 export function scanExpiredCoupons(
   subscriptions: NormalizedSubscription[]
@@ -26,19 +27,20 @@ export function scanExpiredCoupons(
       );
       if (discountAmount <= 0) continue;
 
+      const riskAdjusted = Math.round(discountAmount * RISK_MULTIPLIERS.expired_coupon);
       const platformLabel = PLATFORM_LABELS[sub.platform];
 
       leaks.push({
         id: generateLeakId(),
         type: "expired_coupon",
-        severity: discountAmount > 10000 ? "high" : "medium",
+        severity: riskAdjusted > 10000 ? "high" : "medium",
         title: `Expired coupon "${discount.couponName || discount.couponId}" still active`,
         description: `This coupon expired on ${new Date(expiredAt * 1000).toLocaleDateString()} but is still discounting this subscription by ${formatDiscount(discount.percentOff, discount.amountOffCents)}.`,
         customerEmail: sub.customerEmail ? maskEmail(sub.customerEmail) : null,
         customerId: sub.customerId,
         subscriptionId: sub.id,
-        monthlyImpact: discountAmount,
-        annualImpact: discountAmount * 12,
+        monthlyImpact: riskAdjusted,
+        annualImpact: riskAdjusted * 12,
         recoveryRate: 0.8,
         isRecurring: true, // Discount applies every billing cycle until removed
         fixSuggestion: `Remove this expired coupon from the subscription in ${platformLabel} Dashboard → Subscriptions → Select subscription → Remove discount.`,
@@ -49,6 +51,8 @@ export function scanExpiredCoupons(
           couponId: discount.couponId,
           couponName: discount.couponName,
           expiredAt: new Date(expiredAt * 1000).toISOString(),
+          rawMonthlyAmountCents: discountAmount,
+          riskMultiplier: RISK_MULTIPLIERS.expired_coupon,
           platform: sub.platform,
         },
       });

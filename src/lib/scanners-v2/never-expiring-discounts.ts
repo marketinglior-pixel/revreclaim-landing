@@ -1,6 +1,7 @@
 import { NormalizedSubscription, PLATFORM_LABELS } from "../platforms/types";
 import { Leak } from "../types";
 import { generateLeakId, maskEmail } from "../utils";
+import { RISK_MULTIPLIERS } from "./risk-multipliers";
 
 export function scanNeverExpiringDiscounts(
   subscriptions: NormalizedSubscription[]
@@ -25,6 +26,7 @@ export function scanNeverExpiringDiscounts(
       );
       if (discountAmount <= 0) continue;
 
+      const riskAdjusted = Math.round(discountAmount * RISK_MULTIPLIERS.never_expiring_discount);
       const discountPercent = discount.percentOff || 0;
       const amountOff = discount.amountOffCents || 0;
       const severity =
@@ -45,8 +47,8 @@ export function scanNeverExpiringDiscounts(
         customerEmail: sub.customerEmail ? maskEmail(sub.customerEmail) : null,
         customerId: sub.customerId,
         subscriptionId: sub.id,
-        monthlyImpact: discountAmount,
-        annualImpact: discountAmount * 12,
+        monthlyImpact: riskAdjusted,
+        annualImpact: riskAdjusted * 12,
         recoveryRate: 0.4,
         isRecurring: true, // Discount continues indefinitely
         fixSuggestion: `Consider replacing this forever coupon with a time-limited discount. Go to ${platformLabel} Dashboard → Subscriptions → Remove current discount → Apply a new coupon with an end date.`,
@@ -59,6 +61,8 @@ export function scanNeverExpiringDiscounts(
           duration: discount.duration,
           percentOff: discount.percentOff,
           amountOff: discount.amountOffCents,
+          rawMonthlyAmountCents: discountAmount,
+          riskMultiplier: RISK_MULTIPLIERS.never_expiring_discount,
           platform: sub.platform,
         },
       });
