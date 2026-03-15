@@ -30,7 +30,7 @@ export function Hero() {
 
         {/* Sub — specifics + urgency */}
         <p className="mx-auto mb-10 max-w-2xl text-lg text-text-muted md:text-xl leading-relaxed animate-fade-in-up animate-delay-200">
-          Expired coupons, failed payments, legacy pricing. Your billing has holes you can&apos;t see in Stripe. We find them in 90 seconds. Free.
+          Expired coupons still giving discounts. Failed payments nobody retried. Customers on last year&apos;s pricing. These are real holes in your billing &mdash; and Stripe won&apos;t tell you about them. We will. 90 seconds. Free.
         </p>
 
         {/* Primary CTA */}
@@ -68,21 +68,21 @@ export function Hero() {
           </a>
         </div>
 
-        {/* Product facts bar — only verifiable truths, no usage stats */}
+        {/* Problem facts bar — sell the problem, not the product */}
         <div className="mt-16 flex flex-wrap items-center justify-center gap-8 border-t border-border-light pt-8">
           <div className="text-center">
+            <div className="text-2xl font-bold text-danger">3-8%</div>
+            <div className="text-xs text-text-muted">of MRR typically leaking</div>
+          </div>
+          <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
+          <div className="text-center">
             <div className="text-2xl font-bold text-white">10</div>
-            <div className="text-xs text-text-muted">Automated checks</div>
+            <div className="text-xs text-text-muted">types of billing leaks</div>
           </div>
           <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
           <div className="text-center">
             <div className="text-2xl font-bold text-white">&lt; 90 sec</div>
-            <div className="text-xs text-text-muted">Full scan</div>
-          </div>
-          <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
-          <div className="text-center">
-            <div className="text-2xl font-bold text-white">3</div>
-            <div className="text-xs text-text-muted">Platforms supported</div>
+            <div className="text-xs text-text-muted">to find them all</div>
           </div>
           <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
           <div className="text-center">

@@ -100,15 +100,21 @@ export async function sendScanCompleteEmail(
     recoveryPotential: number;
     healthScore: number;
   },
-  reportId: string
+  reportId: string,
+  topLeak?: { type: string; monthlyImpact: number }
 ): Promise<void> {
   try {
     const mrrFormatted = `$${(summary.mrrAtRisk / 100).toLocaleString()}`;
     await getResend().emails.send({
       from: FROM,
       to,
-      subject: `Scan Complete: ${summary.leaksFound} leaks found (${mrrFormatted}/mo at risk)`,
-      html: scanCompleteEmailHtml({ ...summary, reportId }),
+      subject: `${summary.leaksFound} billing holes found — ${mrrFormatted}/mo leaking`,
+      html: scanCompleteEmailHtml({
+        ...summary,
+        reportId,
+        topLeakType: topLeak?.type,
+        topLeakAmount: topLeak?.monthlyImpact,
+      }),
     });
   } catch (err) {
     log.error("Failed to send scan complete email:", err);

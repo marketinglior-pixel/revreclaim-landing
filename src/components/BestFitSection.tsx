@@ -3,12 +3,12 @@
 import { useSectionView } from "@/hooks/useSectionView";
 
 const fitItems = [
-  "You have 100+ active subscriptions",
-  "You use Stripe, Paddle, or Polar for billing",
-  "You're doing $30K\u2013$500K in MRR",
+  "You have 100+ subscriptions and can't check each one manually",
+  "You use Stripe, Paddle, or Polar and trust the dashboard to show everything",
+  "You're doing $30K\u2013$500K in MRR but never audited your billing",
   "You've raised prices at least once and aren't sure everyone migrated",
-  "You use coupons or discounts (even occasionally)",
-  "You don't have a dedicated billing ops person",
+  "You use coupons or discounts and don't know which ones are still active",
+  "Nobody on your team is responsible for billing hygiene",
 ];
 
 export function BestFitSection() {
@@ -19,7 +19,7 @@ export function BestFitSection() {
       <div className="mx-auto max-w-4xl px-6">
         <div className="rounded-2xl border border-brand/20 bg-brand/5 p-8 md:p-10">
           <h3 className="mb-6 text-xl font-bold text-white md:text-2xl">
-            RevReclaim is built for you if&hellip;
+            You probably have billing leaks if&hellip;
           </h3>
           <div className="grid gap-4 md:grid-cols-2">
             {fitItems.map((text) => (
@@ -42,7 +42,7 @@ export function BestFitSection() {
             ))}
           </div>
           <p className="mt-6 text-sm text-text-muted">
-            Don&apos;t check all the boxes? The scan is free &mdash; run it anyway.
+            Sound familiar? The scan is free &mdash; run it and find out.
             Most founders are surprised by what they find.
           </p>
         </div>

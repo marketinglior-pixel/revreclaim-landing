@@ -89,8 +89,26 @@ export default function ReportPage() {
       try {
         const stored = sessionStorage.getItem(`report_${reportId}`);
         if (stored) {
-          setReport(JSON.parse(stored));
+          const parsed = JSON.parse(stored);
+          setReport(parsed);
           setLoading(false);
+
+          // If user just signed in, claim this guest report to their account
+          if (userLoggedIn) {
+            fetch("/api/claim-report", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                reportId: parsed.id,
+                platform: parsed.platform,
+                summary: parsed.summary,
+                categories: parsed.categories,
+                leaks: parsed.leaks,
+              }),
+            }).then(() => {
+              try { sessionStorage.removeItem(`report_${reportId}`); } catch { /* ignore */ }
+            }).catch(() => { /* non-critical */ });
+          }
           return;
         }
       } catch {
@@ -234,7 +252,7 @@ export default function ReportPage() {
             </svg>
             <p className="flex-1 text-sm text-warning">
               This report is stored temporarily. <span className="hidden sm:inline">Close this tab and it&apos;s gone.</span>{" "}
-              <Link href="/auth/signup" className="font-semibold underline underline-offset-2 hover:text-amber-400 transition">
+              <Link href={`/auth/signup?redirect=/report/${reportId}`} className="font-semibold underline underline-offset-2 hover:text-amber-400 transition">
                 Create a free account
               </Link>{" "}
               to save it permanently.
@@ -321,6 +339,67 @@ export default function ReportPage() {
 
         {/* Quick Wins — start here summary */}
         <QuickWins leaks={visibleLeaks} />
+
+        {/* What's Next — guided path based on auth state */}
+        {visibleLeaks.length > 0 && (
+          <div className="rounded-2xl border border-border bg-surface p-6 md:p-8 animate-fade-in-up">
+            <h3 className="text-lg font-bold text-white mb-1">What to do next</h3>
+            <p className="text-sm text-text-muted mb-6">
+              You have {visibleLeaks.length} billing hole{visibleLeaks.length !== 1 ? "s" : ""}. Here&apos;s how to fix them, starting with the easiest.
+            </p>
+            <div className="space-y-4">
+              <div className="flex items-start gap-4">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-sm font-bold text-brand">1</div>
+                <div>
+                  <p className="text-sm font-semibold text-white">Fix the quick wins (5 min)</p>
+                  <p className="text-xs text-text-muted">
+                    Scroll up to &ldquo;Quick Fixes&rdquo; &mdash; these have the highest recovery rate.
+                    Each leak links directly to your billing dashboard.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-sm font-bold text-brand">2</div>
+                <div>
+                  <p className="text-sm font-semibold text-white">Review the rest</p>
+                  <p className="text-xs text-text-muted">
+                    Items under &ldquo;Needs Review&rdquo; require a business decision (e.g. whether
+                    to migrate legacy-priced customers). No rush, but worth looking at.
+                  </p>
+                </div>
+              </div>
+              {!isLoggedIn ? (
+                <div className="flex items-start gap-4">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-warning/10 text-sm font-bold text-warning">3</div>
+                  <div>
+                    <p className="text-sm font-semibold text-white">Save this report</p>
+                    <p className="text-xs text-text-muted">
+                      This report lives in your browser right now. Close the tab and it&apos;s gone.{" "}
+                      <Link href={`/auth/signup?redirect=/report/${reportId}`} className="text-brand hover:text-brand-light transition underline underline-offset-2">
+                        Create a free account
+                      </Link>{" "}
+                      to save it and track changes over time.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-start gap-4">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-sm font-bold text-brand">3</div>
+                  <div>
+                    <p className="text-sm font-semibold text-white">Set up monitoring</p>
+                    <p className="text-xs text-text-muted">
+                      New leaks appear every week (failed payments, expiring cards).{" "}
+                      <Link href="/dashboard/settings" className="text-brand hover:text-brand-light transition underline underline-offset-2">
+                        Turn on weekly scans
+                      </Link>{" "}
+                      to catch them automatically.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* All Leaks Table */}
         <div id="leak-table">

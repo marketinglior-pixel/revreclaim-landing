@@ -59,32 +59,40 @@ function formatCentsAsDollars(cents: number): string {
 }
 
 export function welcomeEmailHtml(): string {
-  return baseLayout("Welcome to RevReclaim", `
-    <h1 style="color:white;font-size:24px;margin:0 0 16px;">Welcome to RevReclaim!</h1>
+  return baseLayout("Your billing has holes. Let's find them.", `
+    <h1 style="color:white;font-size:24px;margin:0 0 16px;">Your billing has holes. Let's find them.</h1>
+    <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 16px;">
+      Right now, somewhere in your billing account, there's money you earned but aren't collecting.
+      An expired coupon still giving a discount. A failed payment nobody retried. A customer on pricing
+      you raised months ago.
+    </p>
     <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
-      You're all set up. RevReclaim scans your billing platform for revenue leaks — expired coupons,
-      failed payments, stuck subscriptions, and more. We support Stripe, Polar, and Paddle.
+      Most SaaS companies have 3-8% of MRR leaking through gaps like these. Your first scan takes
+      90 seconds and finds them all.
     </p>
 
-    <h2 style="color:white;font-size:16px;margin:0 0 12px;">Get started in 3 steps:</h2>
     <div style="margin-bottom:24px;">
       <div style="padding:12px 0;border-bottom:1px solid #2A2A2A;">
         <span style="color:${BRAND_COLOR};font-weight:bold;">1.</span>
-        <span style="color:#CCC;margin-left:8px;">Run your first free scan</span>
+        <span style="color:#CCC;margin-left:8px;">Paste a read-only API key (60 seconds)</span>
       </div>
       <div style="padding:12px 0;border-bottom:1px solid #2A2A2A;">
         <span style="color:${BRAND_COLOR};font-weight:bold;">2.</span>
-        <span style="color:#CCC;margin-left:8px;">Review your Revenue Leak Report</span>
+        <span style="color:#CCC;margin-left:8px;">See every leak with dollar amounts</span>
       </div>
       <div style="padding:12px 0;">
         <span style="color:${BRAND_COLOR};font-weight:bold;">3.</span>
-        <span style="color:#CCC;margin-left:8px;">Fix leaks directly in your billing dashboard</span>
+        <span style="color:#CCC;margin-left:8px;">Fix the easy ones before lunch</span>
       </div>
     </div>
 
-    <a href="${BASE_URL}/scan" style="display:inline-block;background:${BRAND_COLOR};color:#000;font-weight:bold;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;">
-      Run Your Free Scan
+    <a href="${BASE_URL}/onboarding" style="display:inline-block;background:${BRAND_COLOR};color:#000;font-weight:bold;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;">
+      Find My Billing Leaks
     </a>
+
+    <p style="color:#666;font-size:13px;margin-top:16px;">
+      Free. Read-only access. Key deleted after scan.
+    </p>
   `);
 }
 
@@ -94,37 +102,52 @@ export function scanCompleteEmailHtml(summary: {
   recoveryPotential: number;
   healthScore: number;
   reportId: string;
+  topLeakType?: string;
+  topLeakAmount?: number;
 }): string {
   const scoreColor = summary.healthScore >= 80 ? BRAND_COLOR : summary.healthScore >= 60 ? "#F59E0B" : "#EF4444";
+  const topLeak = summary.topLeakType && summary.topLeakAmount
+    ? { type: summary.topLeakType.replace(/_/g, " "), amount: formatCentsAsDollars(summary.topLeakAmount) }
+    : null;
 
-  return baseLayout("Your Revenue Leak Report is Ready", `
-    <h1 style="color:white;font-size:24px;margin:0 0 8px;">Your scan is complete!</h1>
+  return baseLayout("You have billing holes. Here's what we found.", `
+    <h1 style="color:white;font-size:24px;margin:0 0 8px;">Your billing has ${summary.leaksFound} holes.</h1>
     <p style="color:#999;font-size:15px;line-height:1.6;margin:0 0 24px;">
-      We found <strong style="color:#EF4444;">${summary.leaksFound} revenue leaks</strong> in your billing account.
+      That's <strong style="color:#EF4444;">${formatCentsAsDollars(summary.mrrAtRisk)}/month</strong> you earned but aren't collecting.
+      Every day you wait, that money stays on the table.
     </p>
 
     <!-- Stats Grid -->
     <div style="display:flex;gap:12px;margin-bottom:24px;">
       <div style="flex:1;background:#0A0A0A;border:1px solid #2A2A2A;border-radius:12px;padding:16px;text-align:center;">
         <div style="color:#EF4444;font-size:24px;font-weight:bold;">${formatCentsAsDollars(summary.mrrAtRisk)}</div>
-        <div style="color:#999;font-size:12px;margin-top:4px;">MRR at Risk</div>
+        <div style="color:#999;font-size:12px;margin-top:4px;">Leaking per month</div>
       </div>
       <div style="flex:1;background:#0A0A0A;border:1px solid #2A2A2A;border-radius:12px;padding:16px;text-align:center;">
         <div style="color:${BRAND_COLOR};font-size:24px;font-weight:bold;">${formatCentsAsDollars(summary.recoveryPotential)}</div>
-        <div style="color:#999;font-size:12px;margin-top:4px;">Annual Recovery</div>
+        <div style="color:#999;font-size:12px;margin-top:4px;">Recoverable per year</div>
       </div>
       <div style="flex:1;background:#0A0A0A;border:1px solid #2A2A2A;border-radius:12px;padding:16px;text-align:center;">
         <div style="color:${scoreColor};font-size:24px;font-weight:bold;">${summary.healthScore}/100</div>
-        <div style="color:#999;font-size:12px;margin-top:4px;">Health Score</div>
+        <div style="color:#999;font-size:12px;margin-top:4px;">Billing Health</div>
       </div>
     </div>
 
+    ${topLeak ? `
+    <!-- #1 Quick Win -->
+    <div style="background:#0A0A0A;border:1px solid ${BRAND_COLOR}30;border-radius:12px;padding:16px;margin-bottom:24px;">
+      <div style="color:${BRAND_COLOR};font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Your #1 Quick Win</div>
+      <div style="color:white;font-size:15px;font-weight:600;margin-bottom:4px;">${topLeak.type}</div>
+      <div style="color:#999;font-size:14px;">Fix this one thing and recover <strong style="color:${BRAND_COLOR};">${topLeak.amount}/mo</strong>. Takes about 5 minutes in your billing dashboard.</div>
+    </div>
+    ` : ""}
+
     <a href="${BASE_URL}/report/${summary.reportId}" style="display:inline-block;background:${BRAND_COLOR};color:#000;font-weight:bold;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;">
-      View Full Report
+      See All ${summary.leaksFound} Leaks &amp; Fix Them
     </a>
 
     <p style="color:#666;font-size:13px;margin-top:16px;">
-      Each leak includes a direct fix link to your billing dashboard.
+      Your report shows each leak with dollar amounts and a direct link to fix it.
     </p>
   `);
 }

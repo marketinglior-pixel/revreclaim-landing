@@ -114,7 +114,7 @@ export function DailyLossCalculator() {
           {/* CTA */}
           <div className="mt-8 text-center">
             <a
-              href="/scan"
+              href="/onboarding"
               onClick={() => {
                 trackEvent("cta_clicked", null, { location: "calculator", action: "scan", mrr }).catch(() => {});
                 trackCTAClick("calculator", "scan");

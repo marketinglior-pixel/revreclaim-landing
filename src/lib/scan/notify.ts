@@ -65,8 +65,18 @@ export function notifyScanCompleted(
     "SCAN_COMPLETED_TRACKING"
   );
 
+  // Find top quick-win leak by monthly impact for email
+  const topLeak = report.leaks.length > 0
+    ? report.leaks.reduce((best, l) => l.monthlyImpact > best.monthlyImpact ? l : best)
+    : undefined;
+
   fireAndForget(
-    sendScanCompleteEmail(email, report.summary, report.id),
+    sendScanCompleteEmail(
+      email,
+      report.summary,
+      report.id,
+      topLeak ? { type: topLeak.type, monthlyImpact: topLeak.monthlyImpact } : undefined
+    ),
     "SCAN_COMPLETE_EMAIL"
   );
 

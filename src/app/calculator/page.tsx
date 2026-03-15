@@ -234,10 +234,23 @@ export default function CalculatorPage() {
     }
   }
 
-  function handleEmailSubmit(e: React.FormEvent) {
+  async function handleEmailSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) return;
     setEmailSubmitted(true);
+
+    // Send to subscribe API (Resend audience + webhook)
+    try {
+      await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          plan: `calculator_${healthGrade}_${estimatedMonthlyLeak}`,
+        }),
+      });
+    } catch { /* non-critical */ }
+
     trackEvent("calculator_email_captured" as Parameters<typeof trackEvent>[0], null, {
       health_grade: healthGrade,
       estimated_leak: estimatedMonthlyLeak,
@@ -345,14 +358,14 @@ export default function CalculatorPage() {
                   {/* Summary */}
                   <div className="text-center md:text-left">
                     <div className="text-sm font-semibold uppercase tracking-wider text-text-dim mb-2">
-                      Your Billing Health Score
+                      Estimated billing leakage
                     </div>
                     <div className="text-4xl md:text-5xl font-extrabold text-danger mb-1">
                       ${estimatedMonthlyLeak.toLocaleString()}<span className="text-xl font-normal text-danger/60">/mo</span>
                     </div>
                     <p className="text-text-muted">
-                      Estimated <span className="text-white font-semibold">${estimatedAnnualLeak.toLocaleString()}/year</span> in
-                      revenue you&apos;re likely not collecting.
+                      That&apos;s roughly <span className="text-white font-semibold">${estimatedAnnualLeak.toLocaleString()}/year</span> leaving
+                      your account — probably without anyone noticing.
                     </p>
                   </div>
                 </div>
@@ -365,7 +378,7 @@ export default function CalculatorPage() {
                     <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                     </svg>
-                    Risk Factors Identified
+                    Where your billing is probably broken
                   </h3>
                   <ul className="space-y-3">
                     {findings.map((f, i) => (
@@ -385,7 +398,7 @@ export default function CalculatorPage() {
               {/* Category Breakdown */}
               <div className="rounded-2xl border border-border bg-surface p-6">
                 <h3 className="text-sm font-semibold text-white mb-5">
-                  Where Your Revenue Is Likely Leaking
+                  The holes in your billing — by category
                 </h3>
                 <div className="space-y-4">
                   {categoryBreakdown.map((cat) => {
@@ -422,13 +435,26 @@ export default function CalculatorPage() {
                 </div>
                 <div className="rounded-xl border border-border bg-surface p-4 text-center">
                   <div className="text-2xl font-bold text-white">~{estimatedLeakCount}</div>
-                  <div className="text-xs text-text-muted mt-1">Estimated Leaks</div>
+                  <div className="text-xs text-text-muted mt-1">Billing Holes</div>
                 </div>
                 <div className="rounded-xl border border-border bg-surface p-4 text-center">
-                  <div className="text-2xl font-bold text-white">90s</div>
-                  <div className="text-xs text-text-muted mt-1">To Find Them All</div>
+                  <div className="text-2xl font-bold text-danger">${Math.round(estimatedMonthlyLeak / 30).toLocaleString()}</div>
+                  <div className="text-xs text-text-muted mt-1">Leaking per day</div>
                 </div>
               </div>
+
+              {/* Cost-of-Delay */}
+              {(healthGrade === "F" || healthGrade === "D" || healthGrade === "C") && (
+                <div className="rounded-xl border border-danger/20 bg-danger/5 px-5 py-4 text-center">
+                  <p className="text-sm text-text-secondary">
+                    Every week you wait, that&apos;s roughly{" "}
+                    <span className="text-danger font-bold">${Math.round(estimatedMonthlyLeak / 4.3).toLocaleString()}</span>{" "}
+                    gone. {answers.audit === "never" || answers.audit === "6mo+"
+                      ? "And since you haven\u0027t audited recently, these leaks have been compounding for months."
+                      : "These leaks don\u0027t fix themselves \u2014 they compound."}
+                  </p>
+                </div>
+              )}
 
               {/* Severity-Based CTA */}
               <div className={`rounded-2xl border p-6 md:p-8 text-center ${
@@ -480,7 +506,7 @@ export default function CalculatorPage() {
                   </>
                 )}
                 <Link
-                  href="/scan"
+                  href="/onboarding"
                   onClick={() => {
                     trackEvent("cta_clicked" as Parameters<typeof trackEvent>[0], null, {
                       location: "calculator_results",
@@ -754,12 +780,14 @@ function SEOContent() {
           </p>
           <p>
             Revenue leakage sits in the gap between your dashboard view and your individual subscription records.
-            The only way to find it is to audit each subscription — one by one.
+            The only way to find it is to audit each subscription — one by one. Manually, that takes hours. Most
+            founders never do it, so the leaks just keep compounding.
           </p>
           <p>
-            That&apos;s why we built{" "}
-            <Link href="/" className="text-brand hover:text-brand-light underline">RevReclaim</Link>.
-            Paste a read-only API key from Stripe, Polar, or Paddle. Get a complete billing audit in 90 seconds.
+            A{" "}
+            <Link href="/onboarding" className="text-brand hover:text-brand-light underline">free billing audit</Link>{" "}
+            checks every subscription in your Stripe, Polar, or Paddle account in 90 seconds. It surfaces the exact
+            subscriptions, dollar amounts, and the fix for each one. Read-only access — nothing gets changed.
           </p>
         </div>
       </div>
@@ -775,7 +803,7 @@ function SEOContent() {
           <p>
             <strong className="text-text-secondary">Your actual leakage depends on your specific billing setup.</strong>{" "}
             The only way to know your exact number is to{" "}
-            <Link href="/scan" className="text-brand hover:text-brand-light underline">scan your real data</Link>.
+            <Link href="/onboarding" className="text-brand hover:text-brand-light underline">scan your real data</Link>.
           </p>
         </div>
       </div>

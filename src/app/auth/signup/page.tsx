@@ -1,10 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 
 export default function SignupPage() {
+  return (
+    <Suspense>
+      <SignupPageInner />
+    </Suspense>
+  );
+}
+
+function SignupPageInner() {
+  const searchParams = useSearchParams();
+  const redirectParam = searchParams.get("redirect") || "/dashboard";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -20,7 +31,7 @@ export default function SignupPage() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?redirect=/dashboard`,
+        redirectTo: `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirectParam)}`,
       },
     });
 
@@ -106,7 +117,7 @@ export default function SignupPage() {
         <div className="rounded-2xl border border-border bg-surface p-8">
           <h1 className="text-2xl font-bold text-white text-center mb-2">Create your account</h1>
           <p className="text-sm text-text-muted text-center mb-6">
-            Start finding your revenue leaks today
+            90 seconds from now, you&apos;ll see every billing leak in your account.
           </p>
 
           {/* Google OAuth */}

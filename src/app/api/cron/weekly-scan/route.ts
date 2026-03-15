@@ -237,9 +237,20 @@ export async function GET(req: NextRequest) {
         `Scan complete for ${config.user_id}: ${report.summary.leaksFound} leaks, $${(report.summary.mrrAtRisk / 100).toFixed(0)}/mo at risk`
       );
 
-      // Send scan completion email (fire-and-forget)
+      // Send scan completion email with top leak (fire-and-forget)
+      const topLeak = report.leaks.length > 0
+        ? report.leaks.reduce((best, l) => l.monthlyImpact > best.monthlyImpact ? l : best)
+        : undefined;
       if (profileData?.email) {
-        fireAndForget(sendScanCompleteEmail(profileData.email, report.summary, report.id), "CRON_SCAN_COMPLETE_EMAIL");
+        fireAndForget(
+          sendScanCompleteEmail(
+            profileData.email,
+            report.summary,
+            report.id,
+            topLeak ? { type: topLeak.type, monthlyImpact: topLeak.monthlyImpact } : undefined
+          ),
+          "CRON_SCAN_COMPLETE_EMAIL"
+        );
       }
 
       // Send Slack notification if configured (fire-and-forget)

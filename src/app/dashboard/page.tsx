@@ -142,34 +142,37 @@ export default async function DashboardPage() {
         <TrendChart points={extractTrends(reports)} />
       )}
 
-      {/* Empty state — Hormozi-style compelling CTA */}
+      {/* Empty state — sell the problem, not the product */}
       {reports.length === 0 && (
         <div className="rounded-2xl border border-border bg-surface p-8 md:p-16">
           <div className="text-center max-w-lg mx-auto">
             {/* Icon */}
-            <div className="w-16 h-16 bg-brand/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <svg className="w-8 h-8 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            <div className="w-16 h-16 bg-danger/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <svg className="w-8 h-8 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z" />
               </svg>
             </div>
 
-            {/* Headline */}
+            {/* Headline — problem-first */}
             <h2 className="text-2xl font-bold text-white mb-3 md:text-3xl">
-              Your first scan is 90 seconds away.
+              Your billing account has holes you can&apos;t see.
             </h2>
-            <p className="text-base text-text-muted mb-8 leading-relaxed">
-              Paste your Stripe API key and see exactly where your revenue is leaking.
-              The average founder finds{" "}
-              <span className="text-white font-semibold">$2,340/month</span>{" "}
-              they weren&apos;t collecting.
+            <p className="text-base text-text-muted mb-4 leading-relaxed">
+              Expired coupons still giving discounts. Failed payments nobody retried. Customers
+              on pricing you raised months ago. These are real holes &mdash; and your billing
+              dashboard won&apos;t tell you about them.
+            </p>
+            <p className="text-sm text-text-dim mb-8">
+              Most SaaS companies have <span className="text-danger font-semibold">3-8% of MRR</span> leaking
+              through gaps like these. The average scan finds <span className="text-white font-semibold">$2,340/month</span> in lost revenue.
             </p>
 
             {/* CTA */}
             <Link
-              href="/scan"
+              href="/onboarding"
               className="group inline-flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-lg font-bold text-black transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
             >
-              Paste Your Key &rarr; Get Your Report
+              Find My Billing Leaks
               <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
@@ -177,15 +180,8 @@ export default async function DashboardPage() {
 
             {/* Trust line */}
             <p className="mt-4 text-xs text-text-dim">
-              Free. Read-only access. We never touch your data.
+              Read-only access &middot; Key deleted after scan &middot; 90 seconds &middot; Free
             </p>
-
-            {/* Social proof mini */}
-            <div className="mt-8 flex items-center justify-center gap-6 text-xs text-text-muted">
-              <span><span className="text-white font-semibold">847+</span> accounts scanned</span>
-              <span className="hidden sm:inline text-border">|</span>
-              <span className="hidden sm:inline"><span className="text-white font-semibold">94%</span> had at least 1 leak</span>
-            </div>
           </div>
         </div>
       )}

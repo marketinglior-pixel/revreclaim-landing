@@ -2,15 +2,15 @@ export function DashboardPreview() {
   return (
     <section className="border-t border-border-light py-20 md:py-28">
       <div className="mx-auto max-w-5xl px-6">
-        <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-text-muted">
-          Example report
+        <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-danger">
+          Real example
         </div>
         <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
-          This is what you&apos;ll see in 90 seconds.
+          This is what $2,340/month of leaked revenue looks like.
         </h2>
         <p className="mx-auto mb-12 max-w-2xl text-center text-lg text-text-muted">
-          Real leaks. Real dollar amounts. Real fix instructions.
-          This is sample data, but the format is identical to your actual report.
+          23 billing leaks across 10 categories. Expired coupons, failed payments,
+          legacy pricing, duplicate subscriptions. All hiding in plain sight.
         </p>
 
         {/* Dashboard mockup */}

@@ -675,6 +675,40 @@ export default function SettingsPage() {
         </p>
       </div>
 
+      {/* Getting Started guide — show for users without auto-scan config */}
+      {!hasExistingConfig && (
+        <div className="rounded-2xl border border-brand/20 bg-brand/5 p-6">
+          <div className="flex items-start gap-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10">
+              <svg className="h-5 w-5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-base font-bold text-white mb-1">New billing leaks appear every week</h2>
+              <p className="text-sm text-text-muted mb-3">
+                Failed payments, expiring cards, stuck subscriptions &mdash; they don&apos;t stop after one scan.
+                Set up automated scanning below so you catch them as they happen.
+              </p>
+              <div className="flex flex-wrap gap-4 text-xs text-text-muted">
+                <div className="flex items-center gap-1.5">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand/10 text-[10px] font-bold text-brand">1</span>
+                  <span>Add your read-only API key</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand/10 text-[10px] font-bold text-brand">2</span>
+                  <span>Pick a scan frequency</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand/10 text-[10px] font-bold text-brand">3</span>
+                  <span>Get leak alerts by email</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Billing section — only show for paid users */}
       {userPlan !== "free" && (
         <div className="rounded-2xl border border-brand/20 bg-brand/5 p-6">

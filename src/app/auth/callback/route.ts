@@ -46,9 +46,9 @@ export async function GET(request: NextRequest) {
             fireAndForget(sendWelcomeEmail(user.email), "WELCOME_EMAIL");
           }
 
-          // Redirect new users to scan instead of empty dashboard
+          // Redirect new users to onboarding wizard instead of empty dashboard
           if (redirect === "/dashboard") {
-            return NextResponse.redirect(`${origin}/scan?welcome=true`);
+            return NextResponse.redirect(`${origin}/onboarding`);
           }
         }
       }
