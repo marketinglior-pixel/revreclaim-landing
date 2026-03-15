@@ -137,9 +137,45 @@ export default function LeakTable({ leaks, isLoggedIn, onDismiss, privacyMode }:
       {/* Leak cards */}
       <div className="space-y-2">
         {filteredLeaks.length > 0 ? (
-          filteredLeaks.map((leak) => (
-            <LeakCard key={leak.id} leak={leak} isLoggedIn={isLoggedIn} onDismiss={onDismiss} privacyMode={privacyMode} />
-          ))
+          <>
+            {filteredLeaks.slice(0, isLoggedIn ? filteredLeaks.length : 3).map((leak) => (
+              <LeakCard key={leak.id} leak={leak} isLoggedIn={isLoggedIn} onDismiss={onDismiss} privacyMode={privacyMode} />
+            ))}
+            {/* Gate remaining leaks for guest users */}
+            {!isLoggedIn && filteredLeaks.length > 3 && (
+              <div className="relative">
+                {/* Blurred preview of next leak */}
+                <div className="blur-[6px] opacity-50 pointer-events-none select-none" aria-hidden="true">
+                  <LeakCard leak={filteredLeaks[3]} isLoggedIn={false} privacyMode={privacyMode} />
+                </div>
+                {/* Gate overlay */}
+                <div className="absolute inset-0 flex items-center justify-center bg-surface/80 backdrop-blur-sm rounded-xl border border-brand/20">
+                  <div className="text-center px-6 py-4">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <svg className="h-5 w-5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                      </svg>
+                      <span className="text-sm font-bold text-white">
+                        {filteredLeaks.length - 3} more leak{filteredLeaks.length - 3 !== 1 ? "s" : ""} with fix instructions
+                      </span>
+                    </div>
+                    <p className="text-xs text-text-muted mb-3">
+                      Create a free account to see all leaks and their step-by-step fixes.
+                    </p>
+                    <a
+                      href={`/auth/signup?redirect=${typeof window !== "undefined" ? encodeURIComponent(window.location.pathname) : ""}`}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-xs font-bold text-black hover:bg-brand-light transition"
+                    >
+                      Sign Up Free to See All Leaks
+                      <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-center py-12 bg-surface border border-border rounded-xl">
             <p className="text-text-muted">

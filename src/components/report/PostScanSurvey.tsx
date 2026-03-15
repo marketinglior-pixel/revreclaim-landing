@@ -40,7 +40,7 @@ function pillClass(selected: boolean) {
  * Collects MRR range, leak awareness, surprise factor, and NPS score
  * for proprietary segmentation data. Fires analytics event with responses.
  */
-export function PostScanSurvey() {
+export function PostScanSurvey({ firstScanDate }: { firstScanDate?: string | null }) {
   const [visible, setVisible] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [mrrRange, setMrrRange] = useState("");
@@ -52,14 +52,19 @@ export function PostScanSurvey() {
   useEffect(() => {
     try {
       const done = localStorage.getItem(STORAGE_KEY);
-      if (!done) {
-        const timer = setTimeout(() => setVisible(true), 3000);
-        return () => clearTimeout(timer);
-      }
+      if (done) return;
+
+      // Only show 48+ hours after first scan
+      if (!firstScanDate) return;
+      const hoursSinceScan = (Date.now() - new Date(firstScanDate).getTime()) / (1000 * 60 * 60);
+      if (hoursSinceScan < 48) return;
+
+      const timer = setTimeout(() => setVisible(true), 1500);
+      return () => clearTimeout(timer);
     } catch {
       // localStorage not available
     }
-  }, []);
+  }, [firstScanDate]);
 
   async function handleSubmit() {
     if (!mrrRange || !awareness) return;

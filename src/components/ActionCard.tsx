@@ -142,6 +142,8 @@ export function ActionCard({
   missingWriteKey,
 }: ActionCardProps) {
   const [showPreview, setShowPreview] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebrationAmount, setCelebrationAmount] = useState(0);
   const badge = STATUS_BADGE[action.status];
   const label = ACTION_TYPE_LABELS[action.action_type] || action.action_type;
   const description =
@@ -285,7 +287,13 @@ export function ActionCard({
               </a>
             ) : (
               <button
-                onClick={() => onExecute(action.id)}
+                onClick={() => {
+                  setCelebrationAmount(impact);
+                  onExecute(action.id);
+                  // Show celebration after a short delay (assume success)
+                  setTimeout(() => setShowCelebration(true), 1500);
+                  setTimeout(() => setShowCelebration(false), 5000);
+                }}
                 disabled={executing}
                 className="rounded-lg bg-brand px-3 py-1.5 text-xs font-bold text-black hover:bg-brand-dark transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
               >
@@ -324,6 +332,25 @@ export function ActionCard({
           )}
         </div>
       </div>
+
+      {/* Recovery Celebration Overlay */}
+      {showCelebration && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-brand/95 backdrop-blur-sm animate-fade-in-up">
+          <div className="text-center px-6">
+            <div className="flex items-center justify-center mb-2">
+              <svg className="h-10 w-10 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <p className="text-lg font-extrabold text-black">
+              ${celebrationAmount.toLocaleString()}/mo Recovered!
+            </p>
+            <p className="text-xs text-black/70 mt-1">
+              That&apos;s ${(celebrationAmount * 12).toLocaleString()}/year back in your account.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

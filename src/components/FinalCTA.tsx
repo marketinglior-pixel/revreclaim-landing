@@ -136,21 +136,34 @@ export function FinalCTA() {
           </div>
         </div>
 
-        {/* P.S. — honest, founder voice */}
+        {/* P.S. — honest, founder voice with identity */}
         <div className="mt-12 mx-auto max-w-lg px-4 md:px-0 text-left">
-          <p className="text-sm md:text-base text-text-muted leading-relaxed">
-            <span className="font-semibold text-white">P.S.</span> I built RevReclaim because I couldn&apos;t find
-            a tool that just checks a Stripe account for billing mistakes. Not a
-            dashboard. Not an analytics platform. Not something that takes a week to set up.
-          </p>
-          <p className="mt-4 text-sm md:text-base text-text-muted leading-relaxed">
-            Just paste a key, see what&apos;s leaking, decide what to do about it. That&apos;s it.
-          </p>
-          <p className="mt-4 text-sm md:text-base text-text-muted leading-relaxed">
-            We support Stripe, Polar, and Paddle. The scan is free. If we
-            can&apos;t find $1,000/month in leaks, paid plans are free too.
-            I don&apos;t know how to make this lower risk.
-          </p>
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-brand/20 flex items-center justify-center">
+              <span className="text-lg font-bold text-brand">L</span>
+            </div>
+            <div>
+              <p className="text-sm md:text-base text-text-muted leading-relaxed">
+                <span className="font-semibold text-white">P.S.</span> I built RevReclaim because I couldn&apos;t find
+                a tool that just checks a Stripe account for billing mistakes. Not a
+                dashboard. Not an analytics platform. Not something that takes a week to set up.
+              </p>
+              <p className="mt-4 text-sm md:text-base text-text-muted leading-relaxed">
+                Just paste a key, see what&apos;s leaking, decide what to do about it. That&apos;s it.
+              </p>
+              <p className="mt-4 text-sm md:text-base text-text-muted leading-relaxed">
+                We support Stripe, Polar, and Paddle. The scan is free. If we
+                can&apos;t find $1,000/month in leaks, paid plans are free too.
+                I don&apos;t know how to make this lower risk.
+              </p>
+              <div className="mt-4 flex items-center gap-3">
+                <div>
+                  <p className="text-sm font-semibold text-white">Lior Cohen</p>
+                  <p className="text-xs text-text-muted">Founder, RevReclaim</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

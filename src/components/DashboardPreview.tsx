@@ -1,4 +1,10 @@
+"use client";
+
+import { useState } from "react";
+
 export function DashboardPreview() {
+  const [expandedRow, setExpandedRow] = useState<number | null>(null);
+
   return (
     <section className="border-t border-border-light py-20 md:py-28">
       <div className="mx-auto max-w-5xl px-6">
@@ -76,15 +82,22 @@ export function DashboardPreview() {
               </div>
 
               <LeakTableRow
+                index={0}
+                expanded={expandedRow === 0}
+                onToggle={() => setExpandedRow(expandedRow === 0 ? null : 0)}
                 severity="CRITICAL"
                 type="Failed Payment"
                 customer="a***@acmecorp.com"
                 impact="$499/mo"
                 detail="Invoice #INV-2847 unpaid for 12 days. Payment attempted but failed."
                 fix="Retry payment or contact customer"
+                fixSteps={["Open Stripe dashboard", "Go to Invoices > #INV-2847", "Click 'Retry payment'", "If fails again, send dunning email to customer"]}
                 crmInsight="Inactive 52 days, likely churning"
               />
               <LeakTableRow
+                index={1}
+                expanded={expandedRow === 1}
+                onToggle={() => setExpandedRow(expandedRow === 1 ? null : 1)}
                 severity="CRITICAL"
                 type="Missing Payment"
                 customer="j***@startupxyz.io"
@@ -93,6 +106,9 @@ export function DashboardPreview() {
                 fix="Contact customer to add card"
               />
               <LeakTableRow
+                index={2}
+                expanded={expandedRow === 2}
+                onToggle={() => setExpandedRow(expandedRow === 2 ? null : 2)}
                 severity="HIGH"
                 type="Expiring Card"
                 customer="m***@dataflow.com"
@@ -101,6 +117,9 @@ export function DashboardPreview() {
                 fix="Send card update reminder"
               />
               <LeakTableRow
+                index={3}
+                expanded={expandedRow === 3}
+                onToggle={() => setExpandedRow(expandedRow === 3 ? null : 3)}
                 severity="HIGH"
                 type="Expired Coupon"
                 customer="s***@cloudapp.io"
@@ -109,6 +128,9 @@ export function DashboardPreview() {
                 fix="Remove expired discount"
               />
               <LeakTableRow
+                index={4}
+                expanded={expandedRow === 4}
+                onToggle={() => setExpandedRow(expandedRow === 4 ? null : 4)}
                 severity="MED"
                 type="Legacy Pricing"
                 customer="r***@bigco.com"
@@ -117,8 +139,10 @@ export function DashboardPreview() {
                 fix="Migrate to current plan"
                 crmInsight="Active, 2 open deals. Upsell candidate"
               />
-
               <LeakTableRow
+                index={5}
+                expanded={expandedRow === 5}
+                onToggle={() => setExpandedRow(expandedRow === 5 ? null : 5)}
                 severity="HIGH"
                 type="Duplicate Subscription"
                 customer="t***@growthco.com"
@@ -176,14 +200,18 @@ function StatCard({ label, value, sub, highlight, info }: {
   );
 }
 
-function LeakTableRow({ severity, type, customer, impact, detail, fix, crmInsight }: {
+function LeakTableRow({ severity, type, customer, impact, detail, fix, fixSteps, crmInsight, expanded, onToggle }: {
+  index: number;
   severity: string;
   type: string;
   customer: string;
   impact: string;
   detail: string;
   fix: string;
+  fixSteps?: string[];
   crmInsight?: string;
+  expanded?: boolean;
+  onToggle?: () => void;
 }) {
   const sevColor =
     severity === "CRITICAL"
@@ -193,12 +221,18 @@ function LeakTableRow({ severity, type, customer, impact, detail, fix, crmInsigh
         : "bg-info/10 text-info";
 
   return (
-    <div className="border-b border-border-light px-5 py-4">
+    <div
+      className={`border-b border-border-light px-5 py-4 transition cursor-pointer hover:bg-surface-light/30 ${expanded ? "bg-surface-light/20" : ""}`}
+      onClick={onToggle}
+    >
       <div className="mb-2 flex flex-wrap items-center gap-2">
         <span className={`rounded px-2 py-0.5 text-xs font-bold ${sevColor}`}>{severity}</span>
         <span className="text-sm font-semibold text-white">{type}</span>
         <span className="text-sm text-text-muted font-mono">{customer}</span>
         <span className="ml-auto text-sm font-bold text-danger">{impact}</span>
+        <svg className={`h-4 w-4 text-text-dim transition-transform ${expanded ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
       </div>
       <p className="mb-2 text-xs text-text-muted">{detail}</p>
       <span className="inline-block rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold text-brand">
@@ -213,6 +247,23 @@ function LeakTableRow({ severity, type, customer, impact, detail, fix, crmInsigh
         <span className="ml-2 inline-block rounded-full bg-info/10 px-3 py-1 text-xs font-semibold text-info border border-info/20">
           CRM: {crmInsight}
         </span>
+      )}
+      {expanded && (
+        <div className="mt-3 rounded-lg bg-surface-dim border border-border p-4" onClick={(e) => e.stopPropagation()}>
+          <p className="text-xs font-semibold text-text-secondary mb-2">How to fix this:</p>
+          {fixSteps ? (
+            <ol className="space-y-1.5 text-xs text-text-muted list-decimal list-inside">
+              {fixSteps.map((step, i) => <li key={i}>{step}</li>)}
+            </ol>
+          ) : (
+            <p className="text-xs text-text-muted">{fix}. Click through to your billing platform for step-by-step instructions.</p>
+          )}
+          <div className="mt-3 pt-3 border-t border-border">
+            <p className="text-[10px] text-text-dim italic">
+              This is sample data. <a href="/scan" className="text-brand hover:text-brand-light underline">See YOUR leaks</a> by running a free scan.
+            </p>
+          </div>
+        </div>
       )}
     </div>
   );

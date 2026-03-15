@@ -10,10 +10,12 @@ export default function DashboardNav({
   email,
   plan,
   isAdmin = false,
+  healthScore,
 }: {
   email: string;
   plan: string;
   isAdmin?: boolean;
+  healthScore?: number;
 }) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -87,6 +89,24 @@ export default function DashboardNav({
                 className="px-3 py-2 text-xs text-text-muted hover:text-white hover:bg-surface-light rounded-lg transition"
               >
                 Feedback
+              </Link>
+            )}
+            {typeof healthScore === "number" && (
+              <Link
+                href="/dashboard"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                  healthScore >= 80
+                    ? "bg-brand/10 text-brand"
+                    : healthScore >= 60
+                      ? "bg-warning/10 text-warning"
+                      : "bg-danger/10 text-danger"
+                }`}
+                title="Billing Health Score"
+              >
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                </svg>
+                {healthScore}/100
               </Link>
             )}
             <Link

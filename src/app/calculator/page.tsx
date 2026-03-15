@@ -627,15 +627,15 @@ export default function CalculatorPage() {
                   60-second billing health check
                 </div>
                 <h1 className="text-2xl font-bold text-white md:text-3xl mb-3">
-                  94% of SaaS accounts are leaking revenue right now.
+                  Most SaaS billing accounts are leaking revenue right now.
                 </h1>
                 <p className="text-text-muted text-sm mb-4">
-                  We scanned <span className="text-white font-semibold">847 billing accounts</span>. The average leak: <span className="text-danger font-semibold">$2,340/mo</span>.
+                  Industry research from MGI Research and EY shows businesses lose <span className="text-danger font-semibold">1-5% of revenue</span> to billing issues.
                   <br />
                   7 questions. No signup. See where <em>your</em> billing is most vulnerable.
                 </p>
                 <div className="flex items-center justify-center gap-4 text-xs text-text-dim">
-                  <span><strong className="text-text-muted">847+</strong> founders already checked</span>
+                  <span>Based on industry research</span>
                   <span className="text-border">|</span>
                   <span>Stripe, Polar &amp; Paddle</span>
                 </div>
@@ -706,7 +706,7 @@ export default function CalculatorPage() {
               {step === 3 && (
                 <>
                   <span className="text-text-muted font-medium">Halfway there.</span>{" "}
-                  847 founders have taken this assessment. Most were surprised by their results.
+                  Most founders are surprised by their results.
                 </>
               )}
               {step === 4 && "Each question helps pinpoint where your specific leaks are hiding."}
@@ -743,8 +743,8 @@ function SEOContent() {
           </p>
           <p>
             Industry research from MGI Research and EY Revenue Assurance consistently shows that the average business loses
-            1-5% of revenue to billing issues. For SaaS specifically, our data from 847+ account scans puts the average at{" "}
-            <strong className="text-text-secondary">4.7% of MRR</strong>.
+            1-5% of revenue to billing issues. For SaaS specifically, billing complexity drives leakage rates toward the higher end, averaging around{" "}
+            <strong className="text-text-secondary">3-5% of MRR</strong>.
           </p>
         </div>
       </div>
@@ -797,8 +797,8 @@ function SEOContent() {
         <h3 className="text-sm font-semibold text-white mb-3">Assessment Methodology</h3>
         <div className="text-xs text-text-muted space-y-2 leading-relaxed">
           <p>
-            This assessment estimates revenue leakage based on your billing practices and aggregated data from 847+ SaaS
-            accounts scanned by RevReclaim. Risk factors are weighted by their impact on specific leak categories.
+            This assessment estimates revenue leakage based on your billing practices and industry research on SaaS billing
+            patterns. Risk factors are weighted by their impact on specific leak categories.
           </p>
           <p>
             <strong className="text-text-secondary">Your actual leakage depends on your specific billing setup.</strong>{" "}

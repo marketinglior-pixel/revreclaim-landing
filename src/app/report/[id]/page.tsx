@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams } from "next/navigation";
-import { Leak, ScanReport } from "@/lib/types";
+import { Leak, ScanReport, LEAK_TYPE_LABELS } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
 import ReportHeader from "@/components/report/ReportHeader";
 import ReportSummary from "@/components/report/ReportSummary";
@@ -13,7 +13,6 @@ import ReportCTA from "@/components/report/ReportCTA";
 import RecoveryBanner from "@/components/report/RecoveryBanner";
 import QuickWins from "@/components/report/QuickWins";
 import DailyCostTicker from "@/components/report/DailyCostTicker";
-import { PostScanSurvey } from "@/components/report/PostScanSurvey";
 import Link from "next/link";
 
 /** Key used to deduplicate dismissals */
@@ -32,6 +31,8 @@ export default function ReportPage() {
   const [dismissedKeys, setDismissedKeys] = useState<Set<string>>(new Set());
   const [pendingActionsCount, setPendingActionsCount] = useState(0);
   const [privacyMode, setPrivacyMode] = useState(false);
+  const [emailForReport, setEmailForReport] = useState("");
+  const [emailSendStatus, setEmailSendStatus] = useState<"idle" | "loading" | "sent" | "error">("idle");
 
   useEffect(() => {
     async function loadReport() {
@@ -243,34 +244,132 @@ export default function ReportPage() {
     <div className="min-h-screen bg-surface-dim">
       <ReportHeader scannedAt={report.scannedAt} isLoggedIn={isLoggedIn} report={report} privacyMode={privacyMode} />
 
-      {/* Guest save banner */}
+      {/* Guest save banner with email option */}
       {!isLoggedIn && showSaveBanner && (
         <div className="max-w-6xl mx-auto px-4 pt-4">
-          <div className="flex items-center gap-3 rounded-xl border border-warning/20 bg-warning/5 px-4 py-3">
-            <svg className="w-5 h-5 text-warning flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-            </svg>
-            <p className="flex-1 text-sm text-warning">
-              This report is stored temporarily. <span className="hidden sm:inline">Close this tab and it&apos;s gone.</span>{" "}
-              <Link href={`/auth/signup?redirect=/report/${reportId}`} className="font-semibold underline underline-offset-2 hover:text-amber-400 transition">
-                Create a free account
-              </Link>{" "}
-              to save it permanently.
-            </p>
-            <button
-              onClick={() => setShowSaveBanner(false)}
-              className="text-warning/60 hover:text-warning transition cursor-pointer"
-              aria-label="Dismiss save banner"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <div className="rounded-xl border border-warning/20 bg-warning/5 px-4 py-3">
+            <div className="flex items-center gap-3">
+              <svg className="w-5 h-5 text-warning flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
-            </button>
+              <p className="flex-1 text-sm text-warning">
+                This report is stored temporarily. <span className="hidden sm:inline">Close this tab and it&apos;s gone.</span>{" "}
+                <Link href={`/auth/signup?redirect=/report/${reportId}`} className="font-semibold underline underline-offset-2 hover:text-amber-400 transition">
+                  Create a free account
+                </Link>{" "}
+                to save it permanently.
+              </p>
+              <button
+                onClick={() => setShowSaveBanner(false)}
+                className="text-warning/60 hover:text-warning transition cursor-pointer"
+                aria-label="Dismiss save banner"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            {/* Email me this report */}
+            {emailSendStatus === "sent" ? (
+              <div className="mt-3 flex items-center gap-2 text-xs text-brand">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                Report sent! Check your inbox.
+              </div>
+            ) : (
+              <form
+                className="mt-3 flex gap-2"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (!emailForReport || !emailForReport.includes("@")) return;
+                  setEmailSendStatus("loading");
+                  try {
+                    const res = await fetch("/api/email-report", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        email: emailForReport,
+                        reportId,
+                        summary: report?.summary,
+                        leakCount: visibleLeaks.length,
+                        topLeaks: visibleLeaks.slice(0, 3).map(l => ({
+                          type: LEAK_TYPE_LABELS[l.type] || l.type,
+                          impact: Math.round(l.monthlyImpact / 100),
+                        })),
+                      }),
+                    });
+                    setEmailSendStatus(res.ok ? "sent" : "error");
+                  } catch {
+                    setEmailSendStatus("error");
+                  }
+                }}
+              >
+                <input
+                  type="email"
+                  value={emailForReport}
+                  onChange={(e) => setEmailForReport(e.target.value)}
+                  placeholder="your@email.com"
+                  className="flex-1 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs text-white placeholder:text-text-dim focus:border-brand focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  disabled={emailSendStatus === "loading"}
+                  className="rounded-lg bg-surface-light border border-border px-3 py-1.5 text-xs font-medium text-text-secondary hover:text-white hover:border-brand/30 transition disabled:opacity-50 cursor-pointer"
+                >
+                  {emailSendStatus === "loading" ? "..." : "Email Me This Report"}
+                </button>
+              </form>
+            )}
+            {emailSendStatus === "error" && (
+              <p className="mt-1 text-xs text-danger">Failed to send. Try creating a free account instead.</p>
+            )}
           </div>
         </div>
       )}
 
       <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+        {/* Biggest Leak Highlight — Von Restorff Effect */}
+        {visibleLeaks.length > 0 && (() => {
+          const biggest = visibleLeaks.reduce((max, l) => l.monthlyImpact > max.monthlyImpact ? l : max, visibleLeaks[0]);
+          const impactDollars = Math.round(biggest.monthlyImpact / 100);
+          const dailyCost = Math.round(impactDollars / 30);
+          return (
+            <div className="rounded-2xl border border-danger/30 bg-gradient-to-r from-danger/10 to-danger/5 p-6 animate-fade-in-up">
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-danger/15 flex-shrink-0">
+                  <svg className="h-6 w-6 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-danger mb-1">Your Biggest Leak</p>
+                  <h3 className="text-lg font-bold text-white mb-1">
+                    {LEAK_TYPE_LABELS[biggest.type] || biggest.type}: ${impactDollars.toLocaleString()}/mo
+                  </h3>
+                  <p className="text-sm text-text-muted mb-3">
+                    {biggest.description || `This single issue is costing you $${dailyCost}/day.`}
+                  </p>
+                  <a
+                    href="#leak-table"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-danger/15 border border-danger/25 px-3 py-1.5 text-xs font-semibold text-danger hover:bg-danger/25 transition"
+                  >
+                    Fix This First
+                    <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+                    </svg>
+                  </a>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <span className="text-2xl font-extrabold text-danger">${impactDollars.toLocaleString()}</span>
+                  <span className="text-sm text-danger/70">/mo</span>
+                  <p className="text-xs text-text-muted mt-1">${(impactDollars * 12).toLocaleString()}/year</p>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
         {/* Daily Cost Ticker — urgency using actual scan data */}
         <DailyCostTicker mrrAtRisk={adjustedSummary?.mrrAtRisk ?? report.summary.mrrAtRisk} />
 
@@ -413,9 +512,6 @@ export default function ReportPage() {
           isLoggedIn={isLoggedIn}
           pendingActionsCount={pendingActionsCount}
         />
-
-        {/* Post-Scan Survey — shown once, collects MRR range + leak awareness */}
-        <PostScanSurvey />
       </main>
     </div>
   );

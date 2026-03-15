@@ -10,6 +10,7 @@ import AutoScanBanner from "@/components/dashboard/AutoScanBanner";
 import RecoveryActionsBanner from "@/components/dashboard/RecoveryActionsBanner";
 import RecoveryImpactCard from "@/components/dashboard/RecoveryImpactCard";
 import { NPSSurvey } from "@/components/dashboard/NPSSurvey";
+import { PostScanSurvey } from "@/components/report/PostScanSurvey";
 import { ScanReport } from "@/lib/types";
 import ConversionTracker from "@/components/dashboard/ConversionTracker";
 import TrendChart from "@/components/dashboard/TrendChart";
@@ -117,6 +118,34 @@ export default async function DashboardPage() {
       {/* Hero recovery card */}
       {latestReport && <HeroRecoveryCard report={latestReport} />}
 
+      {/* Degradation messaging — compare latest vs previous scan */}
+      {reports.length >= 2 && (() => {
+        const latest = reports[0].summary;
+        const previous = reports[1].summary;
+        const newLeaks = (latest.leaksFound ?? 0) - (previous.leaksFound ?? 0);
+        const mrrChange = Math.round(((latest.mrrAtRisk ?? 0) - (previous.mrrAtRisk ?? 0)) / 100);
+        if (newLeaks > 0 || mrrChange > 0) {
+          return (
+            <div className="flex items-start gap-3 rounded-xl border border-danger/20 bg-danger/5 px-5 py-4">
+              <svg className="h-5 w-5 text-danger flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6L9 12.75l4.286-4.286a11.948 11.948 0 014.306 6.43l.776 2.898m0 0l3.182-5.511m-3.182 5.51l-5.511-3.181" />
+              </svg>
+              <div>
+                <p className="text-sm font-semibold text-white">
+                  Since your last scan:
+                  {newLeaks > 0 && ` ${newLeaks} new leak${newLeaks !== 1 ? "s" : ""} found.`}
+                  {mrrChange > 0 && ` Revenue at risk increased by $${mrrChange}/mo.`}
+                </p>
+                <p className="text-xs text-text-muted mt-1">
+                  Billing leaks compound over time. Fix the new ones before they grow.
+                </p>
+              </div>
+            </div>
+          );
+        }
+        return null;
+      })()}
+
       {/* Recovery impact — shows actual recovered revenue (Pro/Team only) */}
       {plan !== "free" && latestReport && <RecoveryImpactCard />}
 
@@ -125,6 +154,9 @@ export default async function DashboardPage() {
 
       {/* Recovery actions banner */}
       {latestReport && <RecoveryActionsBanner userId={user.id} />}
+
+      {/* Post-Scan Survey — moved from report page, shows 48+ hours after first scan */}
+      {latestReport && <PostScanSurvey firstScanDate={firstScanDate} />}
 
       {/* NPS Survey — shows 7+ days after first scan, max once per 90 days */}
       <NPSSurvey firstScanDate={firstScanDate} />

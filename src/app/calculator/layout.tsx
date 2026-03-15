@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "SaaS Revenue Leak Calculator | RevReclaim",
   description:
-    "Your SaaS is probably leaking revenue right now. Find out how much in 60 seconds. Based on data from 847+ scanned billing accounts. No signup required.",
+    "Your SaaS is probably leaking revenue right now. Find out how much in 60 seconds. Based on industry billing research. No signup required.",
   alternates: { canonical: "https://revreclaim.com/calculator" },
   openGraph: {
     title: "SaaS Revenue Leakage Calculator | RevReclaim",

@@ -19,10 +19,8 @@ export function ScanCounter() {
   }, []);
 
   if (count === null) {
-    // Static fallback while loading or if fetch fails
-    return (
-      <span className="text-white font-semibold">847+</span>
-    );
+    // Show nothing while loading — avoid fabricated numbers
+    return null;
   }
 
   return (

@@ -23,7 +23,6 @@ const SCAN_STEPS = [
 
 export default function ScanForm() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [showKey, setShowKey] = useState(false);
   const [platform, setPlatform] = useState<BillingPlatform>("stripe");
@@ -39,18 +38,12 @@ export default function ScanForm() {
       if (user?.email) {
         setIsLoggedIn(true);
         setUserEmail(user.email);
-        setEmail(user.email);
       }
     });
   }, []);
 
   const handleScan = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!email || !email.includes("@")) {
-      setScanStatus({ status: "error", message: "Please enter a valid email." });
-      return;
-    }
 
     if (!apiKey) {
       setScanStatus({
@@ -88,7 +81,7 @@ export default function ScanForm() {
       const response = await fetch("/api/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, apiKey, platform, utm: getUTMParams() }),
+        body: JSON.stringify({ email: userEmail || "guest@scan.revreclaim.com", apiKey, platform, utm: getUTMParams() }),
         signal: abortRef.current.signal,
       });
 
@@ -203,25 +196,6 @@ export default function ScanForm() {
               </button>
             ))}
           </div>
-        </div>
-
-        {/* Email input */}
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-text-secondary mb-1.5"
-          >
-            Work email
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@company.com"
-            disabled={isScanning}
-            className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-white placeholder-text-dim focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition disabled:opacity-50"
-          />
         </div>
 
         {/* API Key input */}
