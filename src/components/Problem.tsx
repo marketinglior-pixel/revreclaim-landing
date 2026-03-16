@@ -58,37 +58,38 @@ export function Problem() {
           </div>
         </div>
 
-        {/* Common leak types — framed as examples, not fake data */}
+        {/* Three categories of revenue leaks */}
         <div className="relative rounded-2xl border border-border bg-surface p-8 md:p-12">
           <div className="mb-8 text-center">
-            <div className="mb-2 text-sm text-text-muted">Common leak types we scan for</div>
+            <div className="mb-2 text-sm text-text-muted">10 scanners. Three kinds of lost money.</div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <LeakRow
-              label="Expired coupons still giving discounts"
-              percentage="1-3%"
-              color="bg-danger"
-              width="72%"
-            />
-            <LeakRow
-              label="Failed subscription payments with no recovery"
-              percentage="1-2%"
-              color="bg-warning"
-              width="52%"
-            />
-            <LeakRow
-              label="Customers still on last year's pricing"
-              percentage="0.5-2%"
-              color="bg-orange"
-              width="44%"
-            />
-            <LeakRow
-              label="Subscriptions stuck in 'past due' for 30+ days"
-              percentage="0.5-1%"
-              color="bg-purple"
-              width="32%"
-            />
+          <div className="grid gap-6 md:grid-cols-3">
+            <div className="rounded-xl border border-danger/30 bg-danger/5 p-5">
+              <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-danger">Money walking out the door</div>
+              <ul className="space-y-2 text-sm text-text-muted">
+                <li>Failed payments nobody retried</li>
+                <li>Expiring cards about to churn</li>
+                <li>Trials that expired but weren&apos;t converted</li>
+              </ul>
+            </div>
+            <div className="rounded-xl border border-warning/30 bg-warning/5 p-5">
+              <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-warning">Money left on the table</div>
+              <ul className="space-y-2 text-sm text-text-muted">
+                <li>Expired coupons still giving discounts</li>
+                <li>Never-expiring discounts you forgot</li>
+                <li>Legacy pricing from last year</li>
+              </ul>
+            </div>
+            <div className="rounded-xl border border-purple/30 bg-purple/5 p-5">
+              <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-purple">Money hiding in plain sight</div>
+              <ul className="space-y-2 text-sm text-text-muted">
+                <li>Ghost subscriptions (inactive but paying)</li>
+                <li>Duplicate subscriptions</li>
+                <li>Missing payment methods</li>
+                <li>Unbilled overages</li>
+              </ul>
+            </div>
           </div>
 
           <div className="mt-8 rounded-xl border border-border-light bg-surface-dim p-4 text-center">
@@ -100,49 +101,80 @@ export function Problem() {
           </div>
         </div>
 
-        {/* Stripe vs RevReclaim comparison */}
+        {/* 3-column comparison table — the "aha" moment */}
         <div className="mt-10 rounded-2xl border border-info/20 bg-info/5 p-6 md:p-8">
           <div className="mb-5 text-sm font-semibold uppercase tracking-wider text-info">
-            What you see vs. what you&apos;re missing
+            What each tool actually catches
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-xl border border-border bg-surface-dim p-5">
-              <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-text-dim">What Stripe tells you</div>
-              <p className="text-sm text-text-muted">&ldquo;Payment failed for customer a***@acmecorp.com&rdquo;</p>
-              <div className="mt-3 inline-block rounded-full bg-danger/10 px-3 py-1 text-xs text-danger">That&apos;s it. No context. No priority.</div>
-            </div>
-            <div className="rounded-xl border border-brand/30 bg-brand/5 p-5">
-              <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-brand">What RevReclaim tells you</div>
-              <p className="text-sm text-text-secondary">&ldquo;Payment failed, customer inactive 52 days, no CRM activity. Likely churning. Don&apos;t chase this one. Write it off.&rdquo;</p>
-              <div className="mt-3 inline-block rounded-full bg-brand/10 px-3 py-1 text-xs text-brand">Context. Priority. Action.</div>
-              <p className="mt-2 text-xs text-brand/70">+ Track what you actually recovered over 30 days</p>
-            </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="pb-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-text-dim" />
+                  <th className="pb-3 px-4 text-left text-xs font-semibold uppercase tracking-wider text-text-dim">Stripe Dashboard</th>
+                  <th className="pb-3 px-4 text-left text-xs font-semibold uppercase tracking-wider text-text-dim">Analytics tools</th>
+                  <th className="pb-3 pl-4 text-left text-xs font-semibold uppercase tracking-wider text-brand">RevReclaim</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border-light">
+                <ComparisonRow
+                  leak="Expired coupons still active"
+                  stripe="Invisible"
+                  analytics="Invisible"
+                  revreclaim="Finds + removes"
+                />
+                <ComparisonRow
+                  leak="Failed payments"
+                  stripe="Shows alert"
+                  analytics="Shows churn %"
+                  revreclaim="Finds + retries + sends dunning"
+                />
+                <ComparisonRow
+                  leak="Legacy pricing gaps"
+                  stripe="Invisible"
+                  analytics="Invisible"
+                  revreclaim="Finds + flags $ amount"
+                />
+                <ComparisonRow
+                  leak="Duplicate subscriptions"
+                  stripe="Invisible"
+                  analytics="Invisible"
+                  revreclaim="Finds + cancels duplicate"
+                />
+                <ComparisonRow
+                  leak="Expiring cards (30 days out)"
+                  stripe="No warning"
+                  analytics="No warning"
+                  revreclaim="Alerts before churn"
+                />
+                <ComparisonRow
+                  leak="Ghost subscriptions"
+                  stripe="Invisible"
+                  analytics="Invisible"
+                  revreclaim="Finds + flags"
+                />
+              </tbody>
+            </table>
           </div>
-          <p className="mt-4 text-center text-xs text-text-muted">
-            CRM intelligence available on Pro and Team plans.{" "}
-            <a href="#pricing" className="text-brand hover:underline">See pricing &darr;</a>
-          </p>
         </div>
       </div>
     </section>
   );
 }
 
-function LeakRow({ label, percentage, color, width }: {
-  label: string;
-  percentage: string;
-  color: string;
-  width: string;
+function ComparisonRow({ leak, stripe, analytics, revreclaim }: {
+  leak: string;
+  stripe: string;
+  analytics: string;
+  revreclaim: string;
 }) {
+  const isInvisible = (val: string) => val === "Invisible" || val === "No warning";
   return (
-    <div className="rounded-lg border border-border bg-surface-dim p-4">
-      <div className="mb-2 flex items-center justify-between">
-        <span className="text-sm text-text-secondary">{label}</span>
-        <span className="text-sm font-semibold text-text-muted">{percentage} of MRR</span>
-      </div>
-      <div className="h-2 rounded-full bg-surface-light">
-        <div className={`h-2 rounded-full ${color}`} style={{ width }} />
-      </div>
-    </div>
+    <tr>
+      <td className="py-3 pr-4 font-medium text-text-secondary">{leak}</td>
+      <td className={`py-3 px-4 ${isInvisible(stripe) ? "text-text-dim" : "text-text-muted"}`}>{stripe}</td>
+      <td className={`py-3 px-4 ${isInvisible(analytics) ? "text-text-dim" : "text-text-muted"}`}>{analytics}</td>
+      <td className="py-3 pl-4 font-medium text-brand">{revreclaim}</td>
+    </tr>
   );
 }

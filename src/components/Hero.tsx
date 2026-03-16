@@ -15,12 +15,8 @@ export function Hero() {
       <div className="relative mx-auto max-w-4xl px-6 text-center">
         {/* Headline */}
         <h1 className="mb-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl md:leading-[1.2] lg:text-6xl animate-fade-in-up">
-          We help SaaS founders find hidden billing leaks and{" "}
-          <span className="text-brand">turn lost revenue into recovered MRR.</span>
-          <br />
-          <span className="text-text-muted font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
-            Without touching your code or reading a single invoice.
-          </span>
+          Most SaaS companies are leaking{" "}
+          <span className="text-brand">3&ndash;8% of their MRR.</span>
         </h1>
         <div className="mb-6 flex items-center justify-center gap-3 text-sm text-text-muted animate-fade-in-up animate-delay-100">
           <span className="rounded-full border border-border px-3 py-1 font-medium text-text-secondary">Stripe</span>
@@ -29,9 +25,15 @@ export function Hero() {
         </div>
 
         {/* Sub — specifics + urgency */}
-        <p className="mx-auto mb-10 max-w-2xl text-lg text-text-muted md:text-xl leading-relaxed animate-fade-in-up animate-delay-200">
-          Expired coupons still giving discounts. Failed payments nobody retried. Customers on last year&apos;s pricing. These are real holes in your billing &mdash; and Stripe won&apos;t tell you about them. We will. 90 seconds. Free.
-        </p>
+        <div className="mx-auto mb-10 max-w-2xl text-lg text-text-muted md:text-xl leading-relaxed animate-fade-in-up animate-delay-200 space-y-1">
+          <p>Stripe shows what failed.</p>
+          <p>
+            RevReclaim finds the billing mistakes Stripe never flags &mdash;{" "}
+            <span className="text-text-secondary">expired coupons, duplicate subscriptions, legacy pricing</span>{" "}
+            &mdash; and helps you recover the lost revenue.
+          </p>
+          <p className="text-brand font-medium">Scan your Stripe billing in 90 seconds. Free.</p>
+        </div>
 
         {/* Primary CTA */}
         <div className="flex flex-col items-center gap-4 animate-fade-in-up animate-delay-400">
@@ -49,9 +51,12 @@ export function Hero() {
             </svg>
           </a>
           {/* Trust line — all verifiable facts */}
-          <span className="text-sm text-text-muted">
+          <div className="flex items-center gap-2 text-sm text-text-secondary">
+            <svg className="h-4 w-4 text-brand shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
             Read-only access &middot; Key deleted after scan &middot; Free forever &middot; No credit card
-          </span>
+          </div>
         </div>
 
         {/* Low-friction alternative for cold traffic */}
