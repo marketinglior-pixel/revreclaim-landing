@@ -28,9 +28,9 @@ export function Hero() {
         <div className="mx-auto mb-10 max-w-2xl text-lg text-text-muted md:text-xl leading-relaxed animate-fade-in-up animate-delay-200 space-y-1">
           <p>Stripe shows what failed.</p>
           <p>
-            RevReclaim finds the billing mistakes Stripe never flags &mdash;{" "}
-            <span className="text-text-secondary">expired coupons, duplicate subscriptions, legacy pricing</span>{" "}
-            &mdash; and helps you recover the lost revenue.
+            RevReclaim finds the billing mistakes Stripe never flags.{" "}
+            <span className="text-text-secondary">Expired coupons, duplicate subscriptions, legacy pricing.</span>{" "}
+            It helps you recover the lost revenue.
           </p>
           <p className="text-brand font-medium">Scan your Stripe billing in 90 seconds. Free.</p>
         </div>
