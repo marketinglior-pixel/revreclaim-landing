@@ -490,7 +490,7 @@ export default function CalculatorPage() {
                     <p className="text-sm text-text-muted mb-6 max-w-lg mx-auto">
                       Your estimates suggest <span className="text-warning font-semibold">${estimatedMonthlyLeak.toLocaleString()}/mo</span> in
                       recoverable revenue. A free scan gives you the{" "}
-                      <span className="text-white font-medium">exact numbers and fix instructions</span>. Takes 90 seconds.
+                      <span className="text-white font-medium">exact numbers and one-click auto-fix</span>. Takes 90 seconds.
                     </p>
                   </>
                 )}

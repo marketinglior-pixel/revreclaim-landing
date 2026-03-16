@@ -1,6 +1,7 @@
 "use client";
 
 import { computeBillingHealth } from "@/lib/billing-health";
+import { isActionableLeak } from "@/lib/leak-categories";
 import ReportHeader from "@/components/report/ReportHeader";
 import ReportSummary from "@/components/report/ReportSummary";
 import BillingHealthInsights from "@/components/report/BillingHealthInsights";
@@ -10,7 +11,6 @@ import ReportCTA from "@/components/report/ReportCTA";
 import RecoveryBanner from "@/components/report/RecoveryBanner";
 import QuickWins from "@/components/report/QuickWins";
 import AgentSimulation from "@/components/report/AgentSimulation";
-import PlaybookSection from "@/components/report/PlaybookSection";
 import { DEMO_REPORT, addDemoEnrichment } from "./demo-data";
 
 // ──────────────────────────────────────────────────────────────
@@ -30,6 +30,11 @@ const DEMO_BILLING_HEALTH = computeBillingHealth(
   DEMO_REPORT.leaks
 );
 
+// Count actionable leaks (those with auto-fix available)
+const ACTIONABLE_LEAK_COUNT = DEMO_REPORT.leaks.filter((l) =>
+  isActionableLeak(l.type)
+).length;
+
 export default function DemoReportPage() {
   return (
     <div className="min-h-screen bg-surface-dim">
@@ -40,11 +45,12 @@ export default function DemoReportPage() {
       />
 
       <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
-        {/* Recovery Banner */}
+        {/* Recovery Banner — "Auto-Fix N Leaks" scrolls to AgentSimulation */}
         <RecoveryBanner
           mrrAtRisk={DEMO_REPORT.summary.mrrAtRisk}
           isLoggedIn={true}
-          pendingActionsCount={0}
+          isDemo={true}
+          actionableLeakCount={ACTIONABLE_LEAK_COUNT}
         />
 
         {/* Summary Cards + Health Score */}
@@ -59,16 +65,15 @@ export default function DemoReportPage() {
         {/* Quick Wins — start here summary */}
         <QuickWins leaks={DEMO_REPORT.leaks} />
 
-        {/* Recovery Playbooks — step-by-step fix guides */}
-        <PlaybookSection leaks={DEMO_REPORT.leaks} />
-
-        {/* All Leaks Table */}
-        <div id="leak-table">
-          <LeakTable leaks={DEMO_REPORT.leaks} />
+        {/* Recovery Agent Simulation — shows agents auto-fixing leaks live */}
+        <div id="agent-simulation">
+          <AgentSimulation leaks={DEMO_REPORT.leaks} />
         </div>
 
-        {/* Recovery Agent Simulation */}
-        <AgentSimulation leaks={DEMO_REPORT.leaks} />
+        {/* All Leaks Table — fix details gated in demo */}
+        <div id="leak-table">
+          <LeakTable leaks={DEMO_REPORT.leaks} isDemo={true} />
+        </div>
 
         {/* CTA */}
         <ReportCTA mrrAtRisk={DEMO_REPORT.summary.mrrAtRisk} recoveryPotential={DEMO_REPORT.summary.recoveryPotential} />

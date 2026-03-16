@@ -37,10 +37,10 @@ const plans = [
     annualPrice: "$790",
     annualMonthly: "$66",
     period: "/month",
-    description: "Monthly monitoring with full fix instructions, export, and leak degradation alerts.",
+    description: "Monthly monitoring with auto-fix, export, and leak degradation alerts.",
     features: [
       "Everything in Revenue X-Ray",
-      "Fix instructions for every leak (not just top 3)",
+      "Auto-fix for every leak (not just top 3)",
       "PDF & CSV export to share with your team",
       "Monthly automated re-scan",
       "Leak degradation alerts (when leaks get worse)",

@@ -32,11 +32,12 @@ const WHY_THIS_MATTERS: Partial<Record<LeakType, string>> = {
 interface LeakCardProps {
   leak: Leak;
   isLoggedIn?: boolean;
+  isDemo?: boolean;
   onDismiss?: (customerId: string, leakType: string) => void;
   privacyMode?: boolean;
 }
 
-export default function LeakCard({ leak, isLoggedIn, onDismiss, privacyMode }: LeakCardProps) {
+export default function LeakCard({ leak, isLoggedIn, isDemo, onDismiss, privacyMode }: LeakCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [dismissState, setDismissState] = useState<"idle" | "loading" | "dismissed">("idle");
   const [undoLoading, setUndoLoading] = useState(false);
@@ -296,63 +297,98 @@ export default function LeakCard({ leak, isLoggedIn, onDismiss, privacyMode }: L
               </div>
             </div>
 
-            {/* Fix suggestion */}
-            <div className="bg-brand/5 border border-brand/20 rounded-lg p-3">
-              <div className="flex items-start gap-2">
-                <svg
-                  className="w-4 h-4 text-brand flex-shrink-0 mt-0.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                  />
-                </svg>
-                <div>
-                  <p className="text-xs font-semibold text-brand mb-1">
-                    How to fix
-                  </p>
-                  <p className="text-xs text-text-muted leading-relaxed">
-                    {leak.fixSuggestion}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-3 mt-2">
-                    {(leak.platformUrl || leak.stripeUrl) && (
-                      <a
-                        href={leak.platformUrl || leak.stripeUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs font-medium text-brand hover:text-brand-light transition"
+            {/* Fix suggestion — gated for demo/non-logged-in, full for paying users */}
+            {isDemo || !isLoggedIn ? (
+              /* Demo / guest: show auto-fix CTA instead of manual instructions */
+              <div className="bg-brand/5 border border-brand/20 rounded-lg p-3">
+                <div className="flex items-start gap-2">
+                  <svg className="w-4 h-4 text-brand flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                  </svg>
+                  <div>
+                    <p className="text-xs font-semibold text-brand mb-1">
+                      {!REVIEW_ONLY_LEAK_TYPES.has(leak.type) && LEAK_TO_ACTIONS[leak.type]
+                        ? "Auto-Fix Available"
+                        : "Recovery Guidance Available"}
+                    </p>
+                    <p className="text-xs text-text-muted leading-relaxed">
+                      {!REVIEW_ONLY_LEAK_TYPES.has(leak.type) && LEAK_TO_ACTIONS[leak.type]
+                        ? "Our recovery agents can fix this leak automatically with one click. No manual work needed."
+                        : "Get detailed step-by-step guidance on how to resolve this leak safely."}
+                    </p>
+                    {!isLoggedIn && (
+                      <Link
+                        href="/auth/signup"
+                        className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-brand hover:text-brand-light transition"
                       >
-                        View in Dashboard
-                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        Sign up to activate auto-fix
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                         </svg>
-                      </a>
-                    )}
-                    {isLoggedIn && !REVIEW_ONLY_LEAK_TYPES.has(leak.type) && LEAK_TO_ACTIONS[leak.type] && (
-                      <>
-                        {(leak.platformUrl || leak.stripeUrl) && (
-                          <span className="text-text-dim">·</span>
-                        )}
-                        <Link
-                          href="/dashboard/actions"
-                          className="inline-flex items-center gap-1 text-xs font-medium text-brand hover:text-brand-light transition"
-                        >
-                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                          </svg>
-                          Go to Recovery Actions
-                        </Link>
-                      </>
+                      </Link>
                     )}
                   </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              /* Logged-in paying user: show full fix details */
+              <div className="bg-brand/5 border border-brand/20 rounded-lg p-3">
+                <div className="flex items-start gap-2">
+                  <svg
+                    className="w-4 h-4 text-brand flex-shrink-0 mt-0.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                    />
+                  </svg>
+                  <div>
+                    <p className="text-xs font-semibold text-brand mb-1">
+                      How to fix
+                    </p>
+                    <p className="text-xs text-text-muted leading-relaxed">
+                      {leak.fixSuggestion}
+                    </p>
+                    <div className="flex flex-wrap items-center gap-3 mt-2">
+                      {(leak.platformUrl || leak.stripeUrl) && (
+                        <a
+                          href={leak.platformUrl || leak.stripeUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs font-medium text-brand hover:text-brand-light transition"
+                        >
+                          View in Dashboard
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      )}
+                      {!REVIEW_ONLY_LEAK_TYPES.has(leak.type) && LEAK_TO_ACTIONS[leak.type] && (
+                        <>
+                          {(leak.platformUrl || leak.stripeUrl) && (
+                            <span className="text-text-dim">·</span>
+                          )}
+                          <Link
+                            href="/dashboard/actions"
+                            className="inline-flex items-center gap-1 text-xs font-medium text-brand hover:text-brand-light transition"
+                          >
+                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                            </svg>
+                            Go to Recovery Actions
+                          </Link>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Advisory callout for leak types without automated recovery */}
             {REVIEW_ONLY_LEAK_TYPES.has(leak.type) && (

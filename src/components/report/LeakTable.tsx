@@ -9,6 +9,7 @@ import LeakCard from "./LeakCard";
 interface LeakTableProps {
   leaks: Leak[];
   isLoggedIn?: boolean;
+  isDemo?: boolean;
   onDismiss?: (customerId: string, leakType: string) => void;
   privacyMode?: boolean;
 }
@@ -23,7 +24,7 @@ const SEVERITY_FILTERS: { label: string; value: LeakSeverity | "all" }[] = [
 
 type ActionFilter = "action" | "review" | "all";
 
-export default function LeakTable({ leaks, isLoggedIn, onDismiss, privacyMode }: LeakTableProps) {
+export default function LeakTable({ leaks, isLoggedIn, isDemo, onDismiss, privacyMode }: LeakTableProps) {
   const pathname = usePathname();
   const [severityFilter, setSeverityFilter] = useState<
     LeakSeverity | "all"
@@ -140,8 +141,8 @@ export default function LeakTable({ leaks, isLoggedIn, onDismiss, privacyMode }:
       <div className="space-y-2">
         {filteredLeaks.length > 0 ? (
           <>
-            {filteredLeaks.slice(0, isLoggedIn ? filteredLeaks.length : 3).map((leak) => (
-              <LeakCard key={leak.id} leak={leak} isLoggedIn={isLoggedIn} onDismiss={onDismiss} privacyMode={privacyMode} />
+            {filteredLeaks.slice(0, isLoggedIn || isDemo ? filteredLeaks.length : 3).map((leak) => (
+              <LeakCard key={leak.id} leak={leak} isLoggedIn={isLoggedIn} isDemo={isDemo} onDismiss={onDismiss} privacyMode={privacyMode} />
             ))}
             {/* Gate remaining leaks for guest users */}
             {!isLoggedIn && filteredLeaks.length > 3 && (
@@ -158,17 +159,17 @@ export default function LeakTable({ leaks, isLoggedIn, onDismiss, privacyMode }:
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                       </svg>
                       <span className="text-sm font-bold text-white">
-                        {filteredLeaks.length - 3} more leak{filteredLeaks.length - 3 !== 1 ? "s" : ""} with fix instructions
+                        {filteredLeaks.length - 3} more auto-fixable leak{filteredLeaks.length - 3 !== 1 ? "s" : ""}
                       </span>
                     </div>
                     <p className="text-xs text-text-muted mb-3">
-                      Create a free account to see all leaks and their step-by-step fixes.
+                      Create a free account to see all leaks and activate auto-fix.
                     </p>
                     <a
                       href={`/auth/signup?redirect=${encodeURIComponent(pathname)}`}
                       className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-xs font-bold text-black hover:bg-brand-light transition"
                     >
-                      Sign Up Free to See All Leaks
+                      Sign Up Free to Auto-Fix
                       <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                       </svg>
