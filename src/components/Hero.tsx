@@ -30,7 +30,7 @@ export function Hero() {
           <p>
             RevReclaim finds the billing mistakes Stripe never flags.{" "}
             <span className="text-text-secondary">Expired coupons, duplicate subscriptions, legacy pricing.</span>{" "}
-            It helps you recover the lost revenue.
+            Then fixes them. Automatically.
           </p>
           <p className="text-brand font-medium">Scan your Stripe billing in 90 seconds. Free.</p>
         </div>
