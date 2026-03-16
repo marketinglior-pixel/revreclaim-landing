@@ -13,6 +13,16 @@ import type { LeakEnrichment } from "@/lib/enrichment/types";
 // Fixed reference date to avoid SSR/client hydration mismatch
 const DEMO_NOW = new Date("2026-03-15T10:00:00Z").getTime();
 
+// Deterministic PRNG (mulberry32) — prevents hydration mismatch from Math.random()
+let _seed = 0x5EED_CA7E;
+function seededRandom(): string {
+  _seed |= 0;
+  _seed = (_seed + 0x6D2B_79F5) | 0;
+  let t = Math.imul(_seed ^ (_seed >>> 15), 1 | _seed);
+  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+  return ((t ^ (t >>> 14)) >>> 0).toString(36).padStart(8, "0").slice(0, 12);
+}
+
 let leakCounter = 0;
 function nextId(): string {
   leakCounter++;
@@ -40,8 +50,8 @@ function makeLeak(
   const isRecurring = opts.isRecurring ?? false;
   const recoveryRate = opts.recoveryRate ?? 0.5;
   const detectedDaysAgo = opts.daysAgo ?? 7;
-  const custId = `cus_${Math.random().toString(36).slice(2, 14)}`;
-  const subId = `sub_${Math.random().toString(36).slice(2, 14)}`;
+  const custId = `cus_${seededRandom()}`;
+  const subId = `sub_${seededRandom()}`;
 
   return {
     id: nextId(),

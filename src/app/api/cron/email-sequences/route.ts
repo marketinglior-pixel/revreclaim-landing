@@ -5,6 +5,7 @@ import {
   sendSocialProofEmail,
   sendUpgradeNudgeEmail,
   sendLastChanceEmail,
+  sendNurtureEmail,
   shouldSendEmail,
 } from "@/lib/email";
 import { verifyCronSecret } from "@/lib/api-security";
@@ -13,6 +14,14 @@ import { createLogger } from "@/lib/logger";
 const log = createLogger("EMAIL_CRON");
 
 export const maxDuration = 60;
+
+// Day offsets for the 4 nurture emails (sent after first scan)
+const NURTURE_STEPS = [
+  { step: 1 as const, minHours: 0, maxHours: 8 },       // Day 0: immediately after scan
+  { step: 2 as const, minHours: 44, maxHours: 52 },      // Day 2
+  { step: 3 as const, minHours: 116, maxHours: 124 },    // Day 5
+  { step: 4 as const, minHours: 236, maxHours: 244 },    // Day 10
+];
 
 /**
  * Daily cron job for email sequences:
@@ -204,7 +213,80 @@ export async function GET(req: NextRequest) {
     log.error("Error sending last chance emails:", err);
   }
 
-  const summary = `Email sequences: ${remindersSent} reminders, ${socialProofSent} social proof, ${nudgesSent} upgrade nudges, ${lastChanceSent} last chance`;
+  // 5. Post-scan nurture emails (day 0, 2, 5, 10) for free users who scanned but didn't upgrade
+  let nurtureSent = 0;
+  try {
+    for (const { step, minHours, maxHours } of NURTURE_STEPS) {
+      const windowStart = new Date();
+      windowStart.setHours(windowStart.getHours() - maxHours);
+      const windowEnd = new Date();
+      windowEnd.setHours(windowEnd.getHours() - minHours);
+
+      // Find free users whose first report falls in this window
+      const { data: freeUsers } = await supabase
+        .from("profiles")
+        .select("id, email")
+        .eq("plan", "free")
+        .limit(500);
+
+      if (freeUsers) {
+        for (const user of freeUsers) {
+          const { data: reports } = await supabase
+            .from("reports")
+            .select("id, created_at, summary, leaks")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: true })
+            .limit(1);
+
+          if (!reports || reports.length === 0) continue;
+
+          const firstScanDate = new Date(reports[0].created_at);
+          if (firstScanDate < windowStart || firstScanDate > windowEnd) continue;
+
+          const reportSummary = reports[0].summary as unknown as {
+            mrrAtRisk: number;
+            leaksFound: number;
+          };
+          if (!reportSummary?.mrrAtRisk || reportSummary.mrrAtRisk <= 0) continue;
+
+          // Check email preferences
+          if (!(await shouldSendEmail(user.id, "onboarding_drip"))) continue;
+
+          const leaks = (reports[0].leaks || []) as unknown as {
+            type: string;
+            monthlyImpact: number;
+            description?: string;
+          }[];
+          const topLeaks = leaks
+            .sort((a, b) => b.monthlyImpact - a.monthlyImpact)
+            .slice(0, 3)
+            .map((l) => ({ type: l.type, impact: l.monthlyImpact }));
+          const biggest = leaks[0];
+
+          await sendNurtureEmail(step, {
+            email: user.email,
+            reportId: reports[0].id,
+            mrrAtRisk: reportSummary.mrrAtRisk,
+            leakCount: reportSummary.leaksFound,
+            topLeaks,
+            biggestLeak: biggest
+              ? {
+                  type: biggest.type,
+                  impact: biggest.monthlyImpact,
+                  description: biggest.description || "",
+                }
+              : undefined,
+          });
+          nurtureSent++;
+          log.info(`Nurture step ${step} sent to ${user.email}`);
+        }
+      }
+    }
+  } catch (err) {
+    log.error("Error sending nurture emails:", err);
+  }
+
+  const summary = `Email sequences: ${remindersSent} reminders, ${socialProofSent} social proof, ${nudgesSent} upgrade nudges, ${lastChanceSent} last chance, ${nurtureSent} nurture`;
   log.info(summary);
 
   return NextResponse.json({
@@ -213,5 +295,6 @@ export async function GET(req: NextRequest) {
     socialProof: socialProofSent,
     nudges: nudgesSent,
     lastChance: lastChanceSent,
+    nurture: nurtureSent,
   });
 }

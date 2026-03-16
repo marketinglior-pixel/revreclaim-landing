@@ -45,6 +45,7 @@ export function Footer() {
               <li><Link href="/#faq" className="text-sm text-text-muted transition-colors hover:text-white">FAQ</Link></li>
               <li><Link href="/blog" className="text-sm text-text-muted transition-colors hover:text-white">Blog</Link></li>
               <li><Link href="/calculator" className="text-sm text-text-muted transition-colors hover:text-white">Leakage Calculator</Link></li>
+              <li><Link href="/about" className="text-sm text-text-muted transition-colors hover:text-white">About</Link></li>
             </ul>
           </div>
 
@@ -58,9 +59,17 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Compare + Legal */}
           <div>
-            <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-text-muted">Legal</h4>
+            <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-text-muted">Compare</h4>
+            <ul className="space-y-2">
+              <li><Link href="/compare/stripe-dunning" className="text-sm text-text-muted transition-colors hover:text-white">vs Stripe Dunning</Link></li>
+              <li><Link href="/compare/baremetrics" className="text-sm text-text-muted transition-colors hover:text-white">vs Baremetrics</Link></li>
+              <li><Link href="/compare/chartmogul" className="text-sm text-text-muted transition-colors hover:text-white">vs ChartMogul</Link></li>
+              <li><Link href="/compare/profitwell" className="text-sm text-text-muted transition-colors hover:text-white">vs ProfitWell</Link></li>
+              <li><Link href="/compare/manual-audit" className="text-sm text-text-muted transition-colors hover:text-white">vs Manual Audit</Link></li>
+            </ul>
+            <h4 className="mb-3 mt-6 text-xs font-semibold uppercase tracking-wider text-text-muted">Legal</h4>
             <ul className="space-y-2">
               <li><Link href="/security" className="text-sm text-text-muted transition-colors hover:text-white">Security</Link></li>
               <li><Link href="/privacy" className="text-sm text-text-muted transition-colors hover:text-white">Privacy Policy</Link></li>

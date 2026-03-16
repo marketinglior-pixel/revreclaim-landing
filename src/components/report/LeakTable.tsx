@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { Leak, LeakSeverity, LeakType, LEAK_TYPE_LABELS } from "@/lib/types";
 import { isActionableLeak } from "@/lib/leak-categories";
 import LeakCard from "./LeakCard";
@@ -23,6 +24,7 @@ const SEVERITY_FILTERS: { label: string; value: LeakSeverity | "all" }[] = [
 type ActionFilter = "action" | "review" | "all";
 
 export default function LeakTable({ leaks, isLoggedIn, onDismiss, privacyMode }: LeakTableProps) {
+  const pathname = usePathname();
   const [severityFilter, setSeverityFilter] = useState<
     LeakSeverity | "all"
   >("all");
@@ -163,7 +165,7 @@ export default function LeakTable({ leaks, isLoggedIn, onDismiss, privacyMode }:
                       Create a free account to see all leaks and their step-by-step fixes.
                     </p>
                     <a
-                      href={`/auth/signup?redirect=${typeof window !== "undefined" ? encodeURIComponent(window.location.pathname) : ""}`}
+                      href={`/auth/signup?redirect=${encodeURIComponent(pathname)}`}
                       className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-xs font-bold text-black hover:bg-brand-light transition"
                     >
                       Sign Up Free to See All Leaks

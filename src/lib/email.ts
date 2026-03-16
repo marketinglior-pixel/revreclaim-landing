@@ -16,6 +16,7 @@ import {
   type DunningEmailData,
 } from "./email-templates";
 import type { DunningTemplate } from "./recovery/types";
+import { buildNurtureEmail, type NurtureEmailData } from "./email/post-scan-nurture";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./supabase/types";
 import { createLogger } from "./logger";
@@ -260,6 +261,26 @@ export async function sendTeamInviteEmail(
     });
   } catch (err) {
     log.error("Failed to send team invite email:", err);
+  }
+}
+
+/**
+ * Send a post-scan nurture email (step 1-4).
+ */
+export async function sendNurtureEmail(
+  step: 1 | 2 | 3 | 4,
+  data: NurtureEmailData
+): Promise<void> {
+  try {
+    const { subject, html } = buildNurtureEmail(step, data);
+    await getResend().emails.send({
+      from: FROM,
+      to: data.email,
+      subject,
+      html,
+    });
+  } catch (err) {
+    log.error(`Failed to send nurture email step ${step}:`, err);
   }
 }
 

@@ -16,9 +16,9 @@ export const metadata: Metadata = {
   verification: {
     google: "llleqEOxKm_NMJMV1M6vUbe3XFLOE1X0mHOKFZpsJ4M",
   },
-  title: "RevReclaim | Find SaaS Revenue Leaks in 90 Seconds",
+  title: "RevReclaim | SaaS Billing Health Audit — Find Revenue Leaks in 90 Seconds",
   description:
-    "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find revenue leakage from expired coupons, failed subscription payments, and stuck subscriptions. Free. No credit card.",
+    "RevReclaim is a billing health audit tool for SaaS companies. Scan your Stripe, Polar, or Paddle account in 90 seconds to find 10 types of revenue leaks: expired coupons, failed payments, stuck subscriptions, legacy pricing, and more. Free to use. No credit card required.",
   icons: {
     icon: "/icon.svg",
   },
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
     canonical: "https://revreclaim.com",
   },
   openGraph: {
-    title: "RevReclaim | Find SaaS Revenue Leaks in 90 Seconds",
+    title: "RevReclaim | SaaS Billing Health Audit — Find Revenue Leaks in 90 Seconds",
     description:
-      "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find revenue leakage from expired coupons, failed subscription payments, and stuck subscriptions. Free. No credit card.",
+      "RevReclaim is a billing health audit tool for SaaS companies. Scan your Stripe, Polar, or Paddle account in 90 seconds to find 10 types of revenue leaks. Free, no credit card required.",
     url: "https://revreclaim.com",
     siteName: "RevReclaim",
     type: "website",
@@ -44,9 +44,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "RevReclaim | Find SaaS Revenue Leaks in 90 Seconds",
+    title: "RevReclaim | SaaS Billing Health Audit — Find Revenue Leaks in 90 Seconds",
     description:
-      "Scan your Stripe, Polar, or Paddle account in 90 seconds. Find revenue leakage from expired coupons, failed subscription payments, and stuck subscriptions. Free. No credit card.",
+      "RevReclaim is a billing health audit tool for SaaS companies. Scan your Stripe, Polar, or Paddle account in 90 seconds to find 10 types of revenue leaks. Free, no credit card required.",
     images: ["/og-image.png"],
   },
 };
@@ -62,42 +62,64 @@ const jsonLd = {
       url: "https://revreclaim.com",
       logo: "https://revreclaim.com/icon.svg",
       description:
-        "RevReclaim scans your Stripe, Polar, or Paddle account and finds hidden revenue leaks — expired coupons, failed payments, stuck subscriptions, and more.",
+        "RevReclaim is a SaaS billing health audit tool. It scans Stripe, Polar, and Paddle accounts using read-only API keys to detect 10 types of revenue leaks including expired coupons, failed payments, stuck subscriptions, legacy pricing, and duplicate subscriptions. The scan takes under 90 seconds and is free to use. SaaS companies typically lose 3-8% of MRR to billing errors that platforms like Stripe don't flag.",
+      foundingDate: "2026",
       sameAs: [
         "https://x.com/revreclaim",
         "https://github.com/revreclaim",
+        "https://www.producthunt.com/products/revreclaim",
       ],
       contactPoint: {
         "@type": "ContactPoint",
         contactType: "customer support",
         url: "https://revreclaim.com/contact",
       },
+      knowsAbout: [
+        "SaaS revenue leakage",
+        "Billing health audit",
+        "Stripe billing optimization",
+        "Subscription revenue recovery",
+        "Failed payment recovery",
+        "SaaS billing errors",
+      ],
     },
     {
       "@type": "WebSite",
       "@id": "https://revreclaim.com/#website",
       url: "https://revreclaim.com",
       name: "RevReclaim",
+      description:
+        "RevReclaim is a billing health audit tool for SaaS companies using Stripe, Polar, or Paddle. Free scan finds revenue leaks in 90 seconds.",
       publisher: { "@id": "https://revreclaim.com/#organization" },
     },
     {
       "@type": "SoftwareApplication",
       "@id": "https://revreclaim.com/#software",
       name: "RevReclaim",
+      alternateName: "RevReclaim Billing Health Scanner",
       applicationCategory: "BusinessApplication",
+      applicationSubCategory: "Revenue Optimization",
       operatingSystem: "Web",
       url: "https://revreclaim.com",
       description:
-        "Revenue leak detection for SaaS. Scans Stripe, Polar, and Paddle billing data in 90 seconds to find failed payments, expired coupons, stuck subscriptions, and more.",
+        "RevReclaim is a billing health audit tool for SaaS companies. It scans Stripe, Polar, and Paddle billing data in 90 seconds using read-only API keys to find 10 types of revenue leaks: expired coupons still discounting, failed payments never retried, stuck subscriptions, legacy pricing below current rates, expiring credit cards, missing payment methods, unbilled overages, expired trials, duplicate subscriptions, and never-expiring discounts. SaaS companies typically lose 3-8% of MRR to these billing errors. RevReclaim is free to scan, with paid plans for automated monitoring and recovery.",
       disambiguatingDescription:
-        "A SaaS billing leak detection tool that scans Stripe, Paddle, and Polar accounts using read-only API keys to find revenue leaks like expired coupons, stuck subscriptions, and failed payments. Distinct from chargeback recovery services or dunning automation platforms.",
+        "RevReclaim is a comprehensive SaaS billing health audit tool — not a dunning tool or analytics dashboard. While dunning tools like Churnkey handle only failed payments, and analytics tools like Baremetrics show MRR dashboards, RevReclaim scans for 10 types of billing leaks across Stripe, Paddle, and Polar. It uses read-only API keys and cannot modify billing data. Distinct from chargeback recovery services, payment analytics platforms, and subscription management tools.",
+      featureList:
+        "Expired coupon detection, Failed payment recovery alerts, Stuck subscription detection, Legacy pricing identification, Expiring card warnings, Missing payment method alerts, Unbilled overage detection, Expired trial detection, Duplicate subscription detection, Never-expiring discount detection, Billing Health Score, Multi-platform support (Stripe, Polar, Paddle)",
+      screenshot: "https://revreclaim.com/og-image.png",
+      softwareHelp: {
+        "@type": "CreativeWork",
+        url: "https://revreclaim.com/blog",
+      },
       offers: [
         {
           "@type": "Offer",
           name: "Free",
           price: "0",
           priceCurrency: "USD",
-          description: "Unlimited scans, 10 leak checks, export to PDF/CSV",
+          description:
+            "Unlimited manual scans, 10 leak type checks, export to PDF/CSV. Free forever, no credit card required.",
         },
         {
           "@type": "Offer",
@@ -106,7 +128,7 @@ const jsonLd = {
           priceCurrency: "USD",
           billingIncrement: "P1M",
           description:
-            "Auto-scans, Recovery Agent, email alerts, priority support",
+            "Automated weekly scans, Recovery Agent for one-click fixes, email alerts when new leaks detected, priority support.",
         },
         {
           "@type": "Offer",
@@ -114,7 +136,36 @@ const jsonLd = {
           price: "79",
           priceCurrency: "USD",
           billingIncrement: "P1M",
-          description: "Everything in Pro plus team members and shared dashboard",
+          description:
+            "Everything in Pro plus team member access, shared dashboard, and collaborative leak management.",
+        },
+      ],
+    },
+    {
+      "@type": "HowTo",
+      "@id": "https://revreclaim.com/#howto",
+      name: "How to Find Revenue Leaks in Your SaaS Billing",
+      description:
+        "Use RevReclaim to scan your Stripe, Polar, or Paddle account for revenue leaks in under 90 seconds. Free, read-only, and no credit card required.",
+      totalTime: "PT2M",
+      step: [
+        {
+          "@type": "HowToStep",
+          position: 1,
+          name: "Create a read-only API key",
+          text: "Go to your billing platform (Stripe, Polar, or Paddle) and create a restricted API key with read-only access to Customers, Subscriptions, Invoices, Products, Prices, Coupons, and Payment Methods.",
+        },
+        {
+          "@type": "HowToStep",
+          position: 2,
+          name: "Run the scan",
+          text: "Paste your read-only key into RevReclaim. The scanner runs 10 automated checks on your billing data in under 90 seconds.",
+        },
+        {
+          "@type": "HowToStep",
+          position: 3,
+          name: "Review and fix leaks",
+          text: "Each detected leak shows the affected customer, dollar amount at risk, and a direct link to fix it in your billing dashboard. Your Billing Health Score shows your overall billing health from 0 to 100.",
         },
       ],
     },
@@ -242,6 +293,9 @@ export default function RootLayout({
           {children}
           <FeedbackWidget />
         </PostHogProvider>
+        <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
+        {/* @ts-expect-error - ElevenLabs custom element */}
+        <elevenlabs-convai agent-id="agent_4601kkt0963me2svvrs47s83tthz"></elevenlabs-convai>
       </body>
     </html>
   );
