@@ -5,6 +5,7 @@ import ExternalAnalytics from "@/components/ExternalAnalytics";
 import UTMCapture from "@/components/UTMCapture";
 import PostHogProvider from "@/components/PostHogProvider";
 import { FeedbackWidget } from "@/components/FeedbackWidget";
+import Script from "next/script";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -293,7 +294,7 @@ export default function RootLayout({
           {children}
           <FeedbackWidget />
         </PostHogProvider>
-        <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
+        <Script src="https://elevenlabs.io/convai-widget/index.js" strategy="lazyOnload" />
         {/* @ts-expect-error - ElevenLabs custom element */}
         <elevenlabs-convai agent-id="agent_4601kkt0963me2svvrs47s83tthz"></elevenlabs-convai>
       </body>

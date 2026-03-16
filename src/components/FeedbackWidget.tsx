@@ -47,7 +47,7 @@ export function FeedbackWidget() {
       {/* Floating trigger button */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-5 right-5 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-surface-lighter border border-border shadow-lg hover:border-brand/50 hover:bg-surface transition group"
+        className="fixed bottom-5 left-5 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-surface-lighter border border-border shadow-lg hover:border-brand/50 hover:bg-surface transition group"
         aria-label="Send feedback"
       >
         {open ? (
@@ -63,7 +63,7 @@ export function FeedbackWidget() {
 
       {/* Feedback panel */}
       {open && (
-        <div className="fixed bottom-20 right-5 z-50 w-80 rounded-2xl border border-border bg-surface shadow-2xl animate-fade-in-up">
+        <div className="fixed bottom-20 left-5 z-50 w-80 rounded-2xl border border-border bg-surface shadow-2xl animate-fade-in-up">
           {submitted ? (
             <div className="flex items-center gap-3 p-6">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand/15 flex-shrink-0">
