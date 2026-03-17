@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect, useCallback, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import type { BillingPlatform } from "@/lib/platforms/types";
@@ -22,8 +22,21 @@ const SCAN_STEPS = [
   "Scan complete!",
 ];
 
-export default function OnboardingPage() {
+export default function OnboardingPageWrapper() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-surface-dim flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <OnboardingPage />
+    </Suspense>
+  );
+}
+
+function OnboardingPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [step, setStep] = useState(1);
   const [platform, setPlatform] = useState<BillingPlatform | null>(null);
   const [apiKey, setApiKey] = useState("");
@@ -32,6 +45,10 @@ export default function OnboardingPage() {
   const [scanStatus, setScanStatus] = useState<ScanStatus>({ status: "idle" });
   const abortRef = useRef<AbortController | null>(null);
   const [scanWarnings, setScanWarnings] = useState<string[]>([]);
+  const [oauthConnecting, setOauthConnecting] = useState(false);
+  const [oauthError, setOauthError] = useState<string | null>(null);
+  const [showApiKeyFallback, setShowApiKeyFallback] = useState(false);
+  const oauthProcessed = useRef(false);
 
   // Auto-fill email from session
   useEffect(() => {
@@ -45,6 +62,118 @@ export default function OnboardingPage() {
       }
     });
   }, [router]);
+
+  // Handle OAuth error from query params
+  useEffect(() => {
+    const error = searchParams.get("error");
+    if (error) {
+      setOauthError(error);
+      setPlatform("stripe");
+      setStep(2);
+    }
+  }, [searchParams]);
+
+  // Handle OAuth callback — auto-start scan when redirected back from Stripe
+  const handleOAuthScan = useCallback(async (userEmail: string) => {
+    if (oauthProcessed.current) return;
+    oauthProcessed.current = true;
+
+    setPlatform("stripe");
+    setStep(3);
+    setScanStatus({ status: "validating" });
+    trackScanStarted("stripe");
+
+    let currentStep = 0;
+    const progressInterval = setInterval(() => {
+      if (currentStep < SCAN_STEPS.length - 2) {
+        currentStep++;
+        setScanStatus({
+          status: "scanning",
+          step: SCAN_STEPS[currentStep],
+          progress: Math.min(85, (currentStep / SCAN_STEPS.length) * 100),
+        });
+      }
+    }, 3000);
+
+    try {
+      // Fetch the OAuth token from the server (one-time use)
+      const tokenRes = await fetch("/api/auth/stripe/token");
+      const tokenData = await tokenRes.json();
+
+      if (!tokenRes.ok || !tokenData.accessToken) {
+        clearInterval(progressInterval);
+        setScanStatus({
+          status: "error",
+          message: tokenData.error || "Failed to retrieve Stripe connection. Please try again.",
+        });
+        setStep(2);
+        return;
+      }
+
+      setScanStatus({
+        status: "scanning",
+        step: SCAN_STEPS[0],
+        progress: 5,
+      });
+
+      // Run scan with OAuth token
+      const response = await fetch("/api/scan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: userEmail,
+          oauthToken: tokenData.accessToken,
+          platform: "stripe",
+          utm: getUTMParams(),
+        }),
+      });
+
+      clearInterval(progressInterval);
+      const data = await response.json();
+
+      if (!response.ok) {
+        setScanStatus({
+          status: "error",
+          message: data.error || "Scan failed. Please try again.",
+        });
+        setStep(2);
+        return;
+      }
+
+      if (data.warnings?.length) {
+        setScanWarnings(data.warnings);
+      }
+
+      const report: ScanReport = data.report;
+      trackScanCompleted(report.leaks?.length ?? 0, report.summary?.mrrAtRisk ?? 0);
+
+      setScanStatus({
+        status: "scanning",
+        step: "Scan complete!",
+        progress: 100,
+      });
+
+      sessionStorage.setItem(`report_${report.id}`, JSON.stringify(report));
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      setScanStatus({ status: "complete", report });
+      router.push(`/report/${report.id}`);
+    } catch {
+      clearInterval(progressInterval);
+      setScanStatus({
+        status: "error",
+        message: "Connection failed. Please check your internet and try again.",
+      });
+      setStep(2);
+    }
+  }, [router]);
+
+  // Detect OAuth redirect and auto-start scan
+  useEffect(() => {
+    const connected = searchParams.get("connected");
+    if (connected === "stripe" && email && !oauthProcessed.current) {
+      handleOAuthScan(email);
+    }
+  }, [searchParams, email, handleOAuthScan]);
 
   const handleScan = async () => {
     if (!platform || !apiKey || !email) return;
@@ -234,82 +363,173 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Step 2: API Key input */}
+        {/* Step 2: Connect — OAuth for Stripe, API key for others */}
         {step === 2 && platform && (
           <div className="animate-fade-in-up">
             <div className="text-center mb-8">
               <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3">
-                Paste your {PLATFORM_LABELS[platform]} API key.
+                {platform === "stripe" ? "Connect your Stripe account." : `Paste your ${PLATFORM_LABELS[platform]} API key.`}
               </h1>
               <p className="text-text-muted max-w-md mx-auto">
                 Read-only access. We can&apos;t change anything in your account.
-                The key is deleted the moment the scan finishes.
+                {platform !== "stripe" && " The key is deleted the moment the scan finishes."}
               </p>
             </div>
 
-            <div className="rounded-2xl border border-border bg-surface p-6 space-y-4">
-              {/* API Key input */}
-              <div>
-                <label
-                  htmlFor="apiKey"
-                  className="block text-sm font-medium text-text-secondary mb-1.5"
-                >
-                  {platform === "stripe" ? "Stripe Restricted API Key" :
-                   platform === "polar" ? "Polar Organization Access Token" :
-                   "Paddle API Key"}
-                </label>
-                <div className="relative">
-                  <input
-                    id="apiKey"
-                    type={showKey ? "text" : "password"}
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    placeholder={
-                      platform === "stripe" ? "rk_live_..." :
-                      platform === "polar" ? "polar_oat_..." :
-                      "Your API key..."
-                    }
-                    autoFocus
-                    className="w-full px-4 py-3 pr-12 bg-surface-dim border border-border rounded-lg text-white placeholder-text-dim focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition font-mono text-sm"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowKey(!showKey)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition cursor-pointer"
-                  >
-                    {showKey ? (
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-                      </svg>
-                    ) : (
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                    )}
-                  </button>
-                </div>
+            {/* OAuth error */}
+            {oauthError && (
+              <div className="mb-4 rounded-lg bg-danger/10 border border-danger/20 px-4 py-3">
+                <p className="text-sm text-danger">{oauthError}</p>
               </div>
+            )}
 
-              {/* Write-key warning */}
-              {platform === "stripe" && apiKey.startsWith("sk_") && (
-                <div className="rounded-lg bg-warning/10 border border-warning/30 px-4 py-3">
-                  <div className="flex items-start gap-2">
-                    <svg className="w-4 h-4 text-warning flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                    </svg>
-                    <div>
-                      <p className="text-xs font-semibold text-warning">This is a secret key with full write access</p>
-                      <p className="text-xs text-text-muted mt-1">
-                        We only need read access. Use a <strong className="text-white">restricted key</strong> (starts with <code className="text-brand">rk_live_</code>) for maximum security.
-                      </p>
+            <div className="rounded-2xl border border-border bg-surface p-6 space-y-4">
+              {/* Stripe OAuth — primary connection method */}
+              {platform === "stripe" && !showApiKeyFallback && (
+                <>
+                  <a
+                    href="/api/auth/stripe/connect"
+                    onClick={() => setOauthConnecting(true)}
+                    className={`w-full flex items-center justify-center gap-3 py-3.5 rounded-lg text-sm font-bold transition-all min-h-[48px] cursor-pointer ${
+                      oauthConnecting
+                        ? "bg-[#635BFF]/60 text-white cursor-wait"
+                        : "bg-[#635BFF] text-white hover:bg-[#5851ea] hover:shadow-[0_0_20px_rgba(99,91,255,0.3)]"
+                    }`}
+                  >
+                    {oauthConnecting ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                        Connecting to Stripe...
+                      </>
+                    ) : (
+                      <>
+                        {/* Stripe icon */}
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z" />
+                        </svg>
+                        Connect with Stripe
+                      </>
+                    )}
+                  </a>
+
+                  {/* Trust badges */}
+                  <div className="flex items-center justify-center gap-4 text-xs text-text-muted">
+                    <span className="flex items-center gap-1">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                      Read-only access
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <svg className="w-3.5 h-3.5 text-[#635BFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                      Powered by Stripe Connect
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      Revoke anytime
+                    </span>
+                  </div>
+
+                  <div className="relative py-2">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-border" />
+                    </div>
+                    <div className="relative flex justify-center">
+                      <span className="bg-surface px-3 text-xs text-text-dim">or</span>
                     </div>
                   </div>
-                </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowApiKeyFallback(true)}
+                    className="w-full py-2.5 text-xs text-text-muted hover:text-white border border-border rounded-lg transition cursor-pointer"
+                  >
+                    Paste API key manually instead
+                  </button>
+                </>
               )}
 
-              {/* Instructions */}
-              <ApiKeyInstructions platform={platform} />
+              {/* API Key fallback (always shown for Polar/Paddle, toggle for Stripe) */}
+              {(platform !== "stripe" || showApiKeyFallback) && (
+                <>
+                  {/* Back to OAuth option for Stripe */}
+                  {platform === "stripe" && showApiKeyFallback && (
+                    <button
+                      type="button"
+                      onClick={() => setShowApiKeyFallback(false)}
+                      className="w-full py-2.5 text-xs text-[#635BFF] hover:text-[#5851ea] border border-[#635BFF]/20 rounded-lg transition cursor-pointer mb-1"
+                    >
+                      &larr; Use Stripe Connect instead (recommended)
+                    </button>
+                  )}
+
+                  <div>
+                    <label
+                      htmlFor="apiKey"
+                      className="block text-sm font-medium text-text-secondary mb-1.5"
+                    >
+                      {platform === "stripe" ? "Stripe Restricted API Key" :
+                       platform === "polar" ? "Polar Organization Access Token" :
+                       "Paddle API Key"}
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="apiKey"
+                        type={showKey ? "text" : "password"}
+                        value={apiKey}
+                        onChange={(e) => setApiKey(e.target.value)}
+                        placeholder={
+                          platform === "stripe" ? "rk_live_..." :
+                          platform === "polar" ? "polar_oat_..." :
+                          "Your API key..."
+                        }
+                        autoFocus
+                        className="w-full px-4 py-3 pr-12 bg-surface-dim border border-border rounded-lg text-white placeholder-text-dim focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition font-mono text-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowKey(!showKey)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition cursor-pointer"
+                      >
+                        {showKey ? (
+                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Write-key warning */}
+                  {platform === "stripe" && apiKey.startsWith("sk_") && (
+                    <div className="rounded-lg bg-warning/10 border border-warning/30 px-4 py-3">
+                      <div className="flex items-start gap-2">
+                        <svg className="w-4 h-4 text-warning flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                        <div>
+                          <p className="text-xs font-semibold text-warning">This is a secret key with full write access</p>
+                          <p className="text-xs text-text-muted mt-1">
+                            We only need read access. Use a <strong className="text-white">restricted key</strong> (starts with <code className="text-brand">rk_live_</code>) for maximum security.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Instructions */}
+                  <ApiKeyInstructions platform={platform} />
+                </>
+              )}
 
               {/* Error message */}
               {scanStatus.status === "error" && (
@@ -320,35 +540,40 @@ export default function OnboardingPage() {
 
               <div className="flex gap-3">
                 <button
-                  onClick={() => { setStep(1); setApiKey(""); }}
+                  onClick={() => { setStep(1); setApiKey(""); setShowApiKeyFallback(false); setOauthError(null); }}
                   className="px-4 py-3 border border-border bg-surface-dim text-sm text-text-muted rounded-lg transition hover:text-white cursor-pointer"
                 >
                   Back
                 </button>
-                <button
-                  onClick={handleScan}
-                  disabled={!apiKey}
-                  className="flex-1 py-3 bg-brand text-sm font-bold text-black rounded-lg min-h-[44px] transition-all hover:bg-brand-dark disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
-                >
-                  Scan My Account
-                </button>
+                {/* Only show Scan button when API key fallback is active */}
+                {(platform !== "stripe" || showApiKeyFallback) && (
+                  <button
+                    onClick={handleScan}
+                    disabled={!apiKey}
+                    className="flex-1 py-3 bg-brand text-sm font-bold text-black rounded-lg min-h-[44px] transition-all hover:bg-brand-dark disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    Scan My Account
+                  </button>
+                )}
               </div>
 
-              {/* Security line */}
-              <div className="flex items-center justify-center gap-4 text-xs text-text-muted pt-2">
-                <span className="flex items-center gap-1">
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                  Read-only
-                </span>
-                <span className="flex items-center gap-1">
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                  Key deleted after scan
-                </span>
-              </div>
+              {/* Security line — only for API key flow */}
+              {(platform !== "stripe" || showApiKeyFallback) && (
+                <div className="flex items-center justify-center gap-4 text-xs text-text-muted pt-2">
+                  <span className="flex items-center gap-1">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    Read-only
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Key deleted after scan
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         )}

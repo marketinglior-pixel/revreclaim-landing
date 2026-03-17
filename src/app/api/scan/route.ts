@@ -38,13 +38,17 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { email, apiKey, platform: rawPlatform } = body;
+    const { email, apiKey, platform: rawPlatform, oauthToken } = body;
 
     // Validate platform (default to stripe)
     const validPlatforms: BillingPlatform[] = ["stripe", "polar", "paddle"];
     const platform: BillingPlatform = validPlatforms.includes(rawPlatform)
       ? rawPlatform
       : "stripe";
+
+    // Resolve the actual API key — OAuth token takes priority for Stripe
+    const resolvedKey = (platform === "stripe" && oauthToken) ? oauthToken : apiKey;
+    const isOAuthScan = !!(platform === "stripe" && oauthToken);
 
     // Validate inputs
     if (!email || !validateEmail(email)) {
@@ -53,10 +57,19 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    const keyValidation = validateApiKey(apiKey, platform);
-    if (!keyValidation.valid) {
+
+    // Skip strict key format validation for OAuth tokens (they use sk_live_ format)
+    if (!isOAuthScan) {
+      const keyValidation = validateApiKey(resolvedKey, platform);
+      if (!keyValidation.valid) {
+        return NextResponse.json(
+          { error: keyValidation.error },
+          { status: 400 }
+        );
+      }
+    } else if (!resolvedKey || resolvedKey.length < 10) {
       return NextResponse.json(
-        { error: keyValidation.error },
+        { error: "Invalid OAuth token." },
         { status: 400 }
       );
     }
@@ -87,12 +100,12 @@ export async function POST(req: NextRequest) {
     const scanWarnings: string[] = [];
 
     if (platform === "stripe") {
-      const result = await runFullScan(apiKey);
+      const result = await runFullScan(resolvedKey);
       report = result.report;
       emailMap = result.emailMap;
       scanWarnings.push(...result.warnings);
     } else {
-      const result = await runPlatformScan(platform, apiKey);
+      const result = await runPlatformScan(platform, resolvedKey);
       report = result.report;
       emailMap = result.emailMap;
     }
@@ -143,13 +156,13 @@ export async function POST(req: NextRequest) {
         userId: auth.userId,
         report,
         platform,
-        apiKey,
+        apiKey: resolvedKey,
         emailMap,
       }).catch((err) => log.error("Persist error:", err));
     }
 
     // Build warnings
-    if (platform === "stripe" && apiKey.startsWith("sk_")) {
+    if (platform === "stripe" && !isOAuthScan && resolvedKey.startsWith("sk_")) {
       scanWarnings.push(
         "You used a secret key with full write access. We recommend creating a restricted read-only key (rk_live_...) and rotating this key in your Stripe Dashboard."
       );

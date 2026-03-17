@@ -11,6 +11,8 @@ import { PLATFORM_LABELS } from "@/lib/platforms/types";
 import { trackScanStarted, trackScanCompleted } from "@/lib/conversion-tracking";
 import { getUTMParams } from "@/lib/utm";
 
+const STRIPE_OAUTH_AVAILABLE = !!process.env.NEXT_PUBLIC_STRIPE_CONNECT_CLIENT_ID;
+
 const SCAN_STEPS = [
   "Validating API key...",
   "Fetching subscriptions...",
@@ -31,6 +33,7 @@ export default function ScanForm() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [scanWarnings, setScanWarnings] = useState<string[]>([]);
+  const [showApiKeyFallback, setShowApiKeyFallback] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -198,7 +201,50 @@ export default function ScanForm() {
           </div>
         </div>
 
-        {/* API Key input */}
+        {/* Stripe OAuth option */}
+        {platform === "stripe" && STRIPE_OAUTH_AVAILABLE && !showApiKeyFallback && (
+          <div className="space-y-3">
+            <a
+              href="/api/auth/stripe/connect"
+              className="w-full flex items-center justify-center gap-3 py-3 rounded-lg text-sm font-bold bg-[#635BFF] text-white hover:bg-[#5851ea] transition-all min-h-[44px] cursor-pointer"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z" />
+              </svg>
+              Connect with Stripe
+            </a>
+            <div className="flex items-center justify-center gap-3 text-[10px] text-text-dim">
+              <span>Read-only</span>
+              <span>·</span>
+              <span>Powered by Stripe Connect</span>
+              <span>·</span>
+              <span>Revoke anytime</span>
+            </div>
+            <div className="relative py-1">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
+              <div className="relative flex justify-center"><span className="bg-surface-dim px-3 text-xs text-text-dim">or</span></div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowApiKeyFallback(true)}
+              className="w-full py-2 text-xs text-text-muted hover:text-white border border-border rounded-lg transition cursor-pointer"
+            >
+              Paste API key manually
+            </button>
+          </div>
+        )}
+
+        {/* API Key input — shown for non-Stripe or when fallback is active */}
+        {(platform !== "stripe" || !STRIPE_OAUTH_AVAILABLE || showApiKeyFallback) && (<div className="space-y-4">
+        {platform === "stripe" && showApiKeyFallback && STRIPE_OAUTH_AVAILABLE && (
+          <button
+            type="button"
+            onClick={() => setShowApiKeyFallback(false)}
+            className="w-full py-2 text-xs text-[#635BFF] hover:text-[#5851ea] border border-[#635BFF]/20 rounded-lg transition cursor-pointer"
+          >
+            &larr; Use Stripe Connect instead
+          </button>
+        )}
         <div>
           <label
             htmlFor="apiKey"
@@ -262,6 +308,7 @@ export default function ScanForm() {
 
         {/* API Key Instructions */}
         <ApiKeyInstructions platform={platform} />
+        </div>)}
 
         {/* Submit button */}
         <button
