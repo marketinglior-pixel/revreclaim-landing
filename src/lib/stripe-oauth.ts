@@ -37,7 +37,11 @@ export interface StripeTokenResponse {
 
 /**
  * Build the Stripe Connect OAuth authorization URL.
- * Uses scope=read_only so we never get write access.
+ *
+ * Note: We use scope=read_write because Stripe requires special approval for
+ * read_only connections. Our code only performs read operations regardless of
+ * the scope — the token is used to fetch subscriptions, invoices, etc.
+ * Users can revoke access anytime from their Stripe Dashboard.
  */
 export function buildStripeOAuthUrl(state: string): string {
   const clientId = process.env.NEXT_PUBLIC_STRIPE_CONNECT_CLIENT_ID;
@@ -51,7 +55,7 @@ export function buildStripeOAuthUrl(state: string): string {
   const params = new URLSearchParams({
     response_type: "code",
     client_id: clientId,
-    scope: "read_only",
+    scope: "read_write",
     redirect_uri: redirectUri,
     state, // CSRF protection — verified on callback
   });
