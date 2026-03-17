@@ -350,15 +350,36 @@ export default function ReportPage() {
                   <p className="text-sm text-text-muted mb-3">
                     {biggest.description || `This single issue is costing you $${dailyCost}/day.`}
                   </p>
-                  <a
-                    href="#leak-table"
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-danger/15 border border-danger/25 px-3 py-1.5 text-xs font-semibold text-danger hover:bg-danger/25 transition"
-                  >
-                    Fix This First
-                    <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
-                    </svg>
-                  </a>
+                  {biggest.fixSuggestion && (
+                    <p className="text-xs text-text-secondary mb-2">
+                      <span className="font-semibold text-brand">How to fix:</span>{" "}
+                      {biggest.fixSuggestion}
+                    </p>
+                  )}
+                  <div className="flex flex-wrap items-center gap-2">
+                    {(biggest.platformUrl || biggest.stripeUrl) && (
+                      <a
+                        href={biggest.platformUrl || biggest.stripeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-brand/15 border border-brand/25 px-3 py-1.5 text-xs font-semibold text-brand hover:bg-brand/25 transition"
+                      >
+                        Open in Dashboard
+                        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                    )}
+                    <a
+                      href="#leak-table"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-danger/15 border border-danger/25 px-3 py-1.5 text-xs font-semibold text-danger hover:bg-danger/25 transition"
+                    >
+                      See All Leaks
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+                      </svg>
+                    </a>
+                  </div>
                 </div>
                 <div className="text-right flex-shrink-0">
                   <span className="text-2xl font-extrabold text-danger">${impactDollars.toLocaleString()}</span>

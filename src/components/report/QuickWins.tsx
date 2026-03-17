@@ -1,8 +1,24 @@
 "use client";
 
-import { Leak } from "@/lib/types";
+import { Leak, LeakType } from "@/lib/types";
 import { LEAK_ACTION_BUCKET, ActionBucket } from "@/lib/leak-categories";
 import { formatCurrency } from "@/lib/utils";
+
+/** Short action description per leak type — tells users exactly what to do */
+const LEAK_TYPE_ACTION: Partial<Record<LeakType, string>> = {
+  expired_coupon: "Remove expired coupon from subscription in your dashboard",
+  never_expiring_discount: "Review if this forever-discount is still intentional",
+  failed_payment: "Send a payment update link to the customer",
+  expiring_card: "Notify customer to update their card before it expires",
+  stuck_subscription: "Cancel or reactivate the stuck subscription",
+  legacy_pricing: "Decide whether to migrate this customer to current pricing",
+  missing_payment_method: "Ask customer to add a payment method",
+  unbilled_overage: "Create an invoice for the unbilled usage",
+  trial_expired: "Convert to paid or end the expired trial",
+  duplicate_subscription: "Cancel the duplicate and keep the correct one",
+  stale_coupon: "Review if this promotional coupon is still needed",
+  billing_churn: "Set up dunning emails to prevent billing-caused churn",
+};
 
 interface QuickWinsProps {
   leaks: Leak[];
@@ -105,16 +121,23 @@ export default function QuickWins({ leaks }: QuickWinsProps) {
                 {items.length === 1 ? "leak" : "leaks"} → {formatCurrency(mrr)}/mo
               </span>
             </p>
-            <div className="mt-3 flex flex-wrap gap-1.5">
+            <div className="mt-3 space-y-1.5">
               {Array.from(new Set(items.map((l) => l.type))).map((type) => {
                 const count = items.filter((l) => l.type === type).length;
+                const action = LEAK_TYPE_ACTION[type];
                 return (
-                  <span
-                    key={type}
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium ${config.tagBg} ${config.tagText} rounded border ${config.tagBorder}`}
-                  >
-                    {count}x {type.replace(/_/g, " ")}
-                  </span>
+                  <div key={type} className="flex items-start gap-2">
+                    <span
+                      className={`flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium ${config.tagBg} ${config.tagText} rounded border ${config.tagBorder}`}
+                    >
+                      {count}x {type.replace(/_/g, " ")}
+                    </span>
+                    {action && (
+                      <span className="text-[11px] text-text-dim leading-tight mt-px">
+                        {action}
+                      </span>
+                    )}
+                  </div>
                 );
               })}
             </div>

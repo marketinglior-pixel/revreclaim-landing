@@ -155,6 +155,14 @@ export default function LeakCard({ leak, isLoggedIn, isDemo, onDismiss, privacyM
                 </>
               )}
             </div>
+
+            {/* Fix hint — visible in collapsed state so users know what to do */}
+            {!expanded && leak.fixSuggestion && (
+              <p className="text-xs text-text-dim mt-1.5 line-clamp-1">
+                <span className="text-brand font-medium">Fix:</span>{" "}
+                {leak.fixSuggestion}
+              </p>
+            )}
           </div>
 
           {/* Expand icon */}
