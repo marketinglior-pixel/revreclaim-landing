@@ -28,9 +28,8 @@ export function Hero() {
         <div className="mx-auto mb-10 max-w-2xl text-lg text-text-muted md:text-xl leading-relaxed animate-fade-in-up animate-delay-200 space-y-1">
           <p>Stripe shows what failed.</p>
           <p>
-            RevReclaim finds the billing mistakes Stripe never flags.{" "}
-            <span className="text-text-secondary">Expired coupons, duplicate subscriptions, legacy pricing.</span>{" "}
-            The audit you know you should do but never have time for.
+            RevReclaim finds what Stripe misses.{" "}
+            <span className="text-text-secondary">The billing audit you never have time for.</span>
           </p>
           <p className="text-brand font-medium">Find and fix your billing leaks in 5 minutes. Free.</p>
         </div>
