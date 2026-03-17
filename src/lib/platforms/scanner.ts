@@ -37,6 +37,8 @@ import { scanMissingPaymentMethods } from "../scanners-v2/missing-payment-method
 import { scanUnbilledOverages } from "../scanners-v2/unbilled-overages";
 import { scanTrialExpired } from "../scanners-v2/trial-expired";
 import { scanDuplicateSubscriptions } from "../scanners-v2/duplicate-subscriptions";
+import { scanStaleCoupons } from "../scanners-v2/stale-coupons";
+import { scanBillingChurn } from "../scanners-v2/billing-churn";
 
 /**
  * Run a full scan for any supported billing platform.
@@ -100,6 +102,12 @@ export async function runPlatformScan(
   }
   if (caps.duplicateSubscriptions) {
     runScanner("duplicateSubscriptions", () => scanDuplicateSubscriptions(data.subscriptions));
+  }
+  if (caps.staleCoupons) {
+    runScanner("staleCoupons", () => scanStaleCoupons(data.subscriptions));
+  }
+  if (caps.billingChurn) {
+    runScanner("billingChurn", () => scanBillingChurn(data.subscriptions, data.invoices));
   }
 
   onProgress?.({ step: "Building report...", progress: 90 });

@@ -12,7 +12,9 @@ export type LeakType =
   | "missing_payment_method"
   | "unbilled_overage"
   | "trial_expired"
-  | "duplicate_subscription";
+  | "duplicate_subscription"
+  | "stale_coupon"
+  | "billing_churn";
 
 export const LEAK_TYPE_LABELS: Record<LeakType, string> = {
   expired_coupon: "Expired Coupons",
@@ -25,6 +27,8 @@ export const LEAK_TYPE_LABELS: Record<LeakType, string> = {
   unbilled_overage: "Unbilled Overages",
   trial_expired: "Expired Trials",
   duplicate_subscription: "Duplicate Subscriptions",
+  stale_coupon: "Stale Coupons",
+  billing_churn: "Billing-Caused Churn",
 };
 
 export const SEVERITY_ORDER: Record<LeakSeverity, number> = {

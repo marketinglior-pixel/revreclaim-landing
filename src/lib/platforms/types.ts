@@ -140,6 +140,8 @@ export interface PlatformCapabilities {
   unbilledOverages: boolean;
   trialExpired: boolean;
   duplicateSubscriptions: boolean;
+  staleCoupons: boolean;
+  billingChurn: boolean;
 }
 
 export const PLATFORM_CAPABILITIES: Record<
@@ -157,6 +159,8 @@ export const PLATFORM_CAPABILITIES: Record<
     unbilledOverages: true,
     trialExpired: true,
     duplicateSubscriptions: true,
+    staleCoupons: true,
+    billingChurn: true,
   },
   polar: {
     failedPayments: true,
@@ -169,6 +173,8 @@ export const PLATFORM_CAPABILITIES: Record<
     unbilledOverages: true,
     trialExpired: true,
     duplicateSubscriptions: true,
+    staleCoupons: true,
+    billingChurn: true,
   },
   paddle: {
     failedPayments: true,
@@ -181,6 +187,8 @@ export const PLATFORM_CAPABILITIES: Record<
     unbilledOverages: true,
     trialExpired: true,
     duplicateSubscriptions: true,
+    staleCoupons: true,
+    billingChurn: true,
   },
 };
 

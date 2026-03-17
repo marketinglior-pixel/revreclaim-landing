@@ -134,4 +134,12 @@ export const LEAK_TO_ACTIONS: Partial<
   duplicate_subscription: [
     { actionType: "cancel_subscription" },
   ],
+  // stale_coupon → remove the coupon (same as expired)
+  stale_coupon: [
+    { actionType: "remove_coupon" },
+  ],
+  // billing_churn → send dunning email to prevent future churn
+  billing_churn: [
+    { actionType: "send_dunning_email", dunningTemplate: "failed_payment" },
+  ],
 };

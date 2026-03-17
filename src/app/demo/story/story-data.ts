@@ -143,12 +143,34 @@ const stuckTrials: Leak[] = [
 ];
 // Total: 14900 + 9900 = 24800 cents = ~$248/mo potential (but low recovery rate)
 
+// ── STALE COUPON: "LAUNCH50" coupon from 8 months ago ──
+
+const staleCoupons: Leak[] = [
+  makeLeak("stale_coupon", "medium",
+    "\"LAUNCH50\" coupon still active — 8 months after launch",
+    "Coupon 'LAUNCH50' (50% off forever) was created during product launch 8 months ago. Customer on Growth plan ($299/mo) paying $149.50/mo. This promotional discount may no longer be needed.",
+    "e***@earlybird.io", 5980,
+    { isRecurring: true, daysAgo: 240, recoveryRate: 0.5, fixSuggestion: "Review whether this launch discount is still intentional. Consider migrating early adopters to a loyalty tier instead." }),
+];
+
+// ── BILLING CHURN: Customer canceled after failed payment ──
+
+const billingChurnLeaks: Leak[] = [
+  makeLeak("billing_churn", "high",
+    "Customer canceled 5 days after payment failure",
+    "Growth plan ($199/mo) was canceled 5 days after a payment of $199 failed. Card ending 7823 was declined. No dunning email was sent. This churn was likely caused by a billing issue, not product dissatisfaction.",
+    "c***@churned.co", 13930,
+    { isRecurring: false, daysAgo: 12, recoveryRate: 0.3, fixSuggestion: "Set up dunning emails to prevent this pattern. Reach out with a direct payment link — they may resubscribe." }),
+];
+
 // ── Combine ──
 
 const STORY_LEAKS: Leak[] = [
   ...expiredCoupons,
   ...failedPayments,
   ...stuckTrials,
+  ...staleCoupons,
+  ...billingChurnLeaks,
 ];
 
 // ── Categories ──
@@ -176,6 +198,8 @@ function computeCategories(leaks: Leak[]): LeakCategorySummary[] {
     unbilled_overage: "Unbilled Overages",
     trial_expired: "Expired Trials",
     duplicate_subscription: "Duplicate Subscriptions",
+    stale_coupon: "Stale Coupons",
+    billing_churn: "Billing-Caused Churn",
   };
 
   return Array.from(map.entries()).map(([type, data]) => ({

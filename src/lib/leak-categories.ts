@@ -29,4 +29,6 @@ export const LEAK_ACTION_BUCKET: Record<LeakType, ActionBucket> = {
   legacy_pricing: "pricing_decision",
   never_expiring_discount: "pricing_decision",
   unbilled_overage: "pricing_decision",
+  stale_coupon: "pricing_decision",
+  billing_churn: "email_customer",
 };

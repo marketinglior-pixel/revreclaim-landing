@@ -765,6 +765,8 @@ function computeCategories(leaks: Leak[]): LeakCategorySummary[] {
     unbilled_overage: "Unbilled Overages",
     trial_expired: "Expired Trials",
     duplicate_subscription: "Duplicate Subscriptions",
+    stale_coupon: "Stale Coupons",
+    billing_churn: "Billing-Caused Churn",
   };
 
   return Array.from(map.entries()).map(([type, data]) => ({

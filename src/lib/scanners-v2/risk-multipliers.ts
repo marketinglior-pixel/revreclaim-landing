@@ -37,6 +37,12 @@ export const RISK_MULTIPLIERS = {
 
   /** 85% — duplicate subscriptions are almost certainly a bug/failed upgrade. */
   duplicate_subscription: 0.85,
+
+  /** 40% — stale coupons may be intentional (loyalty, partner deals). Conservative. */
+  stale_coupon: 0.4,
+
+  /** 70% — billing-caused churn has strong correlation between failed payment + cancel. */
+  billing_churn: 0.7,
 } as const;
 
 export type RiskMultiplierKey = keyof typeof RISK_MULTIPLIERS;
