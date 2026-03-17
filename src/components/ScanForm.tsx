@@ -11,9 +11,6 @@ import { PLATFORM_LABELS } from "@/lib/platforms/types";
 import { trackScanStarted, trackScanCompleted } from "@/lib/conversion-tracking";
 import { getUTMParams } from "@/lib/utm";
 
-// OAuth disabled — Stripe Connect requires US business entity (live mode).
-// Backend routes kept in /api/auth/stripe/* for future use.
-// const STRIPE_OAUTH_AVAILABLE = !!process.env.NEXT_PUBLIC_STRIPE_CONNECT_CLIENT_ID;
 
 const SCAN_STEPS = [
   "Validating API key...",
@@ -35,7 +32,7 @@ export default function ScanForm() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [scanWarnings, setScanWarnings] = useState<string[]>([]);
-  // const [showApiKeyFallback, setShowApiKeyFallback] = useState(false);
+
 
   useEffect(() => {
     const supabase = createClient();

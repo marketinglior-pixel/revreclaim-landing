@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback, Suspense } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
@@ -45,11 +45,7 @@ function OnboardingPage() {
   const [scanStatus, setScanStatus] = useState<ScanStatus>({ status: "idle" });
   const abortRef = useRef<AbortController | null>(null);
   const [scanWarnings, setScanWarnings] = useState<string[]>([]);
-  // OAuth states — kept for future use when live mode is available
-  // const [oauthConnecting, setOauthConnecting] = useState(false);
-  const [oauthError, setOauthError] = useState<string | null>(null);
-  // const [showApiKeyFallback, setShowApiKeyFallback] = useState(false);
-  const oauthProcessed = useRef(false);
+  const [scanError, setScanError] = useState<string | null>(null);
 
   // Auto-fill email from session
   useEffect(() => {
@@ -64,117 +60,15 @@ function OnboardingPage() {
     });
   }, [router]);
 
-  // Handle OAuth error from query params
+  // Handle error from query params (e.g. failed OAuth redirect, kept for backwards compat)
   useEffect(() => {
     const error = searchParams.get("error");
     if (error) {
-      setOauthError(error);
+      setScanError(error);
       setPlatform("stripe");
       setStep(2);
     }
   }, [searchParams]);
-
-  // Handle OAuth callback — auto-start scan when redirected back from Stripe
-  const handleOAuthScan = useCallback(async (userEmail: string) => {
-    if (oauthProcessed.current) return;
-    oauthProcessed.current = true;
-
-    setPlatform("stripe");
-    setStep(3);
-    setScanStatus({ status: "validating" });
-    trackScanStarted("stripe");
-
-    let currentStep = 0;
-    const progressInterval = setInterval(() => {
-      if (currentStep < SCAN_STEPS.length - 2) {
-        currentStep++;
-        setScanStatus({
-          status: "scanning",
-          step: SCAN_STEPS[currentStep],
-          progress: Math.min(85, (currentStep / SCAN_STEPS.length) * 100),
-        });
-      }
-    }, 3000);
-
-    try {
-      // Fetch the OAuth token from the server (one-time use)
-      const tokenRes = await fetch("/api/auth/stripe/token");
-      const tokenData = await tokenRes.json();
-
-      if (!tokenRes.ok || !tokenData.accessToken) {
-        clearInterval(progressInterval);
-        setScanStatus({
-          status: "error",
-          message: tokenData.error || "Failed to retrieve Stripe connection. Please try again.",
-        });
-        setStep(2);
-        return;
-      }
-
-      setScanStatus({
-        status: "scanning",
-        step: SCAN_STEPS[0],
-        progress: 5,
-      });
-
-      // Run scan with OAuth token
-      const response = await fetch("/api/scan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: userEmail,
-          oauthToken: tokenData.accessToken,
-          platform: "stripe",
-          utm: getUTMParams(),
-        }),
-      });
-
-      clearInterval(progressInterval);
-      const data = await response.json();
-
-      if (!response.ok) {
-        setScanStatus({
-          status: "error",
-          message: data.error || "Scan failed. Please try again.",
-        });
-        setStep(2);
-        return;
-      }
-
-      if (data.warnings?.length) {
-        setScanWarnings(data.warnings);
-      }
-
-      const report: ScanReport = data.report;
-      trackScanCompleted(report.leaks?.length ?? 0, report.summary?.mrrAtRisk ?? 0);
-
-      setScanStatus({
-        status: "scanning",
-        step: "Scan complete!",
-        progress: 100,
-      });
-
-      sessionStorage.setItem(`report_${report.id}`, JSON.stringify(report));
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      setScanStatus({ status: "complete", report });
-      router.push(`/report/${report.id}`);
-    } catch {
-      clearInterval(progressInterval);
-      setScanStatus({
-        status: "error",
-        message: "Connection failed. Please check your internet and try again.",
-      });
-      setStep(2);
-    }
-  }, [router]);
-
-  // Detect OAuth redirect and auto-start scan
-  useEffect(() => {
-    const connected = searchParams.get("connected");
-    if (connected === "stripe" && email && !oauthProcessed.current) {
-      handleOAuthScan(email);
-    }
-  }, [searchParams, email, handleOAuthScan]);
 
   const handleScan = async () => {
     if (!platform || !apiKey || !email) return;
@@ -378,9 +272,9 @@ function OnboardingPage() {
             </div>
 
             {/* OAuth error (from failed OAuth redirect) */}
-            {oauthError && (
+            {scanError && (
               <div className="mb-4 rounded-lg bg-danger/10 border border-danger/20 px-4 py-3">
-                <p className="text-sm text-danger">{oauthError}</p>
+                <p className="text-sm text-danger">{scanError}</p>
               </div>
             )}
 
@@ -456,7 +350,7 @@ function OnboardingPage() {
 
               <div className="flex gap-3">
                 <button
-                  onClick={() => { setStep(1); setApiKey(""); setOauthError(null); }}
+                  onClick={() => { setStep(1); setApiKey(""); setScanError(null); }}
                   className="px-4 py-3 border border-border bg-surface-dim text-sm text-text-muted rounded-lg transition hover:text-white cursor-pointer"
                 >
                   Back
