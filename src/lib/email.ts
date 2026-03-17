@@ -102,7 +102,8 @@ export async function sendScanCompleteEmail(
     healthScore: number;
   },
   reportId: string,
-  topLeak?: { type: string; monthlyImpact: number }
+  topLeak?: { type: string; monthlyImpact: number },
+  recoveredSinceLastScan?: number
 ): Promise<void> {
   try {
     const mrrFormatted = `$${(summary.mrrAtRisk / 100).toLocaleString()}`;
@@ -115,6 +116,7 @@ export async function sendScanCompleteEmail(
         reportId,
         topLeakType: topLeak?.type,
         topLeakAmount: topLeak?.monthlyImpact,
+        recoveredSinceLastScan,
       }),
     });
   } catch (err) {

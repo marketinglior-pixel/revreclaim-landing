@@ -237,7 +237,27 @@ export async function GET(req: NextRequest) {
         `Scan complete for ${config.user_id}: ${report.summary.leaksFound} leaks, $${(report.summary.mrrAtRisk / 100).toFixed(0)}/mo at risk`
       );
 
-      // Send scan completion email with top leak (fire-and-forget)
+      // Compute recovered revenue since last scan (from dismissals)
+      let recoveredSinceLastScan = 0;
+      try {
+        const lastScanAt = config.last_scan_at || new Date(0).toISOString();
+        const { data: recentDismissals } = await supabase
+          .from("leak_dismissals")
+          .select("recovered_amount_cents")
+          .eq("user_id", config.user_id)
+          .gte("created_at", lastScanAt);
+        if (recentDismissals) {
+          recoveredSinceLastScan = recentDismissals.reduce(
+            (sum: number, d: { recovered_amount_cents: number | null }) =>
+              sum + (d.recovered_amount_cents || 0),
+            0
+          );
+        }
+      } catch {
+        // Non-critical — recovered amount just won't show in email
+      }
+
+      // Send scan completion email with top leak + recovered amount (fire-and-forget)
       const topLeak = report.leaks.length > 0
         ? report.leaks.reduce((best, l) => l.monthlyImpact > best.monthlyImpact ? l : best)
         : undefined;
@@ -247,7 +267,8 @@ export async function GET(req: NextRequest) {
             profileData.email,
             report.summary,
             report.id,
-            topLeak ? { type: topLeak.type, monthlyImpact: topLeak.monthlyImpact } : undefined
+            topLeak ? { type: topLeak.type, monthlyImpact: topLeak.monthlyImpact } : undefined,
+            recoveredSinceLastScan > 0 ? recoveredSinceLastScan : undefined
           ),
           "CRON_SCAN_COMPLETE_EMAIL"
         );

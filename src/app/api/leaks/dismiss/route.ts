@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { customerId, productId, leakType, reason } = body;
+    const { customerId, productId, leakType, reason, monthlyImpact } = body;
 
     if (!customerId || !leakType) {
       return NextResponse.json(
@@ -92,6 +92,7 @@ export async function POST(req: NextRequest) {
         product_id: productId || null,
         leak_type: leakType,
         reason: reason || "intentional",
+        recovered_amount_cents: typeof monthlyImpact === "number" ? monthlyImpact : 0,
       },
       { onConflict: "user_id,customer_id,leak_type" }
     );

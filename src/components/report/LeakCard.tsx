@@ -54,6 +54,7 @@ export default function LeakCard({ leak, isLoggedIn, isDemo, onDismiss, privacyM
           productId: (leak.metadata?.productId as string) || null,
           leakType: leak.type,
           reason: "intentional",
+          monthlyImpact: leak.monthlyImpact,
         }),
       });
       if (res.ok) {

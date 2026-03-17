@@ -104,6 +104,7 @@ export function scanCompleteEmailHtml(summary: {
   reportId: string;
   topLeakType?: string;
   topLeakAmount?: number;
+  recoveredSinceLastScan?: number;
 }): string {
   const scoreColor = summary.healthScore >= 80 ? BRAND_COLOR : summary.healthScore >= 60 ? "#F59E0B" : "#EF4444";
   const topLeak = summary.topLeakType && summary.topLeakAmount
@@ -132,6 +133,15 @@ export function scanCompleteEmailHtml(summary: {
         <div style="color:#999;font-size:12px;margin-top:4px;">Billing Health</div>
       </div>
     </div>
+
+    ${summary.recoveredSinceLastScan && summary.recoveredSinceLastScan > 0 ? `
+    <!-- Recovered Revenue -->
+    <div style="background:#0A0A0A;border:1px solid ${BRAND_COLOR}30;border-radius:12px;padding:16px;margin-bottom:16px;">
+      <div style="color:${BRAND_COLOR};font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Revenue Recovered Since Last Scan</div>
+      <div style="color:white;font-size:22px;font-weight:bold;">${formatCentsAsDollars(summary.recoveredSinceLastScan)}/mo</div>
+      <div style="color:#999;font-size:14px;margin-top:4px;">You fixed leaks worth ${formatCentsAsDollars(summary.recoveredSinceLastScan * 12)}/year. Nice work.</div>
+    </div>
+    ` : ""}
 
     ${topLeak ? `
     <!-- #1 Quick Win -->

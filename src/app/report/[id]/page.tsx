@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { Leak, ScanReport, LEAK_TYPE_LABELS } from "@/lib/types";
+import { formatCurrency } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import ReportHeader from "@/components/report/ReportHeader";
 import ReportSummary from "@/components/report/ReportSummary";
@@ -195,6 +196,14 @@ export default function ReportPage() {
   }, [report, dismissedKeys, visibleLeaks]);
 
   const dismissedCount = report ? report.leaks.length - visibleLeaks.length : 0;
+
+  /** Compute recovered revenue from dismissed leaks */
+  const recoveredAmount = useMemo(() => {
+    if (!report || dismissedKeys.size === 0) return 0;
+    return report.leaks
+      .filter((l) => dismissedKeys.has(dismissKey(l.customerId, l.type)))
+      .reduce((sum, l) => sum + l.monthlyImpact, 0);
+  }, [report, dismissedKeys]);
 
   if (loading) {
     return (
@@ -431,16 +440,32 @@ export default function ReportPage() {
           </div>
         )}
 
-        {/* Dismissed leaks indicator */}
+        {/* Revenue Recovered — shown when user has dismissed/fixed leaks */}
         {dismissedCount > 0 && (
-          <div className="flex items-center gap-2 px-4 py-2.5 bg-surface border border-border rounded-lg">
-            <svg className="w-4 h-4 text-success flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-            <p className="text-sm text-text-muted">
-              <span className="font-medium text-white">{dismissedCount} leak{dismissedCount !== 1 ? "s" : ""}</span> hidden (marked as intentional).{" "}
-              <span className="text-text-dim">These won&apos;t appear in future scans.</span>
-            </p>
+          <div className="flex items-center justify-between gap-4 px-5 py-4 bg-gradient-to-r from-brand/10 to-brand/5 border border-brand/20 rounded-xl animate-fade-in-up">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/15">
+                <svg className="w-5 h-5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white">
+                  {recoveredAmount > 0
+                    ? `${formatCurrency(recoveredAmount)}/mo recovered`
+                    : `${dismissedCount} leak${dismissedCount !== 1 ? "s" : ""} resolved`}
+                </p>
+                <p className="text-xs text-text-muted">
+                  {dismissedCount} leak{dismissedCount !== 1 ? "s" : ""} marked as fixed.{" "}
+                  <span className="text-text-dim">These won&apos;t appear in future scans.</span>
+                </p>
+              </div>
+            </div>
+            {recoveredAmount > 0 && (
+              <span className="flex-shrink-0 text-lg font-bold text-brand">
+                {formatCurrency(recoveredAmount * 12)}/yr
+              </span>
+            )}
           </div>
         )}
 
