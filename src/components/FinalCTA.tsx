@@ -84,13 +84,13 @@ export function FinalCTA() {
                 }}
                 className="group inline-flex items-center gap-2 rounded-lg bg-brand px-5 py-3 text-sm font-bold text-black min-h-[44px] transition-all hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
               >
-                Show Me My Leaks
+                Find &amp; Fix My Leaks
                 <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </a>
               <p className="text-xs text-text-muted">
-                Two minutes from now, you&apos;ll know exactly where your money is going.
+                Five minutes from now, you&apos;ll know exactly what&apos;s leaking and how to fix each one.
               </p>
 
               {/* Secondary: email capture */}

@@ -32,7 +32,7 @@ export function Hero() {
             <span className="text-text-secondary">Expired coupons, duplicate subscriptions, legacy pricing.</span>{" "}
             Then fixes them. Automatically.
           </p>
-          <p className="text-brand font-medium">Scan your Stripe billing in 90 seconds. Free.</p>
+          <p className="text-brand font-medium">Find and fix your billing leaks in 5 minutes. Free.</p>
         </div>
 
         {/* Primary CTA */}
@@ -45,7 +45,7 @@ export function Hero() {
             }}
             className="group flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-lg font-bold text-black min-h-[56px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
           >
-            Show Me My Leaks
+            Find &amp; Fix My Leaks
             <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
@@ -86,8 +86,8 @@ export function Hero() {
           </div>
           <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
           <div className="text-center">
-            <div className="text-2xl font-bold text-white">&lt; 90 sec</div>
-            <div className="text-xs text-text-muted">to find them all</div>
+            <div className="text-2xl font-bold text-white">5 min</div>
+            <div className="text-xs text-text-muted">to find and fix them</div>
           </div>
           <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
           <div className="text-center">

@@ -13,6 +13,7 @@ import {
   LeakType,
   LeakCategorySummary,
   ScanReport,
+  ScanMetadata,
   LEAK_TYPE_LABELS,
   SEVERITY_ORDER,
 } from "../types";
@@ -195,7 +196,37 @@ export async function runPlatformScan(
   // Step 9: Compute billing health insights
   const billingHealth = computeBillingHealth(summary, categories, allLeaks);
 
-  // Step 10: Build final report
+  // Step 10: Compute scan metadata for benchmark dataset
+  const uniquePriceIds = new Set(
+    data.subscriptions.flatMap((s) => s.items?.map((i) => i.priceId) ?? [])
+  );
+  const activeSubs = data.subscriptions.filter((s) => s.status === "active");
+  const avgDealSizeCents =
+    activeSubs.length > 0
+      ? Math.round(activeSubs.reduce((s, sub) => s + sub.monthlyAmountCents, 0) / activeSubs.length)
+      : 0;
+  // Infer billing model: self-serve (<$500 avg), sales-led (>$2000 avg), mixed in between
+  const billingModel: ScanMetadata["billingModel"] =
+    avgDealSizeCents === 0
+      ? "unknown"
+      : avgDealSizeCents < 50000
+        ? "self_serve"
+        : avgDealSizeCents > 200000
+          ? "sales_led"
+          : "mixed";
+
+  // Check dunning: if there are failed payments with no retries, dunning is likely not configured
+  const hasFailedPaymentLeaks = allLeaks.some((l) => l.type === "failed_payment");
+  const hasDunningSetup = !hasFailedPaymentLeaks; // rough heuristic
+
+  const scanMetadata: ScanMetadata = {
+    numberOfPlans: uniquePriceIds.size,
+    hasDunningSetup,
+    billingModel,
+    avgDealSizeCents,
+  };
+
+  // Step 11: Build final report
   const report: ScanReport = {
     id: generateReportId(),
     platform,
@@ -204,6 +235,7 @@ export async function runPlatformScan(
     categories,
     leaks: allLeaks,
     billingHealth,
+    scanMetadata,
   };
 
   onProgress?.({ step: "Scan complete!", progress: 100 });

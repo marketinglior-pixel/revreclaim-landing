@@ -76,6 +76,15 @@ export interface ScanSummary {
   healthScore: number; // 0-100
 }
 
+/** Scan meta-data for benchmark dataset — logged per scan for aggregated insights */
+export interface ScanMetadata {
+  numberOfPlans: number; // count of distinct price IDs
+  hasDunningSetup: boolean; // whether smart retries / dunning emails are configured
+  billingModel: "self_serve" | "sales_led" | "mixed" | "unknown"; // inferred from avg deal size
+  avgDealSizeCents: number; // average subscription amount in cents
+  platformVersion?: string; // e.g. Stripe API version
+}
+
 export interface BillingHealthInsight {
   id: string;
   label: string;
@@ -100,6 +109,8 @@ export interface ScanReport {
   billingHealth?: BillingHealthInsights;
   /** Which enrichment provider was used, if any */
   enrichedWith?: EnrichmentProvider;
+  /** Scan meta-data for benchmark aggregation */
+  scanMetadata?: ScanMetadata;
 }
 
 export interface ScanRequest {

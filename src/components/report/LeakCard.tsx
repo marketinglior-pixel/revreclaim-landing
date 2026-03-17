@@ -278,13 +278,24 @@ export default function LeakCard({ leak, isLoggedIn, isDemo, onDismiss, privacyM
             )}
 
             {/* Impact */}
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-4">
               <div className="bg-danger/10 border border-danger/20 rounded-lg px-4 py-3" style={{ boxShadow: "0 0 20px rgba(239, 68, 68, 0.08)" }}>
                 <p className="text-xs text-danger uppercase tracking-wider">
                   Monthly Impact
                 </p>
                 <p className="text-base font-bold text-danger">
                   {formatCurrency(leak.monthlyImpact)}
+                </p>
+              </div>
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg px-4 py-3" style={{ boxShadow: "0 0 20px rgba(245, 158, 11, 0.08)" }}>
+                <p className="text-xs text-amber-400 uppercase tracking-wider">
+                  If Not Fixed in 30 Days
+                </p>
+                <p className="text-base font-bold text-amber-400">
+                  {formatCurrency(leak.isRecurring ? leak.monthlyImpact : Math.round(leak.monthlyImpact * leak.recoveryRate * 0.5))}
+                </p>
+                <p className="text-[10px] text-text-dim mt-0.5">
+                  {leak.isRecurring ? "compounds monthly" : "recovery drops over time"}
                 </p>
               </div>
               <div className="bg-warning/10 border border-warning/20 rounded-lg px-4 py-3" style={{ boxShadow: "0 0 20px rgba(245, 158, 11, 0.08)" }}>

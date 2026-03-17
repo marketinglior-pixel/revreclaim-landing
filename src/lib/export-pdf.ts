@@ -2,6 +2,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { ScanReport, LEAK_TYPE_LABELS } from "./types";
 import { formatCurrency } from "./utils";
+import { LEAK_ACTION_BUCKET, ActionBucket } from "./leak-categories";
 
 /**
  * Export a scan report as a PDF file download.
@@ -50,8 +51,37 @@ export function exportReportPDF(report: ScanReport, options?: { privacyMode?: bo
     y += 6;
   }
 
-  // Leaks table
+  // Action buckets summary
   y += 6;
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.text("What To Do Next", 14, y);
+  y += 8;
+
+  const bucketLabels: Record<ActionBucket, string> = {
+    fix_in_stripe: "Fix now in your billing dashboard",
+    email_customer: "Send customer email",
+    pricing_decision: "Needs pricing decision",
+  };
+  const bucketOrder: ActionBucket[] = ["fix_in_stripe", "email_customer", "pricing_decision"];
+
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  for (const bucket of bucketOrder) {
+    const items = report.leaks.filter((l) => LEAK_ACTION_BUCKET[l.type] === bucket);
+    if (items.length === 0) continue;
+    const mrr = items.reduce((s, l) => s + Math.round(l.monthlyImpact * l.recoveryRate), 0);
+    doc.setFont("helvetica", "bold");
+    doc.text(`${items.length} leaks: ${bucketLabels[bucket]}`, 14, y);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(120);
+    doc.text(`estimated ${formatCurrency(mrr)}/mo recoverable`, 14, y + 5);
+    doc.setTextColor(0);
+    y += 14;
+  }
+
+  // Leaks table
+  y += 2;
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.text(`Revenue Leaks (${report.leaks.length})`, 14, y);
