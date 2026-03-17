@@ -36,6 +36,17 @@ yarn-error.log*
 # vercel
 .vercel
 
+# claude code / agent tooling
+.agent/
+.agents/
+.claude/skills/
+skills-lock.json
+
+# local assets (not code)
+video/
+demo-campaigns/
+ANTI-GRAVITY-PROMPTS.md
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
