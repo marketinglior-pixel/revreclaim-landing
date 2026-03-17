@@ -14,7 +14,7 @@ export function Problem() {
         <h2 className="mb-6 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
           You&apos;re losing money every month.
           <br />
-          <span className="text-text-muted">You just can&apos;t see it.</span>
+          <span className="text-text-muted">You know it&apos;s there. You just don&apos;t have time to find it.</span>
         </h2>
         <p className="mb-12 max-w-2xl text-lg leading-relaxed text-text-muted">
           You track churn. You track MRR. You check your Stripe
