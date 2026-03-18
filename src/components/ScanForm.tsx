@@ -203,14 +203,55 @@ export default function ScanForm() {
         {/* API Key input */}
         <div className="space-y-4">
         <div>
-          <label
-            htmlFor="apiKey"
-            className="block text-sm font-medium text-text-secondary mb-1.5"
-          >
-            {platform === "stripe" ? "Stripe Restricted API Key" :
-             platform === "polar" ? "Polar Organization Access Token" :
-             "Paddle API Key"}
-          </label>
+          <div className="flex items-center justify-between mb-1.5">
+            <label
+              htmlFor="apiKey"
+              className="block text-sm font-medium text-text-secondary"
+            >
+              {platform === "stripe" ? "Stripe API Key" :
+               platform === "polar" ? "Polar Organization Access Token" :
+               "Paddle API Key"}
+            </label>
+            {platform === "stripe" && (
+              <a
+                href="https://dashboard.stripe.com/apikeys"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-xs text-brand hover:text-brand-light transition"
+              >
+                Open Stripe Dashboard
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            )}
+            {platform === "polar" && (
+              <a
+                href="https://polar.sh/settings"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-xs text-brand hover:text-brand-light transition"
+              >
+                Open Polar Settings
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            )}
+            {platform === "paddle" && (
+              <a
+                href="https://vendors.paddle.com/authentication"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-xs text-brand hover:text-brand-light transition"
+              >
+                Open Paddle Dashboard
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            )}
+          </div>
           <div className="relative">
             <input
               id="apiKey"
@@ -218,7 +259,7 @@ export default function ScanForm() {
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
               placeholder={
-                platform === "stripe" ? "rk_live_..." :
+                platform === "stripe" ? "rk_live_... or sk_live_..." :
                 platform === "polar" ? "polar_oat_..." :
                 "Your API key..."
               }
@@ -244,19 +285,19 @@ export default function ScanForm() {
           </div>
         </div>
 
-        {/* Write-key warning — Stripe secret keys have full write access */}
+        {/* Secret key info — works fine, just note about restricted keys */}
         {platform === "stripe" && apiKey.startsWith("sk_") && (
-          <div className="rounded-lg bg-warning/10 border border-warning/30 px-4 py-3">
+          <div className="rounded-lg bg-brand/5 border border-brand/20 px-4 py-3">
             <div className="flex items-start gap-2">
-              <svg className="w-4 h-4 text-warning flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              <svg className="w-4 h-4 text-brand flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               <div>
-                <p className="text-xs font-semibold text-warning">This is a secret key with full write access</p>
+                <p className="text-xs font-semibold text-brand">This key works. We&apos;ll only read your data.</p>
                 <p className="text-xs text-text-muted mt-1">
-                  We only need read access. For maximum security, use a{" "}
-                  <strong className="text-white">restricted key</strong> (starts with <code className="text-brand">rk_live_</code>).
-                  {" "}Follow the instructions below to create one. Your scan will still work with this key, but we strongly recommend switching.
+                  Tip: for extra security next time, you can use a{" "}
+                  <strong className="text-white">restricted key</strong> (<code className="text-brand">rk_live_</code>).
+                  We delete your key immediately after the scan.
                 </p>
               </div>
             </div>

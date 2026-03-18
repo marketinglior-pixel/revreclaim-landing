@@ -47,18 +47,18 @@ function OnboardingPage() {
   const [scanWarnings, setScanWarnings] = useState<string[]>([]);
   const [scanError, setScanError] = useState<string | null>(null);
 
-  // Auto-fill email from session
+  // Auto-fill email from session (guest scanning allowed)
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user?.email) {
         setEmail(user.email);
       } else {
-        // Not logged in, redirect to signup
-        router.push("/auth/signup");
+        // Guest mode — scan without signup
+        setEmail("guest@scan.revreclaim.com");
       }
     });
-  }, [router]);
+  }, []);
 
   // Handle error from query params (e.g. failed OAuth redirect, kept for backwards compat)
   useEffect(() => {
@@ -163,9 +163,15 @@ function OnboardingPage() {
             </div>
             RevReclaim
           </Link>
-          <Link href="/dashboard" className="text-sm text-text-muted hover:text-white transition">
-            Skip to dashboard &rarr;
-          </Link>
+          {email && email !== "guest@scan.revreclaim.com" ? (
+            <Link href="/dashboard" className="text-sm text-text-muted hover:text-white transition">
+              Skip to dashboard &rarr;
+            </Link>
+          ) : (
+            <Link href="/auth/signup" className="text-sm text-text-muted hover:text-white transition">
+              Create account &rarr;
+            </Link>
+          )}
         </div>
       </header>
 
@@ -255,6 +261,13 @@ function OnboardingPage() {
                 your dashboard doesn&apos;t surface.
               </p>
             </div>
+
+            {/* Demo escape hatch */}
+            <div className="mt-4 text-center">
+              <Link href="/demo" className="text-sm text-text-muted hover:text-brand transition">
+                Not ready? See a demo report first &rarr;
+              </Link>
+            </div>
           </div>
         )}
 
@@ -269,6 +282,36 @@ function OnboardingPage() {
                 Read-only access. We can&apos;t change anything in your account.
                 The key is deleted the moment the scan finishes.
               </p>
+              {/* Direct link to platform dashboard */}
+              <div className="mt-3">
+                {platform === "stripe" && (
+                  <a href="https://dashboard.stripe.com/apikeys" target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm text-brand hover:text-brand-light transition">
+                    Open Stripe Dashboard to copy your key
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                )}
+                {platform === "polar" && (
+                  <a href="https://polar.sh/settings" target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm text-brand hover:text-brand-light transition">
+                    Open Polar Settings to copy your token
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                )}
+                {platform === "paddle" && (
+                  <a href="https://vendors.paddle.com/authentication" target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm text-brand hover:text-brand-light transition">
+                    Open Paddle Dashboard to copy your key
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                )}
+              </div>
             </div>
 
             {/* OAuth error (from failed OAuth redirect) */}
@@ -295,7 +338,7 @@ function OnboardingPage() {
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
                     placeholder={
-                      platform === "stripe" ? "rk_live_..." :
+                      platform === "stripe" ? "rk_live_... or sk_live_..." :
                       platform === "polar" ? "polar_oat_..." :
                       "Your API key..."
                     }
@@ -321,17 +364,19 @@ function OnboardingPage() {
                 </div>
               </div>
 
-              {/* Write-key warning */}
+              {/* Secret key info */}
               {platform === "stripe" && apiKey.startsWith("sk_") && (
-                <div className="rounded-lg bg-warning/10 border border-warning/30 px-4 py-3">
+                <div className="rounded-lg bg-brand/5 border border-brand/20 px-4 py-3">
                   <div className="flex items-start gap-2">
-                    <svg className="w-4 h-4 text-warning flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    <svg className="w-4 h-4 text-brand flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     <div>
-                      <p className="text-xs font-semibold text-warning">This is a secret key with full write access</p>
+                      <p className="text-xs font-semibold text-brand">This key works. We&apos;ll only read your data.</p>
                       <p className="text-xs text-text-muted mt-1">
-                        We only need read access. Use a <strong className="text-white">restricted key</strong> (starts with <code className="text-brand">rk_live_</code>) for maximum security.
+                        Tip: for extra security next time, use a{" "}
+                        <strong className="text-white">restricted key</strong> (<code className="text-brand">rk_live_</code>).
+                        We delete your key immediately after the scan.
                       </p>
                     </div>
                   </div>

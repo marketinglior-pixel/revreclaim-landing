@@ -109,7 +109,7 @@ interface ApiKeyInstructionsProps {
 export default function ApiKeyInstructions({
   platform = "stripe",
 }: ApiKeyInstructionsProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const steps = PLATFORM_STEPS[platform];
   const platformLabel = PLATFORM_LABELS[platform];
 
