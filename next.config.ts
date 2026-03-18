@@ -36,11 +36,11 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' https://polar.sh", // Next.js needs inline scripts
+              "script-src 'self' 'unsafe-inline' https://polar.sh https://us-assets.i.posthog.com", // Next.js needs inline scripts
               "style-src 'self' 'unsafe-inline'", // Tailwind uses inline styles
               "img-src 'self' data: blob: https://*.polar.sh https://api.producthunt.com",
               "font-src 'self'",
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.polar.sh https://*.polar.sh https://*.sentry.io",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.polar.sh https://*.polar.sh https://*.sentry.io https://us.i.posthog.com https://us-assets.i.posthog.com",
               "frame-src 'self' https://*.polar.sh",
               "frame-ancestors 'none'",
               "base-uri 'self'",
