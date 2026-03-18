@@ -90,7 +90,7 @@ export function FinalCTA() {
                 </svg>
               </a>
               <p className="text-xs text-text-muted">
-                Five minutes from now, you&apos;ll know exactly what&apos;s leaking and how to fix each one.
+                In a few minutes, you&apos;ll see if anything&apos;s leaking and how to fix it.
               </p>
 
               {/* Secondary: email capture */}

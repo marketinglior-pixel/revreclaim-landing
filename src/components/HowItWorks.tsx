@@ -18,7 +18,7 @@ const steps = [
     title: "See every leak, with instructions on how to fix each one",
     description:
       "Dollar amounts. Customer names (masked). Fix links that take you straight to the right place in your billing platform. Track your recovered MRR over 30 days. Connect HubSpot (optional) and each leak also gets customer context so you know which ones are worth chasing.",
-    detail: "Most founders fix the easy ones before lunch.",
+    detail: "The easy ones usually take a few minutes to fix.",
   },
 ];
 
@@ -30,7 +30,7 @@ export function HowItWorks() {
           How it works
         </div>
         <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
-          Three steps. Two minutes. Zero risk.
+          Three steps. Two minutes. Zero platform risk.
         </h2>
         <p className="mb-16 max-w-2xl text-lg text-text-muted">
           Your billing data already exists in Stripe, Polar, or Paddle.

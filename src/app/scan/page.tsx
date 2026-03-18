@@ -98,14 +98,26 @@ export default function ScanPage() {
         {/* Scan form */}
         <ScanForm />
 
-        {/* Demo escape hatch for hesitant visitors */}
-        <div className="mt-6 text-center">
-          <p className="text-sm text-text-muted">
-            Not ready to connect?{" "}
-            <Link href="/demo" className="text-brand underline underline-offset-2 hover:text-brand-light transition">
-              See a demo report with real data →
-            </Link>
-          </p>
+        {/* Demo escape hatch — prominent card for hesitant visitors */}
+        <div className="mt-8 max-w-lg mx-auto">
+          <Link
+            href="/demo"
+            className="block rounded-xl border border-border hover:border-brand/30 bg-surface/80 p-4 transition-all group"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-white group-hover:text-brand transition">
+                  Not ready? See a demo report first
+                </p>
+                <p className="text-xs text-text-muted mt-0.5">
+                  23 leaks, $2,340/mo at risk — with sample data, no API key needed
+                </p>
+              </div>
+              <svg className="w-5 h-5 text-text-muted group-hover:text-brand transition flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </Link>
         </div>
 
         {/* Trust section — what the API key can and can't do */}

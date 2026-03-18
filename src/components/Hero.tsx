@@ -3,6 +3,8 @@
 import { useSectionView } from "@/hooks/useSectionView";
 import { trackEvent } from "@/lib/analytics";
 import { trackCTAClick } from "@/lib/conversion-tracking";
+import { ScanCounter } from "@/components/ScanCounter";
+import Link from "next/link";
 
 export function Hero() {
   const sectionRef = useSectionView("hero");
@@ -18,16 +20,21 @@ export function Hero() {
           Most SaaS companies are leaking{" "}
           <span className="text-brand">3&ndash;8% of their MRR.</span>
         </h1>
-        <div className="mb-6 flex items-center justify-center gap-3 text-sm text-text-muted animate-fade-in-up animate-delay-100">
+        <div className="mb-2 flex items-center justify-center gap-3 text-sm text-text-muted animate-fade-in-up animate-delay-100">
           <span className="rounded-full border border-border px-3 py-1 font-medium text-text-secondary">Stripe</span>
           <span className="rounded-full border border-border px-3 py-1 font-medium text-text-secondary">Polar</span>
           <span className="rounded-full border border-border px-3 py-1 font-medium text-text-secondary">Paddle</span>
         </div>
 
-        {/* Sub — specifics + urgency */}
+        {/* Qualifier */}
+        <p className="mb-6 text-xs text-text-dim animate-fade-in-up animate-delay-100">
+          Built for SaaS with 100+ customers
+        </p>
+
+        {/* Sub — honest, not overselling */}
         <div className="mx-auto mb-10 max-w-2xl text-lg text-text-muted md:text-xl leading-relaxed animate-fade-in-up animate-delay-200 space-y-1">
-          <p>The billing audit you know you should do but never have time for.</p>
-          <p className="text-brand font-medium">Find and fix your billing leaks in 5 minutes. Free.</p>
+          <p>The billing audit most SaaS founders keep postponing.</p>
+          <p className="text-brand font-medium">Most scans find something. Some find nothing &mdash; and that&apos;s fine too. Free.</p>
         </div>
 
         {/* Primary CTA */}
@@ -50,12 +57,46 @@ export function Hero() {
             <svg className="h-4 w-4 text-brand shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
-            Read-only access &middot; Key deleted after scan &middot; Free forever &middot; No credit card
+            Read-only access &middot; Key deleted after scan &middot; No signup required &middot; No credit card
+          </div>
+        </div>
+
+        {/* Mini report preview — show what the scan produces */}
+        <div className="mt-10 mx-auto max-w-md animate-fade-in-up animate-delay-400">
+          <p className="text-xs text-text-dim mb-3 uppercase tracking-wider font-medium">Example scan result</p>
+          <div className="rounded-xl border border-border bg-surface/80 backdrop-blur-sm p-4">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="text-center">
+                <div className="text-xl font-bold text-danger">23</div>
+                <div className="text-[10px] text-text-muted">leaks found</div>
+              </div>
+              <div className="text-center border-x border-border">
+                <div className="text-xl font-bold text-warning">$2,340</div>
+                <div className="text-[10px] text-text-muted">MRR at risk</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xl font-bold text-brand">70</div>
+                <div className="text-[10px] text-text-muted">health score</div>
+              </div>
+            </div>
+            <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
+              <p className="text-[11px] text-text-dim">
+                That&apos;s ~$78/day walking out the door
+              </p>
+              <Link href="/demo" className="text-[11px] text-brand hover:text-brand-light transition">
+                See full report &rarr;
+              </Link>
+            </div>
+          </div>
+
+          {/* Scan counter — real data from DB */}
+          <div className="mt-3 text-xs text-text-dim">
+            <ScanCounter /> scans completed &middot; Join them
           </div>
         </div>
 
         {/* Low-friction alternative for cold traffic */}
-        <div className="mt-8 animate-fade-in-up animate-delay-400">
+        <div className="mt-6 animate-fade-in-up animate-delay-400">
           <a
             href="/calculator"
             onClick={() => {
@@ -81,13 +122,13 @@ export function Hero() {
           </div>
           <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
           <div className="text-center">
-            <div className="text-2xl font-bold text-white">5 min</div>
-            <div className="text-xs text-text-muted">to find and fix them</div>
+            <div className="text-2xl font-bold text-white">90 sec</div>
+            <div className="text-xs text-text-muted">scan time</div>
           </div>
           <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
           <div className="text-center">
             <div className="text-2xl font-bold text-brand">Free</div>
-            <div className="text-xs text-text-muted">No credit card needed</div>
+            <div className="text-xs text-text-muted">No signup needed</div>
           </div>
           <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
           <a

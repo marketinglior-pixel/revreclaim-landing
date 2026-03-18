@@ -35,8 +35,8 @@ export function Problem() {
           <div className="rounded-xl border border-border bg-surface-dim p-5">
             <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-danger">The pricing migration you forgot</div>
             <p className="text-sm leading-relaxed text-text-muted">
-              You raised prices 6 months ago. You assumed everyone migrated.
-              Then you check: 40% of your customers are still on the old rate.
+              Say you raised prices 6 months ago. You assumed everyone migrated.
+              Then you check: some of your customers are still on the old rate.
               Nobody told you. Stripe certainly didn&apos;t.
             </p>
           </div>
@@ -51,9 +51,9 @@ export function Problem() {
           <div className="rounded-xl border border-border bg-surface-dim p-5">
             <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-purple">The accidental double charge</div>
             <p className="text-sm leading-relaxed text-text-muted">
-              A customer upgraded their plan. But the old subscription was never canceled.
+              Sometimes a customer upgrades their plan. But the old subscription never gets canceled.
               They&apos;re paying for both. Right now, it&apos;s extra revenue.
-              Next month, it&apos;s a chargeback and a 1-star review.
+              Next month, it could be a chargeback and a 1-star review.
             </p>
           </div>
         </div>
@@ -94,7 +94,7 @@ export function Problem() {
 
           <div className="mt-8 rounded-xl border border-border-light bg-surface-dim p-4 text-center">
             <p className="text-sm text-text-muted">
-              These add up. For a SaaS doing $50K MRR, even 3-5% means
+              These add up. For a SaaS doing $50K MRR, 3-5% could mean
               <span className="font-semibold text-white"> $1,500 to $2,500 every month</span> that
               should be in your account but isn&apos;t.
             </p>

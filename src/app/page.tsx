@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Problem } from "@/components/Problem";
 import { BestFitSection } from "@/components/BestFitSection";
+import { SocialProof } from "@/components/SocialProof";
 import { DashboardPreview } from "@/components/DashboardPreview";
 import { HowItWorks } from "@/components/HowItWorks";
 import { GuaranteeSection } from "@/components/GuaranteeSection";
@@ -50,6 +51,7 @@ export default function Home() {
       <Hero />
       <Problem />
       <BestFitSection />
+      <SocialProof />
       <DashboardPreview />
       <HowItWorks />
       <GuaranteeSection />
