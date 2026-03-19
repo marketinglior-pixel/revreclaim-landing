@@ -34,7 +34,7 @@ export function Hero() {
         {/* Sub — honest, not overselling */}
         <div className="mx-auto mb-10 max-w-2xl text-lg text-text-muted md:text-xl leading-relaxed animate-fade-in-up animate-delay-200 space-y-1">
           <p>The billing audit most SaaS founders keep postponing.</p>
-          <p className="text-brand font-medium">Most scans find something. Some find nothing &mdash; and that&apos;s fine too. Free.</p>
+          <p className="text-brand font-medium">Most scans find something. Some find nothing, and that&apos;s fine too. Free.</p>
         </div>
 
         {/* Primary CTA */}
