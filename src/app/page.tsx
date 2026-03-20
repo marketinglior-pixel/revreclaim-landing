@@ -69,12 +69,12 @@ export default function Home() {
       <PageViewTracker page="landing" />
       <Header />
       <Hero />
+      <SocialProof />
       <SecurityStrip />
       <Problem />
       <HowItWorks />
       <DashboardPreview />
       <FascinationBullets />
-      <SocialProof />
       <BestFitSection />
       <Pricing />
       <GuaranteeSection />

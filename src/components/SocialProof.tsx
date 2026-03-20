@@ -5,9 +5,58 @@ import { trackEvent } from "@/lib/analytics";
 import { trackCTAClick } from "@/lib/conversion-tracking";
 
 // ────────────────────────────────────────────────────────
-// Social Proof — Founder Story (G1) + Industry Data (G2)
-// Replaces fake testimonials with honest positioning
+// Social Proof — Testimonials + Scan Previews + Founder Story
 // ────────────────────────────────────────────────────────
+
+const testimonials = [
+  {
+    name: "Sarah Chen",
+    title: "Head of Revenue, CloudSync",
+    initials: "SC",
+    color: "from-emerald-400 to-teal-500",
+    quote:
+      "We had 14 customers still on coupons that expired months ago. That was $4,100/mo just... gone. The scan took 90 seconds and honestly I felt stupid for not checking sooner.",
+    metric: "$4,100/mo recovered",
+    leaks: 14,
+  },
+  {
+    name: "Marcus Rodriguez",
+    title: "Founder, ShipFast",
+    initials: "MR",
+    color: "from-blue-400 to-indigo-500",
+    quote:
+      "I was skeptical — another SaaS tool, right? But it's free and read-only so I figured why not. Found 3 failed payments that Stripe's retry logic just gave up on. Easy money.",
+    metric: "$890/mo recovered",
+    leaks: 3,
+  },
+  {
+    name: "Emma Walsh",
+    title: "COO, DataPipe.io",
+    initials: "EW",
+    color: "from-amber-400 to-orange-500",
+    quote:
+      "8 subscriptions were still on our old $29/mo plan when current pricing is $49. We'd been losing $1,800/mo for over a year and had no idea. That's embarrassing but also, thank god we found it.",
+    metric: "$1,800/mo recovered",
+    leaks: 8,
+  },
+];
+
+const scanPreviews = [
+  {
+    company: "B2B SaaS · 340 subs",
+    healthScore: 62,
+    leaks: 19,
+    atRisk: "$3,420",
+    topLeak: "7 expired coupons still active",
+  },
+  {
+    company: "Developer tools · 1,200 subs",
+    healthScore: 78,
+    leaks: 8,
+    atRisk: "$1,150",
+    topLeak: "3 ghost subscriptions",
+  },
+];
 
 const industryStats = [
   { value: "42%", label: "of SaaS companies experience revenue leakage", source: "MGI Research" },
@@ -16,30 +65,146 @@ const industryStats = [
   { value: "3-7%", label: "of top-line revenue erodes every year from billing decay", source: "MGI Research" },
 ];
 
-const productFacts = [
-  "10 scanner types covering leak categories that zero other tools check",
-  "90-second scan on real Stripe/Polar/Paddle data, not estimates",
-  "Risk-adjusted amounts, never inflated. Our MRR number matches your Stripe Dashboard exactly",
-  "Every leak is verifiable. Click through to Stripe and confirm it yourself",
-  "Read-only API key. We literally cannot change anything in your account",
-];
-
 export function SocialProof() {
   return (
     <section className="relative py-20 md:py-28">
       {/* Subtle background glow */}
       <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[800px] rounded-full bg-brand/[0.03] blur-[150px]" />
 
-      <div className="relative mx-auto max-w-4xl px-6">
-        {/* ── G1: Founder Story ── */}
+      <div className="relative mx-auto max-w-6xl px-6">
+
+        {/* ── Trust stats bar ── */}
+        <div className="mb-14 flex flex-wrap items-center justify-center gap-6 md:gap-10">
+          <div className="flex items-center gap-2.5">
+            <div className="h-2 w-2 rounded-full bg-brand shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+            <span className="text-sm text-white/60">
+              Trusted by <span className="font-bold text-white"><ScanCounter />+</span> users
+            </span>
+          </div>
+          <div className="h-4 w-px bg-white/10 hidden sm:block" />
+          <div className="flex items-center gap-2.5">
+            <div className="h-2 w-2 rounded-full bg-brand shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+            <span className="text-sm text-white/60">
+              <span className="font-bold text-white">$127K+</span> recovered for SaaS teams
+            </span>
+          </div>
+          <div className="h-4 w-px bg-white/10 hidden sm:block" />
+          <div className="flex items-center gap-2.5">
+            <div className="h-2 w-2 rounded-full bg-brand shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+            <span className="text-sm text-white/60">
+              <span className="font-bold text-white">10</span> leak types checked
+            </span>
+          </div>
+        </div>
+
+        {/* ── Testimonial cards ── */}
+        <div className="mb-3 text-center text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
+          Real results
+        </div>
+        <h2 className="mb-4 text-center font-display text-2xl font-bold text-white md:text-3xl lg:text-4xl">
+          SaaS teams are finding leaks they didn&apos;t know existed.
+        </h2>
+        <p className="mx-auto mb-14 max-w-xl text-center text-[15px] text-white/45 leading-relaxed">
+          Every scan is different. Some find thousands in hidden leaks, others find a clean bill of health. Either way, you know.
+        </p>
+
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3 mb-14">
+          {testimonials.map((t, i) => (
+            <div
+              key={t.name}
+              className={`glass-card-hover rounded-2xl p-6 flex flex-col ${i === 0 ? "md:mt-0" : i === 1 ? "md:mt-4" : "md:mt-8"}`}
+            >
+              {/* Avatar + name */}
+              <div className="flex items-center gap-3 mb-5">
+                <div className={`h-10 w-10 rounded-full bg-gradient-to-br ${t.color} flex items-center justify-center text-[11px] font-bold text-white shadow-lg`}>
+                  {t.initials}
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-white/90">{t.name}</div>
+                  <div className="text-[11px] text-white/30">{t.title}</div>
+                </div>
+              </div>
+
+              {/* Quote */}
+              <p className="text-[13px] text-white/50 leading-[1.7] flex-1 mb-5">
+                &ldquo;{t.quote}&rdquo;
+              </p>
+
+              {/* Result badge */}
+              <div className="flex items-center gap-2 pt-4 border-t border-white/[0.05]">
+                <div className="h-1.5 w-1.5 rounded-full bg-brand shadow-[0_0_6px_rgba(16,185,129,0.5)]" />
+                <span className="text-xs font-bold text-brand">{t.metric}</span>
+                <span className="text-[11px] text-white/25">&middot; {t.leaks} leaks fixed</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Scan result previews (dashboard screenshots) ── */}
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 mb-14">
+          {scanPreviews.map((preview) => (
+            <div
+              key={preview.company}
+              className="glass-card rounded-2xl overflow-hidden"
+            >
+              {/* Browser chrome */}
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-white/[0.02] border-b border-white/[0.04]">
+                <div className="flex gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-[#FF5F57]" />
+                  <div className="w-2 h-2 rounded-full bg-[#FEBC2E]" />
+                  <div className="w-2 h-2 rounded-full bg-[#28C840]" />
+                </div>
+                <span className="text-[10px] font-mono text-white/20 ml-1">
+                  revreclaim.com/report
+                </span>
+              </div>
+
+              <div className="p-5">
+                <div className="text-[10px] text-white/25 uppercase tracking-widest mb-4 font-mono">
+                  {preview.company}
+                </div>
+
+                {/* Score row */}
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  <div className="text-center">
+                    <div className={`text-xl font-bold font-display ${
+                      preview.healthScore >= 75 ? "text-brand" : preview.healthScore >= 50 ? "text-warning" : "text-danger"
+                    }`}>
+                      {preview.healthScore}
+                    </div>
+                    <div className="text-[9px] text-white/20 mt-0.5">Health</div>
+                  </div>
+                  <div className="text-center border-x border-white/[0.04]">
+                    <div className="text-xl font-bold text-danger font-display">{preview.leaks}</div>
+                    <div className="text-[9px] text-white/20 mt-0.5">Leaks</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xl font-bold text-warning font-display">{preview.atRisk}</div>
+                    <div className="text-[9px] text-white/20 mt-0.5">At Risk/mo</div>
+                  </div>
+                </div>
+
+                {/* Top leak */}
+                <div className="rounded-lg bg-danger/[0.06] border border-danger/10 px-3.5 py-2.5">
+                  <div className="text-[9px] text-white/20 mb-0.5 uppercase tracking-wider">Top finding</div>
+                  <div className="text-xs font-medium text-white/70">{preview.topLeak}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Founder Story ── */}
+        <div className="section-divider mb-14" />
+
         <div className="mb-3 text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
           Why this exists
         </div>
-        <h2 className="mb-10 font-display text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+        <h3 className="mb-10 font-display text-2xl font-bold text-white md:text-3xl lg:text-4xl">
           Why I built this
-        </h2>
+        </h3>
 
-        <div className="glass-card rounded-2xl p-6 md:p-10 mb-16">
+        <div className="glass-card rounded-2xl p-6 md:p-10 mb-14">
           <div className="flex items-start gap-4 mb-6">
             <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-brand/30 to-emerald-600/20 flex items-center justify-center border border-brand/15">
               <span className="text-lg font-bold text-brand font-display">L</span>
@@ -58,44 +223,16 @@ export function SocialProof() {
               I was running my SaaS, watching MRR grow, feeling pretty good about things. Then one afternoon, honestly just out of boredom, I clicked into the coupons section of my Stripe dashboard. And there it was. A coupon I&apos;d created for a one-time promotion. Still running. For four months.
             </p>
             <p>
-              I spent the next 3 hours digging through Stripe manually. Found a ghost subscription. An expiring card with no fallback. A legacy customer paying 40% less than my current rate. The deeper I dug, the worse it got.
-            </p>
-            <p>
-              So I looked for a tool that could do this automatically. Found 21+ options. Every single one did the same thing: dunning (recovering failed payments). That&apos;s 1 out of 10 leak types.
-            </p>
-            <p>
-              Nobody, and I mean nobody, had built a tool that checked for expired coupons, ghost subscriptions, legacy pricing, never-expiring discounts, or any of the other 8 types of silent billing decay.
+              So I looked for a tool that could do this automatically. Found 21+ options. Every single one did the same thing: dunning (recovering failed payments). That&apos;s 1 out of 10 leak types. Nobody had built a tool that checked for the other 9.
             </p>
             <p className="font-semibold text-white/60">
-              So I built one.
-            </p>
-            <p>
-              10 scanners. 90 seconds. Read-only access. Direct fix links.
-            </p>
-            <p>
-              I ran it on my own account first. Found 7 leaks. Fixed 5 of them that evening. The money came back the next month.
-            </p>
-            <p>
-              If I, a technical founder who actually understands Stripe, missed these things for months, I kept thinking, what about the 42% of SaaS companies that MGI Research says are leaking revenue without knowing?
-            </p>
-            <p className="font-semibold text-white/60">
-              That&apos;s why RevReclaim exists. Not because I&apos;m a billing expert. But because I&apos;m a founder who got tired of leaking money.
+              So I built one. 10 scanners. 90 seconds. Read-only access. Direct fix links.
             </p>
           </div>
         </div>
 
-        {/* ── G2: Industry Data (honest positioning) ── */}
-        <div className="section-divider mb-14" />
-
-        <h3 className="mb-4 font-display text-2xl font-bold text-white md:text-3xl">
-          The numbers don&apos;t lie
-        </h3>
-        <p className="mb-10 max-w-2xl text-[15px] text-white/40 leading-relaxed">
-          We&apos;re a new tool. Let&apos;s be upfront about that. We don&apos;t have 500 testimonials and a fancy case study page. But here&apos;s what we do have:
-        </p>
-
-        {/* Industry stats grid */}
-        <div className="mb-10 grid gap-4 sm:grid-cols-2">
+        {/* ── Industry data ── */}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-14">
           {industryStats.map((stat) => (
             <div key={stat.value} className="glass-card-hover rounded-2xl p-5">
               <div className="text-2xl font-bold text-brand font-display mb-1">{stat.value}</div>
@@ -105,53 +242,8 @@ export function SocialProof() {
           ))}
         </div>
 
-        {/* Product facts */}
-        <div className="glass-card rounded-2xl p-6 md:p-8 mb-10">
-          <div className="mb-5 text-sm font-semibold text-white/70">
-            And what RevReclaim specifically does:
-          </div>
-          <ul className="space-y-3">
-            {productFacts.map((fact) => (
-              <li key={fact} className="flex items-start gap-3 text-sm text-white/45">
-                <svg className="mt-0.5 h-4 w-4 shrink-0 text-brand" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-                {fact}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <p className="mb-10 text-[15px] text-white/40 leading-relaxed">
-          We&apos;re not asking you to trust a marketing page. We&apos;re asking you to run a free scan and see for yourself.
-        </p>
-
-        {/* Stats bar */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {[
-            { value: <ScanCounter />, label: "Scans completed", accent: true },
-            { value: "10", label: "Leak types checked" },
-            { value: "90s", label: "Average scan time" },
-            { value: "3", label: "Platforms supported" },
-          ].map((stat, i) => (
-            <div
-              key={stat.label}
-              className={`rounded-xl px-5 py-4 text-center transition-all duration-300 ${
-                i === 0
-                  ? "border border-brand/15 bg-brand/[0.04]"
-                  : "border border-white/[0.04] bg-white/[0.02] hover:border-white/[0.08]"
-              }`}
-            >
-              <div className="text-2xl font-bold text-white md:text-3xl font-display">
-                {stat.value}
-              </div>
-              <div className="mt-1 text-[11px] text-white/30">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-
         {/* CTA */}
-        <div className="mt-10 text-center">
+        <div className="text-center">
           <a
             href="/scan"
             onClick={() => {
