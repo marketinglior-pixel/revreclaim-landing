@@ -81,16 +81,18 @@ export function ObstacleSection() {
   const sectionRef = useSectionView("obstacles");
 
   return (
-    <section ref={sectionRef} className="border-t border-border-light py-20 md:py-28">
-      <div className="mx-auto max-w-4xl px-6">
-        <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-brand">
+    <section ref={sectionRef} className="relative py-20 md:py-28">
+      <div className="section-divider" />
+
+      <div className="mx-auto max-w-4xl px-6 pt-16">
+        <div className="mb-3 text-center text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
           Objections answered
         </div>
-        <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+        <h2 className="mb-4 text-center font-display text-3xl font-bold text-white md:text-4xl lg:text-5xl">
           Every reason not to scan.{" "}
-          <span className="text-text-muted">Answered.</span>
+          <span className="text-white/40">Answered.</span>
         </h2>
-        <p className="mx-auto mb-12 max-w-xl text-center text-lg text-text-muted">
+        <p className="mx-auto mb-12 max-w-xl text-center text-[15px] text-white/45">
           We get these a lot. Here you go.
         </p>
 
@@ -98,15 +100,16 @@ export function ObstacleSection() {
           {obstacles.map((item) => (
             <div
               key={item.question}
-              className="rounded-xl border border-border bg-surface p-6 transition-colors hover:border-brand/20"
+              className="glass-card-hover rounded-2xl p-6"
             >
               <div className="mb-3 flex items-center gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface-light text-text-muted">
-                  {item.icon}
+                <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand/[0.08] text-brand/60">
+                  <div className="absolute -inset-1 rounded-xl bg-brand/[0.04] blur-md" />
+                  <div className="relative">{item.icon}</div>
                 </div>
-                <p className="text-sm italic text-text-muted">&ldquo;{item.question}&rdquo;</p>
+                <p className="text-sm italic text-white/45">&ldquo;{item.question}&rdquo;</p>
               </div>
-              <p className="text-sm font-semibold text-white leading-relaxed">
+              <p className="text-sm font-semibold text-white/80 leading-relaxed">
                 {item.answer}
               </p>
             </div>
@@ -116,7 +119,7 @@ export function ObstacleSection() {
         <div className="mt-8 text-center">
           <a
             href="#faq"
-            className="text-sm text-text-dim hover:text-brand transition-colors"
+            className="text-sm text-white/30 hover:text-brand transition-colors duration-300"
           >
             Still skeptical? Good. Read the full FAQ &darr;
           </a>

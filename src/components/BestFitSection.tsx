@@ -15,15 +15,20 @@ export function BestFitSection() {
   const sectionRef = useSectionView("best-fit");
 
   return (
-    <section ref={sectionRef} className="border-t border-border-light py-16 md:py-20">
-      <div className="mx-auto max-w-4xl px-6">
-        <div className="rounded-2xl border border-brand/20 bg-brand/5 p-8 md:p-10">
-          <h3 className="mb-6 text-xl font-bold text-white md:text-2xl">
+    <section ref={sectionRef} className="relative py-16 md:py-20">
+      <div className="section-divider" />
+
+      <div className="mx-auto max-w-4xl px-6 pt-12">
+        <div className="glass-card rounded-2xl p-8 md:p-10 border-brand/10">
+          <div className="mb-2 text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
+            Is this for you?
+          </div>
+          <h3 className="mb-6 font-display text-xl font-bold text-white md:text-2xl">
             You probably have billing leaks if&hellip;
           </h3>
           <div className="grid gap-4 md:grid-cols-2">
             {fitItems.map((text) => (
-              <div key={text} className="flex items-start gap-3">
+              <div key={text} className="flex items-start gap-3 rounded-xl bg-white/[0.02] border border-white/[0.04] px-4 py-3 transition-all duration-300 hover:border-brand/10 hover:bg-brand/[0.02]">
                 <svg
                   className="mt-0.5 h-5 w-5 flex-shrink-0 text-brand"
                   fill="none"
@@ -37,12 +42,12 @@ export function BestFitSection() {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span className="text-sm text-text-secondary">{text}</span>
+                <span className="text-sm text-white/55">{text}</span>
               </div>
             ))}
           </div>
-          <p className="mt-6 text-sm text-text-muted">
-            Sound familiar? The scan is free &mdash; run it and find out.
+          <p className="mt-6 text-sm text-white/40">
+            Sound familiar? The scan is free. Run it and find out.
             Most founders are surprised by what they find.
           </p>
         </div>

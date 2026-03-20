@@ -234,11 +234,56 @@ body {
   box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.15), 0 0 20px rgba(16, 185, 129, 0.05);
 }
 
-/* Section divider — gradient fade instead of hard border */
+/* Section divider — gradient fade with subtle green accent */
 .section-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(42, 42, 42, 0.6) 20%, rgba(42, 42, 42, 0.6) 80%, transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(42, 42, 42, 0.4) 15%,
+    rgba(16, 185, 129, 0.12) 50%,
+    rgba(42, 42, 42, 0.4) 85%,
+    transparent
+  );
 }
+
+/* Gradient text — green-to-white for emphasis */
+.gradient-text {
+  background: linear-gradient(135deg, #10B981 0%, #34D399 40%, #ffffff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gradient text — danger variant */
+.gradient-text-danger {
+  background: linear-gradient(135deg, #EF4444 0%, #F97316 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Ambient section glow — reusable radial gradient */
+.ambient-glow {
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  filter: blur(120px);
+}
+
+/* Staggered card entrance — each child delays slightly */
+.stagger-children > * {
+  opacity: 0;
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 80ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 160ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 240ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 320ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 400ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 480ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 560ms; }
 
 /* ─── 3D Perspective ─────────────────────────────────────────── */
 

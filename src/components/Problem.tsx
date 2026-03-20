@@ -67,30 +67,38 @@ export function Problem() {
           </ul>
         </div>
 
-        {/* Dollar math — the accumulation */}
-        <div className="mb-14 glass-card rounded-2xl p-6 md:p-8 text-center">
+        {/* Dollar math — asymmetric layout: featured card + 2 smaller */}
+        <div className="mb-14">
           <div className="mb-5 text-sm text-white/40">Sound small? Run the math.</div>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
-              <div className="text-xs text-white/30 mb-2">$10K MRR</div>
-              <div className="text-lg font-bold text-danger font-display">$300/mo</div>
-              <div className="text-xs text-white/25 mt-1">= $3,600/year gone</div>
+          <div className="grid gap-4 md:grid-cols-5">
+            {/* Featured — $50K MRR (most relatable) */}
+            <div className="md:col-span-3 glass-card-hover rounded-2xl p-6 md:p-8 border-warning/10">
+              <div className="text-xs text-white/30 mb-2 uppercase tracking-wider">$50K MRR</div>
+              <div className="text-4xl md:text-5xl font-bold text-warning font-display mb-2">$1,500<span className="text-lg text-white/30">/mo</span></div>
+              <div className="text-sm text-white/25">= $18,000/year gone</div>
+              <div className="mt-4 h-1.5 rounded-full bg-white/[0.04] overflow-hidden">
+                <div className="h-full w-[60%] rounded-full bg-gradient-to-r from-warning/60 to-danger/60" />
+              </div>
+              <p className="mt-4 text-sm text-white/40">
+                That&apos;s not a rounding error. That&apos;s a hire. That&apos;s a marketing budget. That&apos;s runway.
+              </p>
             </div>
-            <div className="rounded-xl border border-warning/15 bg-warning/[0.04] p-5">
-              <div className="text-xs text-white/30 mb-2">$50K MRR</div>
-              <div className="text-xl font-bold text-warning font-display">$1,500/mo</div>
-              <div className="text-xs text-white/25 mt-1">= $18,000/year gone</div>
-            </div>
-            <div className="rounded-xl border border-danger/15 bg-danger/[0.04] p-5">
-              <div className="text-xs text-white/30 mb-2">$100K MRR</div>
-              <div className="text-2xl font-bold text-danger font-display">$4,000/mo</div>
-              <div className="text-xs text-white/25 mt-1">= $48,000/year gone</div>
+
+            {/* Two stacked cards */}
+            <div className="md:col-span-2 flex flex-col gap-4">
+              <div className="glass-card-hover rounded-2xl p-5 flex-1">
+                <div className="text-xs text-white/30 mb-2 uppercase tracking-wider">$10K MRR</div>
+                <div className="text-2xl font-bold text-danger font-display">$300<span className="text-sm text-white/30">/mo</span></div>
+                <div className="text-xs text-white/25 mt-1">= $3,600/year gone</div>
+              </div>
+              <div className="glass-card-hover rounded-2xl p-5 flex-1 border-danger/10">
+                <div className="text-xs text-white/30 mb-2 uppercase tracking-wider">$100K MRR</div>
+                <div className="text-2xl font-bold text-danger font-display">$4,000<span className="text-sm text-white/30">/mo</span></div>
+                <div className="text-xs text-white/25 mt-1">= $48,000/year gone</div>
+              </div>
             </div>
           </div>
-          <p className="mt-6 text-sm text-white/40">
-            That&apos;s not a rounding error. That&apos;s a hire. That&apos;s a marketing budget. That&apos;s runway.
-          </p>
-          <p className="mt-2 text-sm text-white/30">
+          <p className="mt-5 text-sm text-white/30 text-center">
             And it compounds. Every month you don&apos;t check, the number grows. Silently.
           </p>
         </div>

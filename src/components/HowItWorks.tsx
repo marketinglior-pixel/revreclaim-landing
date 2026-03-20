@@ -51,9 +51,10 @@ export function HowItWorks() {
         </p>
 
         <div className="relative">
-          {/* Connector line — gradient glow */}
+          {/* Connector line — gradient glow with pulse */}
           <div className="absolute left-[27px] top-0 hidden h-full w-px md:block overflow-hidden">
             <div className="h-full w-full bg-gradient-to-b from-brand/50 via-brand/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-b from-brand/30 to-transparent animate-pulse" style={{ animationDuration: '3s' }} />
           </div>
 
           <div className="space-y-8">

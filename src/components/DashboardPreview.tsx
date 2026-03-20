@@ -101,14 +101,6 @@ export function DashboardPreview() {
                     fix="Retry payment"
                   />
                   <LeakRow
-                    severity="CRITICAL"
-                    type="Missing Payment"
-                    customer="j***@startupxyz.io"
-                    impact="$299/mo"
-                    detail="No valid payment method on active subscription"
-                    fix="Contact customer"
-                  />
-                  <LeakRow
                     severity="HIGH"
                     type="Expired Coupon"
                     customer="s***@cloudapp.io"
@@ -126,7 +118,7 @@ export function DashboardPreview() {
                   />
 
                   <div className="px-5 py-3 text-center text-[11px] text-white/20">
-                    + 19 more leaks found across all 10 categories
+                    + 20 more leaks found across all 10 categories
                   </div>
                 </div>
               </div>
