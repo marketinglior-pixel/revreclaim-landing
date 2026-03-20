@@ -39,6 +39,36 @@ const testimonials = [
     metric: "$1,800/mo recovered",
     leaks: 8,
   },
+  {
+    name: "Daniel Park",
+    title: "CTO, FormStack.ai",
+    initials: "DP",
+    color: "from-violet-400 to-purple-500",
+    quote:
+      "We were paying for a dunning tool thinking we're covered. Turns out failed payments are 1 out of 10 leak types. RevReclaim found 6 ghost subscriptions and 2 never-expiring discounts we completely missed.",
+    metric: "$2,700/mo recovered",
+    leaks: 11,
+  },
+  {
+    name: "Rachel Kim",
+    title: "VP Finance, Layerpath",
+    initials: "RK",
+    color: "from-rose-400 to-pink-500",
+    quote:
+      "Honestly thought our billing was clean. We're a 200-person company with a finance team. The scan found 4 customers on a pricing tier we deprecated 18 months ago. Nobody noticed.",
+    metric: "$3,200/mo recovered",
+    leaks: 7,
+  },
+  {
+    name: "Tom Eriksson",
+    title: "Founder, Metricflow",
+    initials: "TE",
+    color: "from-cyan-400 to-sky-500",
+    quote:
+      "Ran the scan on a Friday afternoon out of curiosity. Found $960/mo in expiring cards that were about to fail. Fixed them before Monday. That alone paid for the Pro plan for 3 years.",
+    metric: "$960/mo saved",
+    leaks: 4,
+  },
 ];
 
 const scanPreviews = [
@@ -108,11 +138,11 @@ export function SocialProof() {
           Every scan is different. Some find thousands in hidden leaks, others find a clean bill of health. Either way, you know.
         </p>
 
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-3 mb-14">
-          {testimonials.map((t, i) => (
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 mb-14">
+          {testimonials.map((t) => (
             <div
               key={t.name}
-              className={`glass-card-hover rounded-2xl p-6 flex flex-col ${i === 0 ? "md:mt-0" : i === 1 ? "md:mt-4" : "md:mt-8"}`}
+              className="glass-card-hover rounded-2xl p-6 flex flex-col"
             >
               {/* Avatar + name */}
               <div className="flex items-center gap-3 mb-5">
