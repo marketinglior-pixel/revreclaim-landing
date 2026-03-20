@@ -137,15 +137,14 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Product Hunt badge */}
-        <div className="mt-20 flex justify-center animate-fade-in-up animate-delay-500">
+        {/* Product Hunt badge — hidden until launch (2026-03-25) */}
+        {/* <div className="mt-20 flex justify-center animate-fade-in-up animate-delay-500">
           <a
             href="https://www.producthunt.com/products/revreclaim?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-revreclaim"
             target="_blank"
             rel="noopener noreferrer"
             className="transition-all duration-300 hover:opacity-80 hover:scale-105"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1096804&theme=light&t=1773346857240"
               alt="RevReclaim on Product Hunt"
@@ -154,7 +153,7 @@ export function Hero() {
               loading="lazy"
             />
           </a>
-        </div>
+        </div> */}
       </div>
     </section>
   );
