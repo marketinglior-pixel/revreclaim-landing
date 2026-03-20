@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { ScanCounter } from "@/components/ScanCounter";
 import { trackEvent } from "@/lib/analytics";
 import { trackCTAClick } from "@/lib/conversion-tracking";
@@ -236,8 +237,8 @@ export function SocialProof() {
 
         <div className="glass-card rounded-2xl p-6 md:p-10 mb-14">
           <div className="flex items-start gap-4 mb-6">
-            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-brand/30 to-emerald-600/20 flex items-center justify-center border border-brand/15">
-              <span className="text-lg font-bold text-brand font-display">L</span>
+            <div className="flex-shrink-0 w-12 h-12 rounded-full overflow-hidden border border-brand/15">
+              <Image src="/images/lior-cohen.png" alt="Lior Cohen" width={48} height={48} className="w-full h-full object-cover" />
             </div>
             <div>
               <p className="text-sm font-semibold text-white/80">Lior Cohen</p>
