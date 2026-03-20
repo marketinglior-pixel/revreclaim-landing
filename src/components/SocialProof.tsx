@@ -7,70 +7,20 @@ import { trackEvent } from "@/lib/analytics";
 import { trackCTAClick } from "@/lib/conversion-tracking";
 
 // ────────────────────────────────────────────────────────
-// Social Proof — Testimonials + Scan Previews + Founder Story
+// Social Proof — Real Data + Scan Previews + Founder Story
 // ────────────────────────────────────────────────────────
 
-const testimonials = [
-  {
-    name: "Sarah Chen",
-    title: "Head of Revenue, Zestboard",
-    initials: "SC",
-    color: "from-emerald-400 to-teal-500",
-    quote:
-      "We had 14 customers still on coupons that expired months ago. That was $4,100/mo just... gone. The scan took 90 seconds and honestly I felt stupid for not checking sooner.",
-    metric: "$4,100/mo recovered",
-    leaks: 14,
-  },
-  {
-    name: "Marcus Rodriguez",
-    title: "Founder, Crewlaunch",
-    initials: "MR",
-    color: "from-blue-400 to-indigo-500",
-    quote:
-      "I was skeptical — another SaaS tool, right? But it's free and read-only so I figured why not. Found 3 failed payments that Stripe's retry logic just gave up on. Easy money.",
-    metric: "$890/mo recovered",
-    leaks: 3,
-  },
-  {
-    name: "Emma Walsh",
-    title: "COO, Routebase",
-    initials: "EW",
-    color: "from-amber-400 to-orange-500",
-    quote:
-      "8 subscriptions were still on our old $29/mo plan when current pricing is $49. We'd been losing $1,800/mo for over a year and had no idea. That's embarrassing but also, thank god we found it.",
-    metric: "$1,800/mo recovered",
-    leaks: 8,
-  },
-  {
-    name: "Daniel Park",
-    title: "CTO, Driftware",
-    initials: "DP",
-    color: "from-violet-400 to-purple-500",
-    quote:
-      "We were paying for a dunning tool thinking we're covered. Turns out failed payments are 1 out of 10 leak types. RevReclaim found 6 ghost subscriptions and 2 never-expiring discounts we completely missed.",
-    metric: "$2,700/mo recovered",
-    leaks: 11,
-  },
-  {
-    name: "Rachel Kim",
-    title: "VP Finance, Stackbridge",
-    initials: "RK",
-    color: "from-rose-400 to-pink-500",
-    quote:
-      "Honestly thought our billing was clean. We're a 200-person company with a finance team. The scan found 4 customers on a pricing tier we deprecated 18 months ago. Nobody noticed.",
-    metric: "$3,200/mo recovered",
-    leaks: 7,
-  },
-  {
-    name: "Tom Eriksson",
-    title: "Founder, Plyntra",
-    initials: "TE",
-    color: "from-cyan-400 to-sky-500",
-    quote:
-      "Ran the scan on a Friday afternoon out of curiosity. Found $960/mo in expiring cards that were about to fail. Fixed them before Monday. That alone paid for the Pro plan for 3 years.",
-    metric: "$960/mo saved",
-    leaks: 4,
-  },
+const leakTypes = [
+  { icon: "🏷️", name: "Expired Coupons", desc: "Discounts that ended but are still reducing charges" },
+  { icon: "♾️", name: "Never-Expiring Discounts", desc: "Promo codes with no end date, running forever" },
+  { icon: "❌", name: "Failed Payments", desc: "Charges that Stripe's retry logic gave up on" },
+  { icon: "💳", name: "Expiring Cards", desc: "Cards about to expire with no backup on file" },
+  { icon: "👻", name: "Ghost Subscriptions", desc: "Active subs with no recent successful payment" },
+  { icon: "📉", name: "Legacy Pricing", desc: "Customers still on old, cheaper pricing tiers" },
+  { icon: "🚫", name: "Missing Payment Method", desc: "Active subs with no card attached" },
+  { icon: "📊", name: "Unbilled Overages", desc: "Usage that exceeds the plan but isn't charged" },
+  { icon: "⏰", name: "Expired Trials", desc: "Trials that ended but never converted to paid" },
+  { icon: "🔄", name: "Duplicate Subscriptions", desc: "Same customer paying for the same plan twice" },
 ];
 
 const scanPreviews = [
@@ -129,50 +79,41 @@ export function SocialProof() {
           </div>
         </div>
 
-        {/* ── Testimonial cards ── */}
+        {/* ── What the scan checks ── */}
         <div className="mb-3 text-center text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
-          Real results
+          What we scan for
         </div>
         <h2 className="mb-4 text-center font-display text-2xl font-bold text-white md:text-3xl lg:text-4xl">
-          SaaS teams are finding leaks they didn&apos;t know existed.
+          10 leak types most tools miss
         </h2>
         <p className="mx-auto mb-14 max-w-xl text-center text-[15px] text-white/45 leading-relaxed">
-          Every scan is different. Some find thousands in hidden leaks, others find a clean bill of health. Either way, you know.
+          Failed payments get all the attention. But they&apos;re just 1 of 10 ways your Stripe account quietly loses money.
         </p>
 
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 mb-14">
-          {testimonials.map((t) => (
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5 mb-14">
+          {leakTypes.map((leak) => (
             <div
-              key={t.name}
-              className="glass-card-hover rounded-2xl p-6 flex flex-col"
+              key={leak.name}
+              className="glass-card-hover rounded-xl p-4 flex flex-col"
             >
-              {/* Avatar + name */}
-              <div className="flex items-center gap-3 mb-5">
-                <div className={`h-10 w-10 rounded-full bg-gradient-to-br ${t.color} flex items-center justify-center text-[11px] font-bold text-white shadow-lg`}>
-                  {t.initials}
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-white/90">{t.name}</div>
-                  <div className="text-[11px] text-white/30">{t.title}</div>
-                </div>
-              </div>
-
-              {/* Quote */}
-              <p className="text-[13px] text-white/50 leading-[1.7] flex-1 mb-5">
-                &ldquo;{t.quote}&rdquo;
-              </p>
-
-              {/* Result badge */}
-              <div className="flex items-center gap-2 pt-4 border-t border-white/[0.05]">
-                <div className="h-1.5 w-1.5 rounded-full bg-brand shadow-[0_0_6px_rgba(16,185,129,0.5)]" />
-                <span className="text-xs font-bold text-brand">{t.metric}</span>
-                <span className="text-[11px] text-white/25">&middot; {t.leaks} leaks fixed</span>
-              </div>
+              <div className="text-xl mb-2">{leak.icon}</div>
+              <div className="text-sm font-semibold text-white/80 mb-1">{leak.name}</div>
+              <div className="text-[12px] text-white/35 leading-[1.5]">{leak.desc}</div>
             </div>
           ))}
         </div>
 
-        {/* ── Scan result previews (dashboard screenshots) ── */}
+        {/* ── Scan result previews (anonymized real patterns) ── */}
+        <div className="mb-3 text-center text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
+          Real scan patterns
+        </div>
+        <h3 className="mb-4 text-center font-display text-xl font-bold text-white md:text-2xl">
+          What a typical scan looks like
+        </h3>
+        <p className="mx-auto mb-10 max-w-lg text-center text-[14px] text-white/40 leading-relaxed">
+          Anonymized results from real scans. Every Stripe account is different.
+        </p>
+
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 mb-14">
           {scanPreviews.map((preview) => (
             <div
