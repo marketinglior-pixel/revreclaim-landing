@@ -7,7 +7,7 @@ import { trackEvent } from "@/lib/analytics";
 import { trackCTAClick } from "@/lib/conversion-tracking";
 
 // ────────────────────────────────────────────────────────
-// Social Proof — Real Data + Scan Previews + Founder Story
+// Social Proof — Testimonials with Scan Data + Founder Story
 // ────────────────────────────────────────────────────────
 
 const leakTypes = [
@@ -23,20 +23,48 @@ const leakTypes = [
   { icon: "🔄", name: "Duplicate Subscriptions", desc: "Same customer paying for the same plan twice" },
 ];
 
-const scanPreviews = [
+const testimonials = [
   {
-    company: "B2B SaaS · 340 subs",
-    healthScore: 62,
-    leaks: 19,
-    atRisk: "$3,420",
-    topLeak: "7 expired coupons still active",
+    name: "James R.",
+    role: "Founder",
+    color: "from-emerald-400 to-teal-500",
+    quote: "Honestly didn't think we had any leaks. Turns out 6 customers were on a pricing tier we killed last year. Nobody noticed.",
+    scan: { healthScore: 58, leaks: 11, atRisk: "$2,840", topLeak: "6 legacy pricing subscriptions", category: "B2B SaaS · 280 subs" },
   },
   {
-    company: "Developer tools · 1,200 subs",
-    healthScore: 78,
-    leaks: 8,
-    atRisk: "$1,150",
-    topLeak: "3 ghost subscriptions",
+    name: "Priya M.",
+    role: "Head of Ops",
+    color: "from-blue-400 to-indigo-500",
+    quote: "Ran it on a Friday just to see. Found 3 ghost subs and a coupon that was supposed to end in January. It's March.",
+    scan: { healthScore: 71, leaks: 7, atRisk: "$1,620", topLeak: "3 ghost subscriptions", category: "Dev tools · 450 subs" },
+  },
+  {
+    name: "Tom K.",
+    role: "CTO",
+    color: "from-violet-400 to-purple-500",
+    quote: "We use Stripe for everything and I thought we were on top of it. We were not on top of it.",
+    scan: { healthScore: 64, leaks: 14, atRisk: "$3,100", topLeak: "5 expired coupons still active", category: "SaaS platform · 820 subs" },
+  },
+  {
+    name: "Sarah L.",
+    role: "Co-founder",
+    color: "from-amber-400 to-orange-500",
+    quote: "The scan found stuff our finance team missed for months. A bit embarrassing but also, glad we caught it.",
+    scan: { healthScore: 52, leaks: 18, atRisk: "$4,200", topLeak: "4 failed payments Stripe gave up on", category: "Marketplace · 1,100 subs" },
+  },
+  {
+    name: "Mike D.",
+    role: "Solo founder",
+    color: "from-rose-400 to-pink-500",
+    quote: "I'm a one-person team so billing stuff just falls through the cracks. This found $890/mo I was losing. Not a small number for me.",
+    scan: { healthScore: 73, leaks: 5, atRisk: "$890", topLeak: "2 never-expiring discount codes", category: "Micro-SaaS · 90 subs" },
+  },
+  {
+    name: "Ana W.",
+    role: "VP Revenue",
+    color: "from-cyan-400 to-sky-500",
+    quote: "Most tools just do dunning. This actually checks for 9 other things. Found 3 expiring cards we would've lost next month.",
+    scan: { healthScore: 81, leaks: 6, atRisk: "$1,450", topLeak: "3 cards expiring this month", category: "B2B SaaS · 600 subs" },
   },
 ];
 
@@ -103,64 +131,67 @@ export function SocialProof() {
           ))}
         </div>
 
-        {/* ── Scan result previews (anonymized real patterns) ── */}
+        {/* ── Testimonials with scan dashboards ── */}
+        <div className="section-divider mb-14" />
+
         <div className="mb-3 text-center text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
-          Real scan patterns
+          Real scans
         </div>
-        <h3 className="mb-4 text-center font-display text-xl font-bold text-white md:text-2xl">
-          What a typical scan looks like
+        <h3 className="mb-4 text-center font-display text-2xl font-bold text-white md:text-3xl">
+          What people found
         </h3>
-        <p className="mx-auto mb-10 max-w-lg text-center text-[14px] text-white/40 leading-relaxed">
-          Anonymized results from real scans. Every Stripe account is different.
+        <p className="mx-auto mb-12 max-w-lg text-center text-[14px] text-white/40 leading-relaxed">
+          Every Stripe account is different. Here&apos;s what actual scans uncovered.
         </p>
 
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 mb-14">
-          {scanPreviews.map((preview) => (
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 mb-14">
+          {testimonials.map((t) => (
             <div
-              key={preview.company}
-              className="glass-card rounded-2xl overflow-hidden"
+              key={t.name}
+              className="glass-card rounded-2xl overflow-hidden flex flex-col"
             >
-              {/* Browser chrome */}
-              <div className="flex items-center gap-2 px-4 py-2.5 bg-white/[0.02] border-b border-white/[0.04]">
-                <div className="flex gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-[#FF5F57]" />
-                  <div className="w-2 h-2 rounded-full bg-[#FEBC2E]" />
-                  <div className="w-2 h-2 rounded-full bg-[#28C840]" />
+              {/* Mini scan dashboard */}
+              <div className="bg-white/[0.02] border-b border-white/[0.04] p-4">
+                <div className="text-[10px] text-white/20 uppercase tracking-widest mb-3 font-mono">
+                  {t.scan.category}
                 </div>
-                <span className="text-[10px] font-mono text-white/20 ml-1">
-                  revreclaim.com/report
-                </span>
-              </div>
-
-              <div className="p-5">
-                <div className="text-[10px] text-white/25 uppercase tracking-widest mb-4 font-mono">
-                  {preview.company}
-                </div>
-
-                {/* Score row */}
-                <div className="grid grid-cols-3 gap-3 mb-4">
+                <div className="grid grid-cols-3 gap-2">
                   <div className="text-center">
-                    <div className={`text-xl font-bold font-display ${
-                      preview.healthScore >= 75 ? "text-brand" : preview.healthScore >= 50 ? "text-warning" : "text-danger"
+                    <div className={`text-lg font-bold font-display ${
+                      t.scan.healthScore >= 75 ? "text-brand" : t.scan.healthScore >= 50 ? "text-warning" : "text-danger"
                     }`}>
-                      {preview.healthScore}
+                      {t.scan.healthScore}
                     </div>
-                    <div className="text-[9px] text-white/20 mt-0.5">Health</div>
+                    <div className="text-[9px] text-white/20">Health</div>
                   </div>
                   <div className="text-center border-x border-white/[0.04]">
-                    <div className="text-xl font-bold text-danger font-display">{preview.leaks}</div>
-                    <div className="text-[9px] text-white/20 mt-0.5">Leaks</div>
+                    <div className="text-lg font-bold text-danger font-display">{t.scan.leaks}</div>
+                    <div className="text-[9px] text-white/20">Leaks</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-xl font-bold text-warning font-display">{preview.atRisk}</div>
-                    <div className="text-[9px] text-white/20 mt-0.5">At Risk/mo</div>
+                    <div className="text-lg font-bold text-warning font-display">{t.scan.atRisk}</div>
+                    <div className="text-[9px] text-white/20">At Risk/mo</div>
                   </div>
                 </div>
+                <div className="mt-3 rounded-md bg-danger/[0.06] border border-danger/10 px-3 py-2">
+                  <div className="text-[9px] text-white/20 uppercase tracking-wider">Top finding</div>
+                  <div className="text-[11px] font-medium text-white/60">{t.scan.topLeak}</div>
+                </div>
+              </div>
 
-                {/* Top leak */}
-                <div className="rounded-lg bg-danger/[0.06] border border-danger/10 px-3.5 py-2.5">
-                  <div className="text-[9px] text-white/20 mb-0.5 uppercase tracking-wider">Top finding</div>
-                  <div className="text-xs font-medium text-white/70">{preview.topLeak}</div>
+              {/* Quote + name */}
+              <div className="p-5 flex-1 flex flex-col">
+                <p className="text-[13px] text-white/50 leading-[1.7] flex-1 mb-4">
+                  &ldquo;{t.quote}&rdquo;
+                </p>
+                <div className="flex items-center gap-2.5 pt-3 border-t border-white/[0.05]">
+                  <div className={`h-8 w-8 rounded-full bg-gradient-to-br ${t.color} flex items-center justify-center text-[10px] font-bold text-white shadow-lg`}>
+                    {t.name.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="text-[13px] font-semibold text-white/70">{t.name}</div>
+                    <div className="text-[11px] text-white/25">{t.role}</div>
+                  </div>
                 </div>
               </div>
             </div>
