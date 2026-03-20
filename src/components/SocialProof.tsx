@@ -78,7 +78,7 @@ export function SocialProof() {
           <div className="flex items-center gap-2.5">
             <div className="h-2 w-2 rounded-full bg-brand shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
             <span className="text-sm text-white/60">
-              Trusted by <span className="font-bold text-white"><ScanCounter />+</span> users
+              Trusted by <span className="font-bold text-white"><ScanCounter /></span> users
             </span>
           </div>
           <div className="h-4 w-px bg-white/10 hidden sm:block" />
