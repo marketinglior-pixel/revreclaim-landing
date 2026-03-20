@@ -2,14 +2,16 @@ import type { Metadata } from "next";
 import { PageViewTracker } from "@/components/PageViewTracker";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
+import { SecurityStrip } from "@/components/SecurityStrip";
 import { Problem } from "@/components/Problem";
-import { BestFitSection } from "@/components/BestFitSection";
-import { SocialProof } from "@/components/SocialProof";
-import { DashboardPreview } from "@/components/DashboardPreview";
 import { HowItWorks } from "@/components/HowItWorks";
+import { DashboardPreview } from "@/components/DashboardPreview";
+import { FascinationBullets } from "@/components/FascinationBullets";
+import { SocialProof } from "@/components/SocialProof";
+import { BestFitSection } from "@/components/BestFitSection";
+import { Pricing } from "@/components/Pricing";
 import { GuaranteeSection } from "@/components/GuaranteeSection";
 import { ObstacleSection } from "@/components/ObstacleSection";
-import { Pricing } from "@/components/Pricing";
 import { FAQ } from "@/components/FAQ";
 import { FinalCTA } from "@/components/FinalCTA";
 import { Footer } from "@/components/Footer";
@@ -43,20 +45,40 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Page section order follows the Belief Installation Sequence from
+ * the Prompt Engineer pipeline (04-beliefs-document.md):
+ *
+ * A (Hero)              → B1: Problem Reframe
+ * SecurityStrip          → B5: Trust (immediate)
+ * B+C (Problem)          → B1 reinforcement + B2: Solution Category
+ * D (HowItWorks)         → B3: Mechanism
+ * E (DashboardPreview)   → B3 reinforcement + B4 preview
+ * F (FascinationBullets) → B1 + B2 + B6 urgency seeds
+ * G (SocialProof)        → B4: Proof + B5: Trust
+ * BestFitSection         → Qualifier
+ * H (Pricing)            → B6: Urgency
+ * I (GuaranteeSection)   → B5 + B6 reinforcement
+ * ObstacleSection        → Quick objection handling
+ * K (FAQ)                → B3, B4, B5 objection demolition
+ * J (FinalCTA)           → B6 reinforcement
+ */
 export default function Home() {
   return (
     <main className="min-h-screen">
       <PageViewTracker page="landing" />
       <Header />
       <Hero />
+      <SecurityStrip />
       <Problem />
-      <BestFitSection />
-      <SocialProof />
-      <DashboardPreview />
       <HowItWorks />
+      <DashboardPreview />
+      <FascinationBullets />
+      <SocialProof />
+      <BestFitSection />
+      <Pricing />
       <GuaranteeSection />
       <ObstacleSection />
-      <Pricing />
       <FAQ />
       <FinalCTA />
 

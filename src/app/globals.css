@@ -2,6 +2,7 @@
 
 @theme inline {
   --font-sans: var(--font-inter);
+  --font-display: var(--font-jakarta);
   --color-brand: #10B981;
   --color-brand-light: #34D399;
   --color-brand-dark: #059669;
@@ -42,6 +43,20 @@ body {
   color: #000;
 }
 
+/* ─── Noise / Grain Texture ─────────────────────────────────── */
+/* Adds subtle film grain for depth — removes the "flat digital" feel */
+.noise-overlay::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
 /*
  * ── Button Size System ──────────────────────────────────────
  * btn-xs : px-3 py-2     text-xs   rounded-lg  min-h-[36px]  → nav pills, export buttons
@@ -55,11 +70,13 @@ body {
  * ─────────────────────────────────────────────────────────────
  */
 
-/* Scroll-triggered fade-in-up animation */
+/* ─── Animations ─────────────────────────────────────────────── */
+
+/* Scroll-triggered fade-in-up — smoother cubic bezier */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(28px);
   }
   to {
     opacity: 1;
@@ -68,15 +85,74 @@ body {
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.35s ease-out forwards;
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Stagger delays for children (5 levels, 50ms increments) */
-.animate-delay-100 { animation-delay: 50ms; }
-.animate-delay-200 { animation-delay: 100ms; }
-.animate-delay-300 { animation-delay: 150ms; }
-.animate-delay-400 { animation-delay: 200ms; }
-.animate-delay-500 { animation-delay: 250ms; }
+/* Stagger delays for children */
+.animate-delay-100 { animation-delay: 80ms; }
+.animate-delay-200 { animation-delay: 160ms; }
+.animate-delay-300 { animation-delay: 240ms; }
+.animate-delay-400 { animation-delay: 320ms; }
+.animate-delay-500 { animation-delay: 400ms; }
+
+/* Shimmer sweep — for CTA buttons */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.2) 45%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.2) 55%,
+    transparent 60%
+  );
+  animation: shimmer 3s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+/* Floating glow orbs — organic, slow drift */
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -20px) scale(1.05); }
+  50% { transform: translate(-15px, 15px) scale(0.95); }
+  75% { transform: translate(20px, 10px) scale(1.02); }
+}
+
+.animate-float {
+  animation: float 20s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float 30s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: float 25s ease-in-out infinite reverse;
+}
+
+/* Scan line sweep — for terminal animation */
+@keyframes scanLine {
+  0% { top: 0; opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Gradient shift — animated background gradients */
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
 
 /* Pulse glow animation */
 @keyframes pulseGlow {
@@ -111,7 +187,75 @@ body {
   animation: pulseGlow 2s ease-in-out 2;
 }
 
-/* Respect prefers-reduced-motion */
+/* ─── Glass & Surface Effects ────────────────────────────────── */
+
+/* Glass card — frosted glass with inner light */
+.glass-card {
+  background: linear-gradient(
+    135deg,
+    rgba(17, 17, 17, 0.7) 0%,
+    rgba(26, 26, 26, 0.4) 100%
+  );
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Glass card with green tint on hover */
+.glass-card-hover {
+  background: linear-gradient(
+    135deg,
+    rgba(17, 17, 17, 0.7) 0%,
+    rgba(26, 26, 26, 0.4) 100%
+  );
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 20px 60px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-hover:hover {
+  border-color: rgba(16, 185, 129, 0.15);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(16, 185, 129, 0.06);
+  transform: translateY(-2px);
+}
+
+/* Gradient border — subtle glow border effect */
+.glow-border {
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.15), 0 0 20px rgba(16, 185, 129, 0.05);
+}
+
+/* Section divider — gradient fade instead of hard border */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(42, 42, 42, 0.6) 20%, rgba(42, 42, 42, 0.6) 80%, transparent);
+}
+
+/* ─── 3D Perspective ─────────────────────────────────────────── */
+
+.perspective-container {
+  perspective: 1200px;
+}
+
+.perspective-tilt {
+  transform: rotateX(2deg) rotateY(-1deg);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.perspective-tilt:hover {
+  transform: rotateX(0deg) rotateY(0deg);
+}
+
+/* ─── Respect prefers-reduced-motion ─────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in-up {
     animation: none !important;
@@ -140,6 +284,20 @@ body {
 
   .animate-spin {
     animation: none !important;
+  }
+
+  .btn-shimmer::after {
+    animation: none !important;
+  }
+
+  .animate-float,
+  .animate-float-slow,
+  .animate-float-reverse {
+    animation: none !important;
+  }
+
+  .perspective-tilt {
+    transform: none !important;
   }
 
   /* Disable all transitions globally for reduced-motion users */

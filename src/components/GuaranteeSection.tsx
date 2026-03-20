@@ -6,39 +6,58 @@ export function GuaranteeSection() {
   const sectionRef = useSectionView("guarantee");
 
   return (
-    <section ref={sectionRef} className="border-t border-border-light py-20 md:py-28">
-      <div className="mx-auto max-w-4xl px-6">
-        <div className="rounded-2xl border border-brand/30 bg-brand/5 p-8 md:p-12">
+    <section ref={sectionRef} className="relative py-20 md:py-28">
+      <div className="section-divider" />
+
+      {/* Ambient glow */}
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[600px] rounded-full bg-brand/[0.03] blur-[140px]" />
+
+      <div className="relative mx-auto max-w-4xl px-6 pt-16">
+        <div className="glass-card rounded-2xl p-8 md:p-12 border-brand/10">
           <div className="flex flex-col items-center text-center">
-            {/* Shield icon */}
-            <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand/10">
-              <svg className="h-8 w-8 text-brand" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-              </svg>
+            {/* Shield icon with pulsing glow */}
+            <div className="relative mb-8">
+              <div className="absolute -inset-4 rounded-full bg-brand/[0.08] blur-xl animate-pulse" />
+              <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-brand/[0.08] border border-brand/15">
+                <svg className="h-10 w-10 text-brand" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                </svg>
+              </div>
             </div>
 
-            <div className="mb-2 text-sm font-semibold uppercase tracking-wider text-brand">
+            <div className="mb-3 text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
               Our guarantee
             </div>
-            <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
-              The $1,000 Revenue Guarantee
+            <h2 className="mb-6 font-display text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+              The $1,000/Month Promise
             </h2>
-            <p className="mx-auto mb-8 max-w-2xl text-lg text-text-muted leading-relaxed">
-              We find at least $1,000/month in recoverable revenue on your first scan,
-              or every paid plan is free until we do. No fine print. No conditions. No tricks.
+
+            <p className="mx-auto mb-6 max-w-2xl text-[15px] text-white/50 leading-relaxed">
+              This is simple. If RevReclaim can&apos;t find at least $1,000 per month in billing leaks across your account, every paid plan is free until we do. Not a discount. Not a credit. Free.
             </p>
 
-            {/* Honest explanation */}
-            <div className="mx-auto max-w-xl rounded-xl border border-border bg-surface-dim p-6 text-left">
-              <p className="text-sm text-text-muted leading-relaxed">
-                Look, if we can&apos;t find $1,000/month in leaks for a SaaS doing $30K+ MRR,
-                then either your billing is already perfect (congrats) or our scanner isn&apos;t
-                good enough yet. Either way, you shouldn&apos;t pay us. Simple.
-              </p>
-              <p className="mt-3 text-xs text-text-dim">
-                The free scan is always free regardless. This guarantee applies to paid plans only.
-              </p>
-            </div>
+            <p className="mx-auto mb-8 max-w-2xl text-[15px] text-white/40 leading-relaxed">
+              We&apos;re that confident because the data says so. 42% of SaaS companies are leaking revenue. The average is 3-8% of MRR. For a $50K MRR company, 3% alone is $1,500/month.
+            </p>
+          </div>
+
+          {/* Honest explanation — glass card */}
+          <div className="mx-auto max-w-xl rounded-xl border border-white/[0.04] bg-white/[0.02] p-6 text-left">
+            <p className="text-sm text-white/45 leading-[1.7]">
+              But look, we understand the hesitation. You&apos;re a founder. You&apos;ve seen tools promise big numbers and deliver nothing. You&apos;ve been burned by &ldquo;AI-powered&rdquo; products that sounded great on a landing page and fell apart in practice.
+            </p>
+            <p className="mt-4 text-sm text-white/45 leading-[1.7]">
+              So here&apos;s the deal: the first scan is completely free. No credit card. No signup. No commitment. You paste a read-only API key, wait 90 seconds, and see your results.
+            </p>
+            <p className="mt-4 text-sm text-white/45 leading-[1.7]">
+              If we don&apos;t find $1,000/month? Then honestly, you&apos;re in better shape than most SaaS companies, and we&apos;re genuinely happy for you. No charge. No awkward upsell email. We just saved you the 4-8 hours you would have spent doing a manual audit.
+            </p>
+            <p className="mt-5 text-sm font-semibold text-white/60 leading-[1.7]">
+              Either way, you win. Either you find leaks and fix them, or you get peace of mind that your billing is actually healthy.
+            </p>
+            <p className="mt-3 text-[11px] text-white/20">
+              The scan takes 90 seconds. There&apos;s really no reason not to check.
+            </p>
           </div>
         </div>
       </div>

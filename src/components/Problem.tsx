@@ -6,175 +6,147 @@ export function Problem() {
   const sectionRef = useSectionView("problem");
 
   return (
-    <section ref={sectionRef} id="problem" className="border-t border-border-light py-20 md:py-28">
-      <div className="mx-auto max-w-4xl px-6">
-        <div className="mb-4 text-sm font-semibold uppercase tracking-wider text-brand">
-          The problem
+    <section ref={sectionRef} id="problem" className="relative py-20 md:py-28">
+      <div className="section-divider" />
+
+      {/* Subtle ambient glow */}
+      <div className="pointer-events-none absolute top-1/3 right-0 h-[400px] w-[400px] rounded-full bg-danger/[0.02] blur-[120px]" />
+
+      <div className="relative mx-auto max-w-4xl px-6 pt-16">
+        {/* ── Section B: Problem Agitation ── */}
+        <div className="mb-3 text-[13px] font-semibold uppercase tracking-[0.15em] text-danger/80">
+          The problem nobody talks about
         </div>
-        <h2 className="mb-6 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
-          You&apos;re losing money every month.
+        <h2 className="mb-6 font-display text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+          You&apos;re probably losing $1,500 to $5,000 every month.
           <br />
-          <span className="text-text-muted">You know it&apos;s there. You just don&apos;t have time to find it.</span>
+          <span className="text-white/40">And you don&apos;t know it.</span>
         </h2>
-        <p className="mb-12 max-w-2xl text-lg leading-relaxed text-text-muted">
-          You track churn. You track MRR. You check your Stripe
-          dashboard every morning like the rest of us.
-          <br /><br />
-          But here&apos;s what Stripe doesn&apos;t show you: a $899 charge that failed
-          18 days ago and nobody retried. A 50% &ldquo;launch discount&rdquo; coupon that
-          expired 4 months ago but is still active on 3 subscriptions. A trial
-          user who&apos;s been on your product for free for 67 days because the
-          webhook didn&apos;t fire.
-          <br /><br />
-          Nobody&apos;s stealing from you. Your billing system just has holes.
-          And until you look, you won&apos;t know how many.
-        </p>
-
-        {/* Micro-stories — realistic scenarios, not fabricated data */}
-        <div className="mb-12 grid gap-4 md:grid-cols-3">
-          <div className="rounded-xl border border-border bg-surface-dim p-5">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-danger">The pricing migration you forgot</div>
-            <p className="text-sm leading-relaxed text-text-muted">
-              Say you raised prices 6 months ago. You assumed everyone migrated.
-              Then you check: some of your customers are still on the old rate.
-              Nobody told you. Stripe certainly didn&apos;t.
-            </p>
-          </div>
-          <div className="rounded-xl border border-border bg-surface-dim p-5">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-warning">The silent discount bleed</div>
-            <p className="text-sm leading-relaxed text-text-muted">
-              A &ldquo;30-day launch discount&rdquo; coupon you created 8 months ago.
-              It expired. But it&apos;s still applied to 12 subscriptions.
-              Every month, they pay less than they should. You never noticed.
-            </p>
-          </div>
-          <div className="rounded-xl border border-border bg-surface-dim p-5">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-purple">The accidental double charge</div>
-            <p className="text-sm leading-relaxed text-text-muted">
-              Sometimes a customer upgrades their plan. But the old subscription never gets canceled.
-              They&apos;re paying for both. Right now, it&apos;s extra revenue.
-              Next month, it could be a chargeback and a 1-star review.
-            </p>
-          </div>
+        <div className="mb-14 max-w-2xl text-[15px] leading-[1.8] text-white/45">
+          <p>
+            Here&apos;s the thing nobody tells you when you start scaling a SaaS.
+          </p>
+          <p className="mt-4">
+            Your Stripe Dashboard looks green. MRR is growing. Customers are paying. Everything seems fine.
+          </p>
+          <p className="mt-4">
+            But behind that green dashboard, something is quietly going wrong.
+          </p>
+          <p className="mt-4">
+            A coupon you created for a one-time promotion? Still running. Six months later. One founder on Reddit found out the hard way: <span className="font-semibold text-white/70">&ldquo;I ran into that expired coupon thing last year and it cost me like $800/month for 6 months before I caught it. The worst part is Stripe&apos;s dashboard doesn&apos;t make it obvious at all.&rdquo;</span>
+          </p>
+          <p className="mt-4">
+            That&apos;s $4,800. From a single coupon. That nobody was watching.
+          </p>
+          <p className="mt-4">
+            And that&apos;s just one type of leak.
+          </p>
         </div>
 
-        {/* Three categories of revenue leaks */}
-        <div className="relative rounded-2xl border border-border bg-surface p-8 md:p-12">
-          <div className="mb-8 text-center">
-            <div className="mb-2 text-sm text-text-muted">10 scanners. Three kinds of lost money.</div>
+        {/* Leak types list — glass card */}
+        <div className="mb-14 glass-card rounded-2xl p-6 md:p-8">
+          <div className="mb-5 text-sm font-semibold text-white/70">
+            Here&apos;s what&apos;s actually happening inside most SaaS billing accounts right now:
           </div>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            <div className="rounded-xl border border-danger/30 bg-danger/5 p-5">
-              <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-danger">Money walking out the door</div>
-              <ul className="space-y-2 text-sm text-text-muted">
-                <li>Failed payments nobody retried</li>
-                <li>Expiring cards about to churn</li>
-                <li>Trials that expired but weren&apos;t converted</li>
-              </ul>
-            </div>
-            <div className="rounded-xl border border-warning/30 bg-warning/5 p-5">
-              <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-warning">Money left on the table</div>
-              <ul className="space-y-2 text-sm text-text-muted">
-                <li>Expired coupons still giving discounts</li>
-                <li>Never-expiring discounts you forgot</li>
-                <li>Legacy pricing from last year</li>
-              </ul>
-            </div>
-            <div className="rounded-xl border border-purple/30 bg-purple/5 p-5">
-              <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-purple">Money hiding in plain sight</div>
-              <ul className="space-y-2 text-sm text-text-muted">
-                <li>Ghost subscriptions (inactive but paying)</li>
-                <li>Duplicate subscriptions</li>
-                <li>Missing payment methods</li>
-                <li>Unbilled overages</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-8 rounded-xl border border-border-light bg-surface-dim p-4 text-center">
-            <p className="text-sm text-text-muted">
-              These add up. For a SaaS doing $50K MRR, 3-5% could mean
-              <span className="font-semibold text-white"> $1,500 to $2,500 every month</span> that
-              should be in your account but isn&apos;t.
-            </p>
-          </div>
+          <ul className="space-y-3 text-sm text-white/45">
+            {[
+              "Coupons that expired months ago, still giving discounts to customers who should be paying full price",
+              "\"Lifetime\" discounts from a launch promotion that are still silently reducing every invoice",
+              "Failed payments that Stripe's Smart Retries couldn't recover, sitting in limbo",
+              "Credit cards expiring next month with no alert, no fallback, no plan",
+              "Ghost subscriptions: customers who stopped using your product months ago but are still marked \"active\" (and when they notice, they'll chargeback)",
+              "Legacy pricing from 2 years ago on customers who should be paying your current rates",
+              "Trials that expired and never converted, but also never canceled. Just... floating",
+              "Duplicate subscriptions that nobody noticed",
+            ].map((item) => (
+              <li key={item} className="flex items-start gap-3">
+                <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-danger/60 shrink-0" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        {/* 3-column comparison table — the "aha" moment */}
-        <div className="mt-10 rounded-2xl border border-info/20 bg-info/5 p-6 md:p-8">
-          <div className="mb-5 text-sm font-semibold uppercase tracking-wider text-info">
-            What each tool actually catches
+        {/* Dollar math — the accumulation */}
+        <div className="mb-14 glass-card rounded-2xl p-6 md:p-8 text-center">
+          <div className="mb-5 text-sm text-white/40">Sound small? Run the math.</div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
+              <div className="text-xs text-white/30 mb-2">$10K MRR</div>
+              <div className="text-lg font-bold text-danger font-display">$300/mo</div>
+              <div className="text-xs text-white/25 mt-1">= $3,600/year gone</div>
+            </div>
+            <div className="rounded-xl border border-warning/15 bg-warning/[0.04] p-5">
+              <div className="text-xs text-white/30 mb-2">$50K MRR</div>
+              <div className="text-xl font-bold text-warning font-display">$1,500/mo</div>
+              <div className="text-xs text-white/25 mt-1">= $18,000/year gone</div>
+            </div>
+            <div className="rounded-xl border border-danger/15 bg-danger/[0.04] p-5">
+              <div className="text-xs text-white/30 mb-2">$100K MRR</div>
+              <div className="text-2xl font-bold text-danger font-display">$4,000/mo</div>
+              <div className="text-xs text-white/25 mt-1">= $48,000/year gone</div>
+            </div>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="pb-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-text-dim" />
-                  <th className="pb-3 px-4 text-left text-xs font-semibold uppercase tracking-wider text-text-dim">Stripe Dashboard</th>
-                  <th className="pb-3 px-4 text-left text-xs font-semibold uppercase tracking-wider text-text-dim">Analytics tools</th>
-                  <th className="pb-3 pl-4 text-left text-xs font-semibold uppercase tracking-wider text-brand">RevReclaim</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border-light">
-                <ComparisonRow
-                  leak="Expired coupons still active"
-                  stripe="Invisible"
-                  analytics="Invisible"
-                  revreclaim="Finds + removes"
-                />
-                <ComparisonRow
-                  leak="Failed payments"
-                  stripe="Shows alert"
-                  analytics="Shows churn %"
-                  revreclaim="Finds + retries + sends dunning"
-                />
-                <ComparisonRow
-                  leak="Legacy pricing gaps"
-                  stripe="Invisible"
-                  analytics="Invisible"
-                  revreclaim="Finds + flags $ amount"
-                />
-                <ComparisonRow
-                  leak="Duplicate subscriptions"
-                  stripe="Invisible"
-                  analytics="Invisible"
-                  revreclaim="Finds + cancels duplicate"
-                />
-                <ComparisonRow
-                  leak="Expiring cards (30 days out)"
-                  stripe="No warning"
-                  analytics="No warning"
-                  revreclaim="Alerts before churn"
-                />
-                <ComparisonRow
-                  leak="Ghost subscriptions"
-                  stripe="Invisible"
-                  analytics="Invisible"
-                  revreclaim="Finds + flags"
-                />
-              </tbody>
-            </table>
-          </div>
+          <p className="mt-6 text-sm text-white/40">
+            That&apos;s not a rounding error. That&apos;s a hire. That&apos;s a marketing budget. That&apos;s runway.
+          </p>
+          <p className="mt-2 text-sm text-white/30">
+            And it compounds. Every month you don&apos;t check, the number grows. Silently.
+          </p>
+        </div>
+
+        {/* ── Section C: The Villain Reveal ── */}
+        <div className="section-divider mb-14" />
+
+        <h3 className="mb-6 font-display text-2xl font-bold text-white md:text-3xl lg:text-4xl">
+          This isn&apos;t your fault.
+          <br />
+          <span className="text-white/40">But it is your problem.</span>
+        </h3>
+
+        <div className="mb-10 max-w-2xl text-[15px] leading-[1.8] text-white/45">
+          <p>
+            Look, you didn&apos;t miss these leaks because you&apos;re bad at running a business. You missed them because of something nobody talks about.
+          </p>
+          <p className="mt-5">
+            <span className="font-semibold text-brand">We call it The Silent Billing Decay.</span>
+          </p>
+          <p className="mt-5">
+            Stripe is incredible at processing payments. That&apos;s their job, and they do it really well. But billing health? Checking whether your coupons are still valid, whether your pricing is current, whether you have ghost subscriptions eating your MRR? <span className="font-semibold text-white/60">That&apos;s not Stripe&apos;s job.</span> They don&apos;t check it. They don&apos;t alert you. And honestly, they don&apos;t have much reason to.
+          </p>
+          <p className="mt-5">
+            So who&apos;s watching? Nobody.
+          </p>
+          <p className="mt-5">
+            You probably thought: &ldquo;If I was losing money, I&apos;d know.&rdquo; Most founders think that. 42% of SaaS companies are leaking revenue right now, according to MGI Research. Most of them have no idea.
+          </p>
+        </div>
+
+        {/* The dunning gap — key insight */}
+        <div className="glass-card rounded-2xl p-6 md:p-8 border-brand/10">
+          <p className="text-sm text-white/45 leading-[1.8]">
+            And here&apos;s what makes it worse. You might think: &ldquo;I have a dunning tool. I&apos;m covered.&rdquo;
+          </p>
+          <p className="mt-4 text-sm text-white/45 leading-[1.8]">
+            Actually, you&apos;re not. Your dunning tool handles failed payments. That&apos;s <span className="font-bold text-white/70">1 type</span> of billing leak.
+          </p>
+          <p className="mt-4 text-2xl font-bold text-brand font-display">
+            There are 10.
+          </p>
+          <p className="mt-4 text-sm text-white/40 leading-[1.8]">
+            Expired coupons. Never-expiring discounts. Ghost subscriptions. Legacy pricing. Missing payment methods. Unbilled overages. Expired trials. Duplicate subscriptions. And more.
+          </p>
+          <p className="mt-4 text-sm text-white/40 leading-[1.8]">
+            Every dunning tool in the market, all 21+ of them (Baremetrics Recover, Churnkey, Churn Buster, Stunning, Butter, Gravy), does the same thing: recover failed payments. That&apos;s it.
+          </p>
+          <p className="mt-5 text-sm font-semibold text-white/70 leading-[1.8]">
+            8 out of 10 leak types have zero automated tools checking them. Zero. Not a single product in the market.
+          </p>
+          <p className="mt-4 text-sm text-white/40 leading-[1.8]">
+            That&apos;s why nothing has worked. You weren&apos;t ignoring the problem. The tools you trusted were only covering a fraction of it.
+          </p>
         </div>
       </div>
     </section>
-  );
-}
-
-function ComparisonRow({ leak, stripe, analytics, revreclaim }: {
-  leak: string;
-  stripe: string;
-  analytics: string;
-  revreclaim: string;
-}) {
-  const isInvisible = (val: string) => val === "Invisible" || val === "No warning";
-  return (
-    <tr>
-      <td className="py-3 pr-4 font-medium text-text-secondary">{leak}</td>
-      <td className={`py-3 px-4 ${isInvisible(stripe) ? "text-text-dim" : "text-text-muted"}`}>{stripe}</td>
-      <td className={`py-3 px-4 ${isInvisible(analytics) ? "text-text-dim" : "text-text-muted"}`}>{analytics}</td>
-      <td className="py-3 pl-4 font-medium text-brand">{revreclaim}</td>
-    </tr>
   );
 }

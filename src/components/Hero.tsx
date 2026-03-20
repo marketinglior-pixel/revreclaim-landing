@@ -4,138 +4,146 @@ import { useSectionView } from "@/hooks/useSectionView";
 import { trackEvent } from "@/lib/analytics";
 import { trackCTAClick } from "@/lib/conversion-tracking";
 import { ScanCounter } from "@/components/ScanCounter";
-import Link from "next/link";
+import { HeroScanAnimation } from "@/components/HeroScanAnimation";
 
 export function Hero() {
   const sectionRef = useSectionView("hero");
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden pt-32 pb-20 md:pt-44 md:pb-32 lg:pb-36">
-      {/* Background glow */}
-      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[600px] w-[800px] rounded-full bg-brand/5 blur-[120px]" />
+    <section ref={sectionRef} className="relative overflow-hidden pt-32 pb-20 md:pt-44 md:pb-28 lg:pb-32">
+      {/* Atmospheric background — layered organic glows with slow drift */}
+      <div className="pointer-events-none absolute inset-0">
+        {/* Primary glow — warm green nebula */}
+        <div className="absolute top-[-10%] left-[20%] h-[700px] w-[700px] rounded-full bg-brand/8 blur-[160px] animate-float-slow" />
+        {/* Secondary glow — offset for depth */}
+        <div className="absolute top-[10%] right-[-5%] h-[500px] w-[500px] rounded-full bg-emerald-400/4 blur-[120px] animate-float-reverse" />
+        {/* Subtle warm accent */}
+        <div className="absolute bottom-[-5%] left-[-5%] h-[400px] w-[500px] rounded-full bg-brand/3 blur-[100px] animate-float" />
+        {/* Grid pattern overlay for tech feel */}
+        <div
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+            backgroundSize: "60px 60px",
+          }}
+        />
+      </div>
 
-      <div className="relative mx-auto max-w-4xl px-6 text-center">
-        {/* Headline */}
-        <h1 className="mb-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl md:leading-[1.2] lg:text-6xl animate-fade-in-up">
-          Most SaaS companies are leaking{" "}
-          <span className="text-brand">3&ndash;8% of their MRR.</span>
-        </h1>
-        <div className="mb-2 flex items-center justify-center gap-3 text-sm text-text-muted animate-fade-in-up animate-delay-100">
-          <span className="rounded-full border border-border px-3 py-1 font-medium text-text-secondary">Stripe</span>
-          <span className="rounded-full border border-border px-3 py-1 font-medium text-text-secondary">Polar</span>
-          <span className="rounded-full border border-border px-3 py-1 font-medium text-text-secondary">Paddle</span>
-        </div>
+      <div className="relative mx-auto max-w-6xl px-6">
+        {/* Two-column layout: text left, animation right */}
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-20">
 
-        {/* Qualifier */}
-        <p className="mb-6 text-xs text-text-dim animate-fade-in-up animate-delay-100">
-          Built for SaaS with 100+ customers
-        </p>
+          {/* Left column — copy */}
+          <div className="text-center lg:text-left">
+            {/* Platform badges — glass morphism */}
+            <div className="mb-6 flex items-center justify-center gap-2 animate-fade-in-up lg:justify-start">
+              {["Stripe", "Polar", "Paddle"].map((platform) => (
+                <span
+                  key={platform}
+                  className="rounded-full border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm px-4 py-1.5 text-[13px] font-medium text-text-secondary transition-colors hover:border-brand/20 hover:text-white"
+                >
+                  {platform}
+                </span>
+              ))}
+            </div>
 
-        {/* Sub — honest, not overselling */}
-        <div className="mx-auto mb-10 max-w-2xl text-lg text-text-muted md:text-xl leading-relaxed animate-fade-in-up animate-delay-200 space-y-1">
-          <p>The billing audit most SaaS founders keep postponing.</p>
-          <p className="text-brand font-medium">Most scans find something. Some find nothing, and that&apos;s fine too. Free.</p>
-        </div>
+            {/* Headline — problem-first, loss aversion */}
+            <h1 className="mb-6 font-display text-[2rem] font-extrabold leading-[1.1] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.4rem] animate-fade-in-up">
+              Your Stripe account is{" "}
+              <span className="bg-gradient-to-r from-brand via-emerald-300 to-brand bg-[length:200%_auto] bg-clip-text text-transparent animate-[gradientShift_6s_ease_infinite]">
+                leaking money
+              </span>{" "}
+              right now.
+            </h1>
 
-        {/* Primary CTA */}
-        <div className="flex flex-col items-center gap-4 animate-fade-in-up animate-delay-400">
-          <a
-            href="/scan"
-            onClick={() => {
-              trackEvent("cta_clicked", null, { location: "hero", action: "scan" }).catch(() => {});
-              trackCTAClick("hero", "scan");
-            }}
-            className="group flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-lg font-bold text-black min-h-[56px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
-          >
-            Find &amp; Fix My Leaks
-            <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </a>
-          {/* Trust line — all verifiable facts */}
-          <div className="flex items-center gap-2 text-sm text-text-secondary">
-            <svg className="h-4 w-4 text-brand shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-            Read-only access &middot; Key deleted after scan &middot; No signup required &middot; No credit card
-          </div>
-        </div>
+            {/* Sub — 10 silent issues, scan CTA */}
+            <p className="mx-auto mb-8 max-w-lg text-[17px] text-text-muted/90 leading-relaxed animate-fade-in-up animate-delay-100 lg:mx-0">
+              10 silent billing issues that Stripe doesn&apos;t alert you about. Most SaaS founders don&apos;t find them until thousands are already gone. Scan yours free in 90 seconds.
+            </p>
 
-        {/* Mini report preview — show what the scan produces */}
-        <div className="mt-10 mx-auto max-w-md animate-fade-in-up animate-delay-400">
-          <p className="text-xs text-text-dim mb-3 uppercase tracking-wider font-medium">Example scan result</p>
-          <div className="rounded-xl border border-border bg-surface/80 backdrop-blur-sm p-4">
-            <div className="grid grid-cols-3 gap-3">
-              <div className="text-center">
-                <div className="text-xl font-bold text-danger">23</div>
-                <div className="text-[10px] text-text-muted">leaks found</div>
-              </div>
-              <div className="text-center border-x border-border">
-                <div className="text-xl font-bold text-warning">$2,340</div>
-                <div className="text-[10px] text-text-muted">MRR at risk</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-brand">70</div>
-                <div className="text-[10px] text-text-muted">health score</div>
+            {/* Primary CTA — shimmer effect */}
+            <div className="flex flex-col items-center gap-5 animate-fade-in-up animate-delay-200 lg:items-start">
+              <a
+                href="/scan"
+                onClick={() => {
+                  trackEvent("cta_clicked", null, { location: "hero", action: "scan" }).catch(() => {});
+                  trackCTAClick("hero", "scan");
+                }}
+                className="btn-shimmer group flex items-center gap-2.5 rounded-xl bg-brand px-9 py-4 text-[17px] font-bold text-black min-h-[56px] transition-all duration-300 hover:bg-brand-light hover:shadow-[0_0_40px_rgba(16,185,129,0.35)] hover:scale-[1.02]"
+              >
+                Show Me My Leaks
+                <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </a>
+
+              {/* Trust line — refined with subtle separators */}
+              <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-2 text-[13px] text-text-muted lg:justify-start">
+                <span className="flex items-center gap-1.5 px-2">
+                  <svg className="h-3.5 w-3.5 text-brand/70 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  Read-only (we can&apos;t change anything)
+                </span>
+                <span className="text-border">|</span>
+                <span className="flex items-center gap-1.5 px-2">
+                  <svg className="h-3.5 w-3.5 text-brand/70 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Key deleted after scan
+                </span>
+                <span className="text-border">|</span>
+                <span className="flex items-center gap-1.5 px-2">
+                  <svg className="h-3.5 w-3.5 text-brand/70 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  Free, no credit card
+                </span>
+                <span className="text-border">|</span>
+                <span className="flex items-center gap-1.5 px-2">
+                  <svg className="h-3.5 w-3.5 text-brand/70 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  No signup required
+                </span>
               </div>
             </div>
-            <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
-              <p className="text-[11px] text-text-dim">
-                That&apos;s ~$78/day walking out the door
-              </p>
-              <Link href="/demo" className="text-[11px] text-brand hover:text-brand-light transition">
-                See full report &rarr;
-              </Link>
+
+            {/* Scan counter + calculator */}
+            <div className="mt-8 space-y-2.5 animate-fade-in-up animate-delay-400">
+              <div className="text-xs text-text-dim/80">
+                <ScanCounter /> scans completed
+              </div>
+              <a
+                href="/calculator"
+                onClick={() => {
+                  trackEvent("cta_clicked", null, { location: "hero", action: "calculator" }).catch(() => {});
+                  trackCTAClick("hero", "calculator");
+                }}
+                className="inline-block text-sm text-text-dim hover:text-brand transition-colors duration-300"
+              >
+                Not sure? Try the 60-second calculator first &rarr;
+              </a>
             </div>
           </div>
 
-          {/* Scan counter — real data from DB */}
-          <div className="mt-3 text-xs text-text-dim">
-            <ScanCounter /> scans completed &middot; Join them
+          {/* Right column — scanning animation with ambient glow */}
+          <div className="relative animate-fade-in-up animate-delay-200">
+            {/* Glow behind the terminal */}
+            <div className="pointer-events-none absolute -inset-6 rounded-3xl bg-brand/[0.04] blur-2xl" />
+            <div className="relative">
+              <HeroScanAnimation />
+            </div>
           </div>
         </div>
 
-        {/* Low-friction alternative for cold traffic */}
-        <div className="mt-6 animate-fade-in-up animate-delay-400">
-          <a
-            href="/calculator"
-            onClick={() => {
-              trackEvent("cta_clicked", null, { location: "hero", action: "calculator" }).catch(() => {});
-              trackCTAClick("hero", "calculator");
-            }}
-            className="text-sm text-text-dim hover:text-brand transition-colors"
-          >
-            Not sure? Try the 60-second calculator first (no signup) &rarr;
-          </a>
-        </div>
-
-        {/* Problem facts bar — sell the problem, not the product */}
-        <div className="mt-16 flex flex-wrap items-center justify-center gap-8 border-t border-border-light pt-8">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-danger">3-8%</div>
-            <div className="text-xs text-text-muted">of MRR typically leaking</div>
-          </div>
-          <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
-          <div className="text-center">
-            <div className="text-2xl font-bold text-white">10</div>
-            <div className="text-xs text-text-muted">types of billing leaks</div>
-          </div>
-          <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
-          <div className="text-center">
-            <div className="text-2xl font-bold text-white">90 sec</div>
-            <div className="text-xs text-text-muted">scan time</div>
-          </div>
-          <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
-          <div className="text-center">
-            <div className="text-2xl font-bold text-brand">Free</div>
-            <div className="text-xs text-text-muted">No signup needed</div>
-          </div>
-          <div className="hidden h-8 w-px bg-surface-lighter sm:block" />
+        {/* Product Hunt badge */}
+        <div className="mt-20 flex justify-center animate-fade-in-up animate-delay-500">
           <a
             href="https://www.producthunt.com/products/revreclaim?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-revreclaim"
             target="_blank"
             rel="noopener noreferrer"
-            className="transition-opacity hover:opacity-80"
+            className="transition-all duration-300 hover:opacity-80 hover:scale-105"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

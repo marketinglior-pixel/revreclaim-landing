@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import ExternalAnalytics from "@/components/ExternalAnalytics";
 import UTMCapture from "@/components/UTMCapture";
@@ -10,6 +10,12 @@ import Script from "next/script";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+});
+
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -287,7 +293,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${inter.variable} antialiased`}>
+      <body className={`${inter.variable} ${jakarta.variable} antialiased noise-overlay`}>
         <PostHogProvider>
           <ExternalAnalytics />
           <UTMCapture />

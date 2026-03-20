@@ -1,180 +1,155 @@
 "use client";
 
-import { useState } from "react";
+// ────────────────────────────────────────────────────────
+// Dashboard Preview — 3D perspective mockup with glass UI
+// 3 key stats + 4 leak rows, refined visual quality
+// ────────────────────────────────────────────────────────
 
 export function DashboardPreview() {
-  const [expandedRow, setExpandedRow] = useState<number | null>(null);
-
   return (
-    <section className="border-t border-border-light py-20 md:py-28">
+    <section className="relative py-20 md:py-28 overflow-hidden">
+      {/* Ambient background */}
+      <div className="pointer-events-none absolute top-0 right-0 h-[500px] w-[500px] rounded-full bg-danger/[0.02] blur-[120px]" />
+
       <div className="mx-auto max-w-5xl px-6">
-        <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-danger">
-          Real example
+        <div className="mb-3 text-center text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
+          Imagine this tomorrow morning
         </div>
-        <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
-          This is what $2,340/month of leaked revenue looks like.
+        <h2 className="mb-4 text-center font-display text-3xl font-bold text-white md:text-4xl">
+          You open your dashboard. You see exactly what&apos;s wrong.
         </h2>
-        <p className="mx-auto mb-12 max-w-2xl text-center text-lg text-text-muted">
-          23 billing leaks across 10 categories. Expired coupons, failed payments,
-          legacy pricing, duplicate subscriptions. All hiding in plain sight.
+        <p className="mx-auto mb-6 max-w-2xl text-center text-[15px] text-white/45 leading-relaxed">
+          Seven leaks. $2,340 per month. Each one with a name, an amount, and a link to fix it.
+          You click the first one. It takes you straight to the customer&apos;s page in Stripe.
+          You fix the expired coupon. Done. That&apos;s $280/month recovered.
+        </p>
+        <p className="mx-auto mb-14 max-w-2xl text-center text-[15px] text-white/40 leading-relaxed">
+          By the time you finish your coffee, you&apos;ve recovered $1,400 in monthly recurring revenue.
+          Revenue that was yours all along. Just sitting there, leaking, waiting for someone to notice.
         </p>
 
-        {/* Dashboard mockup */}
-        <div className="relative rounded-2xl border border-border bg-surface p-1 shadow-[0_0_60px_rgba(16,185,129,0.06)]">
-          {/* Browser chrome */}
-          <div className="flex items-center gap-2 rounded-t-xl bg-surface-dim px-4 py-3">
-            <div className="flex gap-1.5">
-              <div className="h-3 w-3 rounded-full bg-danger/60" />
-              <div className="h-3 w-3 rounded-full bg-warning/60" />
-              <div className="h-3 w-3 rounded-full bg-brand/60" />
-            </div>
-            <div className="ml-4 flex-1 rounded-md bg-surface-light px-4 py-1.5 text-xs text-text-muted">
-              <svg className="inline-block h-3 w-3 text-text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M8 11V7a4 4 0 0 1 8 0v4" /><path d="M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z" /></svg>{" "}revreclaim.com/report/a1b2c3d4
-            </div>
-          </div>
+        {/* Dashboard mockup — 3D perspective tilt */}
+        <div className="perspective-container">
+          <div className="perspective-tilt">
+            <div className="relative glass-card rounded-2xl p-1 shadow-[0_30px_100px_rgba(0,0,0,0.5),0_0_80px_rgba(16,185,129,0.03)]">
+              {/* Browser chrome — realistic */}
+              <div className="flex items-center gap-2 rounded-t-xl bg-white/[0.03] px-4 py-3 border-b border-white/[0.04]">
+                <div className="flex gap-2">
+                  <div className="h-3 w-3 rounded-full bg-[#FF5F57] shadow-[0_0_6px_rgba(255,95,87,0.3)]" />
+                  <div className="h-3 w-3 rounded-full bg-[#FEBC2E] shadow-[0_0_6px_rgba(254,188,46,0.3)]" />
+                  <div className="h-3 w-3 rounded-full bg-[#28C840] shadow-[0_0_6px_rgba(40,200,64,0.3)]" />
+                </div>
+                <div className="ml-4 flex-1 rounded-lg bg-white/[0.04] px-4 py-1.5 text-xs text-white/25 font-mono flex items-center gap-2">
+                  <svg className="h-3 w-3 text-brand/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M8 11V7a4 4 0 0 1 8 0v4" /><path d="M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z" /></svg>
+                  revreclaim.com/report/a1b2c3d4
+                </div>
+              </div>
 
-          {/* Dashboard content */}
-          <div className="p-6 md:p-8">
-            {/* Top stats */}
-            <div className="mb-6 grid gap-4 grid-cols-2 md:grid-cols-5">
-              {/* Health Score */}
-              <div className="rounded-xl border border-border bg-surface-dim p-5 flex flex-col items-center justify-center">
-                <div className="relative w-16 h-16 mb-2">
-                  <svg width="64" height="64" className="transform -rotate-90">
-                    <circle cx="32" cy="32" r="28" fill="none" stroke="#1A1A1A" strokeWidth="6" />
-                    <circle cx="32" cy="32" r="28" fill="none" stroke="#F59E0B" strokeWidth="6" strokeLinecap="round" strokeDasharray="175.9" strokeDashoffset="52.8" />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-lg font-bold text-warning">70</span>
+              {/* Dashboard content */}
+              <div className="p-6 md:p-8">
+                {/* Top stats — 3 cards */}
+                <div className="mb-6 grid gap-4 grid-cols-1 sm:grid-cols-3">
+                  {/* Health Score */}
+                  <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5 flex items-center gap-4">
+                    <div className="relative w-14 h-14 shrink-0">
+                      <svg width="56" height="56" className="transform -rotate-90">
+                        <circle cx="28" cy="28" r="24" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="5" />
+                        <circle cx="28" cy="28" r="24" fill="none" stroke="#F59E0B" strokeWidth="5" strokeLinecap="round" strokeDasharray="150.8" strokeDashoffset="45.2" />
+                      </svg>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-base font-bold text-warning font-display">70</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-[11px] text-white/30 uppercase tracking-wider">Health Score</div>
+                      <div className="text-sm text-white/60 mt-0.5">Needs attention</div>
+                    </div>
+                  </div>
+
+                  {/* Leaks Found */}
+                  <div className="rounded-xl border border-danger/15 bg-danger/[0.04] p-5">
+                    <div className="text-[11px] text-white/30 mb-1 uppercase tracking-wider">Leaks Found</div>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-3xl font-bold text-danger font-display">23</span>
+                      <span className="text-xs text-white/25">across 10 checks</span>
+                    </div>
+                  </div>
+
+                  {/* MRR at Risk */}
+                  <div className="rounded-xl border border-warning/15 bg-warning/[0.04] p-5">
+                    <div className="text-[11px] text-white/30 mb-1 uppercase tracking-wider">MRR at Risk</div>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-3xl font-bold text-warning font-display">$2,340</span>
+                      <span className="text-xs text-white/25">/month</span>
+                    </div>
                   </div>
                 </div>
-                <div className="text-xs text-text-muted">Health Score</div>
+
+                {/* Leak table */}
+                <div className="rounded-xl border border-white/[0.06] bg-white/[0.01] overflow-hidden">
+                  <div className="border-b border-white/[0.04] px-5 py-3 flex items-center justify-between">
+                    <span className="text-sm font-semibold text-white/80">Top Leaks Found</span>
+                    <span className="text-[10px] text-white/20 uppercase tracking-wider font-mono">Priority</span>
+                  </div>
+
+                  <LeakRow
+                    severity="CRITICAL"
+                    type="Failed Payment"
+                    customer="a***@acmecorp.com"
+                    impact="$499/mo"
+                    detail="Invoice #INV-2847 unpaid for 12 days"
+                    fix="Retry payment"
+                  />
+                  <LeakRow
+                    severity="CRITICAL"
+                    type="Missing Payment"
+                    customer="j***@startupxyz.io"
+                    impact="$299/mo"
+                    detail="No valid payment method on active subscription"
+                    fix="Contact customer"
+                  />
+                  <LeakRow
+                    severity="HIGH"
+                    type="Expired Coupon"
+                    customer="s***@cloudapp.io"
+                    impact="$150/mo"
+                    detail="50% discount expired 3 months ago, still active"
+                    fix="Remove discount"
+                  />
+                  <LeakRow
+                    severity="HIGH"
+                    type="Legacy Pricing"
+                    customer="r***@bigco.com"
+                    impact="$100/mo"
+                    detail="Paying $149/mo vs current $249/mo"
+                    fix="Migrate plan"
+                  />
+
+                  <div className="px-5 py-3 text-center text-[11px] text-white/20">
+                    + 19 more leaks found across all 10 categories
+                  </div>
+                </div>
               </div>
 
-              <StatCard
-                label="MRR at Risk"
-                value="$2,340"
-                sub="/month"
-                highlight
-              />
-              <StatCard
-                label="Leaks Found"
-                value="23"
-                sub="across 10 checks"
-              />
-              <StatCard
-                label="Annual Recovery"
-                value="$28,080"
-                sub="/year"
-              />
-              <StatCard
-                label="Recovered MRR"
-                value="$840"
-                sub="/mo tracked"
-                info
-              />
-            </div>
-
-            {/* Leak table */}
-            <div className="rounded-xl border border-border bg-surface-dim">
-              <div className="border-b border-border px-5 py-3">
-                <span className="text-sm font-semibold text-white">Top Leaks Found</span>
-              </div>
-
-              <LeakTableRow
-                index={0}
-                expanded={expandedRow === 0}
-                onToggle={() => setExpandedRow(expandedRow === 0 ? null : 0)}
-                severity="CRITICAL"
-                type="Failed Payment"
-                customer="a***@acmecorp.com"
-                impact="$499/mo"
-                detail="Invoice #INV-2847 unpaid for 12 days. Payment attempted but failed."
-                fix="Retry payment or contact customer"
-                fixSteps={["Open Stripe dashboard", "Go to Invoices > #INV-2847", "Click 'Retry payment'", "If fails again, send dunning email to customer"]}
-                crmInsight="Inactive 52 days, likely churning"
-              />
-              <LeakTableRow
-                index={1}
-                expanded={expandedRow === 1}
-                onToggle={() => setExpandedRow(expandedRow === 1 ? null : 1)}
-                severity="CRITICAL"
-                type="Missing Payment"
-                customer="j***@startupxyz.io"
-                impact="$299/mo"
-                detail="Active subscription has no valid payment method. Next billing will fail."
-                fix="Contact customer to add card"
-              />
-              <LeakTableRow
-                index={2}
-                expanded={expandedRow === 2}
-                onToggle={() => setExpandedRow(expandedRow === 2 ? null : 2)}
-                severity="HIGH"
-                type="Expiring Card"
-                customer="m***@dataflow.com"
-                impact="$199/mo"
-                detail="Card ending in 4242 (Visa) expires 04/2026. Subscription at risk."
-                fix="Send card update reminder"
-              />
-              <LeakTableRow
-                index={3}
-                expanded={expandedRow === 3}
-                onToggle={() => setExpandedRow(expandedRow === 3 ? null : 3)}
-                severity="HIGH"
-                type="Expired Coupon"
-                customer="s***@cloudapp.io"
-                impact="$150/mo"
-                detail="50% discount coupon expired 3 months ago but still active on subscription."
-                fix="Remove expired discount"
-              />
-              <LeakTableRow
-                index={4}
-                expanded={expandedRow === 4}
-                onToggle={() => setExpandedRow(expandedRow === 4 ? null : 4)}
-                severity="MED"
-                type="Legacy Pricing"
-                customer="r***@bigco.com"
-                impact="$100/mo"
-                detail="Paying $149/mo (2023 pricing). Current price: $249/mo. 40% below rate."
-                fix="Migrate to current plan"
-                crmInsight="Active, 2 open deals. Upsell candidate"
-              />
-              <LeakTableRow
-                index={5}
-                expanded={expandedRow === 5}
-                onToggle={() => setExpandedRow(expandedRow === 5 ? null : 5)}
-                severity="HIGH"
-                type="Duplicate Subscription"
-                customer="t***@growthco.com"
-                impact="$199/mo"
-                detail="Customer has 2 active subscriptions for the same product. Old plan not canceled after upgrade."
-                fix="Cancel duplicate & refund overlap"
-                crmInsight="Last activity: 3 days ago. Reach out now"
-              />
-
-              <div className="px-5 py-3 text-center text-xs text-text-muted">
-                + 17 more leaks found across all 10 categories
-              </div>
+              {/* Fade overlay */}
+              <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-24 rounded-b-2xl bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent" />
             </div>
           </div>
-
-          {/* Fade overlay at bottom */}
-          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-24 rounded-b-2xl bg-gradient-to-t from-surface-dim to-transparent" />
         </div>
 
-        {/* CTA below preview */}
-        <div className="mt-8 text-center">
+        {/* CTA */}
+        <div className="mt-10 text-center">
           <a
             href="/scan"
-            className="group inline-flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black min-h-[52px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
+            className="btn-shimmer group inline-flex items-center gap-2.5 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black min-h-[52px] transition-all duration-300 hover:bg-brand-light hover:shadow-[0_0_40px_rgba(16,185,129,0.35)] hover:scale-[1.02]"
           >
             Show Me My Leaks
-            <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </a>
-          <p className="mt-3 text-sm text-text-muted">
-            Or <a href="/demo" className="text-brand hover:underline">explore the demo</a> with sample data first.
+          <p className="mt-4 text-sm text-white/30">
+            Or <a href="/demo" className="text-brand hover:text-brand-light transition-colors duration-300">explore the demo</a> with sample data first.
           </p>
         </div>
       </div>
@@ -182,89 +157,33 @@ export function DashboardPreview() {
   );
 }
 
-function StatCard({ label, value, sub, highlight, info }: {
-  label: string;
-  value: string;
-  sub: string;
-  highlight?: boolean;
-  info?: boolean;
-}) {
-  return (
-    <div className={`rounded-xl border p-5 ${highlight ? "border-danger/30 bg-danger/5" : info ? "border-info/30 bg-info/5" : "border-border bg-surface-dim"}`}>
-      <div className="mb-1 text-xs text-text-muted">{label}</div>
-      <div className="flex items-baseline gap-1">
-        <span className={`text-2xl font-bold ${highlight ? "text-danger" : info ? "text-info" : "text-white"}`}>{value}</span>
-        <span className="text-sm text-text-muted">{sub}</span>
-      </div>
-    </div>
-  );
-}
-
-function LeakTableRow({ severity, type, customer, impact, detail, fix, fixSteps, crmInsight, expanded, onToggle }: {
-  index: number;
+function LeakRow({ severity, type, customer, impact, detail, fix }: {
   severity: string;
   type: string;
   customer: string;
   impact: string;
   detail: string;
   fix: string;
-  fixSteps?: string[];
-  crmInsight?: string;
-  expanded?: boolean;
-  onToggle?: () => void;
 }) {
   const sevColor =
     severity === "CRITICAL"
-      ? "bg-danger/10 text-danger"
+      ? "bg-danger/10 text-danger border-danger/20"
       : severity === "HIGH"
-        ? "bg-warning/10 text-warning"
-        : "bg-info/10 text-info";
+        ? "bg-warning/10 text-warning border-warning/20"
+        : "bg-info/10 text-info border-info/20";
 
   return (
-    <div
-      className={`border-b border-border-light px-5 py-4 transition cursor-pointer hover:bg-surface-light/30 ${expanded ? "bg-surface-light/20" : ""}`}
-      onClick={onToggle}
-    >
-      <div className="mb-2 flex flex-wrap items-center gap-2">
-        <span className={`rounded px-2 py-0.5 text-xs font-bold ${sevColor}`}>{severity}</span>
-        <span className="text-sm font-semibold text-white">{type}</span>
-        <span className="text-sm text-text-muted font-mono">{customer}</span>
+    <div className="border-b border-white/[0.03] px-5 py-4 transition-colors duration-200 hover:bg-white/[0.01]">
+      <div className="mb-1.5 flex flex-wrap items-center gap-2">
+        <span className={`rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${sevColor}`}>{severity}</span>
+        <span className="text-sm font-semibold text-white/80">{type}</span>
+        <span className="text-sm text-white/25 font-mono">{customer}</span>
         <span className="ml-auto text-sm font-bold text-danger">{impact}</span>
-        <svg className={`h-4 w-4 text-text-dim transition-transform ${expanded ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
       </div>
-      <p className="mb-2 text-xs text-text-muted">{detail}</p>
-      <span className="inline-block rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold text-brand">
+      <p className="mb-2 text-xs text-white/30">{detail}</p>
+      <span className="inline-block rounded-full bg-brand/[0.08] border border-brand/15 px-3 py-1 text-[11px] font-semibold text-brand">
         Fix: {fix}
       </span>
-      {(severity === "CRITICAL" || severity === "HIGH") && (
-        <span className="ml-2 inline-block rounded-full bg-brand/20 px-3 py-1 text-xs font-bold text-brand border border-brand/30">
-          Auto-Fix (Free)
-        </span>
-      )}
-      {crmInsight && (
-        <span className="ml-2 inline-block rounded-full bg-info/10 px-3 py-1 text-xs font-semibold text-info border border-info/20">
-          CRM: {crmInsight}
-        </span>
-      )}
-      {expanded && (
-        <div className="mt-3 rounded-lg bg-surface-dim border border-border p-4" onClick={(e) => e.stopPropagation()}>
-          <p className="text-xs font-semibold text-text-secondary mb-2">How to fix this:</p>
-          {fixSteps ? (
-            <ol className="space-y-1.5 text-xs text-text-muted list-decimal list-inside">
-              {fixSteps.map((step, i) => <li key={i}>{step}</li>)}
-            </ol>
-          ) : (
-            <p className="text-xs text-text-muted">{fix}. Click through to your billing platform for step-by-step instructions.</p>
-          )}
-          <div className="mt-3 pt-3 border-t border-border">
-            <p className="text-[10px] text-text-dim italic">
-              This is sample data. <a href="/scan" className="text-brand hover:text-brand-light underline">See YOUR leaks</a> by running a free scan.
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -153,17 +153,25 @@ export function Pricing() {
     <section ref={sectionRef} id="pricing" className="border-t border-border-light py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-brand">
-          Pricing
+          What you get
         </div>
         <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
-          The scan is free. The recovery is optional.
+          What you get (and what it&apos;s actually worth)
         </h2>
-        <p className="mx-auto mb-10 max-w-2xl text-center text-lg text-text-muted">
-          Run a free scan. See your leaks. Fix the easy ones yourself (we show you how).
-          If you want automated recovery, pick a plan.
-          <br />
-          Find less than $1,000/mo? Every paid plan is free.
-        </p>
+        <div className="mx-auto mb-10 max-w-2xl text-center text-sm text-text-muted space-y-3">
+          <p>
+            <span className="font-semibold text-white/70">Manual billing audit:</span> 4-8 hours of your time. You&apos;re a founder. Your time is worth, conservatively, $150/hour. That&apos;s $600-$1,200 per audit. And you&apos;ll cover maybe 3-5 leak types.
+          </p>
+          <p>
+            <span className="font-semibold text-white/70">A fractional RevOps hire:</span> $3,000-$8,000/month. They&apos;ll check billing alongside 47 other things.
+          </p>
+          <p>
+            <span className="font-semibold text-white/70">Doing nothing:</span> $1,500-$5,000/month leaking. Every month. Compounding.
+          </p>
+          <p>
+            <span className="font-semibold text-brand">RevReclaim:</span> All 10 leak types. 90 seconds. Every week. Fix links. Direct to Stripe.
+          </p>
+        </div>
 
         {/* Billing toggle */}
         <div className="flex items-center justify-center gap-4 mb-12">

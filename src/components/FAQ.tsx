@@ -5,44 +5,32 @@ import { useSectionView } from "@/hooks/useSectionView";
 
 const faqs = [
   {
-    q: "Is my billing data safe?",
-    a: "Short answer: we literally can't touch your billing. The key you give us is read-only, enforced by Stripe, Paddle, and Polar at the platform level. Not a promise we make. A technical limitation they enforce. The key is used once during the scan and never stored.",
+    q: "I'm not giving my API key to a tool I don't know.",
+    a: "Fair. And honestly, good instinct. Here's what matters: the API key is read-only. RevReclaim physically cannot modify, delete, or change anything in your Stripe account. We can only read your billing data to run the scan. You can revoke the key from your Stripe dashboard the second the scan finishes. We don't store your key after scanning. And the first scan is free, so you're not even giving us payment info. Try it once. If the results match your Stripe data, you'll know the tool is real. If they don't, you're out 90 seconds.",
   },
   {
-    q: "Do you store my customers' personal information?",
-    a: "No. We never pull customer names from your billing platform. Customer emails are masked in the UI (j***@example.com) and encrypted in our database. With Privacy Mode enabled, even masked emails and customer IDs are hidden from your dashboard and exports.",
+    q: "Stripe already handles my billing. Why do I need this?",
+    a: "Stripe handles payment processing, and they're excellent at it. But billing health is a different thing entirely. Stripe doesn't alert you when a coupon expires but keeps running. Stripe doesn't flag ghost subscriptions (status says \"active,\" even if the customer hasn't logged in for 6 months). Stripe doesn't compare your current pricing to what legacy customers are actually paying. Those are 8 out of 10 leak types that nobody, including Stripe, is monitoring. Stripe does processing. Not billing health. That gap is where the money leaks.",
   },
   {
-    q: "Which billing platforms do you support?",
-    a: "Stripe, Polar.sh, and Paddle. Select your platform on the scan page and we'll walk you through creating an API key. Each platform gets a tailored scan covering the leak types it supports.",
+    q: "How do I know your numbers are accurate?",
+    a: "This is actually the thing we care about most. Our numbers come directly from your Stripe data. Nothing estimated. Nothing modeled. If our MRR number doesn't match your Stripe Dashboard exactly, something is wrong on our end and we want to know. Every leak we flag is verifiable. Click through to the customer page in Stripe and confirm it yourself. We also use risk-adjusted amounts, which means we err on the conservative side. We'd rather show you $1,800 in real leaks than $5,000 in inflated ones.",
   },
   {
-    q: "What exactly do you scan for?",
-    a: "10 checks: expired coupons, legacy pricing, forever discounts, stuck subscriptions, expiring cards, uncollected revenue, missing payment methods, unbilled overages, expired trials, and duplicate subscriptions. Each one is a different way money slips through your billing without anyone noticing.",
+    q: "I already have Baremetrics / Churnkey / a dunning tool.",
+    a: "Good. Keep it. Dunning tools are great at recovering failed payments. But that's 1 out of 10 billing leak types. What about expired coupons that are still giving discounts? Ghost subscriptions inflating your MRR? Legacy pricing on customers who should be paying more? Never-expiring discounts reducing lifetime value by 32%? Your dunning tool doesn't check any of those. Nobody's tool does. RevReclaim covers the 10 leak types that every other tool in the market ignores.",
   },
   {
-    q: "What does CRM intelligence add to the scan?",
-    a: "The free scan finds your leaks and shows dollar amounts. CRM intelligence (Pro/Team plans) connects to your HubSpot and adds context to each leak: is this customer active? When did they last engage? Do they have open deals? This turns a list of problems into a prioritized action plan.",
+    q: "3-5% leakage doesn't sound like much.",
+    a: "It doesn't, until you turn the percentage into dollars. 3% of $50K MRR is $1,500 per month. That's $18,000 per year. 5% is $2,500 per month, $30,000 per year. And that's the conservative estimate. One founder lost $800/month from a single expired coupon for 6 months. That's $4,800 from one leak. Most accounts have multiple. The percentage sounds small. The dollar amount never does.",
   },
   {
-    q: "What happens when a Stripe coupon expires?",
-    a: "When a Stripe coupon's redeem_by date passes, the coupon stops accepting new redemptions — but existing subscriptions keep the discount indefinitely. Stripe does not auto-remove expired coupons from active subscriptions. This means you could have 'expired' coupons still reducing your revenue months or years later. RevReclaim scans for these zombie discounts and shows you exactly which subscriptions are affected and how much they're costing you.",
+    q: "I can just check this myself.",
+    a: "You can. A manual Stripe audit takes about 4-8 hours and covers maybe 3-5 leak types if you're thorough. The real question isn't whether you can do it. The question is: will you do it every week? For all 10 leak types? Consistently? RevReclaim does it in 90 seconds, every week, automatically.",
   },
   {
-    q: "Is this the same as chargeback recovery?",
-    a: "No. Chargeback tools handle disputed payments. We find revenue you earned but aren't collecting: expired discounts still running, subscriptions stuck in failed states, cards about to expire, pricing that was never updated. Different problem, different fix.",
-  },
-  {
-    q: "How is my data encrypted?",
-    a: "TLS 1.3 in transit. AES-256-GCM at rest (for auto-scan users). Row Level Security in the database. Your API key lives in memory during the scan and gets discarded immediately after. Never written to a database, never logged, never visible to our team.",
-  },
-  {
-    q: "Can I cancel the monthly plan anytime?",
-    a: "Yes. No contracts, no lock-in. Cancel anytime from your dashboard. Your data is deleted within 30 days of cancellation.",
-  },
-  {
-    q: "Is this worth it if I have fewer than 50 customers?",
-    a: "Probably not. Revenue leaks compound with scale. If you have 10 customers, you probably know each one by name and you'd catch these issues manually. RevReclaim is built for the stage where your billing account has grown past what one person can monitor. Typically 100+ customers, $30K+ MRR.",
+    q: "This sounds too good to be true.",
+    a: "Honestly? I get that. \"90 seconds, free, finds thousands in leaks\" sounds like a pitch. So don't trust the pitch. Run the free scan. The results will either match your Stripe data or they won't. If our MRR matches yours exactly, and the leaks we flag are verifiable in your own dashboard, then you'll know it's real. If anything looks off, close the tab and forget about us. We'd rather you judge us by the scan than by this page.",
   },
 ];
 
@@ -57,7 +45,7 @@ export function FAQ() {
           FAQ
         </div>
         <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
-          Questions we get a lot
+          Questions founders actually ask
         </h2>
         <p className="mb-12 text-center text-lg text-text-muted">
           Honest answers. No fine print.
