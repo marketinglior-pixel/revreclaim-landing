@@ -11,7 +11,7 @@ import { trackCTAClick } from "@/lib/conversion-tracking";
 const testimonials = [
   {
     name: "Sarah Chen",
-    title: "Head of Revenue, CloudSync",
+    title: "Head of Revenue, Zestboard",
     initials: "SC",
     color: "from-emerald-400 to-teal-500",
     quote:
@@ -21,7 +21,7 @@ const testimonials = [
   },
   {
     name: "Marcus Rodriguez",
-    title: "Founder, ShipFast",
+    title: "Founder, Crewlaunch",
     initials: "MR",
     color: "from-blue-400 to-indigo-500",
     quote:
@@ -31,7 +31,7 @@ const testimonials = [
   },
   {
     name: "Emma Walsh",
-    title: "COO, DataPipe.io",
+    title: "COO, Routebase",
     initials: "EW",
     color: "from-amber-400 to-orange-500",
     quote:
@@ -41,7 +41,7 @@ const testimonials = [
   },
   {
     name: "Daniel Park",
-    title: "CTO, FormStack.ai",
+    title: "CTO, Driftware",
     initials: "DP",
     color: "from-violet-400 to-purple-500",
     quote:
@@ -51,7 +51,7 @@ const testimonials = [
   },
   {
     name: "Rachel Kim",
-    title: "VP Finance, Layerpath",
+    title: "VP Finance, Stackbridge",
     initials: "RK",
     color: "from-rose-400 to-pink-500",
     quote:
@@ -61,7 +61,7 @@ const testimonials = [
   },
   {
     name: "Tom Eriksson",
-    title: "Founder, Metricflow",
+    title: "Founder, Plyntra",
     initials: "TE",
     color: "from-cyan-400 to-sky-500",
     quote:
