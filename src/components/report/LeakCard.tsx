@@ -32,12 +32,13 @@ const WHY_THIS_MATTERS: Partial<Record<LeakType, string>> = {
 interface LeakCardProps {
   leak: Leak;
   isLoggedIn?: boolean;
+  isPaidUser?: boolean;
   isDemo?: boolean;
   onDismiss?: (customerId: string, leakType: string) => void;
   privacyMode?: boolean;
 }
 
-export default function LeakCard({ leak, isLoggedIn, isDemo, onDismiss, privacyMode }: LeakCardProps) {
+export default function LeakCard({ leak, isLoggedIn, isPaidUser, isDemo, onDismiss, privacyMode }: LeakCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [dismissState, setDismissState] = useState<"idle" | "loading" | "dismissed">("idle");
   const [undoLoading, setUndoLoading] = useState(false);
@@ -318,7 +319,7 @@ export default function LeakCard({ leak, isLoggedIn, isDemo, onDismiss, privacyM
             </div>
 
             {/* Fix suggestion — gated for demo/non-logged-in, full for paying users */}
-            {isDemo || !isLoggedIn ? (
+            {isDemo || !isPaidUser ? (
               /* Demo / guest: show auto-fix CTA instead of manual instructions */
               <div className="bg-brand/5 border border-brand/20 rounded-lg p-3">
                 <div className="flex items-start gap-2">

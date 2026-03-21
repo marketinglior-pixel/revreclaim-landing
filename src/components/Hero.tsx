@@ -11,22 +11,8 @@ export function Hero() {
 
   return (
     <section ref={sectionRef} className="relative overflow-hidden pt-32 pb-20 md:pt-44 md:pb-28 lg:pb-32">
-      {/* Atmospheric background — layered organic glows with slow drift */}
       <div className="pointer-events-none absolute inset-0">
-        {/* Primary glow — warm green nebula */}
-        <div className="absolute top-[-10%] left-[20%] h-[700px] w-[700px] rounded-full bg-brand/8 blur-[160px] animate-float-slow" />
-        {/* Secondary glow — offset for depth */}
-        <div className="absolute top-[10%] right-[-5%] h-[500px] w-[500px] rounded-full bg-emerald-400/4 blur-[120px] animate-float-reverse" />
-        {/* Subtle warm accent */}
-        <div className="absolute bottom-[-5%] left-[-5%] h-[400px] w-[500px] rounded-full bg-brand/3 blur-[100px] animate-float" />
-        {/* Grid pattern overlay for tech feel */}
-        <div
-          className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-            backgroundSize: "60px 60px",
-          }}
-        />
+        <div className="absolute top-[-10%] left-[20%] h-[700px] w-[700px] rounded-full bg-brand/8 blur-[160px]" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-6">
@@ -50,7 +36,7 @@ export function Hero() {
             {/* Headline — problem-first, loss aversion */}
             <h1 className="mb-6 font-display text-[2rem] font-extrabold leading-[1.1] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.4rem] animate-fade-in-up">
               Your Stripe account is{" "}
-              <span className="bg-gradient-to-r from-brand via-emerald-300 to-brand bg-[length:200%_auto] bg-clip-text text-transparent animate-[gradientShift_6s_ease_infinite]">
+              <span className="bg-gradient-to-r from-brand to-emerald-300 bg-clip-text text-transparent">
                 leaking money
               </span>{" "}
               right now.
@@ -69,7 +55,7 @@ export function Hero() {
                   trackEvent("cta_clicked", null, { location: "hero", action: "scan" }).catch(() => {});
                   trackCTAClick("hero", "scan");
                 }}
-                className="btn-shimmer group flex items-center gap-2.5 rounded-xl bg-brand px-9 py-4 text-[17px] font-bold text-black min-h-[56px] transition-all duration-300 hover:bg-brand-light hover:shadow-[0_0_40px_rgba(16,185,129,0.35)] hover:scale-[1.02]"
+                className="group flex items-center gap-2.5 rounded-xl bg-brand px-9 py-4 text-[17px] font-bold text-black min-h-[56px] transition-all duration-300 hover:bg-brand-light hover:shadow-[0_0_40px_rgba(16,185,129,0.35)] hover:scale-[1.02]"
               >
                 Show Me My Leaks
                 <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">

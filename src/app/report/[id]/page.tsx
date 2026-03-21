@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { Leak, ScanReport, LEAK_TYPE_LABELS } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import { PlanType } from "@/lib/plan-limits";
 import ReportHeader from "@/components/report/ReportHeader";
 import ReportSummary from "@/components/report/ReportSummary";
 import BillingHealthInsights from "@/components/report/BillingHealthInsights";
@@ -32,6 +33,7 @@ export default function ReportPage() {
   const [dismissedKeys, setDismissedKeys] = useState<Set<string>>(new Set());
   const [pendingActionsCount, setPendingActionsCount] = useState(0);
   const [privacyMode, setPrivacyMode] = useState(false);
+  const [userPlan, setUserPlan] = useState<PlanType>("free");
   const [emailForReport, setEmailForReport] = useState("");
   const [emailSendStatus, setEmailSendStatus] = useState<"idle" | "loading" | "sent" | "error">("idle");
 
@@ -45,6 +47,15 @@ export default function ReportPage() {
         if (user) {
           setIsLoggedIn(true);
           userLoggedIn = true;
+          // Fetch user plan
+          supabase
+            .from("profiles")
+            .select("plan")
+            .eq("id", user.id)
+            .single()
+            .then(({ data: profile }) => {
+              if (profile?.plan) setUserPlan(profile.plan as PlanType);
+            });
         }
         const { data: row, error } = await supabase
           .from("reports")
@@ -220,7 +231,11 @@ export default function ReportPage() {
     return (
       <div className="min-h-screen bg-surface-dim flex items-center justify-center">
         <div className="text-center max-w-md px-4">
-          <div className="text-5xl mb-4">🔍</div>
+          <div className="mb-4">
+            <svg className="h-12 w-12 mx-auto text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+          </div>
           <h1 className="text-2xl font-bold text-white mb-2">
             Report Not Found
           </h1>
@@ -548,7 +563,7 @@ export default function ReportPage() {
 
         {/* All Leaks Table */}
         <div id="leak-table">
-          <LeakTable leaks={visibleLeaks} isLoggedIn={isLoggedIn} onDismiss={handleDismiss} privacyMode={privacyMode} />
+          <LeakTable leaks={visibleLeaks} isLoggedIn={isLoggedIn} isPaidUser={userPlan !== "free"} isDemo={false} onDismiss={handleDismiss} privacyMode={privacyMode} />
         </div>
 
         {/* CTA */}

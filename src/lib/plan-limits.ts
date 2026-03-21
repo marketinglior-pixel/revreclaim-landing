@@ -147,3 +147,18 @@ export function canInviteTeamMember(
 
   return { allowed: true };
 }
+
+/**
+ * Number of leaks visible in the report based on plan.
+ * Free users see top 3 leaks with full details. Paid users see all.
+ */
+export function getVisibleLeakCount(plan: PlanType): number {
+  return plan === "free" ? 3 : Infinity;
+}
+
+/**
+ * Check if a user has a paid plan (any plan above free).
+ */
+export function isPaidPlan(plan: PlanType): boolean {
+  return plan !== "free";
+}
