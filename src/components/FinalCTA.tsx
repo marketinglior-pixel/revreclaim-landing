@@ -35,8 +35,14 @@ export function FinalCTA() {
   }
 
   return (
-    <section ref={sectionRef} id="cta" className="relative overflow-hidden py-32 md:py-40">
+    <section ref={sectionRef} id="cta" className="relative overflow-hidden py-20 md:py-28">
       <div className="section-divider" />
+
+      {/* Dramatic multi-layered glow */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[700px] rounded-full bg-brand/[0.06] blur-[160px] animate-float-slow" />
+        <div className="absolute bottom-0 left-1/4 h-[300px] w-[400px] rounded-full bg-brand/[0.03] blur-[100px] animate-float-reverse" />
+      </div>
 
       <div className="relative mx-auto max-w-3xl px-6 text-center pt-16">
         {/* Headline — display font */}
@@ -70,7 +76,7 @@ export function FinalCTA() {
               <p className="mt-1 text-xs text-white/35">We&apos;ll email you within 24 hours with simple instructions to start your free audit.</p>
               <a
                 href="/scan"
-                className="mt-4 inline-block rounded-lg bg-brand px-4 py-2.5 text-sm font-bold text-black min-h-[40px] transition-all duration-300 hover:bg-brand-light hover:brightness-110"
+                className="mt-4 inline-block rounded-lg bg-brand px-4 py-2.5 text-sm font-bold text-black min-h-[40px] transition-all duration-300 hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
               >
                 Or scan now &rarr;
               </a>
@@ -82,7 +88,7 @@ export function FinalCTA() {
                 onClick={() => {
                   trackEvent("cta_clicked", null, { location: "final_cta", action: "scan" }).catch(() => {});
                 }}
-                className="btn-shimmer group inline-flex items-center gap-2.5 rounded-xl bg-brand px-9 py-4 text-[17px] font-bold text-black min-h-[56px] transition-all duration-300 hover:bg-brand-light hover:brightness-110"
+                className="btn-shimmer group inline-flex items-center gap-2.5 rounded-xl bg-brand px-9 py-4 text-[17px] font-bold text-black min-h-[56px] transition-all duration-300 hover:bg-brand-light hover:shadow-[0_0_40px_rgba(16,185,129,0.35)] hover:scale-[1.02]"
               >
                 Show Me My Leaks
                 <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -107,7 +113,7 @@ export function FinalCTA() {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="founder@yoursaas.com"
                       required
-                      className="flex-1 rounded-xl border border-white/[0.06] bg-white/[0.03] px-5 py-3 text-sm text-white placeholder-white/20 outline-none transition-all duration-300 focus:border-brand/30 focus:bg-white/[0.05]"
+                      className="flex-1 rounded-xl border border-white/[0.06] bg-white/[0.03] px-5 py-3 text-sm text-white placeholder-white/20 outline-none transition-all duration-300 focus:border-brand/30 focus:bg-white/[0.05] focus:shadow-[0_0_20px_rgba(16,185,129,0.05)]"
                     />
                     <button
                       type="submit"
@@ -129,6 +135,7 @@ export function FinalCTA() {
         {/* Guarantee badge — glass card */}
         <div className="mt-12 inline-flex items-center gap-4 glass-card rounded-xl px-6 py-4">
           <div className="relative">
+            <div className="absolute -inset-2 rounded-full bg-brand/[0.06] blur-md" />
             <svg className="relative h-8 w-8 text-brand" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
             </svg>

@@ -70,9 +70,7 @@ export default function Home() {
       <Header />
       <Hero />
       <SocialProof />
-      <div className="mt-4">
-        <SecurityStrip />
-      </div>
+      <SecurityStrip />
       <Problem />
       <HowItWorks />
       <DashboardPreview />

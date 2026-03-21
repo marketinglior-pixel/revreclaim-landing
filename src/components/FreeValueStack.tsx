@@ -129,7 +129,7 @@ export function FreeValueStack() {
               trackEvent("cta_clicked", null, { location: "value_stack", action: "scan" }).catch(() => {});
               trackCTAClick("value_stack", "scan");
             }}
-            className="group inline-flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-lg font-bold text-black min-h-[56px] transition-all hover:bg-brand-light hover:brightness-110"
+            className="group inline-flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-lg font-bold text-black min-h-[56px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
           >
             Show Me My Leaks
             <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">

@@ -60,8 +60,9 @@ export function HowItWorks() {
           <div className="space-y-8">
             {steps.map((step, i) => (
               <div key={step.number} className="flex gap-6">
-                {/* Step number */}
+                {/* Step number — with glow halo */}
                 <div className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center">
+                  <div className="absolute inset-0 rounded-xl bg-brand/[0.08] blur-lg" />
                   <div className="relative flex h-14 w-14 items-center justify-center rounded-xl border border-brand/20 bg-surface-dim text-lg font-bold text-brand font-display">
                     {step.number}
                   </div>

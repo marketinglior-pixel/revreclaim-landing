@@ -119,7 +119,7 @@ export function DailyLossCalculator() {
                 trackEvent("cta_clicked", null, { location: "calculator", action: "scan", mrr }).catch(() => {});
                 trackCTAClick("calculator", "scan");
               }}
-              className="group inline-flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black min-h-[52px] transition-all hover:bg-brand-light hover:brightness-110"
+              className="group inline-flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black min-h-[52px] transition-all hover:bg-brand-light hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
             >
               Show Me My Leaks
               <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">

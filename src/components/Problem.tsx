@@ -6,7 +6,7 @@ export function Problem() {
   const sectionRef = useSectionView("problem");
 
   return (
-    <section ref={sectionRef} id="problem" className="relative py-24 md:py-32">
+    <section ref={sectionRef} id="problem" className="relative py-20 md:py-28">
       <div className="section-divider" />
 
       {/* Subtle ambient glow */}
