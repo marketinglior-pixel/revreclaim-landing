@@ -7,64 +7,100 @@ import { trackEvent } from "@/lib/analytics";
 import { trackCTAClick } from "@/lib/conversion-tracking";
 
 // ────────────────────────────────────────────────────────
-// Social Proof — Testimonials with Scan Data + Founder Story
+// Social Proof — Leak Types + Founder Story + Industry Data
 // ────────────────────────────────────────────────────────
 
 const leakTypes = [
-  { icon: "🏷️", name: "Expired Coupons", desc: "Discounts that ended but are still reducing charges" },
-  { icon: "♾️", name: "Never-Expiring Discounts", desc: "Promo codes with no end date, running forever" },
-  { icon: "❌", name: "Failed Payments", desc: "Charges that Stripe's retry logic gave up on" },
-  { icon: "💳", name: "Expiring Cards", desc: "Cards about to expire with no backup on file" },
-  { icon: "👻", name: "Ghost Subscriptions", desc: "Active subs with no recent successful payment" },
-  { icon: "📉", name: "Legacy Pricing", desc: "Customers still on old, cheaper pricing tiers" },
-  { icon: "🚫", name: "Missing Payment Method", desc: "Active subs with no card attached" },
-  { icon: "📊", name: "Unbilled Overages", desc: "Usage that exceeds the plan but isn't charged" },
-  { icon: "⏰", name: "Expired Trials", desc: "Trials that ended but never converted to paid" },
-  { icon: "🔄", name: "Duplicate Subscriptions", desc: "Same customer paying for the same plan twice" },
-];
-
-const testimonials = [
   {
-    name: "James R.",
-    role: "Founder",
-    color: "from-emerald-400 to-teal-500",
-    quote: "Honestly didn't think we had any leaks. Turns out 6 customers were on a pricing tier we killed last year. Nobody noticed.",
-    scan: { healthScore: 58, leaks: 11, atRisk: "$2,840", topLeak: "6 legacy pricing subscriptions", category: "B2B SaaS · 280 subs" },
+    name: "Expired Coupons",
+    desc: "A 20% off code you made for Black Friday is still running in March. Nobody turned it off.",
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
+      </svg>
+    ),
   },
   {
-    name: "Priya M.",
-    role: "Head of Ops",
-    color: "from-blue-400 to-indigo-500",
-    quote: "Ran it on a Friday just to see. Found 3 ghost subs and a coupon that was supposed to end in January. It's March.",
-    scan: { healthScore: 71, leaks: 7, atRisk: "$1,620", topLeak: "3 ghost subscriptions", category: "Dev tools · 450 subs" },
+    name: "Never-Expiring Discounts",
+    desc: "You gave an early adopter 50% off \"for a few months.\" It's been two years. Still active.",
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+      </svg>
+    ),
   },
   {
-    name: "Tom K.",
-    role: "CTO",
-    color: "from-violet-400 to-purple-500",
-    quote: "We use Stripe for everything and I thought we were on top of it. We were not on top of it.",
-    scan: { healthScore: 64, leaks: 14, atRisk: "$3,100", topLeak: "5 expired coupons still active", category: "SaaS platform · 820 subs" },
+    name: "Failed Payments",
+    desc: "Stripe retried a charge 4 times, gave up, but the subscription is still marked \"active.\"",
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+      </svg>
+    ),
   },
   {
-    name: "Sarah L.",
-    role: "Co-founder",
-    color: "from-amber-400 to-orange-500",
-    quote: "The scan found stuff our finance team missed for months. A bit embarrassing but also, glad we caught it.",
-    scan: { healthScore: 52, leaks: 18, atRisk: "$4,200", topLeak: "4 failed payments Stripe gave up on", category: "Marketplace · 1,100 subs" },
+    name: "Expiring Cards",
+    desc: "A customer's card expires next month. No backup on file. You'll lose them silently.",
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+      </svg>
+    ),
   },
   {
-    name: "Mike D.",
-    role: "Solo founder",
-    color: "from-rose-400 to-pink-500",
-    quote: "I'm a one-person team so billing stuff just falls through the cracks. This found $890/mo I was losing. Not a small number for me.",
-    scan: { healthScore: 73, leaks: 5, atRisk: "$890", topLeak: "2 never-expiring discount codes", category: "Micro-SaaS · 90 subs" },
+    name: "Ghost Subscriptions",
+    desc: "Status says \"active\" but the last successful payment was 3 months ago. Nobody's paying.",
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+      </svg>
+    ),
   },
   {
-    name: "Ana W.",
-    role: "VP Revenue",
-    color: "from-cyan-400 to-sky-500",
-    quote: "Most tools just do dunning. This actually checks for 9 other things. Found 3 expiring cards we would've lost next month.",
-    scan: { healthScore: 81, leaks: 6, atRisk: "$1,450", topLeak: "3 cards expiring this month", category: "B2B SaaS · 600 subs" },
+    name: "Legacy Pricing",
+    desc: "You raised prices 8 months ago. 23 customers are still on the old plan. Stripe won't tell you.",
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
+      </svg>
+    ),
+  },
+  {
+    name: "Missing Payment Method",
+    desc: "Active subscription, no card on file. Could be a migration glitch. Either way, no one's paying.",
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+      </svg>
+    ),
+  },
+  {
+    name: "Unbilled Overages",
+    desc: "Customer is using 150% of their plan's limits. You're eating the cost and they don't know.",
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+      </svg>
+    ),
+  },
+  {
+    name: "Expired Trials",
+    desc: "14-day trial ended 3 weeks ago. No conversion. No follow-up. They just... left.",
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+  },
+  {
+    name: "Duplicate Subscriptions",
+    desc: "Same customer, same plan, two active subscriptions. Double-charged. They'll notice eventually.",
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.5a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
+      </svg>
+    ),
   },
 ];
 
@@ -124,76 +160,9 @@ export function SocialProof() {
               key={leak.name}
               className="glass-card-hover rounded-xl p-4 flex flex-col"
             >
-              <div className="text-xl mb-2">{leak.icon}</div>
-              <div className="text-sm font-semibold text-white/80 mb-1">{leak.name}</div>
-              <div className="text-[12px] text-white/35 leading-[1.5]">{leak.desc}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* ── Testimonials with scan dashboards ── */}
-        <div className="section-divider mb-14" />
-
-        <div className="mb-3 text-center text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
-          Real scans
-        </div>
-        <h3 className="mb-4 text-center font-display text-2xl font-bold text-white md:text-3xl">
-          What people found
-        </h3>
-        <p className="mx-auto mb-12 max-w-lg text-center text-[14px] text-white/40 leading-relaxed">
-          Every Stripe account is different. Here&apos;s what actual scans uncovered.
-        </p>
-
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 mb-14">
-          {testimonials.map((t) => (
-            <div
-              key={t.name}
-              className="glass-card rounded-2xl overflow-hidden flex flex-col"
-            >
-              {/* Mini scan dashboard */}
-              <div className="bg-white/[0.02] border-b border-white/[0.04] p-4">
-                <div className="text-[10px] text-white/20 uppercase tracking-widest mb-3 font-mono">
-                  {t.scan.category}
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="text-center">
-                    <div className={`text-lg font-bold font-display ${
-                      t.scan.healthScore >= 75 ? "text-brand" : t.scan.healthScore >= 50 ? "text-warning" : "text-danger"
-                    }`}>
-                      {t.scan.healthScore}
-                    </div>
-                    <div className="text-[9px] text-white/20">Health</div>
-                  </div>
-                  <div className="text-center border-x border-white/[0.04]">
-                    <div className="text-lg font-bold text-danger font-display">{t.scan.leaks}</div>
-                    <div className="text-[9px] text-white/20">Leaks</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-warning font-display">{t.scan.atRisk}</div>
-                    <div className="text-[9px] text-white/20">At Risk/mo</div>
-                  </div>
-                </div>
-                <div className="mt-3 rounded-md bg-danger/[0.06] border border-danger/10 px-3 py-2">
-                  <div className="text-[9px] text-white/20 uppercase tracking-wider">Top finding</div>
-                  <div className="text-[11px] font-medium text-white/60">{t.scan.topLeak}</div>
-                </div>
-              </div>
-
-              {/* Quote + name */}
-              <div className="p-5 flex-1 flex flex-col">
-                <p className="text-[13px] text-white/50 leading-[1.7] flex-1 mb-4">
-                  &ldquo;{t.quote}&rdquo;
-                </p>
-                <div className="flex items-center gap-2.5 pt-3 border-t border-white/[0.05]">
-                  <div className={`h-8 w-8 rounded-full bg-gradient-to-br ${t.color} flex items-center justify-center text-[10px] font-bold text-white shadow-lg`}>
-                    {t.name.charAt(0)}
-                  </div>
-                  <div>
-                    <div className="text-[13px] font-semibold text-white/70">{t.name}</div>
-                    <div className="text-[11px] text-white/25">{t.role}</div>
-                  </div>
-                </div>
-              </div>
+              <div className="mb-2.5 text-brand/70">{leak.icon}</div>
+              <div className="text-sm font-semibold text-white/80 mb-1.5">{leak.name}</div>
+              <div className="text-[12px] text-white/40 leading-[1.6]">{leak.desc}</div>
             </div>
           ))}
         </div>
