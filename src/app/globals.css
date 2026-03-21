@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-jakarta);
+  --font-sans: var(--font-body), system-ui, sans-serif;
+  --font-display: var(--font-heading), Georgia, serif;
   --color-brand: #10B981;
   --color-brand-light: #34D399;
   --color-brand-dark: #059669;
@@ -11,10 +11,10 @@
   --color-info: #3B82F6;
   --color-purple: #8B5CF6;
   --color-orange: #F97316;
-  --color-surface: #111111;
+  --color-surface: #131315;
   --color-surface-light: #1A1A1A;
   --color-surface-lighter: #222222;
-  --color-surface-dim: #0A0A0A;
+  --color-surface-dim: #0C0C0E;
   --color-border: #2A2A2A;
   --color-border-light: #1A1A1A;
   --color-text-primary: #FFFFFF;
@@ -113,9 +113,9 @@ body {
   background: linear-gradient(
     105deg,
     transparent 40%,
-    rgba(255, 255, 255, 0.2) 45%,
-    rgba(255, 255, 255, 0.3) 50%,
-    rgba(255, 255, 255, 0.2) 55%,
+    rgba(255, 255, 255, 0.02) 45%,
+    rgba(255, 255, 255, 0.02) 50%,
+    rgba(255, 255, 255, 0.02) 55%,
     transparent 60%
   );
   animation: shimmer 5s ease-in-out infinite;
@@ -189,27 +189,21 @@ body {
 
 /* ─── Glass & Surface Effects ────────────────────────────────── */
 
-/* Glass card — frosted glass with inner light */
 .glass-card {
-  background: rgba(17, 17, 17, 0.8);
-  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.025);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
 }
 
-/* Glass card with green tint on hover */
 .glass-card-hover {
-  background: rgba(17, 17, 17, 0.8);
-  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.025);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
+  border-radius: 12px;
+  transition: border-color 0.2s ease;
 }
 
 .glass-card-hover:hover {
-  border-color: rgba(16, 185, 129, 0.15);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2), 0 0 20px rgba(16, 185, 129, 0.06);
-  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 /* Gradient border — subtle glow border effect */
@@ -219,17 +213,8 @@ body {
   box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.15), 0 0 20px rgba(16, 185, 129, 0.05);
 }
 
-/* Section divider — gradient fade with subtle green accent */
 .section-divider {
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(42, 42, 42, 0.4) 15%,
-    rgba(16, 185, 129, 0.12) 50%,
-    rgba(42, 42, 42, 0.4) 85%,
-    transparent
-  );
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 /* Gradient text — green-to-white for emphasis */

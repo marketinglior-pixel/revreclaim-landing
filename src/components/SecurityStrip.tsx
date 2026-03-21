@@ -49,11 +49,7 @@ export function SecurityStrip() {
               className="flex items-start gap-3.5 rounded-xl bg-white/[0.02] border border-white/[0.04] px-5 py-4 transition-all duration-300 hover:border-brand/10 hover:bg-brand/[0.02]"
             >
               <div className="flex-shrink-0 mt-0.5 text-brand/60 transition-colors duration-300 group-hover:text-brand">
-                {/* Icon glow halo */}
-                <div className="relative">
-                  <div className="absolute -inset-2 rounded-full bg-brand/[0.06] blur-md" />
-                  <div className="relative">{point.icon}</div>
-                </div>
+                {point.icon}
               </div>
               <div>
                 <div className="text-[13px] font-semibold text-white/90">{point.title}</div>

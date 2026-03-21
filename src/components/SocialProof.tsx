@@ -114,29 +114,26 @@ const industryStats = [
 export function SocialProof() {
   return (
     <section className="relative py-20 md:py-28">
-      {/* Subtle background glow */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[800px] rounded-full bg-brand/[0.03] blur-[150px]" />
-
       <div className="relative mx-auto max-w-6xl px-6">
 
         {/* ── Trust stats bar ── */}
         <div className="mb-14 flex flex-wrap items-center justify-center gap-6 md:gap-10">
           <div className="flex items-center gap-2.5">
-            <div className="h-2 w-2 rounded-full bg-brand shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+            <div className="h-2 w-2 rounded-full bg-brand" />
             <span className="text-sm text-white/60">
               Trusted by <span className="font-bold text-white"><ScanCounter /></span> users
             </span>
           </div>
           <div className="h-4 w-px bg-white/10 hidden sm:block" />
           <div className="flex items-center gap-2.5">
-            <div className="h-2 w-2 rounded-full bg-brand shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+            <div className="h-2 w-2 rounded-full bg-brand" />
             <span className="text-sm text-white/60">
               <RecoveredCounter /> recovered for SaaS teams
             </span>
           </div>
           <div className="h-4 w-px bg-white/10 hidden sm:block" />
           <div className="flex items-center gap-2.5">
-            <div className="h-2 w-2 rounded-full bg-brand shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+            <div className="h-2 w-2 rounded-full bg-brand" />
             <span className="text-sm text-white/60">
               <span className="font-bold text-white">10</span> leak types checked
             </span>
@@ -144,7 +141,7 @@ export function SocialProof() {
         </div>
 
         {/* ── What the scan checks ── */}
-        <div className="mb-3 text-center text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
+        <div className="mb-3 text-center text-[13px] font-semibold uppercase tracking-[0.15em] text-white/40">
           What we scan for
         </div>
         <h2 className="mb-4 text-center font-display text-2xl font-bold text-white md:text-3xl lg:text-4xl">
@@ -154,15 +151,17 @@ export function SocialProof() {
           Failed payments get all the attention. But they&apos;re just 1 of 10 ways your Stripe account quietly loses money.
         </p>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5 mb-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 mb-14">
           {leakTypes.map((leak) => (
             <div
               key={leak.name}
-              className="glass-card-hover rounded-xl p-4 flex flex-col"
+              className="flex items-start gap-3"
             >
-              <div className="mb-2.5 text-brand/70">{leak.icon}</div>
-              <div className="text-sm font-semibold text-white/80 mb-1.5">{leak.name}</div>
-              <div className="text-[12px] text-white/40 leading-[1.6]">{leak.desc}</div>
+              <div className="mt-0.5 text-brand/50 shrink-0">{leak.icon}</div>
+              <div>
+                <span className="text-sm font-medium text-white/70">{leak.name}</span>
+                <p className="text-xs text-white/35 leading-[1.6]">{leak.desc}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -170,7 +169,7 @@ export function SocialProof() {
         {/* ── Founder Story ── */}
         <div className="section-divider mb-14" />
 
-        <div className="mb-3 text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
+        <div className="mb-3 text-[13px] font-semibold uppercase tracking-[0.15em] text-white/40">
           Why this exists
         </div>
         <h3 className="mb-10 font-display text-2xl font-bold text-white md:text-3xl lg:text-4xl">
@@ -232,7 +231,7 @@ export function SocialProof() {
               trackEvent("cta_clicked", null, { location: "social_proof", action: "scan" }).catch(() => {});
               trackCTAClick("social_proof", "scan");
             }}
-            className="btn-shimmer group inline-flex items-center gap-2.5 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black min-h-[52px] transition-all duration-300 hover:bg-brand-light hover:shadow-[0_0_40px_rgba(16,185,129,0.35)] hover:scale-[1.02]"
+            className="btn-shimmer group inline-flex items-center gap-2.5 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black min-h-[52px] transition-all duration-300 hover:bg-brand-light hover:brightness-110"
           >
             Show Me My Leaks
             <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">

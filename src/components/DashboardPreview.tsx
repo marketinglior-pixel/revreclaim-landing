@@ -7,7 +7,7 @@
 
 export function DashboardPreview() {
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden">
+    <section className="relative py-24 md:py-32 overflow-hidden">
       {/* Ambient background */}
       <div className="pointer-events-none absolute top-0 right-0 h-[500px] w-[500px] rounded-full bg-danger/[0.02] blur-[120px]" />
 
@@ -133,7 +133,7 @@ export function DashboardPreview() {
         <div className="mt-10 text-center">
           <a
             href="/scan"
-            className="btn-shimmer group inline-flex items-center gap-2.5 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black min-h-[52px] transition-all duration-300 hover:bg-brand-light hover:shadow-[0_0_40px_rgba(16,185,129,0.35)] hover:scale-[1.02]"
+            className="btn-shimmer group inline-flex items-center gap-2.5 rounded-xl bg-brand px-8 py-4 text-base font-bold text-black min-h-[52px] transition-all duration-300 hover:bg-brand-light hover:brightness-110"
           >
             Show Me My Leaks
             <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">

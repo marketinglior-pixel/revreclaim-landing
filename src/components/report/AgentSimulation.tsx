@@ -386,7 +386,7 @@ export default function AgentSimulation({ leaks }: { leaks: Leak[] }) {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link
                   href="/#pricing"
-                  className="px-6 py-3 bg-brand hover:bg-brand-light text-black font-bold rounded-lg transition-all hover:shadow-[0_0_30px_rgba(16,185,129,0.3)]"
+                  className="px-6 py-3 bg-brand hover:bg-brand-light text-black font-bold rounded-lg transition-all hover:brightness-110"
                 >
                   Activate Recovery Agents
                 </Link>

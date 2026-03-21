@@ -11,10 +11,6 @@ export function Hero() {
 
   return (
     <section ref={sectionRef} className="relative overflow-hidden pt-32 pb-20 md:pt-44 md:pb-28 lg:pb-32">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-[-10%] left-[20%] h-[700px] w-[700px] rounded-full bg-brand/8 blur-[160px]" />
-      </div>
-
       <div className="relative mx-auto max-w-6xl px-6">
         {/* Two-column layout: text left, animation right */}
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-20">
@@ -36,7 +32,7 @@ export function Hero() {
             {/* Headline — problem-first, loss aversion */}
             <h1 className="mb-6 font-display text-[2rem] font-extrabold leading-[1.1] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.4rem] animate-fade-in-up">
               Your Stripe account is{" "}
-              <span className="bg-gradient-to-r from-brand to-emerald-300 bg-clip-text text-transparent">
+              <span className="text-white">
                 leaking money
               </span>{" "}
               right now.
@@ -55,7 +51,7 @@ export function Hero() {
                   trackEvent("cta_clicked", null, { location: "hero", action: "scan" }).catch(() => {});
                   trackCTAClick("hero", "scan");
                 }}
-                className="group flex items-center gap-2.5 rounded-xl bg-brand px-9 py-4 text-[17px] font-bold text-black min-h-[56px] transition-all duration-300 hover:bg-brand-light hover:shadow-[0_0_40px_rgba(16,185,129,0.35)] hover:scale-[1.02]"
+                className="group flex items-center gap-2.5 rounded-xl bg-brand px-9 py-4 text-[17px] font-bold text-black min-h-[56px] transition-all duration-300 hover:bg-brand-light hover:brightness-110"
               >
                 Show Me My Leaks
                 <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">

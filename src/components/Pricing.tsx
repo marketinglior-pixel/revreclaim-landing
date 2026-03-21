@@ -150,7 +150,7 @@ export function Pricing() {
   }
 
   return (
-    <section ref={sectionRef} id="pricing" className="border-t border-border-light py-20 md:py-28">
+    <section ref={sectionRef} id="pricing" className="border-t border-border-light py-24 md:py-32">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-brand">
           What you get
@@ -284,7 +284,7 @@ export function Pricing() {
                       disabled={loadingPlan !== null}
                       className={`block w-full rounded-lg py-3 text-center text-sm font-semibold min-h-[44px] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
                         plan.highlighted
-                          ? "bg-brand text-black hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+                          ? "bg-brand text-black hover:bg-brand-light hover:brightness-110"
                           : "border border-border bg-surface-light text-white hover:border-brand/30 hover:bg-surface-lighter"
                       }`}
                     >
@@ -311,7 +311,7 @@ export function Pricing() {
                     onClick={() => { trackEvent("cta_clicked", null, { location: "pricing", action: "scan" }).catch(() => {}); }}
                     className={`block w-full rounded-lg py-3 text-center text-sm font-semibold min-h-[44px] transition-all ${
                       plan.highlighted
-                        ? "bg-brand text-black hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+                        ? "bg-brand text-black hover:bg-brand-light hover:brightness-110"
                         : "border border-border bg-surface-light text-white hover:border-brand/30 hover:bg-surface-lighter"
                     }`}
                   >

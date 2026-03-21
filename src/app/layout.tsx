@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { DM_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import ExternalAnalytics from "@/components/ExternalAnalytics";
 import UTMCapture from "@/components/UTMCapture";
@@ -7,15 +7,17 @@ import PostHogProvider from "@/components/PostHogProvider";
 import { FeedbackWidget } from "@/components/FeedbackWidget";
 import Script from "next/script";
 
-const inter = Inter({
-  variable: "--font-inter",
+const dmSans = DM_Sans({
+  variable: "--font-body",
   subsets: ["latin"],
+  weight: ["400", "500", "700"],
 });
 
-const jakarta = Plus_Jakarta_Sans({
-  variable: "--font-jakarta",
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
+  weight: ["400"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -293,7 +295,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${inter.variable} ${jakarta.variable} antialiased noise-overlay`}>
+      <body className={`${dmSans.variable} ${instrumentSerif.variable} antialiased noise-overlay`}>
         <PostHogProvider>
           <ExternalAnalytics />
           <UTMCapture />

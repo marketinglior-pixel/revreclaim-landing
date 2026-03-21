@@ -81,7 +81,7 @@ export function ObstacleSection() {
   const sectionRef = useSectionView("obstacles");
 
   return (
-    <section ref={sectionRef} className="relative py-20 md:py-28">
+    <section ref={sectionRef} className="relative py-24 md:py-32">
       <div className="section-divider" />
 
       <div className="mx-auto max-w-4xl px-6 pt-16">
@@ -96,20 +96,17 @@ export function ObstacleSection() {
           We get these a lot. Here you go.
         </p>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          {obstacles.map((item) => (
+        <div className="mx-auto max-w-2xl space-y-0">
+          {obstacles.map((item, i) => (
             <div
               key={item.question}
-              className="glass-card-hover rounded-2xl p-6"
+              className={`py-5 ${i < obstacles.length - 1 ? "border-b border-white/[0.06]" : ""}`}
             >
-              <div className="mb-3 flex items-center gap-3">
-                <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand/[0.08] text-brand/60">
-                  <div className="absolute -inset-1 rounded-xl bg-brand/[0.04] blur-md" />
-                  <div className="relative">{item.icon}</div>
-                </div>
-                <p className="text-sm italic text-white/45">&ldquo;{item.question}&rdquo;</p>
+              <div className="flex items-center gap-2.5 mb-2">
+                <div className="text-brand/50 shrink-0">{item.icon}</div>
+                <p className="text-sm italic text-white/50">&ldquo;{item.question}&rdquo;</p>
               </div>
-              <p className="text-sm font-semibold text-white/80 leading-relaxed">
+              <p className="text-sm font-medium text-white/70 leading-relaxed pl-[30px]">
                 {item.answer}
               </p>
             </div>

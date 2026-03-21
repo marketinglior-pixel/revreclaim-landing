@@ -61,7 +61,7 @@ export function Header() {
               </Link>
               <Link
                 href="/scan"
-                className="rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-black min-h-[40px] transition-all hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] hidden md:block"
+                className="rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-black min-h-[40px] transition-all hover:bg-brand-light hover:brightness-110 hidden md:block"
               >
                 New Scan
               </Link>
@@ -77,7 +77,7 @@ export function Header() {
               <Link
                 href="/scan"
                 onClick={() => trackEvent("cta_clicked", null, { location: "header", action: "scan" }).catch(() => {})}
-                className="rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-black min-h-[40px] transition-all hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] hidden md:block"
+                className="rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-black min-h-[40px] transition-all hover:bg-brand-light hover:brightness-110 hidden md:block"
               >
                 Show Me My Leaks
               </Link>
@@ -165,7 +165,7 @@ export function Header() {
                   <Link
                     href="/scan"
                     onClick={() => setMenuOpen(false)}
-                    className="block rounded-lg bg-brand w-full py-3 text-sm font-semibold text-black text-center min-h-[44px] transition-all hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] mt-2"
+                    className="block rounded-lg bg-brand w-full py-3 text-sm font-semibold text-black text-center min-h-[44px] transition-all hover:bg-brand-light hover:brightness-110 mt-2"
                   >
                     New Scan
                   </Link>
@@ -182,7 +182,7 @@ export function Header() {
                   <Link
                     href="/scan"
                     onClick={() => setMenuOpen(false)}
-                    className="block rounded-lg bg-brand w-full py-3 text-sm font-semibold text-black text-center min-h-[44px] transition-all hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] mt-2"
+                    className="block rounded-lg bg-brand w-full py-3 text-sm font-semibold text-black text-center min-h-[44px] transition-all hover:bg-brand-light hover:brightness-110 mt-2"
                   >
                     Show Me My Leaks
                   </Link>

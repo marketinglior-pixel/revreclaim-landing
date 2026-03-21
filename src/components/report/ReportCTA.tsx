@@ -39,7 +39,7 @@ export default function ReportCTA({
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/dashboard/actions"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition hover:shadow-[0_0_30px_rgba(16,185,129,0.3)]"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition hover:brightness-110"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
@@ -115,7 +115,7 @@ export default function ReportCTA({
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/#pricing"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition hover:shadow-[0_0_30px_rgba(16,185,129,0.3)]"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition hover:brightness-110"
             >
               Start Auto-Recovering ${monthlyRiskDollars.toLocaleString()}/mo
             </Link>
@@ -146,7 +146,7 @@ export default function ReportCTA({
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/#pricing"
-              className="px-6 py-3 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition hover:shadow-[0_0_30px_rgba(16,185,129,0.3)]"
+              className="px-6 py-3 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition hover:brightness-110"
             >
               View Pricing Plans
             </Link>
