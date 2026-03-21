@@ -165,7 +165,7 @@ export default function LeakTable({ leaks, isLoggedIn, isPaidUser, isDemo, onDis
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                       </svg>
                       <span className="text-sm font-bold text-white">
-                        {filteredLeaks.length - 3} more leak{filteredLeaks.length - 3 !== 1 ? "s" : ""}
+                        {filteredLeaks.length - 3} more leak{filteredLeaks.length - 3 !== 1 ? "s" : ""} worth ${Math.round(filteredLeaks.slice(3).reduce((sum, l) => sum + l.monthlyImpact, 0) / 100).toLocaleString()}/mo
                       </span>
                     </div>
                     <p className="text-xs text-text-muted mb-3">
@@ -189,7 +189,7 @@ export default function LeakTable({ leaks, isLoggedIn, isPaidUser, isDemo, onDis
           <div className="text-center py-12 bg-surface border border-border rounded-xl">
             <p className="text-text-muted">
               {leaks.length === 0
-                ? "No revenue leaks found! Your billing is clean. 🎉"
+                ? "No revenue leaks found. Your billing is clean."
                 : actionFilter === "action"
                   ? "No actionable leaks found. Check the 'For Review' tab for items to review."
                   : actionFilter === "review"

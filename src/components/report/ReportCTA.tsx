@@ -91,6 +91,27 @@ export default function ReportCTA({
             </div>
           </div>
 
+          {/* ROI Calculator */}
+          {monthlyRiskDollars > 0 && (
+            <div className="rounded-xl bg-brand/[0.05] border border-brand/10 p-4 mb-8">
+              <div className="text-xs text-white/40 uppercase tracking-wider mb-2">Your ROI</div>
+              <div className="grid grid-cols-3 gap-3 text-center">
+                <div>
+                  <div className="text-lg font-bold text-danger font-display">${monthlyRiskDollars.toLocaleString()}</div>
+                  <div className="text-[10px] text-white/30">Your monthly leaks</div>
+                </div>
+                <div>
+                  <div className="text-lg font-bold text-white/60 font-display">$79</div>
+                  <div className="text-[10px] text-white/30">Leak Watch plan</div>
+                </div>
+                <div>
+                  <div className="text-lg font-bold text-brand font-display">{Math.ceil(79 / (monthlyRiskDollars / 30))} days</div>
+                  <div className="text-[10px] text-white/30">To break even</div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/#pricing"
@@ -108,6 +129,13 @@ export default function ReportCTA({
           <p className="mt-3 text-center text-xs text-text-muted">
             Find less than $1,000/mo? You pay nothing. Cancel anytime.
           </p>
+
+          <div className="mt-6 pt-4 border-t border-white/[0.05] text-center">
+            <p className="text-xs text-white/30 mb-2">Not ready to upgrade?</p>
+            <Link href="/scan" className="text-sm text-brand/70 hover:text-brand transition-colors">
+              Email me this report &rarr;
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="text-center">
