@@ -31,31 +31,6 @@ const plans = [
     freeValueStack: null,
   },
   {
-    name: "Deep Audit",
-    badge: "ONE-TIME",
-    monthlyPrice: "$149",
-    annualPrice: "$149",
-    annualMonthly: "$149",
-    period: " once",
-    description: "Full audit + PDF report + fix links. Clean up everything, pay once, done.",
-    features: [
-      "Full 10-category revenue audit",
-      "Customer-level leak report with amounts",
-      "PDF & CSV export",
-      "Fix instructions for every leak found",
-      "3 auto-fix actions included",
-      "3 scans (re-scan after you fix things)",
-      "Recurring vs one-time leak breakdown",
-    ],
-    cta: "Get My Full Audit",
-    href: "#",
-    highlighted: false,
-    isPaid: true,
-    isOneTime: true,
-    planId: "audit",
-    valueStack: null,
-  },
-  {
     name: "Leak Watch",
     badge: "SMART START",
     monthlyPrice: "$79",
@@ -240,23 +215,18 @@ export function Pricing() {
           </div>
         )}
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5 lg:gap-5">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 lg:gap-6">
           {plans.map((plan) => {
-            const isOneTime = "isOneTime" in plan && plan.isOneTime;
-            const displayPrice = isOneTime
-              ? plan.monthlyPrice
-              : billing === "annual" && plan.isPaid
-                ? plan.annualMonthly
-                : plan.isPaid
-                  ? plan.monthlyPrice
-                  : "$0";
-            const displayPeriod = isOneTime
-              ? " once"
+            const displayPrice = billing === "annual" && plan.isPaid
+              ? plan.annualMonthly
               : plan.isPaid
-                ? billing === "annual"
-                  ? "/mo"
-                  : "/month"
-                : "";
+                ? plan.monthlyPrice
+                : "$0";
+            const displayPeriod = plan.isPaid
+              ? billing === "annual"
+                ? "/mo"
+                : "/month"
+              : "";
 
             return (
               <div
@@ -288,13 +258,13 @@ export function Pricing() {
                   <span className="text-4xl font-extrabold text-white">{displayPrice}</span>
                   <span className="text-text-muted">{displayPeriod}</span>
                 </div>
-                {billing === "annual" && plan.isPaid && !isOneTime && (
+                {billing === "annual" && plan.isPaid && (
                   <p className="mb-5 text-xs text-text-muted">
                     Billed as {plan.annualPrice}/year{" "}
                     <span className="text-text-dim line-through">{plan.monthlyPrice}/mo</span>
                   </p>
                 )}
-                {(!plan.isPaid || billing === "monthly" || isOneTime) && <div className="mb-6" />}
+                {(!plan.isPaid || billing === "monthly") && <div className="mb-6" />}
                 <ul className="mb-8 space-y-3">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2 text-sm text-text-secondary">
@@ -332,9 +302,7 @@ export function Pricing() {
                     </button>
                     {/* Guarantee text */}
                     <p className="mt-3 text-center text-xs text-text-muted">
-                      {isOneTime
-                        ? "One-time payment. No subscription. No recurring charges."
-                        : "Find less than $1,000/mo? You pay nothing. Cancel anytime."}
+                      Find less than $1,000/mo? You pay nothing. Cancel anytime.
                     </p>
                   </>
                 ) : (
