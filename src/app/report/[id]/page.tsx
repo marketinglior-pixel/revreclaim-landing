@@ -646,7 +646,7 @@ export default function ReportPage() {
 
         {/* Post-scan survey — shows after 5 min for PH validation */}
         <div className="mt-8">
-          <PostScanSurvey firstScanDate={new Date().toISOString()} />
+          <PostScanSurvey firstScanDate={new Date().toISOString()} userPlan={userPlan} />
         </div>
       </main>
     </div>

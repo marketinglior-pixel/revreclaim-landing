@@ -31,6 +31,13 @@ const PAYMENT_INTENT_OPTIONS = [
   { value: "other", label: "Other" },
 ];
 
+const PAID_USER_FEATURE_OPTIONS = [
+  { value: "more_integrations", label: "More billing platforms" },
+  { value: "deeper_analytics", label: "Deeper analytics" },
+  { value: "team_features", label: "Team management" },
+  { value: "already_great", label: "It's great as-is" },
+];
+
 const NPS_SCALE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 const STORAGE_KEY = "rr_post_scan_survey_done";
@@ -48,7 +55,7 @@ function pillClass(selected: boolean) {
  * Collects MRR range, leak awareness, surprise factor, and NPS score
  * for proprietary segmentation data. Fires analytics event with responses.
  */
-export function PostScanSurvey({ firstScanDate }: { firstScanDate?: string | null }) {
+export function PostScanSurvey({ firstScanDate, userPlan = "free" }: { firstScanDate?: string | null; userPlan?: string }) {
   const [visible, setVisible] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [mrrRange, setMrrRange] = useState("");
@@ -190,13 +197,13 @@ export function PostScanSurvey({ firstScanDate }: { firstScanDate?: string | nul
               </div>
             </div>
 
-            {/* Payment intent */}
+            {/* Payment intent / feature request (conditional on plan) */}
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-2">
-                What would make you pay for this?
+                {userPlan === "free" ? "What would make you pay for this?" : "What feature would be most valuable to add?"}
               </label>
               <div className="flex flex-wrap gap-2">
-                {PAYMENT_INTENT_OPTIONS.map((opt) => (
+                {(userPlan === "free" ? PAYMENT_INTENT_OPTIONS : PAID_USER_FEATURE_OPTIONS).map((opt) => (
                   <button
                     key={opt.value}
                     onClick={() => setPaymentIntent(paymentIntent === opt.value ? "" : opt.value)}

@@ -60,7 +60,7 @@ function SignupPageInner() {
         data: {
           full_name: fullName,
         },
-        emailRedirectTo: `${window.location.origin}/auth/callback?redirect=/dashboard`,
+        emailRedirectTo: `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirectParam)}`,
       },
     });
 

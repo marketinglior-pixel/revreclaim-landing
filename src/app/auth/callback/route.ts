@@ -50,6 +50,11 @@ export async function GET(request: NextRequest) {
           if (redirect === "/dashboard") {
             return NextResponse.redirect(`${origin}/onboarding`);
           }
+
+          // New user coming from a report page — add welcome flag
+          if (redirect.startsWith("/report/")) {
+            return NextResponse.redirect(`${origin}${redirect}${redirect.includes("?") ? "&" : "?"}welcome=1`);
+          }
         }
       }
 
