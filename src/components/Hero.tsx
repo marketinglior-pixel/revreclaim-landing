@@ -34,11 +34,11 @@ export function Hero() {
 
             {/* Headline — problem-first, loss aversion */}
             <h1 className="mb-6 font-display text-[2rem] font-extrabold leading-[1.1] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.4rem] animate-fade-in-up">
-              Your Stripe account is{" "}
+              We find and recover{" "}
               <span className="bg-gradient-to-r from-brand to-emerald-300 bg-clip-text text-transparent">
-                leaking money
+                revenue your billing system
               </span>{" "}
-              right now.
+              missed.
             </h1>
 
             {/* Sub — 10 silent issues, scan CTA */}
