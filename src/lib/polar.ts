@@ -161,11 +161,14 @@ export function verifyWebhookSignature(
   }
 
   // Polar uses Standard Webhooks format
-  // The secret is base64 encoded with "whsec_" prefix
-  const secretBytes = Buffer.from(
-    secret.startsWith("whsec_") ? secret.slice(6) : secret,
-    "base64"
-  );
+  // The secret may have prefix "whsec_" or "polar_whs_" before the base64 key
+  let rawSecret = secret;
+  if (rawSecret.startsWith("polar_whs_")) {
+    rawSecret = rawSecret.slice(10); // Remove "polar_whs_" prefix
+  } else if (rawSecret.startsWith("whsec_")) {
+    rawSecret = rawSecret.slice(6); // Remove "whsec_" prefix
+  }
+  const secretBytes = Buffer.from(rawSecret, "base64");
 
   // Reject timestamps older than 5 minutes to prevent replay attacks
   const ts = parseInt(webhookTimestamp, 10);
