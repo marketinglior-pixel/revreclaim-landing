@@ -14,6 +14,7 @@ import LeakTable from "@/components/report/LeakTable";
 import ReportCTA from "@/components/report/ReportCTA";
 import RecoveryBanner from "@/components/report/RecoveryBanner";
 import QuickWins from "@/components/report/QuickWins";
+import { PostScanSurvey } from "@/components/report/PostScanSurvey";
 import DailyCostTicker from "@/components/report/DailyCostTicker";
 import Link from "next/link";
 import { getRecurrence } from "@/lib/leak-recurrence";
@@ -642,6 +643,11 @@ export default function ReportPage() {
           isLoggedIn={isLoggedIn}
           pendingActionsCount={pendingActionsCount}
         />
+
+        {/* Post-scan survey — shows after 5 min for PH validation */}
+        <div className="mt-8">
+          <PostScanSurvey firstScanDate={new Date().toISOString()} />
+        </div>
       </main>
     </div>
   );

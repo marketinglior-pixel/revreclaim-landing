@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useAnimatedNumber } from "@/lib/useAnimatedNumber";
+import { trackEvent } from "@/lib/analytics";
 
 interface ReportCTAProps {
   mrrAtRisk: number;
@@ -115,6 +116,7 @@ export default function ReportCTA({
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/#pricing"
+              onClick={() => { trackEvent("cta_clicked", null, { location: "report", action: "upgrade", mrr_at_risk: monthlyRiskDollars }).catch(() => {}); }}
               className="inline-flex items-center gap-2 px-6 py-3 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition hover:shadow-[0_0_30px_rgba(16,185,129,0.3)]"
             >
               Start Auto-Recovering ${monthlyRiskDollars.toLocaleString()}/mo
@@ -146,6 +148,7 @@ export default function ReportCTA({
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/#pricing"
+              onClick={() => { trackEvent("cta_clicked", null, { location: "report", action: "view_pricing" }).catch(() => {}); }}
               className="px-6 py-3 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition hover:shadow-[0_0_30px_rgba(16,185,129,0.3)]"
             >
               View Pricing Plans
