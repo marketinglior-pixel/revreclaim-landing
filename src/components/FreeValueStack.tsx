@@ -12,7 +12,7 @@ const valueItems = [
       </svg>
     ),
     name: "10-Category Revenue Audit",
-    description: "Every subscription, invoice, coupon, and payment method — checked automatically",
+    description: "Every subscription, invoice, coupon, and payment method, checked automatically",
   },
   {
     icon: (
@@ -30,7 +30,7 @@ const valueItems = [
       </svg>
     ),
     name: "Fix Instructions for Every Leak",
-    description: "Step-by-step playbook — click the link, fix in your billing dashboard",
+    description: "Step-by-step playbook. Click the link, fix in your billing dashboard",
   },
   {
     icon: (
@@ -58,10 +58,10 @@ export function FreeValueStack() {
   return (
     <section ref={sectionRef} className="border-t border-border-light py-20 md:py-28">
       <div className="mx-auto max-w-4xl px-6">
-        <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-brand">
+        <div className="mb-4 text-center text-[13px] text-white/40 font-medium tracking-wide">
           The free scan includes
         </div>
-        <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+        <h2 className="mb-4 text-center text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
           Here&apos;s everything you get.{" "}
           <span className="text-text-muted">For free.</span>
         </h2>

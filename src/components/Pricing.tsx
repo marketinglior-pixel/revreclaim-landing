@@ -155,7 +155,7 @@ export function Pricing() {
         <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-brand">
           What you get
         </div>
-        <h2 className="mb-4 text-center text-3xl font-bold text-white md:text-4xl">
+        <h2 className="mb-4 text-center text-3xl font-bold tracking-tight text-white md:text-4xl">
           What you get (and what it&apos;s actually worth)
         </h2>
         <div className="mx-auto mb-10 max-w-2xl text-center text-sm text-text-muted space-y-3">
@@ -231,10 +231,10 @@ export function Pricing() {
             return (
               <div
                 key={plan.name}
-                className={`relative rounded-2xl border p-5 sm:p-8 ${
+                className={`relative rounded-2xl p-5 sm:p-8 transition-all duration-300 ${
                   plan.highlighted
-                    ? "border-brand/50 bg-brand/5 backdrop-blur-sm shadow-[0_0_40px_rgba(16,185,129,0.1)]"
-                    : "border-border/50 bg-surface/80 backdrop-blur-sm"
+                    ? "glass-card-elevated border-brand/30 shadow-[0_0_40px_rgba(16,185,129,0.1)] hover:scale-[1.01]"
+                    : "border border-border/50 bg-surface/80 backdrop-blur-sm hover:border-white/[0.08]"
                 }`}
               >
                 {plan.badge && (

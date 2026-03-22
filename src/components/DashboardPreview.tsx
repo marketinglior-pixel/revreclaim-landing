@@ -12,7 +12,7 @@ export function DashboardPreview() {
       <div className="pointer-events-none absolute top-0 right-0 h-[500px] w-[500px] rounded-full bg-danger/[0.02] blur-[120px]" />
 
       <div className="mx-auto max-w-5xl px-6">
-        <div className="mb-3 text-center text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
+        <div className="mb-3 text-center text-[12px] text-white/40 font-medium tracking-wide">
           Imagine this tomorrow morning
         </div>
         <h2 className="mb-4 text-center font-display text-3xl font-bold text-white md:text-4xl">

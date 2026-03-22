@@ -34,10 +34,10 @@ export function HowItWorks() {
       <div className="section-divider" />
 
       <div className="mx-auto max-w-4xl px-6 pt-16">
-        <div className="mb-3 text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
+        <div className="mb-3 text-[12px] text-white/40 font-medium tracking-wide">
           The mechanism
         </div>
-        <h2 className="mb-4 font-display text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+        <h2 className="mb-4 font-display text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
           The 90-Second Revenue X-Ray
         </h2>
         <p className="mb-6 max-w-2xl text-[15px] text-white/45 leading-relaxed">

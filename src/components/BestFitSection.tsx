@@ -20,7 +20,7 @@ export function BestFitSection() {
 
       <div className="mx-auto max-w-4xl px-6 pt-12">
         <div className="glass-card rounded-2xl p-8 md:p-10 border-brand/10">
-          <div className="mb-2 text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
+          <div className="mb-2 text-[13px] text-white/50 font-medium">
             Is this for you?
           </div>
           <h3 className="mb-6 font-display text-xl font-bold text-white md:text-2xl">

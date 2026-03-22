@@ -38,11 +38,8 @@ export function FinalCTA() {
     <section ref={sectionRef} id="cta" className="relative overflow-hidden py-20 md:py-28">
       <div className="section-divider" />
 
-      {/* Dramatic multi-layered glow */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[700px] rounded-full bg-brand/[0.06] blur-[160px] animate-float-slow" />
-        <div className="absolute bottom-0 left-1/4 h-[300px] w-[400px] rounded-full bg-brand/[0.03] blur-[100px] animate-float-reverse" />
-      </div>
+      {/* Ambient background glow */}
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[700px] rounded-full bg-brand/[0.05] blur-[120px]" />
 
       <div className="relative mx-auto max-w-3xl px-6 text-center pt-16">
         {/* Headline — display font */}

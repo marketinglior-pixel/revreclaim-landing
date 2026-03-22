@@ -14,10 +14,10 @@ export function Problem() {
 
       <div className="relative mx-auto max-w-4xl px-6 pt-16">
         {/* ── Section B: Problem Agitation ── */}
-        <div className="mb-3 text-[13px] font-semibold uppercase tracking-[0.15em] text-danger/80">
+        <div className="mb-3 text-[13px] text-danger/60 font-medium">
           The problem nobody talks about
         </div>
-        <h2 className="mb-6 font-display text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+        <h2 className="mb-6 font-display text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
           You&apos;re probably losing $1,500 to $5,000 every month.
           <br />
           <span className="text-white/40">And you don&apos;t know it.</span>

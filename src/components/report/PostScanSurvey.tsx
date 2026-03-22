@@ -108,7 +108,7 @@ export function PostScanSurvey({ firstScanDate }: { firstScanDate?: string | nul
           <div className="flex items-start justify-between gap-4 mb-5">
             <div>
               <h3 className="text-sm font-bold text-white mb-1">
-                Quick question — help us help you
+                Quick question (help us help you)
               </h3>
               <p className="text-xs text-text-muted">
                 4 quick questions. Helps us tailor recovery insights to your stage.

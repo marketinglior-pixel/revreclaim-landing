@@ -82,7 +82,7 @@ export default function ReportCTA({
             <div className="rounded-xl border border-brand/30 bg-brand/5 p-5">
               <h4 className="text-sm font-semibold text-brand mb-4 uppercase tracking-wider">Fix Automatically (Pro)</h4>
               <ul className="space-y-3 text-sm text-text-secondary">
-                <ComparisonRow text="One click per leak — AI handles it" check />
+                <ComparisonRow text="One click per leak, AI handles it" check />
                 <ComparisonRow text="Dunning emails sent automatically" check />
                 <ComparisonRow text="Dashboard tracks everything" check />
                 <ComparisonRow text="Weekly auto-scans catch new leaks" check />

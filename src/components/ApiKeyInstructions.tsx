@@ -34,7 +34,7 @@ const PLATFORM_STEPS: Record<BillingPlatform, StepConfig[]> = {
       number: "2",
       title: 'Select "Providing this key to another website"',
       description:
-        "In the dialog, choose the second option — you're giving this key to RevReclaim to read your billing data.",
+        "In the dialog, choose the second option. You're giving this key to RevReclaim to read your billing data.",
       image: "/images/api-key-guide/step-2-create-restricted-key.png",
       imageAlt:
         'Create restricted key dialog with "Providing this key to another website" selected',

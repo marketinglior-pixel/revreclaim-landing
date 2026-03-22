@@ -115,7 +115,7 @@ export function SocialProof() {
   return (
     <section className="relative py-20 md:py-28">
       {/* Subtle background glow */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[800px] rounded-full bg-brand/[0.03] blur-[150px]" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[800px] rounded-full bg-brand/[0.03] blur-[120px]" />
 
       <div className="relative mx-auto max-w-6xl px-6">
 
@@ -144,10 +144,10 @@ export function SocialProof() {
         </div>
 
         {/* ── What the scan checks ── */}
-        <div className="mb-3 text-center text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
+        <div className="mb-3 text-center text-[13px] text-white/40 font-medium tracking-wide">
           What we scan for
         </div>
-        <h2 className="mb-4 text-center font-display text-2xl font-bold text-white md:text-3xl lg:text-4xl">
+        <h2 className="mb-4 text-center font-display text-2xl font-bold tracking-tight text-white md:text-3xl lg:text-4xl">
           10 leak types most tools miss
         </h2>
         <p className="mx-auto mb-14 max-w-xl text-center text-[15px] text-white/45 leading-relaxed">
@@ -170,10 +170,10 @@ export function SocialProof() {
         {/* ── Founder Story ── */}
         <div className="section-divider mb-14" />
 
-        <div className="mb-3 text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
+        <div className="mb-3 text-[13px] text-white/35 font-medium">
           Why this exists
         </div>
-        <h3 className="mb-10 font-display text-2xl font-bold text-white md:text-3xl lg:text-4xl">
+        <h3 className="mb-10 font-display text-2xl font-bold tracking-tight text-white md:text-3xl lg:text-4xl">
           Why I built this
         </h3>
 

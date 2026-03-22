@@ -12,7 +12,7 @@ export function Hero() {
   return (
     <section ref={sectionRef} className="relative overflow-hidden pt-32 pb-20 md:pt-44 md:pb-28 lg:pb-32">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-[-10%] left-[20%] h-[700px] w-[700px] rounded-full bg-brand/8 blur-[160px]" />
+        <div className="absolute top-[-10%] left-[20%] h-[700px] w-[700px] rounded-full bg-brand/8 blur-[120px]" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-6">

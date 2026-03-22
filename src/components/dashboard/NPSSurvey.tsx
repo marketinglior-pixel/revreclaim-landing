@@ -149,7 +149,7 @@ export function NPSSurvey({ firstScanDate }: NPSSurveyProps) {
             {/* Referral */}
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-2">
-                Know someone who&apos;d benefit? <span className="text-text-dim">(optional — both get 1 month free)</span>
+                Know someone who&apos;d benefit? <span className="text-text-dim">(optional, both get 1 month free)</span>
               </label>
               <input
                 type="email"

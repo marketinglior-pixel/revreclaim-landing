@@ -10,14 +10,13 @@ export function GuaranteeSection() {
       <div className="section-divider" />
 
       {/* Ambient glow */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[600px] rounded-full bg-brand/[0.03] blur-[140px]" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[600px] rounded-full bg-brand/[0.03] blur-[120px]" />
 
       <div className="relative mx-auto max-w-4xl px-6 pt-16">
         <div className="glass-card rounded-2xl p-8 md:p-12 border-brand/10">
           <div className="flex flex-col items-center text-center">
             {/* Shield icon — large with layered glow rings */}
             <div className="relative mb-10">
-              <div className="absolute -inset-8 rounded-full bg-brand/[0.04] blur-[60px]" />
               <div className="absolute -inset-4 rounded-full bg-brand/[0.06] blur-xl animate-pulse" style={{ animationDuration: '3s' }} />
               <div className="relative flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-brand/[0.12] to-brand/[0.04] border border-brand/20 shadow-[0_0_40px_rgba(16,185,129,0.1)]">
                 <svg className="h-12 w-12 text-brand" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
@@ -26,10 +25,10 @@ export function GuaranteeSection() {
               </div>
             </div>
 
-            <div className="mb-3 text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
+            <div className="mb-3 text-[13px] text-white/50 font-medium">
               Our guarantee
             </div>
-            <h2 className="mb-6 font-display text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+            <h2 className="mb-6 font-display text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
               The $1,000/Month Promise
             </h2>
 

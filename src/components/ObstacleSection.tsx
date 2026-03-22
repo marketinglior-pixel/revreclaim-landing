@@ -85,10 +85,10 @@ export function ObstacleSection() {
       <div className="section-divider" />
 
       <div className="mx-auto max-w-4xl px-6 pt-16">
-        <div className="mb-3 text-center text-[13px] font-semibold uppercase tracking-[0.15em] text-brand/80">
+        <div className="mb-3 text-center text-[12px] text-white/30 font-medium">
           Objections answered
         </div>
-        <h2 className="mb-4 text-center font-display text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+        <h2 className="mb-4 text-center font-display text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
           Every reason not to scan.{" "}
           <span className="text-white/40">Answered.</span>
         </h2>
@@ -100,11 +100,10 @@ export function ObstacleSection() {
           {obstacles.map((item) => (
             <div
               key={item.question}
-              className="glass-card-hover rounded-2xl p-6"
+              className="glass-card-subtle rounded-2xl p-6"
             >
               <div className="mb-3 flex items-center gap-3">
-                <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand/[0.08] text-brand/60">
-                  <div className="absolute -inset-1 rounded-xl bg-brand/[0.04] blur-md" />
+                <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/[0.05] text-white/50">
                   <div className="relative">{item.icon}</div>
                 </div>
                 <p className="text-sm italic text-white/45">&ldquo;{item.question}&rdquo;</p>

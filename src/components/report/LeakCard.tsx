@@ -18,7 +18,7 @@ const WHY_THIS_MATTERS: Partial<Record<LeakType, string>> = {
   expired_coupon:
     "Customers rarely notice when an expired promotion is removed. This is typically the safest, highest-ROI fix.",
   never_expiring_discount:
-    "Forever discounts compound over time. A 20% discount on a $100/mo plan costs you $240/year per customer — growing with every price increase.",
+    "Forever discounts compound over time. A 20% discount on a $100/mo plan costs you $240/year per customer (and that grows with every price increase).",
   stuck_subscription:
     "Stuck subscriptions create phantom MRR in your dashboards. Resolving them gives you accurate revenue numbers to make better decisions.",
   missing_payment_method:
@@ -449,7 +449,7 @@ export default function LeakCard({ leak, isLoggedIn, isPaidUser, isDemo, onDismi
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    This is intentional — Don&apos;t flag in future scans
+                    This is intentional, don&apos;t flag in future scans
                   </button>
                 )}
                 {isLoggedIn && dismissState === "loading" && (
