@@ -709,35 +709,55 @@ export default function SettingsPage() {
         </div>
       )}
 
-      {/* Billing section — only show for paid users */}
-      {userPlan !== "free" && (
-        <div className="rounded-2xl border border-brand/20 bg-brand/5 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-bold text-white mb-1">Subscription</h2>
-              <p className="text-sm text-text-muted">
-                You&apos;re on the <span className="text-brand font-semibold uppercase">{userPlan}</span> plan.
-                Manage your subscription, update payment method, or change plans.
-              </p>
-            </div>
-            <div className="flex flex-col gap-2 shrink-0">
-              <button
-                onClick={handleManageBilling}
-                disabled={billingLoading}
-                className="px-5 py-2.5 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition disabled:opacity-50 cursor-pointer text-sm"
-              >
-                {billingLoading ? "Loading..." : "Manage Billing"}
-              </button>
-              <button
-                onClick={() => setShowCancelDialog(true)}
-                className="px-5 py-2 text-xs text-text-dim hover:text-danger transition cursor-pointer"
-              >
-                Cancel plan
-              </button>
-            </div>
+      {/* Account & Billing */}
+      <div className="rounded-2xl border border-border bg-surface p-6">
+        <h2 className="text-lg font-bold text-white mb-4">Your Account</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div className="rounded-xl bg-surface-dim p-4">
+            <p className="text-xs text-text-dim uppercase tracking-wider mb-1">Current Plan</p>
+            <p className="text-lg font-bold text-white">
+              {userPlan === "free" ? "Free" : userPlan === "pro" ? "Revenue Shield" : userPlan === "watch" ? "Leak Watch" : userPlan === "team" ? "Command Center" : userPlan}
+            </p>
+            <p className="text-xs text-text-muted mt-1">
+              {userPlan === "free" ? "Basic scan with top 3 leaks" : userPlan === "pro" ? "$299/mo" : userPlan === "watch" ? "$79/mo" : userPlan === "team" ? "$499/mo" : ""}
+            </p>
+          </div>
+          <div className="rounded-xl bg-surface-dim p-4">
+            <p className="text-xs text-text-dim uppercase tracking-wider mb-1">Email</p>
+            <p className="text-sm font-medium text-white truncate">{currentEmail}</p>
+            <p className="text-xs text-text-muted mt-1">
+              {userPlan === "free" ? "Upgrade for full access" : "Active subscription"}
+            </p>
           </div>
         </div>
-      )}
+        {userPlan === "free" ? (
+          <Link
+            href="/#pricing"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition text-sm"
+          >
+            Upgrade Plan
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </Link>
+        ) : (
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleManageBilling}
+              disabled={billingLoading}
+              className="px-5 py-2.5 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition disabled:opacity-50 cursor-pointer text-sm"
+            >
+              {billingLoading ? "Loading..." : "Manage Billing"}
+            </button>
+            <button
+              onClick={() => setShowCancelDialog(true)}
+              className="px-4 py-2 text-xs text-text-dim hover:text-danger transition cursor-pointer"
+            >
+              Cancel plan
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* Cancel subscription dialog */}
       {showCancelDialog && (

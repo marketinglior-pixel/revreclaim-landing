@@ -24,7 +24,18 @@ export default function DashboardStats({ report }: { report: ScanReport }) {
     400
   );
 
+  // Check if MRR at risk equals total MRR (cap was hit)
+  const isCritical = summary.totalMRR > 0 && summary.mrrAtRisk >= summary.totalMRR;
+
   return (
+    <>
+    {isCritical && (
+      <div className="rounded-xl border border-danger/30 bg-danger/5 px-4 py-3 mb-4 animate-fade-in-up">
+        <p className="text-xs text-danger font-medium">
+          Your billing health is critical. Multiple leaks are affecting most of your revenue. Start fixing the highest-impact ones now.
+        </p>
+      </div>
+    )}
     <div className="grid gap-4 grid-cols-2 md:grid-cols-4 lg:gap-6 animate-fade-in-up animate-delay-200">
       {/* MRR at Risk */}
       <div className="rounded-xl border-t-2 border-t-danger border border-danger/20 bg-danger/5 backdrop-blur-sm p-5 glow-red">
@@ -94,5 +105,6 @@ export default function DashboardStats({ report }: { report: ScanReport }) {
         </p>
       </div>
     </div>
+    </>
   );
 }
