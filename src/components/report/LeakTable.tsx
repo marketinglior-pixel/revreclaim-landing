@@ -32,6 +32,8 @@ export default function LeakTable({ leaks, isLoggedIn, isPaidUser, isDemo, onDis
   >("all");
   const [typeFilter, setTypeFilter] = useState<LeakType | "all">("all");
   const [actionFilter, setActionFilter] = useState<ActionFilter>("action");
+  const [showAll, setShowAll] = useState(false);
+  const INITIAL_LIMIT = 10;
 
   const actionableCount = leaks.filter((l) => isActionableLeak(l.type)).length;
   const reviewCount = leaks.filter((l) => !isActionableLeak(l.type)).length;
@@ -99,7 +101,7 @@ export default function LeakTable({ leaks, isLoggedIn, isPaidUser, isDemo, onDis
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
         <h3 className="text-lg font-semibold text-white">
           {actionFilter === "action"
-            ? `Needs Action (${filteredLeaks.length})`
+            ? `Top Priority Leaks (${filteredLeaks.length})`
             : actionFilter === "review"
               ? `For Review (${filteredLeaks.length})`
               : `All Leaks (${filteredLeaks.length})`}
@@ -147,9 +149,18 @@ export default function LeakTable({ leaks, isLoggedIn, isPaidUser, isDemo, onDis
       <div className="space-y-2">
         {filteredLeaks.length > 0 ? (
           <>
-            {filteredLeaks.slice(0, isPaidUser || isDemo ? filteredLeaks.length : 3).map((leak) => (
+            {filteredLeaks.slice(0, isPaidUser || isDemo ? (showAll ? filteredLeaks.length : INITIAL_LIMIT) : 3).map((leak) => (
               <LeakCard key={leak.id} leak={leak} isLoggedIn={isLoggedIn} isPaidUser={isPaidUser} isDemo={isDemo} onDismiss={onDismiss} privacyMode={privacyMode} />
             ))}
+            {/* Show all button for paid/demo users */}
+            {(isPaidUser || isDemo) && !showAll && filteredLeaks.length > INITIAL_LIMIT && (
+              <button
+                onClick={() => setShowAll(true)}
+                className="w-full py-3 text-sm text-brand hover:text-brand-light bg-surface border border-border rounded-xl transition cursor-pointer"
+              >
+                Show all {filteredLeaks.length} leaks ({filteredLeaks.length - INITIAL_LIMIT} more)
+              </button>
+            )}
             {/* Gate remaining leaks for free users */}
             {!isPaidUser && !isDemo && filteredLeaks.length > 3 && (
               <div className="relative">

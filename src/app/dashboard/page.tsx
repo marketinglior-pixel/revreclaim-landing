@@ -4,17 +4,10 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import ReportsList from "@/components/dashboard/ReportsList";
 import DashboardStats from "@/components/dashboard/DashboardStats";
-import HeroRecoveryCard from "@/components/dashboard/HeroRecoveryCard";
-import MiniCategoryChart from "@/components/dashboard/MiniCategoryChart";
-import AutoScanBanner from "@/components/dashboard/AutoScanBanner";
+
 import RecoveryActionsBanner from "@/components/dashboard/RecoveryActionsBanner";
-import RecoveryImpactCard from "@/components/dashboard/RecoveryImpactCard";
-import { NPSSurvey } from "@/components/dashboard/NPSSurvey";
-import { PostScanSurvey } from "@/components/report/PostScanSurvey";
 import { ScanReport } from "@/lib/types";
 import ConversionTracker from "@/components/dashboard/ConversionTracker";
-import TrendChart from "@/components/dashboard/TrendChart";
-import { extractTrends } from "@/lib/report-trends";
 
 const PLAN_LABELS: Record<string, string> = {
   free: "Revenue X-Ray",
@@ -59,15 +52,7 @@ export default async function DashboardPage() {
     leaks: row.leaks as unknown as ScanReport["leaks"],
   }));
 
-  // Fetch scan config
-  const { data: scanConfig } = await supabase
-    .from("scan_configs")
-    .select("is_active, next_scan_at, scan_frequency")
-    .eq("user_id", user.id)
-    .single();
-
   const latestReport = reports[0] || null;
-  const firstScanDate = reports.length > 0 ? reports[reports.length - 1].scannedAt : null;
 
   return (
     <div className="space-y-8">
@@ -107,71 +92,71 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      {/* Auto-scan banner */}
-      <AutoScanBanner
-        hasConfig={!!scanConfig}
-        isActive={(scanConfig as Record<string, unknown>)?.is_active as boolean || false}
-        nextScanAt={(scanConfig as Record<string, unknown>)?.next_scan_at as string || null}
-        frequency={(scanConfig as Record<string, unknown>)?.scan_frequency as string || "weekly"}
-      />
-
-      {/* Hero recovery card */}
-      {latestReport && <HeroRecoveryCard report={latestReport} />}
-
-      {/* Degradation messaging — compare latest vs previous scan */}
-      {reports.length >= 2 && (() => {
-        const latest = reports[0].summary;
-        const previous = reports[1].summary;
-        const newLeaks = (latest.leaksFound ?? 0) - (previous.leaksFound ?? 0);
-        const mrrChange = Math.round(((latest.mrrAtRisk ?? 0) - (previous.mrrAtRisk ?? 0)) / 100);
-        if (newLeaks > 0 || mrrChange > 0) {
-          return (
-            <div className="flex items-start gap-3 rounded-xl border border-danger/20 bg-danger/5 px-5 py-4">
-              <svg className="h-5 w-5 text-danger flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6L9 12.75l4.286-4.286a11.948 11.948 0 014.306 6.43l.776 2.898m0 0l3.182-5.511m-3.182 5.51l-5.511-3.181" />
-              </svg>
-              <div>
-                <p className="text-sm font-semibold text-white">
-                  Since your last scan:
-                  {newLeaks > 0 && ` ${newLeaks} new leak${newLeaks !== 1 ? "s" : ""} found.`}
-                  {mrrChange > 0 && ` Revenue at risk increased by $${mrrChange}/mo.`}
-                </p>
-                <p className="text-xs text-text-muted mt-1">
-                  Billing leaks compound over time. Fix the new ones before they grow.
-                </p>
-              </div>
-            </div>
-          );
-        }
-        return null;
-      })()}
-
-      {/* Recovery impact — shows actual recovered revenue (Pro/Team only) */}
-      {plan !== "free" && latestReport && <RecoveryImpactCard />}
-
       {/* Stats from latest report */}
       {latestReport && <DashboardStats report={latestReport} />}
 
-      {/* Recovery actions banner */}
-      {latestReport && <RecoveryActionsBanner userId={user.id} />}
-
-      {/* Post-Scan Survey — moved from report page, shows 48+ hours after first scan */}
-      {latestReport && <PostScanSurvey firstScanDate={firstScanDate} />}
-
-      {/* NPS Survey — shows 7+ days after first scan, max once per 90 days */}
-      <NPSSurvey firstScanDate={firstScanDate} />
-
-      {/* Category breakdown */}
-      {latestReport && latestReport.categories.length > 0 && (
-        <MiniCategoryChart
-          categories={latestReport.categories}
-          reportId={latestReport.id}
-        />
+      {/* Action Required — prominent CTA to fix leaks */}
+      {latestReport && latestReport.summary.leaksFound > 0 && (
+        <div className="rounded-xl border-2 border-danger/30 bg-danger/5 p-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-danger animate-pulse" />
+                Action Required
+              </h3>
+              <p className="text-sm text-text-muted mt-1">
+                {latestReport.summary.leaksFound} leaks found totaling ${Math.round(latestReport.summary.mrrAtRisk / 100).toLocaleString()}/mo.
+                Fix the highest-impact ones first.
+              </p>
+            </div>
+            <Link
+              href="/dashboard/actions"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition whitespace-nowrap"
+            >
+              Fix Priority Leaks
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+          </div>
+        </div>
       )}
 
-      {/* Trend chart — show when user has 2+ reports */}
-      {reports.length >= 2 && (
-        <TrendChart points={extractTrends(reports)} />
+      {/* Recovery actions banner — shows count */}
+      {latestReport && <RecoveryActionsBanner userId={user.id} />}
+
+      {/* Recent Activity — top 5 leaks as simple feed */}
+      {latestReport && latestReport.leaks.length > 0 && (
+        <div className="rounded-xl border border-border bg-surface p-5">
+          <h3 className="text-sm font-semibold text-white mb-4">Recent Leaks Found</h3>
+          <div className="space-y-3">
+            {latestReport.leaks
+              .sort((a, b) => (b.monthlyImpact ?? 0) - (a.monthlyImpact ?? 0))
+              .slice(0, 5)
+              .map((leak, i) => (
+                <div key={i} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                  <div className="flex items-center gap-3">
+                    <span className={`w-2 h-2 rounded-full ${
+                      leak.severity === "critical" || leak.severity === "high" ? "bg-danger" : "bg-danger/50"
+                    }`} />
+                    <span className="text-sm text-text-muted">{leak.description?.slice(0, 60) || leak.type}</span>
+                  </div>
+                  <span className="text-sm font-semibold text-danger">
+                    ${Math.round((leak.monthlyImpact ?? 0) / 100).toLocaleString()}/mo
+                  </span>
+                </div>
+              ))}
+          </div>
+          <Link
+            href={`/report/${latestReport.id}`}
+            className="mt-4 inline-flex items-center gap-1 text-sm text-brand hover:text-brand-light transition"
+          >
+            View all {latestReport.leaks.length} leaks
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        </div>
       )}
 
       {/* Empty state — sell the problem, not the product */}
