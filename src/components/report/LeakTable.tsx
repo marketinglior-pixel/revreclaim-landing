@@ -101,7 +101,7 @@ export default function LeakTable({ leaks, isLoggedIn, isPaidUser, isDemo, onDis
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
         <h3 className="text-lg font-semibold text-white">
           {actionFilter === "action"
-            ? `Top Priority Leaks (${filteredLeaks.length})`
+            ? `Start here (${filteredLeaks.length})`
             : actionFilter === "review"
               ? `For Review (${filteredLeaks.length})`
               : `All Leaks (${filteredLeaks.length})`}

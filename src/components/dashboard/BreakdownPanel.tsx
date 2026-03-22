@@ -32,7 +32,7 @@ export default function BreakdownPanel({ report }: BreakdownPanelProps) {
       {/* Leak Types Breakdown */}
       <div className="p-4 border-b border-white/[0.06]">
         <h3 className="text-xs font-semibold text-text-dim uppercase tracking-wider mb-3">
-          Leak Types
+          Where you&apos;re losing
         </h3>
         <div className="space-y-2">
           {sortedTypes.map(([type, data]) => (
@@ -61,7 +61,7 @@ export default function BreakdownPanel({ report }: BreakdownPanelProps) {
       {/* Recent Activity */}
       <div className="p-4">
         <h3 className="text-xs font-semibold text-text-dim uppercase tracking-wider mb-3">
-          Activity
+          Recent findings
         </h3>
         <div className="space-y-3">
           {topLeaks.map((leak, i) => (

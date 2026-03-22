@@ -55,11 +55,18 @@ export default async function DashboardPage() {
       <ConversionTracker plan={plan} />
       {/* Page header */}
       <div>
-        <h1 className="text-xl font-bold text-white">Dashboard</h1>
-        {plan === "free" && (
+        <h1 className="text-xl font-bold text-white">Control Center</h1>
+        {plan === "free" && latestReport && latestReport.summary.mrrAtRisk > 0 && (
           <p className="text-sm text-text-muted mt-1">
             <Link href="/#pricing" className="text-brand hover:text-brand-light transition">
-              Upgrade to catch leaks automatically &rarr;
+              Your scan found ${Math.round(latestReport.summary.mrrAtRisk / 100).toLocaleString()}/mo. Upgrade to fix it automatically &rarr;
+            </Link>
+          </p>
+        )}
+        {plan === "free" && (!latestReport || latestReport.summary.mrrAtRisk === 0) && (
+          <p className="text-sm text-text-muted mt-1">
+            <Link href="/#pricing" className="text-brand hover:text-brand-light transition">
+              Upgrade for ongoing monitoring &rarr;
             </Link>
           </p>
         )}
@@ -75,11 +82,11 @@ export default async function DashboardPage() {
             <div>
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-danger animate-pulse" />
-                Action Required
+                Needs Your Attention
               </h3>
               <p className="text-sm text-text-muted mt-1">
-                {latestReport.summary.leaksFound} leaks found totaling ${Math.round(latestReport.summary.mrrAtRisk / 100).toLocaleString()}/mo.
-                Fix the highest-impact ones first.
+                {latestReport.summary.leaksFound} issues found, ${Math.round(latestReport.summary.mrrAtRisk / 100).toLocaleString()}/mo at risk.
+                Start with the biggest one.
               </p>
             </div>
             <Link
@@ -108,7 +115,7 @@ export default async function DashboardPage() {
               <svg className="w-5 h-5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
               </svg>
-              <h3 className="text-sm font-bold text-brand">Try your free fix</h3>
+              <h3 className="text-sm font-bold text-brand">See your agents in action</h3>
             </div>
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>

@@ -30,7 +30,7 @@ export default function DashboardStats({ report }: { report: ScanReport }) {
       <div className="rounded-xl border-t-2 border-t-danger border border-danger/20 bg-danger/5 backdrop-blur-sm p-5 glow-red">
         <div className="mb-1 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-text-muted">
           <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
-          MRR at Risk
+          Revenue at Risk
         </div>
         <div className="flex items-baseline gap-1">
           <span className="text-3xl font-bold text-danger">
@@ -44,10 +44,10 @@ export default function DashboardStats({ report }: { report: ScanReport }) {
       </div>
 
       {/* Leaks Found */}
-      <div className="rounded-xl border-t-2 border-t-warning border border-border bg-surface/80 backdrop-blur-sm p-5">
+      <div className="rounded-xl border-t-2 border-t-danger border border-border bg-surface/80 backdrop-blur-sm p-5">
         <div className="mb-1 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-text-muted">
           <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
-          Leaks Found
+          Issues Found
         </div>
         <div className="flex items-baseline gap-1">
           <span className="text-3xl font-bold text-white">
@@ -64,7 +64,7 @@ export default function DashboardStats({ report }: { report: ScanReport }) {
       <div className="rounded-xl border-t-2 border-t-brand border border-border bg-surface/80 backdrop-blur-sm p-5">
         <div className="mb-1 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-text-muted">
           <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" /></svg>
-          Recoverable
+          Recovery Potential
         </div>
         <div className="flex items-baseline gap-1">
           <span className="text-3xl font-bold text-brand">
@@ -78,13 +78,13 @@ export default function DashboardStats({ report }: { report: ScanReport }) {
       </div>
 
       {/* Total MRR */}
-      <div className="rounded-xl border-t-2 border-t-info border border-border bg-surface/80 backdrop-blur-sm p-5">
+      <div className="rounded-xl border-t-2 border-t-brand border border-border bg-surface/80 backdrop-blur-sm p-5">
         <div className="mb-1 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-text-muted">
           <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" /></svg>
-          Total MRR
+          Your MRR
         </div>
         <div className="flex items-baseline gap-1">
-          <span className="text-3xl font-bold text-info">
+          <span className="text-3xl font-bold text-brand">
             ${animatedTotalMRR.toLocaleString()}
           </span>
           <span className="text-sm text-text-muted">/mo</span>
