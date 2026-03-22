@@ -1,4 +1,4 @@
-export type PlanType = "free" | "watch" | "pro" | "team";
+export type PlanType = "free" | "audit" | "watch" | "pro" | "team";
 
 export const PLAN_LIMITS: Record<PlanType, {
   scansPerMonth: number;
@@ -7,6 +7,7 @@ export const PLAN_LIMITS: Record<PlanType, {
   recoveryActions: boolean | number; // number = limited free actions, true = unlimited, false = none
 }> = {
   free: { scansPerMonth: 1, autoScans: false, teamMembers: 0, recoveryActions: 1 },
+  audit: { scansPerMonth: 3, autoScans: false, teamMembers: 0, recoveryActions: 3 },
   watch: { scansPerMonth: 1, autoScans: true, teamMembers: 0, recoveryActions: 1 },
   pro: { scansPerMonth: Infinity, autoScans: true, teamMembers: 0, recoveryActions: true },
   team: { scansPerMonth: Infinity, autoScans: true, teamMembers: 10, recoveryActions: true },
@@ -14,6 +15,7 @@ export const PLAN_LIMITS: Record<PlanType, {
 
 export const PLAN_DISPLAY_NAMES: Record<PlanType, string> = {
   free: "Free",
+  audit: "Deep Audit",
   watch: "Leak Watch",
   pro: "Pro",
   team: "Team",
@@ -21,6 +23,7 @@ export const PLAN_DISPLAY_NAMES: Record<PlanType, string> = {
 
 export const PLAN_PRICES: Record<PlanType, number> = {
   free: 0,
+  audit: 149,
   watch: 79,
   pro: 299,
   team: 499,

@@ -39,9 +39,9 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { plan, discountId, billing } = body;
 
-    if (!plan || !["watch", "pro", "team"].includes(plan)) {
+    if (!plan || !["audit", "watch", "pro", "team"].includes(plan)) {
       return NextResponse.json(
-        { error: "Invalid plan. Choose 'watch', 'pro', or 'team'." },
+        { error: "Invalid plan. Choose 'audit', 'watch', 'pro', or 'team'." },
         { status: 400 }
       );
     }
@@ -69,12 +69,14 @@ export async function POST(req: NextRequest) {
     }
 
     // Create Polar checkout session
+    // Audit plan is always one-time, ignore billing interval
+    const checkoutBilling = plan === "audit" ? "monthly" : billingInterval;
     const url = await createCheckout({
       userId: user.id,
       email: user.email!,
-      plan: plan as "watch" | "pro" | "team",
+      plan: plan as "audit" | "watch" | "pro" | "team",
       baseUrl,
-      billing: billingInterval as "monthly" | "annual",
+      billing: checkoutBilling as "monthly" | "annual",
       ...(discountId && typeof discountId === "string" ? { discountId } : {}),
     });
 

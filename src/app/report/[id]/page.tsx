@@ -16,6 +16,7 @@ import RecoveryBanner from "@/components/report/RecoveryBanner";
 import QuickWins from "@/components/report/QuickWins";
 import DailyCostTicker from "@/components/report/DailyCostTicker";
 import Link from "next/link";
+import { getRecurrence } from "@/lib/leak-recurrence";
 
 /** Key used to deduplicate dismissals */
 function dismissKey(customerId: string, leakType: string) {
@@ -499,6 +500,74 @@ export default function ReportPage() {
 
         {/* Quick Wins — start here summary */}
         <QuickWins leaks={visibleLeaks} />
+
+        {/* Leak Recurrence Breakdown — helps users understand ongoing vs one-time */}
+        {visibleLeaks.length > 0 && (() => {
+          const recurringLeaks = visibleLeaks.filter((l) => getRecurrence(l.type).level === "recurring");
+          const episodicLeaks = visibleLeaks.filter((l) => getRecurrence(l.type).level === "episodic");
+          const onetimeLeaks = visibleLeaks.filter((l) => getRecurrence(l.type).level === "one-time");
+          const recurringImpact = recurringLeaks.reduce((s, l) => s + l.monthlyImpact, 0);
+          const onetimeImpact = onetimeLeaks.reduce((s, l) => s + l.monthlyImpact, 0);
+          const episodicImpact = episodicLeaks.reduce((s, l) => s + l.monthlyImpact, 0);
+          return (
+            <div className="rounded-2xl border border-border bg-surface p-6 animate-fade-in-up">
+              <h3 className="text-lg font-bold text-white mb-1">Monitoring vs One-Time Fixes</h3>
+              <p className="text-sm text-text-muted mb-5">
+                Not all leaks are the same. Some need ongoing monitoring, others you fix once and move on.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {recurringLeaks.length > 0 && (
+                  <div className="rounded-xl border border-brand/20 bg-brand/5 p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-brand bg-brand/10 border border-brand/20 rounded">
+                        Recurring
+                      </span>
+                    </div>
+                    <p className="text-2xl font-bold text-white">{recurringLeaks.length}</p>
+                    <p className="text-xs text-text-muted mt-1">
+                      {formatCurrency(recurringImpact)}/mo at risk
+                    </p>
+                    <p className="text-[10px] text-text-dim mt-2">
+                      New instances appear regularly. These need ongoing monitoring to catch early.
+                    </p>
+                  </div>
+                )}
+                {episodicLeaks.length > 0 && (
+                  <div className="rounded-xl border border-warning/20 bg-warning/5 p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-warning bg-warning/10 border border-warning/20 rounded">
+                        Episodic
+                      </span>
+                    </div>
+                    <p className="text-2xl font-bold text-white">{episodicLeaks.length}</p>
+                    <p className="text-xs text-text-muted mt-1">
+                      {formatCurrency(episodicImpact)}/mo at risk
+                    </p>
+                    <p className="text-[10px] text-text-dim mt-2">
+                      Come back after pricing changes or promotions. Periodic check-ups are enough.
+                    </p>
+                  </div>
+                )}
+                {onetimeLeaks.length > 0 && (
+                  <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white/40 bg-white/5 border border-white/10 rounded">
+                        One-time fix
+                      </span>
+                    </div>
+                    <p className="text-2xl font-bold text-white">{onetimeLeaks.length}</p>
+                    <p className="text-xs text-text-muted mt-1">
+                      {formatCurrency(onetimeImpact)}/mo at risk
+                    </p>
+                    <p className="text-[10px] text-text-dim mt-2">
+                      Fix these once and they stay solved. No ongoing monitoring needed.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* What's Next — guided path based on auth state */}
         {visibleLeaks.length > 0 && (

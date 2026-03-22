@@ -31,6 +31,31 @@ const plans = [
     freeValueStack: null,
   },
   {
+    name: "Deep Audit",
+    badge: "ONE-TIME",
+    monthlyPrice: "$149",
+    annualPrice: "$149",
+    annualMonthly: "$149",
+    period: " once",
+    description: "Full audit + PDF report + fix links. Clean up everything, pay once, done.",
+    features: [
+      "Full 10-category revenue audit",
+      "Customer-level leak report with amounts",
+      "PDF & CSV export",
+      "Fix instructions for every leak found",
+      "3 auto-fix actions included",
+      "3 scans (re-scan after you fix things)",
+      "Recurring vs one-time leak breakdown",
+    ],
+    cta: "Get My Full Audit",
+    href: "#",
+    highlighted: false,
+    isPaid: true,
+    isOneTime: true,
+    planId: "audit",
+    valueStack: null,
+  },
+  {
     name: "Leak Watch",
     badge: "SMART START",
     monthlyPrice: "$79",
@@ -139,7 +164,7 @@ export function Pricing() {
 
       // Track checkout event (fire-and-forget)
       trackEvent("checkout_started", null, { plan: planId, billing }).catch(() => {});
-      trackCheckoutStarted(planId, planId === "watch" ? 79 : planId === "pro" ? 299 : 499);
+      trackCheckoutStarted(planId, planId === "audit" ? 149 : planId === "watch" ? 79 : planId === "pro" ? 299 : 499);
 
       // Redirect to Polar Checkout
       globalThis.location.assign(data.url);
@@ -152,8 +177,8 @@ export function Pricing() {
   return (
     <section ref={sectionRef} id="pricing" className="border-t border-border-light py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-6">
-        <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-brand">
-          What you get
+        <div className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-brand/80">
+          Pricing
         </div>
         <h2 className="mb-4 text-center text-3xl font-bold tracking-tight text-white md:text-4xl">
           What you get (and what it&apos;s actually worth)
@@ -169,7 +194,7 @@ export function Pricing() {
             <span className="font-semibold text-white/70">Doing nothing:</span> $1,500-$5,000/month leaking. Every month. Compounding.
           </p>
           <p>
-            <span className="font-semibold text-brand">RevReclaim:</span> All 10 leak types. 90 seconds. Every week. Fix links. Direct to Stripe.
+            <span className="font-semibold text-brand">RevReclaim:</span> All 10 leak types. 90 seconds. Fix links. Direct to Stripe. Start with a one-time audit or set up ongoing monitoring.
           </p>
         </div>
 
@@ -215,18 +240,23 @@ export function Pricing() {
           </div>
         )}
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5 lg:gap-5">
           {plans.map((plan) => {
-            const displayPrice = billing === "annual" && plan.isPaid
-              ? plan.annualMonthly
+            const isOneTime = "isOneTime" in plan && plan.isOneTime;
+            const displayPrice = isOneTime
+              ? plan.monthlyPrice
+              : billing === "annual" && plan.isPaid
+                ? plan.annualMonthly
+                : plan.isPaid
+                  ? plan.monthlyPrice
+                  : "$0";
+            const displayPeriod = isOneTime
+              ? " once"
               : plan.isPaid
-                ? plan.monthlyPrice
-                : "$0";
-            const displayPeriod = plan.isPaid
-              ? billing === "annual"
-                ? "/mo"
-                : "/month"
-              : "";
+                ? billing === "annual"
+                  ? "/mo"
+                  : "/month"
+                : "";
 
             return (
               <div
@@ -258,13 +288,13 @@ export function Pricing() {
                   <span className="text-4xl font-extrabold text-white">{displayPrice}</span>
                   <span className="text-text-muted">{displayPeriod}</span>
                 </div>
-                {billing === "annual" && plan.isPaid && (
+                {billing === "annual" && plan.isPaid && !isOneTime && (
                   <p className="mb-5 text-xs text-text-muted">
                     Billed as {plan.annualPrice}/year{" "}
                     <span className="text-text-dim line-through">{plan.monthlyPrice}/mo</span>
                   </p>
                 )}
-                {(!plan.isPaid || billing === "monthly") && <div className="mb-6" />}
+                {(!plan.isPaid || billing === "monthly" || isOneTime) && <div className="mb-6" />}
                 <ul className="mb-8 space-y-3">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2 text-sm text-text-secondary">
@@ -300,9 +330,11 @@ export function Pricing() {
                         plan.cta
                       )}
                     </button>
-                    {/* $1,000/mo guarantee */}
+                    {/* Guarantee text */}
                     <p className="mt-3 text-center text-xs text-text-muted">
-                      Find less than $1,000/mo? You pay nothing. Cancel anytime.
+                      {isOneTime
+                        ? "One-time payment. No subscription. No recurring charges."
+                        : "Find less than $1,000/mo? You pay nothing. Cancel anytime."}
                     </p>
                   </>
                 ) : (

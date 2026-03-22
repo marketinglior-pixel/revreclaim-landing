@@ -5,6 +5,7 @@ import { Leak, LeakType, LEAK_TYPE_LABELS } from "@/lib/types";
 import { formatCurrency, getSeverityColor } from "@/lib/utils";
 import { REVIEW_ONLY_LEAK_TYPES } from "@/lib/leak-categories";
 import { LEAK_TO_ACTIONS } from "@/lib/recovery/types";
+import { getRecurrence } from "@/lib/leak-recurrence";
 import { useState } from "react";
 
 /** Contextual insights that differentiate us from Stripe's raw data */
@@ -132,6 +133,23 @@ export default function LeakCard({ leak, isLoggedIn, isPaidUser, isDemo, onDismi
                   Manual Review
                 </span>
               )}
+              {(() => {
+                const recurrence = getRecurrence(leak.type);
+                const badgeClass =
+                  recurrence.level === "recurring"
+                    ? "text-brand bg-brand/10 border-brand/20"
+                    : recurrence.level === "episodic"
+                    ? "text-warning bg-warning/10 border-warning/20"
+                    : "text-white/40 bg-white/5 border-white/10";
+                return (
+                  <span
+                    className={`inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium border rounded ${badgeClass}`}
+                    title={recurrence.description}
+                  >
+                    {recurrence.label}
+                  </span>
+                );
+              })()}
               {isLoggedIn && !REVIEW_ONLY_LEAK_TYPES.has(leak.type) && LEAK_TO_ACTIONS[leak.type] && (
                 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-brand bg-brand/10 border border-brand/20 rounded">
                   <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
