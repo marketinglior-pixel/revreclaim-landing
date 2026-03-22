@@ -35,6 +35,7 @@ export type AnalyticsEvent =
   | "post_scan_survey"
   | "post_fix_survey"
   | "nps_survey"
+  | "share_clicked"
   | "feedback_widget"
   | "feature_interest"
   | "calculator_used"
