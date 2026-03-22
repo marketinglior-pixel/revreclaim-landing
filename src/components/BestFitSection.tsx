@@ -48,7 +48,7 @@ export function BestFitSection() {
           </div>
           <p className="mt-6 text-sm text-white/40">
             Sound familiar? The scan is free. Run it and find out.
-            Most founders are surprised by what they find.
+            Most founders find at least one leak they didn&apos;t know about.
           </p>
         </div>
       </div>

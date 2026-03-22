@@ -320,17 +320,17 @@ function LeakPreviewRow({
           : "bg-white/[0.04] text-white/40 border-white/10";
 
   return (
-    <div className="px-5 py-3.5 flex items-center justify-between gap-3">
-      <div className="flex items-center gap-3 min-w-0">
-        <span className={`shrink-0 rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${sevColor}`}>
+    <div className="px-4 sm:px-5 py-3.5 flex items-center justify-between gap-2 sm:gap-3">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <span className={`shrink-0 rounded-md border px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider ${sevColor}`}>
           {severity}
         </span>
-        <span className="text-sm font-medium text-white/80 truncate">{type}</span>
-        <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-medium ${badgeColor}`}>
+        <span className="text-xs sm:text-sm font-medium text-white/80 truncate">{type}</span>
+        <span className={`shrink-0 rounded-full border px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-medium hidden sm:inline ${badgeColor}`}>
           {badge}
         </span>
       </div>
-      <span className="shrink-0 text-sm font-bold text-danger">{impact}</span>
+      <span className="shrink-0 text-xs sm:text-sm font-bold text-danger">{impact}</span>
     </div>
   );
 }

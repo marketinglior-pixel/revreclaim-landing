@@ -170,10 +170,12 @@ export function verifyWebhookSignature(
   }
   const secretBytes = Buffer.from(rawSecret, "base64");
 
-  // Reject timestamps older than 5 minutes to prevent replay attacks
+  // Reject timestamps older than 1 hour to prevent replay attacks
+  // (generous window to handle Polar retries and batch re-deliveries)
   const ts = parseInt(webhookTimestamp, 10);
   const nowSeconds = Math.floor(Date.now() / 1000);
-  if (isNaN(ts) || Math.abs(nowSeconds - ts) > 300) {
+  if (isNaN(ts) || Math.abs(nowSeconds - ts) > 3600) {
+    log.error(`Timestamp too old: ${ts}, now: ${nowSeconds}, diff: ${Math.abs(nowSeconds - ts)}s`);
     return false;
   }
 
