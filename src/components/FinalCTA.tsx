@@ -96,10 +96,10 @@ export function FinalCTA() {
                 Free. 90 seconds. No credit card. No signup.
               </p>
               <a
-                href="/demo"
+                href="/demo/dashboard"
                 className="inline-block text-sm text-text-muted hover:text-brand transition-colors"
               >
-                Or see an example report first &rarr;
+                Or try the demo dashboard first &rarr;
               </a>
 
               {/* Secondary: email capture */}

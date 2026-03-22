@@ -48,8 +48,8 @@ export default function ProductHuntPage() {
             <p className="text-sm text-text-muted/60">
               Free scan shows your top 3 leaks with full details. No signup required.
             </p>
-            <a href="/demo" className="text-sm text-text-muted hover:text-brand transition-colors">
-              Not ready? See an example report first &rarr;
+            <a href="/demo/dashboard" className="text-sm text-text-muted hover:text-brand transition-colors">
+              Not ready? Try the demo dashboard first &rarr;
             </a>
           </div>
 

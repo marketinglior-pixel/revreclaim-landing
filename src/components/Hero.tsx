@@ -62,13 +62,13 @@ export function Hero() {
                   </svg>
                 </a>
                 <a
-                  href="/demo"
+                  href="/demo/dashboard"
                   onClick={() => {
-                    trackEvent("cta_clicked", null, { location: "hero", action: "demo" }).catch(() => {});
+                    trackEvent("cta_clicked", null, { location: "hero", action: "demo_dashboard" }).catch(() => {});
                   }}
                   className="flex items-center gap-2 rounded-xl border border-border bg-surface-light px-6 py-4 text-[15px] font-medium text-white min-h-[56px] transition-all duration-300 hover:border-brand/30 hover:bg-surface-lighter"
                 >
-                  See example report
+                  Demo Dashboard
                 </a>
               </div>
 
