@@ -1,8 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { ScanCounter } from "@/components/ScanCounter";
-import { RecoveredCounter } from "@/components/RecoveredCounter";
 import { trackEvent } from "@/lib/analytics";
 import { trackCTAClick } from "@/lib/conversion-tracking";
 
@@ -124,21 +122,21 @@ export function SocialProof() {
           <div className="flex items-center gap-2.5">
             <div className="h-2 w-2 rounded-full bg-brand shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
             <span className="text-sm text-white/60">
-              Trusted by <span className="font-bold text-white"><ScanCounter /></span> users
-            </span>
-          </div>
-          <div className="h-4 w-px bg-white/10 hidden sm:block" />
-          <div className="flex items-center gap-2.5">
-            <div className="h-2 w-2 rounded-full bg-brand shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-            <span className="text-sm text-white/60">
-              <RecoveredCounter /> recovered for SaaS teams
-            </span>
-          </div>
-          <div className="h-4 w-px bg-white/10 hidden sm:block" />
-          <div className="flex items-center gap-2.5">
-            <div className="h-2 w-2 rounded-full bg-brand shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-            <span className="text-sm text-white/60">
               <span className="font-bold text-white">10</span> leak types checked
+            </span>
+          </div>
+          <div className="h-4 w-px bg-white/10 hidden sm:block" />
+          <div className="flex items-center gap-2.5">
+            <div className="h-2 w-2 rounded-full bg-brand shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+            <span className="text-sm text-white/60">
+              <span className="font-bold text-white">Read-only</span> API access
+            </span>
+          </div>
+          <div className="h-4 w-px bg-white/10 hidden sm:block" />
+          <div className="flex items-center gap-2.5">
+            <div className="h-2 w-2 rounded-full bg-brand shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+            <span className="text-sm text-white/60">
+              <span className="font-bold text-white">90-second</span> scan
             </span>
           </div>
         </div>

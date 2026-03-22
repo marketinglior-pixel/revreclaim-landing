@@ -44,9 +44,9 @@ export function FinalCTA() {
       <div className="relative mx-auto max-w-3xl px-6 text-center pt-16">
         {/* Headline — display font */}
         <h2 className="mb-4 font-display text-3xl font-bold text-white md:text-5xl lg:text-6xl">
-          You&apos;ve read this far.
+          Your billing might be
           <br />
-          <span className="text-white/35">You already know.</span>
+          <span className="text-white/35">leaking right now.</span>
         </h2>
 
         {/* Sub */}

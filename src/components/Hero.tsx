@@ -3,7 +3,6 @@
 import { useSectionView } from "@/hooks/useSectionView";
 import { trackEvent } from "@/lib/analytics";
 import { trackCTAClick } from "@/lib/conversion-tracking";
-import { ScanCounter } from "@/components/ScanCounter";
 import { HeroScanAnimation } from "@/components/HeroScanAnimation";
 
 export function Hero() {
@@ -95,11 +94,11 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Scan counter + calculator */}
+            {/* Free/paid boundary + calculator */}
             <div className="mt-8 space-y-2.5 animate-fade-in-up animate-delay-400">
-              <div className="text-xs text-text-dim/80">
-                <ScanCounter /> scans completed
-              </div>
+              <p className="text-xs text-text-muted/70 max-w-sm lg:mx-0 mx-auto">
+                Free scan shows your top 3 leaks with full details. Upgrade to see all 10 categories and get ongoing monitoring.
+              </p>
               <a
                 href="/calculator"
                 onClick={() => {

@@ -13,10 +13,10 @@ export function DashboardPreview() {
 
       <div className="mx-auto max-w-5xl px-6">
         <div className="mb-3 text-center text-[12px] text-white/40 font-medium tracking-wide">
-          Imagine this tomorrow morning
+          What your scan report looks like
         </div>
         <h2 className="mb-4 text-center font-display text-3xl font-bold text-white md:text-4xl">
-          You open your dashboard. You see exactly what&apos;s wrong.
+          Every leak. Every dollar amount. Every fix link.
         </h2>
         <p className="mx-auto mb-6 max-w-2xl text-center text-[15px] text-white/45 leading-relaxed">
           Seven leaks. $2,340 per month. Each one with a name, an amount, and a link to fix it.
