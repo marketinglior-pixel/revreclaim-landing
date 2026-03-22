@@ -181,6 +181,87 @@ export default function ProductHuntPage() {
         </div>
       </section>
 
+      {/* Blurred Leak Preview */}
+      <section className="border-t border-border-light py-16 md:py-20">
+        <div className="mx-auto max-w-3xl px-6">
+          <h2 className="mb-3 text-center text-2xl font-bold text-white md:text-3xl">
+            What your report looks like
+          </h2>
+          <p className="mb-10 text-center text-sm text-text-muted">
+            Free scan shows your top 3 leaks. Upgrade to see all 10 categories.
+          </p>
+
+          <div className="rounded-2xl border border-white/[0.06] bg-surface/80 overflow-hidden">
+            {/* Report header */}
+            <div className="border-b border-white/[0.04] px-5 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-warning/10">
+                  <span className="text-sm font-bold text-warning">70</span>
+                </div>
+                <div>
+                  <div className="text-xs text-white/30">Billing Health Score</div>
+                  <div className="text-sm font-semibold text-warning">Needs Attention</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-xs text-white/30">MRR at Risk</div>
+                <div className="text-lg font-bold text-danger">$2,340/mo</div>
+              </div>
+            </div>
+
+            {/* Visible leaks (top 3) */}
+            <div className="divide-y divide-white/[0.03]">
+              <LeakPreviewRow
+                severity="CRITICAL"
+                type="Failed Payment"
+                impact="$499/mo"
+                badge="Recurring"
+                badgeColor="text-brand bg-brand/10 border-brand/20"
+              />
+              <LeakPreviewRow
+                severity="HIGH"
+                type="Expired Coupon"
+                impact="$150/mo"
+                badge="Recurring"
+                badgeColor="text-brand bg-brand/10 border-brand/20"
+              />
+              <LeakPreviewRow
+                severity="HIGH"
+                type="Legacy Pricing"
+                impact="$100/mo"
+                badge="One-time fix"
+                badgeColor="text-white/40 bg-white/[0.04] border-white/10"
+              />
+            </div>
+
+            {/* Blurred leaks (4-10) */}
+            <div className="relative">
+              <div className="divide-y divide-white/[0.03] blur-[6px] select-none pointer-events-none">
+                <LeakPreviewRow severity="MEDIUM" type="Ghost Subscription" impact="$89/mo" badge="Recurring" badgeColor="text-brand bg-brand/10 border-brand/20" />
+                <LeakPreviewRow severity="MEDIUM" type="Expiring Card" impact="$299/mo" badge="Episodic" badgeColor="text-yellow-400 bg-yellow-400/10 border-yellow-400/20" />
+                <LeakPreviewRow severity="LOW" type="Never-Expiring Discount" impact="$45/mo" badge="One-time fix" badgeColor="text-white/40 bg-white/[0.04] border-white/10" />
+                <LeakPreviewRow severity="LOW" type="Duplicate Subscription" impact="$79/mo" badge="One-time fix" badgeColor="text-white/40 bg-white/[0.04] border-white/10" />
+              </div>
+
+              {/* Upgrade overlay */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-background/90 via-background/60 to-transparent">
+                <div className="rounded-xl border border-brand/20 bg-surface/95 backdrop-blur-sm px-6 py-4 text-center shadow-lg">
+                  <p className="text-sm font-semibold text-white mb-1">
+                    + 7 more leaks found
+                  </p>
+                  <p className="text-xs text-text-muted mb-3">
+                    Upgrade to see all leaks and get fix instructions
+                  </p>
+                  <span className="inline-block rounded-lg bg-brand px-4 py-2 text-xs font-bold text-black">
+                    Upgrade to See All
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section className="border-t border-border-light py-16 md:py-20">
         <div className="mx-auto max-w-2xl px-6 text-center">
@@ -213,5 +294,43 @@ export default function ProductHuntPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+function LeakPreviewRow({
+  severity,
+  type,
+  impact,
+  badge,
+  badgeColor,
+}: {
+  severity: string;
+  type: string;
+  impact: string;
+  badge: string;
+  badgeColor: string;
+}) {
+  const sevColor =
+    severity === "CRITICAL"
+      ? "bg-danger/10 text-danger border-danger/20"
+      : severity === "HIGH"
+        ? "bg-warning/10 text-warning border-warning/20"
+        : severity === "MEDIUM"
+          ? "bg-info/10 text-info border-info/20"
+          : "bg-white/[0.04] text-white/40 border-white/10";
+
+  return (
+    <div className="px-5 py-3.5 flex items-center justify-between gap-3">
+      <div className="flex items-center gap-3 min-w-0">
+        <span className={`shrink-0 rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${sevColor}`}>
+          {severity}
+        </span>
+        <span className="text-sm font-medium text-white/80 truncate">{type}</span>
+        <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-medium ${badgeColor}`}>
+          {badge}
+        </span>
+      </div>
+      <span className="shrink-0 text-sm font-bold text-danger">{impact}</span>
+    </div>
   );
 }
