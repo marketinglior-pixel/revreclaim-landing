@@ -48,19 +48,30 @@ export function Hero() {
 
             {/* Primary CTA — shimmer effect */}
             <div className="flex flex-col items-center gap-5 animate-fade-in-up animate-delay-200 lg:items-start">
-              <a
-                href="/scan"
-                onClick={() => {
-                  trackEvent("cta_clicked", null, { location: "hero", action: "scan" }).catch(() => {});
-                  trackCTAClick("hero", "scan");
-                }}
-                className="group flex items-center gap-2.5 rounded-xl bg-brand px-9 py-4 text-[17px] font-bold text-black min-h-[56px] transition-all duration-300 hover:bg-brand-light hover:shadow-[0_0_40px_rgba(16,185,129,0.35)] hover:scale-[1.02]"
-              >
-                Show Me My Leaks
-                <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </a>
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                <a
+                  href="/scan"
+                  onClick={() => {
+                    trackEvent("cta_clicked", null, { location: "hero", action: "scan" }).catch(() => {});
+                    trackCTAClick("hero", "scan");
+                  }}
+                  className="group flex items-center gap-2.5 rounded-xl bg-brand px-9 py-4 text-[17px] font-bold text-black min-h-[56px] transition-all duration-300 hover:bg-brand-light hover:shadow-[0_0_40px_rgba(16,185,129,0.35)] hover:scale-[1.02]"
+                >
+                  Show Me My Leaks
+                  <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </a>
+                <a
+                  href="/demo"
+                  onClick={() => {
+                    trackEvent("cta_clicked", null, { location: "hero", action: "demo" }).catch(() => {});
+                  }}
+                  className="flex items-center gap-2 rounded-xl border border-border bg-surface-light px-6 py-4 text-[15px] font-medium text-white min-h-[56px] transition-all duration-300 hover:border-brand/30 hover:bg-surface-lighter"
+                >
+                  See example report
+                </a>
+              </div>
 
               {/* Trust line — refined with subtle separators */}
               <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-2 text-[13px] text-text-muted lg:justify-start">

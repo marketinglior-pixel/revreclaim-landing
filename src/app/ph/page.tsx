@@ -44,9 +44,14 @@ export default function ProductHuntPage() {
             </svg>
           </a>
 
-          <p className="mt-4 text-sm text-text-muted/60">
-            Free scan shows your top 3 leaks with full details. No signup required.
-          </p>
+          <div className="mt-4 flex flex-col items-center gap-2">
+            <p className="text-sm text-text-muted/60">
+              Free scan shows your top 3 leaks with full details. No signup required.
+            </p>
+            <a href="/demo" className="text-sm text-text-muted hover:text-brand transition-colors">
+              Not ready? See an example report first &rarr;
+            </a>
+          </div>
 
           {/* Trust points */}
           <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[13px] text-text-muted">

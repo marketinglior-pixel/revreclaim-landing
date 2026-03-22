@@ -95,6 +95,12 @@ export function FinalCTA() {
               <p className="text-xs text-white/30">
                 Free. 90 seconds. No credit card. No signup.
               </p>
+              <a
+                href="/demo"
+                className="inline-block text-sm text-text-muted hover:text-brand transition-colors"
+              >
+                Or see an example report first &rarr;
+              </a>
 
               {/* Secondary: email capture */}
               <div className="pt-5">
