@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import DashboardNav from "@/components/dashboard/DashboardNav";
+import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import BreakdownPanel from "@/components/dashboard/BreakdownPanel";
+import { ScanReport } from "@/lib/types";
 
 export const metadata = {
   title: "Dashboard | RevReclaim",
@@ -28,17 +30,46 @@ export default async function DashboardLayout({
     .eq("id", user.id)
     .single();
 
-  const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
-  const isAdmin = adminEmails.includes(user.email?.toLowerCase() || "");
+  const plan = (profile?.plan as string) || "free";
+
+  // Fetch latest report for breakdown panel
+  const { data: latestRow } = await supabase
+    .from("reports")
+    .select("id, created_at, platform, summary, categories, leaks")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+
+  const latestReport: ScanReport | null = latestRow
+    ? {
+        id: latestRow.id as string,
+        platform: (latestRow.platform as string) || "stripe",
+        scannedAt: latestRow.created_at as string,
+        summary: latestRow.summary as unknown as ScanReport["summary"],
+        categories: latestRow.categories as unknown as ScanReport["categories"],
+        leaks: latestRow.leaks as unknown as ScanReport["leaks"],
+      }
+    : null;
+
+  // Count pending actions for sidebar badge
+  const { count: pendingActions } = await supabase
+    .from("recovery_actions")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .eq("status", "pending");
 
   return (
-    <div className="min-h-screen bg-surface-dim">
-      <DashboardNav
+    <div className="min-h-screen bg-surface-dim flex">
+      <DashboardSidebar
+        plan={plan}
         email={user.email || ""}
-        plan={(profile?.plan as string) || "free"}
-        isAdmin={isAdmin}
+        pendingActions={pendingActions ?? 0}
       />
-      <main className="max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 py-8">{children}</main>
+      <main className="flex-1 min-w-0 px-4 lg:px-8 py-8 overflow-y-auto">
+        {children}
+      </main>
+      <BreakdownPanel report={latestReport} />
     </div>
   );
 }
