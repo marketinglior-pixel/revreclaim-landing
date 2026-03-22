@@ -159,6 +159,20 @@ export async function runPlatformScan(
     mrrAtRisk += weighted;
   }
 
+  // Cap mrrAtRisk to totalMRR — can't lose more revenue than you make
+  // This prevents impossible numbers (e.g., $8,904 at risk on $7,862 MRR)
+  // Root causes: trial-expired scanner counts non-paying subs, invoice-level leaks bypass dedup
+  if (totalMRR > 0 && mrrAtRisk > totalMRR) {
+    log.warn("mrrAtRisk exceeded totalMRR — capping", {
+      mrrAtRisk,
+      totalMRR,
+      rawMrrAtRisk,
+      leakCount: allLeaks.length,
+    });
+    mrrAtRisk = totalMRR;
+    rawMrrAtRisk = Math.min(rawMrrAtRisk, totalMRR);
+  }
+
   const healthScore = calculateHealthScore(allLeaks, totalMRR, rawMrrAtRisk);
 
   // Step 6: Build category summaries (uses individual leak data, not deduped)
@@ -187,6 +201,12 @@ export async function runPlatformScan(
 
   for (const annual of subMaxAnnual.values()) {
     recoveryPotential += annual;
+  }
+
+  // Cap recovery potential to annual MRR
+  const annualMRR = totalMRR * 12;
+  if (annualMRR > 0 && recoveryPotential > annualMRR) {
+    recoveryPotential = annualMRR;
   }
 
   const summary = {

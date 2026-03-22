@@ -110,16 +110,16 @@ describe("getSeverityColor", () => {
     expect(getSeverityColor("critical")).toBe("#EF4444");
   });
 
-  it("returns amber for high", () => {
-    expect(getSeverityColor("high")).toBe("#F59E0B");
+  it("returns red for high", () => {
+    expect(getSeverityColor("high")).toBe("#EF4444");
   });
 
-  it("returns blue for medium", () => {
-    expect(getSeverityColor("medium")).toBe("#3B82F6");
+  it("returns light red for medium", () => {
+    expect(getSeverityColor("medium")).toBe("#EF444480");
   });
 
-  it("returns gray for low", () => {
-    expect(getSeverityColor("low")).toBe("#6B7280");
+  it("returns light red for low", () => {
+    expect(getSeverityColor("low")).toBe("#EF444480");
   });
 });
 
