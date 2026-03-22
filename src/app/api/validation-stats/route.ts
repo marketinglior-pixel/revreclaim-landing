@@ -52,6 +52,8 @@ export async function GET(request: NextRequest) {
     distribution: { zero: 0, oneTwo: 0, threeFour: 0, fiveSix: 0, sevenPlus: 0 },
     conversionFunnel: { totalProfiles: 0, totalScans: 0, freeUsers: 0, paidUsers: 0, planBreakdown: {} as Record<string, number> },
     timeline: [] as { date: string; scans: number }[],
+    dollarBuckets: { zero: 0, low: 0, medium: 0, high: 0 },
+    accountSizes: { tooSmall: 0, small: 0, ideal: 0, enterprise: 0 },
   };
 
   try {
@@ -114,6 +116,14 @@ export async function GET(request: NextRequest) {
     let totalLeakCount = 0;
     let totalMrrAtRisk = 0;
     let scansOver500 = 0;
+    let scansZero = 0;
+    let scans1to499 = 0;
+    let scans500to999 = 0;
+    let scans1000plus = 0;
+    let subsUnder10 = 0;
+    let subs10to49 = 0;
+    let subs50to500 = 0;
+    let subs500plus = 0;
     const leakTypeBreakdown: Record<string, number> = {};
     const leakTypesPerScan: number[] = [];
     const mrrPerScan: number[] = [];
@@ -139,6 +149,19 @@ export async function GET(request: NextRequest) {
 
       // mrrAtRisk is in cents, $500 = 50000 cents
       if (mrrAtRisk >= 50000) scansOver500++;
+
+      // Dollar amount buckets
+      if (mrrAtRisk === 0) scansZero++;
+      else if (mrrAtRisk < 50000) scans1to499++;
+      else if (mrrAtRisk < 100000) scans500to999++;
+      else scans1000plus++;
+
+      // Subscription count distribution
+      const subCount = summary?.totalSubscriptions ?? 0;
+      if (subCount < 10) subsUnder10++;
+      else if (subCount < 50) subs10to49++;
+      else if (subCount <= 500) subs50to500++;
+      else subs500plus++;
 
       // Count distinct leak types in this scan
       const typesInScan = new Set<string>();
@@ -246,6 +269,18 @@ export async function GET(request: NextRequest) {
         planBreakdown,
       },
       timeline,
+      dollarBuckets: {
+        zero: scansZero,
+        low: scans1to499,
+        medium: scans500to999,
+        high: scans1000plus,
+      },
+      accountSizes: {
+        tooSmall: subsUnder10,
+        small: subs10to49,
+        ideal: subs50to500,
+        enterprise: subs500plus,
+      },
     };
 
     return NextResponse.json(result, {

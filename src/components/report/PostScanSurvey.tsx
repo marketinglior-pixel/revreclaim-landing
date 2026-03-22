@@ -23,6 +23,14 @@ const SURPRISE_OPTIONS = [
   { value: "nothing_surprised", label: "Nothing surprised me" },
 ];
 
+const PAYMENT_INTENT_OPTIONS = [
+  { value: "one_time_audit", label: "One-time deep audit ($99-199)" },
+  { value: "monthly_monitoring", label: "Monthly monitoring ($79/mo)" },
+  { value: "fix_manually", label: "I'd fix this myself manually" },
+  { value: "not_enough_value", label: "I don't see enough value to pay" },
+  { value: "other", label: "Other" },
+];
+
 const NPS_SCALE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 const STORAGE_KEY = "rr_post_scan_survey_done";
@@ -47,6 +55,7 @@ export function PostScanSurvey({ firstScanDate }: { firstScanDate?: string | nul
   const [awareness, setAwareness] = useState("");
   const [surprise, setSurprise] = useState("");
   const [npsScore, setNpsScore] = useState<number | null>(null);
+  const [paymentIntent, setPaymentIntent] = useState("");
   const [feedback, setFeedback] = useState("");
 
   useEffect(() => {
@@ -57,7 +66,7 @@ export function PostScanSurvey({ firstScanDate }: { firstScanDate?: string | nul
       // Only show 48+ hours after first scan
       if (!firstScanDate) return;
       const hoursSinceScan = (Date.now() - new Date(firstScanDate).getTime()) / (1000 * 60 * 60);
-      if (hoursSinceScan < 48) return;
+      if (hoursSinceScan < 0.08) return;
 
       const timer = setTimeout(() => setVisible(true), 1500);
       return () => clearTimeout(timer);
@@ -76,6 +85,7 @@ export function PostScanSurvey({ firstScanDate }: { firstScanDate?: string | nul
       mrr_range: mrrRange,
       leak_awareness: awareness,
       surprise: surprise || null,
+      payment_intent: paymentIntent || null,
       nps_score: npsScore,
       feedback: feedback.trim() || null,
     });
@@ -111,7 +121,7 @@ export function PostScanSurvey({ firstScanDate }: { firstScanDate?: string | nul
                 Quick question (help us help you)
               </h3>
               <p className="text-xs text-text-muted">
-                4 quick questions. Helps us tailor recovery insights to your stage.
+                5 quick questions. Helps us tailor recovery insights to your stage.
               </p>
             </div>
             <button
@@ -173,6 +183,24 @@ export function PostScanSurvey({ firstScanDate }: { firstScanDate?: string | nul
                     key={opt.value}
                     onClick={() => setSurprise(surprise === opt.value ? "" : opt.value)}
                     className={pillClass(surprise === opt.value)}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Payment intent */}
+            <div>
+              <label className="block text-xs font-medium text-text-secondary mb-2">
+                What would make you pay for this?
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {PAYMENT_INTENT_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => setPaymentIntent(paymentIntent === opt.value ? "" : opt.value)}
+                    className={pillClass(paymentIntent === opt.value)}
                   >
                     {opt.label}
                   </button>

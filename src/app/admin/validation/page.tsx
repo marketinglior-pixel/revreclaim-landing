@@ -39,6 +39,18 @@ interface ValidationStats {
   distribution: Distribution;
   conversionFunnel: ConversionFunnel;
   timeline: TimelineEntry[];
+  dollarBuckets: {
+    zero: number;
+    low: number;
+    medium: number;
+    high: number;
+  };
+  accountSizes: {
+    tooSmall: number;
+    small: number;
+    ideal: number;
+    enterprise: number;
+  };
 }
 
 const LEAK_TYPE_LABELS: Record<string, string> = {
@@ -196,6 +208,45 @@ export default function ValidationPage() {
                         ? "NO DATA -- Need scans to validate."
                         : "RED -- Few scans find meaningful leaks. Consider pivot."}
                 </span>
+              </div>
+            </div>
+
+            {/* ─── Dollar Amount Buckets (PH Validation Q1) ─── */}
+            <div className="glass-card rounded-xl p-5 mb-6">
+              <div className="text-xs text-white/30 uppercase tracking-wider mb-4">
+                MRR at Risk Buckets
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <BucketCard label="$0 (clean)" value={stats.dollarBuckets.zero} total={stats.totalScans} color="text-brand" />
+                <BucketCard label="$1-499/mo" value={stats.dollarBuckets.low} total={stats.totalScans} color="text-warning" />
+                <BucketCard label="$500-999/mo" value={stats.dollarBuckets.medium} total={stats.totalScans} color="text-orange-400" />
+                <BucketCard label="$1,000+/mo" value={stats.dollarBuckets.high} total={stats.totalScans} color="text-danger" />
+              </div>
+              {stats.totalScans > 0 && (
+                <div className="mt-4 flex items-center gap-2">
+                  <div className={`h-3 w-3 rounded-full ${
+                    (stats.dollarBuckets.medium + stats.dollarBuckets.high) / stats.totalScans >= 0.6 ? "bg-brand" :
+                    (stats.dollarBuckets.medium + stats.dollarBuckets.high) / stats.totalScans >= 0.4 ? "bg-warning" : "bg-danger"
+                  }`} />
+                  <span className="text-xs text-white/50">
+                    {Math.round(((stats.dollarBuckets.medium + stats.dollarBuckets.high) / stats.totalScans) * 100)}% find $500+/mo
+                    {(stats.dollarBuckets.medium + stats.dollarBuckets.high) / stats.totalScans >= 0.6 ? " — Strong validation" :
+                     (stats.dollarBuckets.medium + stats.dollarBuckets.high) / stats.totalScans >= 0.4 ? " — Moderate validation" : " — Weak validation"}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* ─── Account Sizes (PH Validation Q6) ─── */}
+            <div className="glass-card rounded-xl p-5 mb-6">
+              <div className="text-xs text-white/30 uppercase tracking-wider mb-4">
+                Account Size Distribution (Subscription Count)
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <BucketCard label="<10 subs (too small)" value={stats.accountSizes.tooSmall} total={stats.totalScans} color="text-white/40" />
+                <BucketCard label="10-49 subs" value={stats.accountSizes.small} total={stats.totalScans} color="text-info" />
+                <BucketCard label="50-500 subs (ideal)" value={stats.accountSizes.ideal} total={stats.totalScans} color="text-brand" />
+                <BucketCard label="500+ subs (enterprise)" value={stats.accountSizes.enterprise} total={stats.totalScans} color="text-purple-400" />
               </div>
             </div>
 
@@ -410,6 +461,18 @@ function ConversionFunnelChart({ funnel }: { funnel: ConversionFunnel }) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+/* ─── Bucket Card ─── */
+function BucketCard({ label, value, total, color }: { label: string; value: number; total: number; color: string }) {
+  const pct = total > 0 ? Math.round((value / total) * 100) : 0;
+  return (
+    <div className="rounded-lg bg-white/[0.03] border border-white/[0.06] p-3">
+      <div className="text-[10px] text-white/25 mb-1">{label}</div>
+      <div className={`text-xl font-bold font-display ${color}`}>{value}</div>
+      <div className="text-[10px] text-white/20 mt-0.5">{pct}%</div>
     </div>
   );
 }
