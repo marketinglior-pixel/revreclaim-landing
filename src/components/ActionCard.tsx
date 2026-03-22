@@ -128,19 +128,8 @@ function getPreviewDetails(action: ActionCardData, privacyMode?: boolean): { lab
   return details;
 }
 
-export function ActionCard({
-  action,
-  selected,
-  onToggleSelect,
-  onApprove,
-  onDismiss,
-  onExecute,
-  onRetry,
-  canApprove,
-  executing,
-  privacyMode,
-  missingWriteKey,
-}: ActionCardProps) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function ActionCard({ action, selected, onToggleSelect, onApprove, onDismiss, onExecute, onRetry, canApprove, executing, privacyMode, missingWriteKey }: ActionCardProps) {
   const [showPreview, setShowPreview] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationAmount, setCelebrationAmount] = useState(0);
@@ -150,6 +139,7 @@ export function ActionCard({
     ACTION_TYPE_DESCRIPTIONS[action.action_type] || "";
   const icon = ACTION_ICONS[action.action_type];
   const impact = action.monthly_impact / 100;
+  const isWriteAction = ["retry_payment", "remove_coupon", "cancel_subscription"].includes(action.action_type);
   const createdDate = new Date(action.created_at).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -257,55 +247,58 @@ export function ActionCard({
           </div>
 
           {/* Action buttons */}
-          {action.status === "pending" && canApprove && (
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => onApprove(action.id)}
-                className="rounded-lg bg-brand/10 px-2.5 py-1.5 text-xs font-medium text-brand hover:bg-brand/20 transition"
-              >
-                Approve
-              </button>
-              <button
-                onClick={() => onDismiss(action.id)}
-                className="rounded-lg bg-surface-lighter px-2.5 py-1.5 text-xs font-medium text-text-muted hover:text-white hover:bg-surface-lighter/80 transition"
-              >
-                Dismiss
-              </button>
-            </div>
-          )}
-
-          {action.status === "approved" && canApprove && (
-            missingWriteKey ? (
-              <a
-                href="/dashboard/settings#action-api-key"
-                className="rounded-lg bg-warning/10 border border-warning/25 px-3 py-1.5 text-xs font-medium text-warning hover:bg-warning/20 transition flex items-center gap-1.5"
-              >
-                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
-                </svg>
-                Add API Key
-              </a>
+          {(action.status === "pending" || action.status === "approved") && canApprove && (
+            missingWriteKey && isWriteAction ? (
+              <div className="flex items-center gap-1.5">
+                <a
+                  href="/dashboard/settings#action-api-key"
+                  className="rounded-lg bg-warning/10 border border-warning/25 px-3 py-1.5 text-xs font-medium text-warning hover:bg-warning/20 transition flex items-center gap-1.5"
+                >
+                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+                  </svg>
+                  Add API Key
+                </a>
+                <button
+                  onClick={() => onDismiss(action.id)}
+                  className="rounded-lg bg-surface-lighter px-2.5 py-1.5 text-xs font-medium text-text-muted hover:text-white transition"
+                >
+                  Dismiss
+                </button>
+              </div>
             ) : (
-              <button
-                onClick={() => {
-                  setCelebrationAmount(impact);
-                  onExecute(action.id);
-                  // Show celebration after a short delay (assume success)
-                  setTimeout(() => setShowCelebration(true), 1500);
-                  setTimeout(() => setShowCelebration(false), 5000);
-                }}
-                disabled={executing}
-                className="rounded-lg bg-brand px-3 py-1.5 text-xs font-bold text-black hover:bg-brand-dark transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
-              >
-                {executing ? (
-                  <>
-                    <span className="h-3 w-3 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                    Running…
-                  </>
-                ) : (
-                  "Execute"
-                )}
-              </button>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => {
+                    setCelebrationAmount(impact);
+                    onExecute(action.id);
+                    setTimeout(() => setShowCelebration(true), 1500);
+                    setTimeout(() => setShowCelebration(false), 5000);
+                  }}
+                  disabled={executing}
+                  className="rounded-lg bg-brand px-3 py-1.5 text-xs font-bold text-black hover:bg-brand-dark transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+                >
+                  {executing ? (
+                    <>
+                      <span className="h-3 w-3 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                      Fixing…
+                    </>
+                  ) : (
+                    <>
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                      </svg>
+                      Fix This
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => onDismiss(action.id)}
+                  className="rounded-lg bg-surface-lighter px-2.5 py-1.5 text-xs font-medium text-text-muted hover:text-white transition"
+                >
+                  Dismiss
+                </button>
+              </div>
             )
           )}
 

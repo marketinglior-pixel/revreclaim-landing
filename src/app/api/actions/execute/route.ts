@@ -91,12 +91,13 @@ export async function POST(req: NextRequest) {
     // This prevents the action from being marked as "failed" just because the
     // user hasn't added an Action API Key yet. The action stays "approved" so
     // the user can retry after adding the key — no need to hunt in the Failed tab.
+    // Fetch action — accept both "pending" and "approved" for one-click fix
     const { data: actionRow } = await supabase
       .from("recovery_actions")
-      .select("action_type")
+      .select("action_type, status")
       .eq("id", actionId)
       .eq("user_id", user.id)
-      .eq("status", "approved")
+      .in("status", ["pending", "approved"])
       .single();
 
     if (!actionRow) {
@@ -118,9 +119,18 @@ export async function POST(req: NextRequest) {
       }
 
       return NextResponse.json(
-        { error: "Action not found or not in approved status." },
+        { error: "Action not found or not ready for execution." },
         { status: 404 }
       );
+    }
+
+    // Auto-approve pending actions (one-click fix flow)
+    if (actionRow.status === "pending") {
+      await supabase
+        .from("recovery_actions")
+        .update({ status: "approved" as string })
+        .eq("id", actionId)
+        .eq("user_id", user.id);
     }
 
     const isWriteAction = ["retry_payment", "remove_coupon", "cancel_subscription"].includes(

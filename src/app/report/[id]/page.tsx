@@ -374,6 +374,34 @@ export default function ReportPage() {
         {/* Quick Wins — start here summary */}
         <QuickWins leaks={visibleLeaks} />
 
+        {/* Onboarding: Action API Key prompt — shows when user has leaks but no write key */}
+        {isLoggedIn && visibleLeaks.length > 0 && (
+          <div className="rounded-xl border border-brand/20 bg-brand/5 p-5">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <svg className="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                  </svg>
+                  Want to fix these automatically?
+                </h3>
+                <p className="text-xs text-text-muted mt-1">
+                  Add a write-capable API key and our agents will retry payments, remove expired coupons, and send recovery emails for you.
+                </p>
+              </div>
+              <Link
+                href="/dashboard/settings#action-api-key"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition text-sm whitespace-nowrap"
+              >
+                Add Action Key
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        )}
+
         {/* All Leaks Table */}
         <div id="leak-table">
           <LeakTable leaks={visibleLeaks} isLoggedIn={isLoggedIn} isPaidUser={userPlan !== "free"} isDemo={false} onDismiss={handleDismiss} privacyMode={privacyMode} />
