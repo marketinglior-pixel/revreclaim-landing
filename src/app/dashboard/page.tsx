@@ -122,6 +122,49 @@ export default async function DashboardPage() {
         </div>
       )}
 
+      {/* Free fix demo — show biggest leak with free fix CTA for free users */}
+      {plan === "free" && latestReport && latestReport.leaks.length > 0 && (() => {
+        const topLeak = [...latestReport.leaks].sort((a, b) => (b.monthlyImpact ?? 0) - (a.monthlyImpact ?? 0))[0];
+        const remainingCount = latestReport.leaks.length - 1;
+        const remainingAmount = Math.round(
+          (latestReport.summary.mrrAtRisk - (topLeak.monthlyImpact ?? 0)) / 100
+        );
+        return (
+          <div className="rounded-xl border border-brand/30 bg-brand/5 p-6">
+            <div className="flex items-center gap-2 mb-3">
+              <svg className="w-5 h-5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+              </svg>
+              <h3 className="text-sm font-bold text-brand">Try your free fix</h3>
+            </div>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <p className="text-sm text-white">
+                  <span className="font-semibold">{topLeak.description?.slice(0, 80) || topLeak.type}</span>
+                </p>
+                <p className="text-lg font-bold text-danger mt-1">
+                  ${Math.round((topLeak.monthlyImpact ?? 0) / 100).toLocaleString()}/mo at risk
+                </p>
+              </div>
+              <Link
+                href="/dashboard/actions"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition whitespace-nowrap"
+              >
+                Fix This Leak — Free
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </Link>
+            </div>
+            {remainingCount > 0 && (
+              <p className="text-xs text-text-dim mt-3">
+                After this: upgrade to fix {remainingCount} more leak{remainingCount !== 1 ? "s" : ""} worth ${remainingAmount.toLocaleString()}/mo
+              </p>
+            )}
+          </div>
+        );
+      })()}
+
       {/* Recovery actions banner — shows count */}
       {latestReport && <RecoveryActionsBanner userId={user.id} />}
 
