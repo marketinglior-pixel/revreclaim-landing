@@ -1,14 +1,9 @@
 "use client";
 
-import { computeBillingHealth } from "@/lib/billing-health";
-import { isActionableLeak } from "@/lib/leak-categories";
 import ReportHeader from "@/components/report/ReportHeader";
 import ReportSummary from "@/components/report/ReportSummary";
-import BillingHealthInsights from "@/components/report/BillingHealthInsights";
-import LeakCategoryChart from "@/components/report/LeakCategoryChart";
 import LeakTable from "@/components/report/LeakTable";
 import ReportCTA from "@/components/report/ReportCTA";
-import RecoveryBanner from "@/components/report/RecoveryBanner";
 import QuickWins from "@/components/report/QuickWins";
 import AgentSimulation from "@/components/report/AgentSimulation";
 import { DEMO_REPORT, addDemoEnrichment } from "./demo-data";
@@ -23,18 +18,6 @@ import { DEMO_REPORT, addDemoEnrichment } from "./demo-data";
 // Apply CRM enrichment
 addDemoEnrichment(DEMO_REPORT);
 
-// Compute billing health from demo data (after enrichment, so 7th dimension shows)
-const DEMO_BILLING_HEALTH = computeBillingHealth(
-  DEMO_REPORT.summary,
-  DEMO_REPORT.categories,
-  DEMO_REPORT.leaks
-);
-
-// Count actionable leaks (those with auto-fix available)
-const ACTIONABLE_LEAK_COUNT = DEMO_REPORT.leaks.filter((l) =>
-  isActionableLeak(l.type)
-).length;
-
 export default function DemoReportPage() {
   return (
     <div className="min-h-screen bg-surface-dim">
@@ -45,22 +28,17 @@ export default function DemoReportPage() {
       />
 
       <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
-        {/* Recovery Banner — "Auto-Fix N Leaks" scrolls to AgentSimulation */}
-        <RecoveryBanner
-          mrrAtRisk={DEMO_REPORT.summary.mrrAtRisk}
-          isLoggedIn={true}
-          isDemo={true}
-          actionableLeakCount={ACTIONABLE_LEAK_COUNT}
-        />
-
         {/* Summary Cards + Health Score */}
         <ReportSummary summary={DEMO_REPORT.summary} leaks={DEMO_REPORT.leaks} />
 
-        {/* Billing Health Breakdown */}
-        <BillingHealthInsights billingHealth={DEMO_BILLING_HEALTH} />
-
-        {/* Category Breakdown Chart */}
-        <LeakCategoryChart categories={DEMO_REPORT.categories} />
+        {/* Trust strip */}
+        <div className="flex items-center justify-center gap-4 text-xs text-text-dim py-1">
+          <span>Read-only API access</span>
+          <span className="text-white/10">·</span>
+          <span>AES-256 encrypted</span>
+          <span className="text-white/10">·</span>
+          <span>Key deleted after scan</span>
+        </div>
 
         {/* Quick Wins — start here summary */}
         <QuickWins leaks={DEMO_REPORT.leaks} />

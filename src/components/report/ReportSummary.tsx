@@ -37,7 +37,7 @@ export default function ReportSummary({ summary }: ReportSummaryProps) {
       <AnimatedStatCard
         label="Leaks Found"
         rawValue={summary.leaksFound}
-        color={summary.leaksFound > 0 ? "#F59E0B" : "#10B981"}
+        color={summary.leaksFound > 0 ? "#EF4444" : "#10B981"}
         description={`Across ${summary.totalSubscriptions} subscriptions`}
         delay={200}
       />

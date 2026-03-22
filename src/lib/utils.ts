@@ -119,13 +119,11 @@ export function validateEmail(email: string): boolean {
 export function getSeverityColor(severity: LeakSeverity): string {
   switch (severity) {
     case "critical":
-      return "#EF4444";
     case "high":
-      return "#F59E0B";
+      return "#EF4444";
     case "medium":
-      return "#3B82F6";
     case "low":
-      return "#6B7280";
+      return "#EF444480";
   }
 }
 
