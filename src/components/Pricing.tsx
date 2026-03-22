@@ -282,9 +282,9 @@ export function Pricing() {
                     <button
                       onClick={() => { trackEvent("cta_clicked", null, { location: "pricing", action: "upgrade", billing }).catch(() => {}); handleCheckout(plan.planId); }}
                       disabled={loadingPlan !== null}
-                      className={`block w-full rounded-lg py-3 text-center text-sm font-semibold min-h-[44px] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+                      className={`block w-full rounded-xl py-4 text-center text-base font-bold min-h-[52px] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
                         plan.highlighted
-                          ? "bg-brand text-black hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+                          ? "bg-brand text-black hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:scale-[1.02]"
                           : "border border-border bg-surface-light text-white hover:border-brand/30 hover:bg-surface-lighter"
                       }`}
                     >
@@ -309,9 +309,9 @@ export function Pricing() {
                   <Link
                     href={plan.href}
                     onClick={() => { trackEvent("cta_clicked", null, { location: "pricing", action: "scan" }).catch(() => {}); }}
-                    className={`block w-full rounded-lg py-3 text-center text-sm font-semibold min-h-[44px] transition-all ${
+                    className={`block w-full rounded-xl py-4 text-center text-base font-bold min-h-[52px] transition-all ${
                       plan.highlighted
-                        ? "bg-brand text-black hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+                        ? "bg-brand text-black hover:bg-brand-light hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:scale-[1.02]"
                         : "border border-border bg-surface-light text-white hover:border-brand/30 hover:bg-surface-lighter"
                     }`}
                   >
