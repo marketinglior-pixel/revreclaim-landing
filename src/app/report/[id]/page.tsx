@@ -3,21 +3,15 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { Leak, ScanReport, LEAK_TYPE_LABELS } from "@/lib/types";
-import { formatCurrency } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { PlanType } from "@/lib/plan-limits";
 import ReportHeader from "@/components/report/ReportHeader";
 import ReportSummary from "@/components/report/ReportSummary";
-import BillingHealthInsights from "@/components/report/BillingHealthInsights";
-import LeakCategoryChart from "@/components/report/LeakCategoryChart";
 import LeakTable from "@/components/report/LeakTable";
 import ReportCTA from "@/components/report/ReportCTA";
-import RecoveryBanner from "@/components/report/RecoveryBanner";
 import QuickWins from "@/components/report/QuickWins";
 import { PostScanSurvey } from "@/components/report/PostScanSurvey";
-import DailyCostTicker from "@/components/report/DailyCostTicker";
 import Link from "next/link";
-import { getRecurrence } from "@/lib/leak-recurrence";
 
 /** Key used to deduplicate dismissals */
 function dismissKey(customerId: string, leakType: string) {
@@ -208,16 +202,6 @@ export default function ReportPage() {
     };
   }, [report, dismissedKeys, visibleLeaks]);
 
-  const dismissedCount = report ? report.leaks.length - visibleLeaks.length : 0;
-
-  /** Compute recovered revenue from dismissed leaks */
-  const recoveredAmount = useMemo(() => {
-    if (!report || dismissedKeys.size === 0) return 0;
-    return report.leaks
-      .filter((l) => dismissedKeys.has(dismissKey(l.customerId, l.type)))
-      .reduce((sum, l) => sum + l.monthlyImpact, 0);
-  }, [report, dismissedKeys]);
-
   if (loading) {
     return (
       <div className="min-h-screen bg-surface-dim flex items-center justify-center">
@@ -355,281 +339,40 @@ export default function ReportPage() {
       )}
 
       <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
-        {/* Biggest Leak Highlight — Von Restorff Effect */}
-        {visibleLeaks.length > 0 && (() => {
-          const biggest = visibleLeaks.reduce((max, l) => l.monthlyImpact > max.monthlyImpact ? l : max, visibleLeaks[0]);
-          const impactDollars = Math.round(biggest.monthlyImpact / 100);
-          const dailyCost = Math.round(impactDollars / 30);
-          return (
-            <div className="rounded-2xl border border-danger/30 bg-gradient-to-r from-danger/10 to-danger/5 p-6 animate-fade-in-up">
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-danger/15 flex-shrink-0">
-                  <svg className="h-6 w-6 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-danger mb-1">Your Biggest Leak</p>
-                  <h3 className="text-lg font-bold text-white mb-1">
-                    {LEAK_TYPE_LABELS[biggest.type] || biggest.type}: ${impactDollars.toLocaleString()}/mo
-                  </h3>
-                  <p className="text-sm text-text-muted mb-3">
-                    {biggest.description || `This single issue is costing you $${dailyCost}/day.`}
-                  </p>
-                  {biggest.fixSuggestion && (
-                    <p className="text-xs text-text-secondary mb-2">
-                      <span className="font-semibold text-brand">How to fix:</span>{" "}
-                      {biggest.fixSuggestion}
-                    </p>
-                  )}
-                  <div className="flex flex-wrap items-center gap-2">
-                    {(biggest.platformUrl || biggest.stripeUrl) && (
-                      <a
-                        href={biggest.platformUrl || biggest.stripeUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-lg bg-brand/15 border border-brand/25 px-3 py-1.5 text-xs font-semibold text-brand hover:bg-brand/25 transition"
-                      >
-                        Open in Dashboard
-                        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
-                      </a>
-                    )}
-                    <a
-                      href="#leak-table"
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-danger/15 border border-danger/25 px-3 py-1.5 text-xs font-semibold text-danger hover:bg-danger/25 transition"
-                    >
-                      See All Leaks
-                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
-                      </svg>
-                    </a>
-                  </div>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <span className="text-2xl font-extrabold text-danger">${impactDollars.toLocaleString()}</span>
-                  <span className="text-sm text-danger/70">/mo</span>
-                  <p className="text-xs text-text-muted mt-1">${(impactDollars * 12).toLocaleString()}/year</p>
-                </div>
-              </div>
-            </div>
-          );
-        })()}
-
-        {/* Daily Cost Ticker — urgency using actual scan data */}
-        <DailyCostTicker mrrAtRisk={adjustedSummary?.mrrAtRisk ?? report.summary.mrrAtRisk} />
-
-        {/* Recovery Banner */}
-        <RecoveryBanner
-          mrrAtRisk={adjustedSummary?.mrrAtRisk ?? report.summary.mrrAtRisk}
-          isLoggedIn={isLoggedIn}
-          pendingActionsCount={pendingActionsCount}
-        />
-
-        {/* Actions Generated Banner (logged-in users with recovery actions) */}
-        {isLoggedIn && pendingActionsCount > 0 && (
-          <div className="flex items-center justify-between rounded-xl border border-brand/20 bg-brand/5 px-5 py-4 animate-fade-in-up">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/15">
-                <svg className="h-5 w-5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-white">
-                  {pendingActionsCount} recovery action{pendingActionsCount !== 1 ? "s" : ""} generated from this scan
-                </p>
-                <p className="text-xs text-text-muted">
-                  Auto-fix leaks with payment reminders, retry charges, and more.
-                </p>
-              </div>
-            </div>
-            <Link
-              href="/dashboard/actions"
-              className="flex-shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-xs font-bold text-black hover:bg-brand-light transition"
-            >
-              Review &amp; Auto-Fix
-              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-              </svg>
-            </Link>
-          </div>
-        )}
-
-        {/* Revenue Recovered — shown when user has dismissed/fixed leaks */}
-        {dismissedCount > 0 && (
-          <div className="flex items-center justify-between gap-4 px-5 py-4 bg-gradient-to-r from-brand/10 to-brand/5 border border-brand/20 rounded-xl animate-fade-in-up">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/15">
-                <svg className="w-5 h-5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-white">
-                  {recoveredAmount > 0
-                    ? `${formatCurrency(recoveredAmount)}/mo recovered`
-                    : `${dismissedCount} leak${dismissedCount !== 1 ? "s" : ""} resolved`}
-                </p>
-                <p className="text-xs text-text-muted">
-                  {dismissedCount} leak{dismissedCount !== 1 ? "s" : ""} marked as fixed.{" "}
-                  <span className="text-text-dim">These won&apos;t appear in future scans.</span>
-                </p>
-              </div>
-            </div>
-            {recoveredAmount > 0 && (
-              <span className="flex-shrink-0 text-lg font-bold text-brand">
-                {formatCurrency(recoveredAmount * 12)}/yr
-              </span>
-            )}
-          </div>
-        )}
-
         {/* Summary Cards + Health Score */}
         <ReportSummary summary={adjustedSummary ?? report.summary} leaks={visibleLeaks} />
 
-        {/* Billing Health Breakdown */}
-        {report.billingHealth && (
-          <BillingHealthInsights billingHealth={report.billingHealth} />
-        )}
+        {/* Trust strip */}
+        <div className="flex items-center justify-center gap-4 text-xs text-text-dim py-1">
+          <span>Read-only API access</span>
+          <span className="text-white/10">·</span>
+          <span>AES-256 encrypted</span>
+          <span className="text-white/10">·</span>
+          <span>Key deleted after scan</span>
+        </div>
 
-        {/* Category Breakdown Chart */}
-        {report.categories.length > 0 && (
-          <LeakCategoryChart categories={report.categories} />
+        {/* Recovery Actions Banner (compact, only when actions exist) */}
+        {isLoggedIn && pendingActionsCount > 0 && (
+          <Link
+            href="/dashboard/actions"
+            className="flex items-center justify-between rounded-xl border border-brand/20 bg-brand/5 px-5 py-3 hover:bg-brand/10 transition animate-fade-in-up"
+          >
+            <div className="flex items-center gap-3">
+              <svg className="h-5 w-5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+              </svg>
+              <span className="text-sm font-semibold text-white">
+                {pendingActionsCount} recovery action{pendingActionsCount !== 1 ? "s" : ""} ready to review
+              </span>
+            </div>
+            <svg className="h-4 w-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </Link>
         )}
 
         {/* Quick Wins — start here summary */}
         <QuickWins leaks={visibleLeaks} />
-
-        {/* Leak Recurrence Breakdown — helps users understand ongoing vs one-time */}
-        {visibleLeaks.length > 0 && (() => {
-          const recurringLeaks = visibleLeaks.filter((l) => getRecurrence(l.type).level === "recurring");
-          const episodicLeaks = visibleLeaks.filter((l) => getRecurrence(l.type).level === "episodic");
-          const onetimeLeaks = visibleLeaks.filter((l) => getRecurrence(l.type).level === "one-time");
-          const recurringImpact = recurringLeaks.reduce((s, l) => s + l.monthlyImpact, 0);
-          const onetimeImpact = onetimeLeaks.reduce((s, l) => s + l.monthlyImpact, 0);
-          const episodicImpact = episodicLeaks.reduce((s, l) => s + l.monthlyImpact, 0);
-          return (
-            <div className="rounded-2xl border border-border bg-surface p-6 animate-fade-in-up">
-              <h3 className="text-lg font-bold text-white mb-1">Monitoring vs One-Time Fixes</h3>
-              <p className="text-sm text-text-muted mb-5">
-                Not all leaks are the same. Some need ongoing monitoring, others you fix once and move on.
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {recurringLeaks.length > 0 && (
-                  <div className="rounded-xl border border-brand/20 bg-brand/5 p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-brand bg-brand/10 border border-brand/20 rounded">
-                        Recurring
-                      </span>
-                    </div>
-                    <p className="text-2xl font-bold text-white">{recurringLeaks.length}</p>
-                    <p className="text-xs text-text-muted mt-1">
-                      {formatCurrency(recurringImpact)}/mo at risk
-                    </p>
-                    <p className="text-[10px] text-text-dim mt-2">
-                      New instances appear regularly. These need ongoing monitoring to catch early.
-                    </p>
-                  </div>
-                )}
-                {episodicLeaks.length > 0 && (
-                  <div className="rounded-xl border border-warning/20 bg-warning/5 p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-warning bg-warning/10 border border-warning/20 rounded">
-                        Episodic
-                      </span>
-                    </div>
-                    <p className="text-2xl font-bold text-white">{episodicLeaks.length}</p>
-                    <p className="text-xs text-text-muted mt-1">
-                      {formatCurrency(episodicImpact)}/mo at risk
-                    </p>
-                    <p className="text-[10px] text-text-dim mt-2">
-                      Come back after pricing changes or promotions. Periodic check-ups are enough.
-                    </p>
-                  </div>
-                )}
-                {onetimeLeaks.length > 0 && (
-                  <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white/40 bg-white/5 border border-white/10 rounded">
-                        One-time fix
-                      </span>
-                    </div>
-                    <p className="text-2xl font-bold text-white">{onetimeLeaks.length}</p>
-                    <p className="text-xs text-text-muted mt-1">
-                      {formatCurrency(onetimeImpact)}/mo at risk
-                    </p>
-                    <p className="text-[10px] text-text-dim mt-2">
-                      Fix these once and they stay solved. No ongoing monitoring needed.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })()}
-
-        {/* What's Next — guided path based on auth state */}
-        {visibleLeaks.length > 0 && (
-          <div className="rounded-2xl border border-border bg-surface p-6 md:p-8 animate-fade-in-up">
-            <h3 className="text-lg font-bold text-white mb-1">What to do next</h3>
-            <p className="text-sm text-text-muted mb-6">
-              You have {visibleLeaks.length} billing hole{visibleLeaks.length !== 1 ? "s" : ""}. Here&apos;s how to fix them, starting with the easiest.
-            </p>
-            <div className="space-y-4">
-              <div className="flex items-start gap-4">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-sm font-bold text-brand">1</div>
-                <div>
-                  <p className="text-sm font-semibold text-white">Fix the quick wins (5 min)</p>
-                  <p className="text-xs text-text-muted">
-                    Scroll up to &ldquo;Quick Fixes&rdquo; &mdash; these have the highest recovery rate.
-                    Each leak links directly to your billing dashboard.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-sm font-bold text-brand">2</div>
-                <div>
-                  <p className="text-sm font-semibold text-white">Review the rest</p>
-                  <p className="text-xs text-text-muted">
-                    Items under &ldquo;Needs Review&rdquo; require a business decision (e.g. whether
-                    to migrate legacy-priced customers). No rush, but worth looking at.
-                  </p>
-                </div>
-              </div>
-              {!isLoggedIn ? (
-                <div className="flex items-start gap-4">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-warning/10 text-sm font-bold text-warning">3</div>
-                  <div>
-                    <p className="text-sm font-semibold text-white">Save this report</p>
-                    <p className="text-xs text-text-muted">
-                      This report lives in your browser right now. Close the tab and it&apos;s gone.{" "}
-                      <Link href={`/auth/signup?redirect=/report/${reportId}`} className="text-brand hover:text-brand-light transition underline underline-offset-2">
-                        Create a free account
-                      </Link>{" "}
-                      to save it and track changes over time.
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-start gap-4">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-sm font-bold text-brand">3</div>
-                  <div>
-                    <p className="text-sm font-semibold text-white">Set up monitoring</p>
-                    <p className="text-xs text-text-muted">
-                      New leaks appear every week (failed payments, expiring cards).{" "}
-                      <Link href="/dashboard/settings" className="text-brand hover:text-brand-light transition underline underline-offset-2">
-                        Turn on weekly scans
-                      </Link>{" "}
-                      to catch them automatically.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
 
         {/* All Leaks Table */}
         <div id="leak-table">
