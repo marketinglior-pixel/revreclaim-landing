@@ -716,10 +716,10 @@ export default function SettingsPage() {
           <div className="rounded-xl bg-surface-dim p-4">
             <p className="text-xs text-text-dim uppercase tracking-wider mb-1">Current Plan</p>
             <p className="text-lg font-bold text-white">
-              {userPlan === "free" ? "Free" : userPlan === "pro" ? "Revenue Shield" : userPlan === "watch" ? "Leak Watch" : userPlan === "team" ? "Command Center" : userPlan}
+              {userPlan === "free" ? "Free" : userPlan === "watch" ? "Pro" : userPlan === "pro" ? "Team" : userPlan === "team" ? "Team" : userPlan}
             </p>
             <p className="text-xs text-text-muted mt-1">
-              {userPlan === "free" ? "Basic scan with top 3 leaks" : userPlan === "pro" ? "$299/mo" : userPlan === "watch" ? "$79/mo" : userPlan === "team" ? "$499/mo" : ""}
+              {userPlan === "free" ? "Basic scan with top 3 leaks" : userPlan === "watch" ? "$49/mo" : userPlan === "pro" ? "$149/mo" : userPlan === "team" ? "$149/mo" : ""}
             </p>
           </div>
           <div className="rounded-xl bg-surface-dim p-4">
@@ -793,7 +793,7 @@ export default function SettingsPage() {
               href="/#pricing"
               className="inline-flex px-5 py-2.5 bg-brand hover:bg-brand-dark text-black font-bold rounded-lg transition text-sm"
             >
-              Upgrade to Pro — $299/mo
+              Upgrade to Pro — $49/mo
             </Link>
           </div>
         )}

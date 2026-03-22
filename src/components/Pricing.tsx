@@ -8,13 +8,13 @@ import { trackCheckoutStarted } from "@/lib/conversion-tracking";
 
 const plans = [
   {
-    name: "Revenue X-Ray",
+    name: "Free Scan",
     badge: "FREE FOREVER",
     monthlyPrice: "$0",
     annualPrice: "$0",
     annualMonthly: "$0",
     period: "",
-    description: "Your complete billing audit. Every leak, every dollar amount. In 90 seconds.",
+    description: "One-time scan. See your top 3 leaks with full details and fix links.",
     features: [
       "Full 10-category revenue audit",
       "Customer-level leak report with amounts",
@@ -31,77 +31,53 @@ const plans = [
     freeValueStack: null,
   },
   {
-    name: "Leak Watch",
-    badge: "SMART START",
-    monthlyPrice: "$79",
-    annualPrice: "$790",
-    annualMonthly: "$66",
+    name: "Pro",
+    badge: "MOST POPULAR",
+    monthlyPrice: "$49",
+    annualPrice: "$490",
+    annualMonthly: "$41",
     period: "/month",
-    description: "Monthly monitoring with auto-fix, export, and leak degradation alerts.",
+    description: "See all your leaks. Auto-fix them. Get alerts when new ones appear.",
     features: [
-      "Everything in Revenue X-Ray",
-      "Auto-fix for every leak (not just top 3)",
-      "PDF & CSV export to share with your team",
+      "Everything in Free Scan",
+      "All leaks visible (not just top 3)",
+      "Auto-fix for every leak type",
       "Monthly automated re-scan",
-      "Leak degradation alerts (when leaks get worse)",
-      "6-month billing health trend history",
+      "PDF & CSV export",
+      "Leak degradation alerts",
       "Email alerts when new leaks appear",
       "Priority email support (< 24hr)",
     ],
-    cta: "Start Watching My Revenue →",
+    cta: "Start Fixing Leaks →",
     href: "#",
-    highlighted: false,
+    highlighted: true,
     isPaid: true,
     planId: "watch",
     valueStack: null,
   },
   {
-    name: "Revenue Shield",
-    badge: "MOST POPULAR",
-    monthlyPrice: "$299",
-    annualPrice: "$2,990",
-    annualMonthly: "$249",
+    name: "Team",
+    badge: "FOR GROWING TEAMS",
+    monthlyPrice: "$149",
+    annualPrice: "$1,490",
+    annualMonthly: "$124",
     period: "/month",
-    description: "Set it and forget it. We find leaks, fix what we can automatically, and alert you about the rest.",
+    description: "Weekly scans, auto-recovery, multi-user access. Built for teams that take billing seriously.",
     features: [
-      "Everything in Leak Watch",
+      "Everything in Pro",
       "Weekly scans (not just monthly)",
       "Auto-recovery on failed payments",
       "Pre-churn alerts on expiring cards",
-      "HubSpot CRM integration (see WHY each leak matters)",
-      "Leak priority ranking based on customer activity",
-      "Privacy Mode: customers stay anonymous",
+      "Multi-user team access",
       "Slack + email alerts",
+      "Privacy Mode: customers stay anonymous",
       "Priority support (< 4hr response)",
     ],
-    cta: "Start Recovering Revenue →",
-    href: "#",
-    highlighted: true,
-    isPaid: true,
-    planId: "pro",
-    valueStack: null,
-  },
-  {
-    name: "Revenue Command Center",
-    badge: "FOR TEAMS",
-    monthlyPrice: "$499",
-    annualPrice: "$4,990",
-    annualMonthly: "$416",
-    period: "/month",
-    description: "One dashboard for your entire revenue team. Everyone sees the same leaks. Nobody drops the ball.",
-    features: [
-      "Everything in Revenue Shield",
-      "HubSpot CRM integration for every team member",
-      "Multi-user team access",
-      "One dashboard. Everyone aligned on revenue health",
-      "Pipe revenue alerts into your existing tools",
-      "Full audit trail for board reporting & compliance",
-    ],
-    cta: "Get Full Revenue Control →",
+    cta: "Get Team Access →",
     href: "#",
     highlighted: false,
     isPaid: true,
-    planId: "team",
+    planId: "pro",
     valueStack: null,
   },
 ];
@@ -139,7 +115,7 @@ export function Pricing() {
 
       // Track checkout event (fire-and-forget)
       trackEvent("checkout_started", null, { plan: planId, billing }).catch(() => {});
-      trackCheckoutStarted(planId, planId === "audit" ? 149 : planId === "watch" ? 79 : planId === "pro" ? 299 : 499);
+      trackCheckoutStarted(planId, planId === "watch" ? 49 : planId === "pro" ? 149 : 49);
 
       // Redirect to Polar Checkout
       globalThis.location.assign(data.url);
@@ -215,7 +191,7 @@ export function Pricing() {
           </div>
         )}
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+        <div className="grid gap-6 md:grid-cols-3 lg:gap-8">
           {plans.map((plan) => {
             const displayPrice = billing === "annual" && plan.isPaid
               ? plan.annualMonthly
@@ -246,14 +222,6 @@ export function Pricing() {
                 )}
                 <h3 className="mb-1 text-lg font-bold text-white">{plan.name}</h3>
                 <p className="mb-3 text-sm text-text-muted">{plan.description}</p>
-                {(plan.planId === "pro" || plan.planId === "team") && (
-                  <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-info/20 bg-info/5 px-3 py-1 text-xs font-semibold text-info">
-                    <svg className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    Now with HubSpot CRM intelligence
-                  </div>
-                )}
                 <div className="mb-1">
                   <span className="text-4xl font-extrabold text-white">{displayPrice}</span>
                   <span className="text-text-muted">{displayPeriod}</span>

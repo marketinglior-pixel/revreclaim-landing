@@ -16,17 +16,17 @@ export const PLAN_LIMITS: Record<PlanType, {
 export const PLAN_DISPLAY_NAMES: Record<PlanType, string> = {
   free: "Free",
   audit: "Deep Audit",
-  watch: "Leak Watch",
-  pro: "Pro",
+  watch: "Pro",
+  pro: "Team",
   team: "Team",
 };
 
 export const PLAN_PRICES: Record<PlanType, number> = {
   free: 0,
   audit: 149,
-  watch: 79,
-  pro: 299,
-  team: 499,
+  watch: 49,
+  pro: 149,
+  team: 149,
 };
 
 /**
