@@ -42,7 +42,7 @@ export function Hero() {
 
             {/* Sub — 10 silent issues, scan CTA */}
             <p className="mx-auto mb-8 max-w-lg text-[17px] text-text-muted/90 leading-relaxed animate-fade-in-up animate-delay-100 lg:mx-0">
-              10 silent billing issues that Stripe doesn&apos;t alert you about. We find it and help you get it back.
+              10 silent billing issues that Stripe doesn&apos;t alert you about. The average scan finds <span className="text-white font-semibold">$2,300/mo</span> in lost revenue. We help you get it back.
             </p>
 
             {/* Primary CTA — shimmer effect */}
