@@ -31,9 +31,12 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { event_name, event_data } = body;
 
-    if (!event_name || !ALLOWED_EVENTS.includes(event_name)) {
+    // Support both formats: { event_name, event_data } and { type, email }
+    const event_name = body.event_name || (body.type === "oauth_waitlist" ? "oauth_waitlist" : null);
+    const event_data = body.event_data || (body.email ? { email: body.email, type: body.type } : {});
+
+    if (!event_name || ![...ALLOWED_EVENTS, "oauth_waitlist" as AnalyticsEvent].includes(event_name as AnalyticsEvent)) {
       return NextResponse.json({ error: "Invalid event" }, { status: 400 });
     }
 

@@ -36,6 +36,7 @@ export type AnalyticsEvent =
   | "post_fix_survey"
   | "nps_survey"
   | "share_clicked"
+  | "oauth_waitlist"
   | "feedback_widget"
   | "feature_interest"
   | "calculator_used"
