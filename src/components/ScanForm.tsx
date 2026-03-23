@@ -31,6 +31,9 @@ export default function ScanForm() {
   const abortRef = useRef<AbortController | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [showOAuthWaitlist, setShowOAuthWaitlist] = useState(false);
+  const [oauthEmail, setOAuthEmail] = useState("");
+  const [oAuthSubmitted, setOAuthSubmitted] = useState(false);
   const [scanWarnings, setScanWarnings] = useState<string[]>([]);
 
 
@@ -316,6 +319,64 @@ export default function ScanForm() {
         >
           {isScanning ? "Scanning..." : "Start My Free Audit →"}
         </button>
+
+        {/* Stripe OAuth waitlist — validation experiment */}
+        {platform === "stripe" && !isScanning && (
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center" aria-hidden="true">
+              <div className="w-full border-t border-white/[0.06]" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-surface-dim px-3 text-text-dim">or</span>
+            </div>
+          </div>
+        )}
+        {platform === "stripe" && !isScanning && !showOAuthWaitlist ? (
+          <button
+            type="button"
+            onClick={() => setShowOAuthWaitlist(true)}
+            className="w-full py-3 border border-border bg-surface-light text-sm font-medium text-white rounded-lg min-h-[44px] transition-all hover:border-brand/30 hover:bg-surface-lighter cursor-pointer flex items-center justify-center gap-2"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" /><polyline points="10 17 15 12 10 7" /><line x1="15" y1="12" x2="3" y2="12" />
+            </svg>
+            Connect with Stripe
+            <span className="text-[10px] text-text-dim font-normal">(coming soon)</span>
+          </button>
+        ) : platform === "stripe" && !isScanning && showOAuthWaitlist ? (
+          <div className="rounded-lg border border-brand/20 bg-brand/5 p-4">
+            <p className="text-sm font-medium text-white mb-2">One-click Stripe connect is coming soon</p>
+            <p className="text-xs text-text-muted mb-3">Leave your email and we&apos;ll notify you when it&apos;s ready. No API key needed.</p>
+            <div className="flex gap-2">
+              <input
+                type="email"
+                value={oauthEmail}
+                onChange={(e) => setOAuthEmail(e.target.value)}
+                placeholder="your@email.com"
+                className="flex-1 px-3 py-2 bg-surface border border-border rounded-lg text-white text-sm placeholder-text-dim focus:border-brand focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!oauthEmail) return;
+                  setOAuthSubmitted(true);
+                  fetch("/api/feedback/track", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ type: "oauth_waitlist", email: oauthEmail }),
+                  }).catch(() => {});
+                }}
+                disabled={oAuthSubmitted}
+                className="px-4 py-2 bg-brand text-black font-bold text-sm rounded-lg hover:bg-brand-dark transition disabled:opacity-50 cursor-pointer"
+              >
+                {oAuthSubmitted ? "Joined!" : "Join"}
+              </button>
+            </div>
+            {oAuthSubmitted && (
+              <p className="text-xs text-brand mt-2">You&apos;re on the list. We&apos;ll email you when it&apos;s ready.</p>
+            )}
+          </div>
+        ) : null}
 
         {/* Security badge */}
         <div className="flex items-center justify-center gap-4 text-xs text-text-muted">
